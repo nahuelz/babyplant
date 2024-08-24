@@ -1,0 +1,52 @@
+            <style>
+            button.close-flash {
+                padding: 0;
+                cursor: pointer;
+                background: 0 0;
+                border: 0;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+            }
+
+            .close-flash{
+              float: right;
+              font-size: 21px;
+              font-weight: 700;
+              line-height: 1;
+              color: #000;
+              text-shadow: 0 1px 0 #fff;
+              opacity: none;
+            }
+            </style>
+
+{% for flashMessage in app.session.flashbag.get('success') %}
+  <div class="region region-page-top" id="flash-success-{{loop.index}}">
+    <section id="campaign"
+      role="dialog"
+      aria-labelledby="campaign01"
+      aria-describedby="campaign02"
+      style="padding:0px">
+      <div class="container-fluid bg-success">
+        <header class="sr-only">
+          <h1 id="campaign01">
+            {{ flashMessage|raw }}
+          </h1>
+        </header>
+        <div class="container">
+          <h6 id="campaign02" style="color: #FFF;">
+              {{ flashMessage|raw }}
+               
+            <button type="button"  class="close-flash close-message" style="color: #FFF!important;" onclick="hideMessage({{loop.index}})" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+          </h6>
+        </div>
+      </div>
+    </section>
+  </div>
+{% endfor %}
+
+<script>
+    function hideMessage(index){
+      document.getElementById("flash-success-"+index).style.display = "none";
+    }
+</script>

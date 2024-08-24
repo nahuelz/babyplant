@@ -1,0 +1,32 @@
+
+{% macro _show_detail_simple(label, detail, containerClasses, detailClasses = 'text-muted font-weight-bold') %}
+    <div class="{{ containerClasses }}">
+        <div class="d-flex align-items-center mt-10">
+            <!--begin::Bullet-->
+            <span class="bullet bullet-bar bg-info align-self-stretch"></span>
+            <!--end::Bullet-->
+
+            <!--begin::Text-->
+            <div class="d-flex flex-column flex-grow-1 mx-4">
+                <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-lg mb-1">
+                    {{ label|raw }}
+                </a>
+                <span class="{{ detailClasses }}">
+                    {{ detail|raw }}
+                </span>
+            </div>
+            <!--end::Text-->
+        </div>
+    </div>
+{% endmacro %} 
+
+{% macro _show_detail(label, detail, containerClasses, detailClasses = 'detalle_show') %}
+    <div class="{{ containerClasses }}">
+        <div class="form-group">
+            <label class="control-label">
+                {{ label|raw }}
+            </label>
+            <div class="{{ detailClasses }}">{{ detail|raw }}</div>
+        </div>
+    </div>
+{% endmacro %} 

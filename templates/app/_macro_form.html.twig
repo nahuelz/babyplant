@@ -1,0 +1,13 @@
+{% macro _new_field(formField, classes, hint = '') %}
+    <div class="{{ classes }}">
+        <div class="form-group">
+            {{ form_label(formField) }}
+            <div class="form_field">
+                {{ form_widget(formField) }}
+            </div>
+            {% if hint != ''  %}
+                <span class="form-text text-muted">{{hint}}</span>
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}

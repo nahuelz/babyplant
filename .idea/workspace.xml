@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/config/packages/sensio_framework_extra.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/routes/annotations.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/.htaccess" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/usuario/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/usuario/login.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/usuario/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/usuario/register.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/usuario/request-reset-password.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/usuario/reset-password.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Controller/LuckyController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Controller/ResetPasswordController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Controller/SecurityController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/Constants/ConstanteAPI.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/app/_breadcrumbs.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/app/_fields_errors.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/app/_flash_messages.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/app/_flash_messages_poncho.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/app/_macro_form.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/app/_macro_show.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/reset_password/index.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/security/landing.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/security/login.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/bundles.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="2l2cLRUxQzYdlFejuqfvpPGXKBm" />
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/xampp81/htdocs/babyplant&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="" />
+      <created>1724381555711</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1724381555711</updated>
+      <workItem from="1724381556739" duration="1000" />
+      <workItem from="1724381583947" duration="3000" />
+    </task>
+    <servers />
+  </component>
+</project>
