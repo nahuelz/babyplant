@@ -1,4 +1,6 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
+imports:
+    - { resource: ../version.yaml }
 framework:
     secret: '%env(APP_SECRET)%'
     #csrf_protection: true
@@ -16,7 +18,10 @@ framework:
     #fragments: true
     php_errors:
         log: true
-
+    assets:
+        #json_manifest_path: "%kernel.project_dir%/public/build/manifest.json"
+        version: "%version%"
+        version_format: "%%s?v=%%s"
 when@test:
     framework:
         test: true

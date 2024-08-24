@@ -1,5 +1,9 @@
+imports:
+    - { resource: ../version.yaml }
 twig:
     default_path: '%kernel.project_dir%/templates'
+    globals:
+        version: "%version%"
 
 when@test:
     twig:

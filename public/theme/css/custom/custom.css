@@ -1,0 +1,90 @@
+
+.detalle_show {
+    background-color: #f3f6f9;
+    color: #7e8299;
+    padding: .65rem 1rem;
+    border: 1px solid #e4e6ef;
+    border-radius: .42rem;
+}
+
+.table.table-head-custom thead th {
+    color: #7e8299 !important;
+}
+
+.dt-acciones a.btn:not(:last-child){
+    margin-right: 3px;
+}
+
+label.required:after{
+    content: " *";
+    color: red;
+}
+
+.datepicker-dropdown {
+    z-index: 9999999 !important
+}
+
+.form_field input.datepicker {
+    width: 100%;
+}
+
+.form_field span.select2-container {
+    width: 100% !important;
+}
+
+select[readonly].select2-hidden-accessible + .select2-container {
+    pointer-events: none;
+    touch-action: none;
+    cursor: not-allowed;
+}
+
+select[readonly].select2-hidden-accessible + .select2-container .select2-selection {
+    background: #eee;
+    box-shadow: none;
+}
+
+select[readonly].select2-hidden-accessible + .select2-container .select2-selection__arrow, select[readonly].select2-hidden-accessible + .select2-container .select2-selection__clear {
+    display: none;
+}
+
+.form-group.has-danger .select2-selection {
+    border: 1px solid red !important;
+}
+
+.nav-tabs > li.is-invalid a, .nav-tabs > li.is-invalid i {
+    color: #d12610 !important;
+}
+
+.nav-tabs > li.is-invalid a.active {
+    border-color: #d12610!important;
+}
+
+li.nav-item.is-invalid i {
+    margin-left: 5px;
+}
+
+.dataTables_wrapper .dataTable tbody tr.active td {
+    background-color: #cecee5
+}
+
+.kt-hidden, .kt-hide {
+    display: none !important;
+}
+
+@media (min-width: 992px) {
+    .header-fixed.subheader-fixed .subheader {
+        border-top: 1px solid #073081;
+    }
+}
+
+.datepicker.readonly {
+    pointer-events: none;
+    touch-action: none;
+    cursor: not-allowed;
+    background: #f3f6f9
+}
+
+.header-menu .menu-nav > .menu-item .menu-submenu.menu-submenu-classic {    
+    overflow-y: auto;
+    max-height: 80vh;
+}

@@ -1,0 +1,39 @@
+{# MENU MATRICULADO #}
+{% if is_granted("ROLE_MENU_MATRICULADO") %}
+    {% include 'menu/menu_matriculado.html.twig' %}
+{% endif %}
+
+{# MENU PAGO #}
+{% if is_granted("ROLE_MENU_PAGO") %}
+    {% include 'menu/menu_pago.html.twig' %}
+{% endif %}
+
+{# MENU BOLETA PAGO #}
+{% if is_granted("ROLE_MENU_BOLETA_PAGO") %}
+    {% include 'menu/menu_boleta_pago.html.twig' %}
+{% endif %}
+
+{# MENU ARCHIVOS #}
+{% if is_granted("ROLE_MENU_ARCHIVO") %}
+    {% include 'menu/menu_archivo.html.twig' %}
+{% endif %}
+
+{# MENU PERITO #}
+{% if is_granted("ROLE_MENU_PERITO") %}
+    {% include 'menu/menu_perito.html.twig' %}
+{% endif %}
+
+{# MENU REPORTE #}
+{% if is_granted("ROLE_MENU_REPORTE") %}
+    {% include 'menu/menu_reporte.html.twig' %}    
+{% endif %}
+
+{# MENU CONFIGURACION #}
+{% if is_granted("ROLE_MENU_CONFIGURACION") %}
+    {% include 'menu/menu_configuracion.html.twig' %}
+{% endif %}
+
+{# MENU SEGURIDAD #}
+{% if is_granted("ROLE_MENU_SEGURIDAD") %}
+    {% include 'menu/menu_seguridad.html.twig' %}    
+{% endif %}

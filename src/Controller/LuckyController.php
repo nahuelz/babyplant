@@ -4,13 +4,13 @@ namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-
-class LuckyController
+class LuckyController extends AbstractController
 {
 
     /**
-     * @Route("/")
+     * @Route("/homepage", name="homepage", methods={"GET|POST"}))
      */
     public function number(): Response
     {
@@ -26,9 +26,8 @@ class LuckyController
      */
     public function show($slug)
     {
-        return new Response(sprintf(
-            'Future page to show the question "%s"!',
-            ucwords(str_replace('-', ' ', $slug))
-        ));
+        return $this->render('base.html.twig', [
+            'question' => ucwords(str_replace('-', ' ', $slug))
+        ]);
     }
 }
