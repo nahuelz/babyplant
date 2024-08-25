@@ -4,57 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Controller/AuditoriaController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Controller/BaseController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Controller/ChangePasswordController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Controller/GrupoController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Controller/IndexController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Controller/UsuarioController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/ArchivoAdjunto.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/Constants/ConstanteTipoConsulta.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/Constants/ConstanteTipoFiltro.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/Grupo.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/EventListener/ActividadUsuarioListener.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/EventListener/AuditoriaListener.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/EventListener/ExceptionListener.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/EventListener/LogoutListener.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/EventListener/Redirect404ToHomepageListener.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/EventListener/SessionListener.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Form/ChangePasswordFormType.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Form/GrupoType.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Form/UsuarioType.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Service/EntityManagementGuesser.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Service/SelectService.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/auditoria/error.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/auditoria/index.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/auditoria/index_table.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/auditoria/show.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/grupo/index.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/grupo/index_table.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/grupo/new.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/grupo/show.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/index.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/menu/menu_seguridad.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/usuario/index.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/usuario/index_table.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/usuario/new.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/usuario/show.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/translations/security.es.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/babyplant.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/babyplant.iml" afterDir="false" />
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="config">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/bundles.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/messenger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/messenger.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/translation.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/translation.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/routes.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/routes.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/LuckyController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -261,11 +212,24 @@
       <updated>1724381555711</updated>
       <workItem from="1724381556739" duration="1000" />
       <workItem from="1724381583947" duration="3000" />
-      <workItem from="1724605228896" duration="7055000" />
+      <workItem from="1724605228896" duration="8051000" />
     </task>
+    <task id="LOCAL-00001" summary="config">
+      <option name="closed" value="true" />
+      <created>1724613147507</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1724613147507</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="config" />
+    <option name="LAST_COMMIT_MESSAGE" value="config" />
   </component>
 </project>
