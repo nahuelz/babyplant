@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% import 'app/_macro_show.html.twig' as macro_show %}
+
+{% block body %}
+
+	<div class="card card-custom">
+		<div class="card-header">
+			<div class="card-title">
+				<span class="card-icon">
+					<i class="flaticon-search text-primary"></i>
+				</span>
+				<h3 class="card-label">Detalles del usuario
+					{{ entity }}</h3>
+			</div>
+			{% if is_granted('ROLE_USUARIO_EDIT') %}
+			<div class="card-toolbar">
+				<!--begin::Button-->
+				<a href="{{ path('usuario_edit', {'id': entity.id}) }}" class="btn btn-primary font-weight-bolder">
+					<i class="la la-pen"></i>
+					Editar
+				</a>
+				<!--end::Button-->
+			</div>
+			{% endif %}
+		</div>
+
+		<div class="card-body">
+			<div class="row">
+				{{ macro_show._show_detail('Email', entity.email, 'col-md-4') }}				
+				{{ macro_show._show_detail('Logueado', (usuario != null and usuario.logueado ? 'Sí' : 'No'), 'col-md-4') }}				
+			</div>
+			<div class="row">
+                {{ macro_show._show_detail('Grupos', entity.grupos|join(' | '), 'col-md-12') }}
+			</div>
+			<div class="row mt-10">
+                <div class="col">
+					<div class="d-flex">
+						<div class="mt-3"><h4>Sesiones del usuario</h4></div>
+						{% if usuario != null and usuario.logueado %}
+							<div class="ml-auto align-middle"><a class="btn btn-danger pull-rigth" href="{{path('usuario_closesessions', {'usuario': entity.id})}}" role="button">Cerrar todas las sesiones</a></div>
+						{% endif %}
+					</div>
+					<hr>
+					<table class="table">
+						<thead>
+							<tr>
+								<th scope="col">#</th>
+								<th scope="col">IP</th>
+								<th scope="col">Estado</th>
+								<th scope="col">&Uacute;ltima vez</th>
+								<th scope="col">Expira el</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% set sessions = usuario != null and usuario.sesiones != null ? usuario.sesiones|split('____') : null %}
+							{% if sessions != null %}
+								{% for session in sessions %}
+									{% set session_data = session|split('___') %}
+									{% set expirada = 'now'|date('U') > session_data[2]|date('U') %}
+									<tr>
+										<th scope="row">{{loop.index}}</th>
+										<td>{{ session_data[3] }}</td>
+										<td>
+											<span class="label label-inline label-light-{{expirada ? 'danger' : 'success'}} font-weight-bold">
+												{{expirada ? 'Expirada' : 'Activa'}}
+											</span>
+										</td>
+										<td>{{session_data[1]|date('d/m/Y H:i:s')}}</td>
+										<td>{{expirada ? '(expirada)' : session_data[2]|date('d/m/Y H:i:s') }}</td>
+									</tr>
+								{% endfor %}
+							{% else %}
+								<tr>
+									<td colspan="5">No tiene sesiones registradas</td>
+								</tr>
+							{% endif %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="card-footer d-flex justify-content-between">
+			<a href="{{ path('usuario_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
+		</div>
+
+	</div>
+
+
+{% endblock %}

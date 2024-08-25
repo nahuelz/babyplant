@@ -1,0 +1,20 @@
+{
+"data": [
+{% for entity in entities %}
+    [
+    "{{ entity.id }}",
+    "{{ entity.nombre|default('-') }}",
+    "{{ entity.descripcion|default('-') }}",
+    "{{ entity.roles|join('<br/>')|raw }}",
+    {
+    "show" : " {{ path( "grupo_show", { "id": entity.id }) }}"
+    ,"edit" : " {{ path( "grupo_edit", { "id": entity.id }) }}"
+    ,"delete" : " {{ path( "grupo_delete", { "id": entity.id }) }}"
+    }
+    ]{{ (loop.last ? '' : ',') }}
+{% endfor %}
+],
+"draw": {{ draw }},
+"recordsTotal": {{ totalRows }},
+"recordsFiltered": {{ totalFiltered }}
+}

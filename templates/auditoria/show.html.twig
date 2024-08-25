@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% import 'app/_macro_show.html.twig' as macro_show %}
+
+{% block body %}
+
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon">
+                    <i class="flaticon-search text-primary"></i>
+                </span>
+                <h3 class="card-label">Detalle error {{ entity.numero }}</h3>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                {{ macro_show._show_detail('N&uacute;mero', entity.numero, "col-md-4") }}
+                {{ macro_show._show_detail('Fecha', entity.fecha, "col-md-4") }}
+                {{ macro_show._show_detail('Usuario', entity.usuario, "col-md-4") }}
+            </div>
+            <div class="row"> 
+                {{ macro_show._show_detail('Archivo', entity.archivo, "col-md-10") }}
+                {{ macro_show._show_detail('L&iacute;nea', entity.linea, "col-md-2") }}
+            </div>
+            <div class="row"> 
+                {{ macro_show._show_detail('Agente', entity.agente, "col-md-10") }}
+                {{ macro_show._show_detail('IP', entity.ipCliente, "col-md-2") }}
+            </div>
+            <div class="row"> 
+                {{ macro_show._show_detail('URI', entity.uri|default('-'), "col-md-12") }}
+            </div>
+            <div class="row"> 
+                {% set parametersGet = '-' %}
+                {% if entity.getParameters is defined %}
+                    {% set parametersGet = '<ul>' ~ entity.getParameters|__custom_parameters_auditoria ~ '</ul>' %}
+                {% endif %}
+                {{ macro_show._show_detail('GET PARAMETERS', parametersGet|raw, "col-md-12") }}
+            </div>
+            <div class="row"> 
+                {% set parametersPost = '-' %}
+                {% if entity.postParameters is defined %}
+                    {% set parametersPost = '<ul>' ~ entity.postParameters|__custom_parameters_auditoria ~ '</ul>' %}
+                {% endif %}
+                {{ macro_show._show_detail('POST PARAMETERS', parametersPost|raw, "col-md-12") }}
+            </div>
+            <div class="row"> 
+                {% set session = '-' %}
+                {% if entity.session is defined %}
+                    {% set session = '<ul>' ~ entity.session|__custom_parameters_auditoria ~ '</ul>' %}
+                {% endif %}
+                {{ macro_show._show_detail('SESSION', session|raw, "col-md-12") }}
+            </div>
+            <div class="row"> 
+                {{ macro_show._show_detail('Mensaje', entity.mensaje, "col-md-12") }}
+            </div>
+            <div class="row"> 
+                <div class="col-12"> 
+                    {{ entity.html|raw }}
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('auditoria_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
+        </div>
+
+    </div>
+
+
+{% endblock %}

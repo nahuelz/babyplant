@@ -1,0 +1,33 @@
+{
+"data": [
+{% for entity in entities %}
+    [
+    "{{ entity.id }}",
+    "{{ entity.email|default('-') }}",
+    "{{ entity.grupos|default('-') }}",
+    "{{ entity.last_seen != null ? entity.last_seen|date('d/m/Y H:i:s') }}",
+    "{{ entity.logueado|boolean_format }}",
+    "{{ entity.habilitado|boolean_format }}",
+    {    
+    {% if is_granted('ROLE_USUARIO_VIEW') %}                                    
+        "show" : " {{ path( "usuario_show", { "id": entity.id }) }}"
+    {% endif %}
+    {% if is_granted('ROLE_USUARIO_EDIT') %}
+        ,"edit" : " {{ path( "usuario_edit", { "id": entity.id }) }}"
+    {% endif %}
+    {% if is_granted('ROLE_USUARIO_DESHABILITAR') and entity.habilitado %}
+        ,"deshabilitar": "{{ path('usuario_habilitar_deshabilitar', { "id": entity.id }) }}"
+    {% elseif is_granted('ROLE_USUARIO_HABILITAR') and not entity.habilitado %}
+        ,"habilitar": "{{ path('usuario_habilitar_deshabilitar', {"id": entity.id})}}"
+    {% endif %}
+{#    {% if is_granted('ROLE_USUARIO_DELETE') %}
+        ,"delete" : " {{ path( "usuario_delete", { "id": entity.id }) }}"
+    {% endif %}#}
+    }
+    ]{{ (loop.last ? '' : ',') }}
+{% endfor %}
+],
+"draw": {{ draw }},
+"recordsTotal": {{ totalRows }},
+"recordsFiltered": {{ totalFiltered }}
+}

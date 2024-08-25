@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block body %}
+    <!--begin::Card-->
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon2-layers text-primary"></i></span>
+                <h3 class="card-label">Auditor&iacute;as</h3>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="mb-15">
+                <form id="range" role="form" action="#">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="input-daterange input-group" id="kt_datepicker">
+                                <input type="text" class="form-control datepicker datatable-input" id="fechaDesde" name="fechaDesde" placeholder="Fecha desde" data-col-index="5" value="{{ date('-30days')|date('d/m/Y') }}">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="la la-ellipsis-h"></i>
+                                    </span>
+                                </div>
+                                <input type="text" class="form-control datepicker datatable-input" id="fechaHasta" name="fechaHasta" placeholder="Fecha hasta" data-col-index="5" value="{{ "now"|date('d/m/Y') }}">
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <button class="btn btn-primary btn-primary--icon" id="filter-range-button">
+                                <span>
+                                    <i class="la la-search"></i>
+                                    <span>Buscar</span>
+                                </span>
+                            </button>
+                        </div>
+                        <div class="col-3 ml-auto text-right">
+                            <a href="#" class="btn btn-success corregir-seleccionadas-link font-weight-bolder font-size-sm"><i class="fas fa-check"></i> Corregir</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!--begin: Datatable-->
+            <table class="table table-bordered table-hover table-checkable" id="table-auditoria">
+                <thead>
+                    <tr>
+                        <th class="not-in-filter">ID</th>
+                        <th class="not-in-filter hidden">TimeStamp</th>
+                        <th data-type="string" class="nowarp text-center">N&uacute;mero</th>
+                        <th data-type="string" class="nowarp text-center">Fecha</th>
+                        <th data-type="string" class="nowarp text-center">Usuario</th>
+                        <th data-type="string" class="text-center">Mensaje </th>
+                        <th data-type="select" data-select="{{ select_boolean }}" class="nowarp text-center">Corregido</th>
+                        <th data-type="search">Acciones</th>
+                    </tr>
+                </thead>
+            </table>
+            <!--end: Datatable-->
+        </div>
+    </div>
+    <!--end::Card-->
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script type="text/javascript" src="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.js') }}"></script>
+    
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}"></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-datatables.js') }}"></script>
+    
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/auditoria/index.js') }}"></script>
+
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% import 'app/_macro_show.html.twig' as macro_show %}
+
+{% block body %}
+
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon-search text-primary"></i></span>
+                <h3 class="card-label">Grupo {{ entity }}</h3>
+            </div>
+            <div class="card-toolbar">
+                <!--begin::Button-->
+                <a href="{{ path('grupo_edit', {'id': entity.id}) }}" class="btn btn-primary font-weight-bolder">
+                    <i class="la la-pen"></i>
+                    Editar
+                </a>
+                <!--end::Button-->
+            </div>
+        </div>
+
+        <div class="card-body">
+            <!--begin::Item-->
+            <div class="row">
+                {{ macro_show._show_detail('Nombre', entity.nombre, 'col-md-12') }}
+            </div>
+            <div class="row">
+                {{ macro_show._show_detail('Descripci&oacute;n', entity.descripcion|nl2br|default('-'), 'col-md-12') }}
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="control-label">Roles</label>
+                        <div class="detalle_show">
+                            {% if entity.roles|length != 0 %}
+                                {{ entity.roles|join(' | ') }}
+                            {% else %}
+                                No tiene roles seleccionados.
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('grupo_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
+        </div>
+    </div>
+
+
+{% endblock %}
+
