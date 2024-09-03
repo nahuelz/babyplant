@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% import 'app/_macro_form.html.twig' as macro_form %}
+
+{% block body %}
+    {{ form_start(form, {'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
+    {% include ('app/_fields_errors.html.twig') %}
+
+    <div class="card card-custom">
+		<div class="card-header">
+			<div class="card-title">
+				<span class="card-icon"><i class="flaticon2-shield text-primary"></i></span>
+				<h3 class="card-label">Cambiar contraseña</h3>
+			</div>
+        </div>
+
+        <div class="card-body">
+            {% if noCurrent is defined and noCurrent %}
+                <input type="hidden" name="change_password_form[noCurrent]">
+            {% endif %}
+            <div class="row" style="display:none;">
+                {{ macro_form._new_field(form.currentPassword, "col-md-4") }}            
+            </div>
+            <div class="row">
+                {{ macro_form._new_field(form.plainPassword.first, "col-md-4") }}            
+                {{ macro_form._new_field(form.plainPassword.second, "col-md-4") }}
+            </div>
+        </div>
+
+        <div class="card-footer d-flex justify-content-between">
+            <button onclick="window.history.go(-1); return false;" class="btn btn-light-dark font-weight-bold">Volver</button>
+            <button type="submit" class="btn btn-light-primary font-weight-bold submit-button">Cambiar</button>
+        </div>
+    </div>
+    {{ form_end(form) }}
+
+{% endblock %}
+
+{% block javascripts %}
+
+	{{ parent() }}
+	<script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}"></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/usuario/reset-password.js') }}"></script>
+
+{% endblock %}

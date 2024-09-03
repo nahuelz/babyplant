@@ -7,7 +7,6 @@
 {% endblock %}
 
 {% block body %}
-
     <!--begin::Notice-->
     <div class="alert alert-custom alert-white alert-shadow fade show gutter-b" role="alert">
         <div class="alert-icon">
@@ -38,15 +37,93 @@
     <div class="card card-custom gutter-b">
         <div class="card-body">
             <div class="jumbotron">
-                <h1 class="display-4">Esta es la Plataforma BABYPLANT</h1>
-                <hr class="my-4">
-                <p class="lead">Desde aqu&iacute; podr&aacute; administrar los profesionales de Ciencias Inform&aacute;ticas de la Provincia de Buenos Aires</p>
-                {% if app.user == null %}
-                    <p class="lead">
-                        <a class="btn btn-primary btn-lg" href="{{path('app_login')}}" role="button">Ingresar</a>
-                    </p>
-                {% endif %}
+                <div class="row">
+                    {# MODULO AGREGAR PEDIDO #}
+                    {% if is_granted("ROLE_USER") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-folder-plus icon-3x text-dark', 'nombreModulo': 'Agregar Pedido', 'descripcionModulo': '' } %}
+                    {% endif %}
+
+                    {# MODULO PEDIDO #}
+                    {% if is_granted("ROLE_USER") %}
+                        {% include 'modulo.html.twig ' with {'iconClass': 'fas fa-shopping-bag icon-3x text-dark', 'nombreModulo': 'Pedidos', 'descripcionModulo': 'Aqui podras ver todos los pedidos' } %}
+                    {% endif %}
+
+                    {# PEDIDOS PLANIFICAR #}
+                    {% if is_granted("ROLE_PLANIFICAR") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-calendar icon-3x text-dark', 'nombreModulo': 'Pedidos Para Planificar', 'descripcionModulo': 'Aqui podras ver los pedidos para planificar' } %}
+                    {% endif %}
+
+                    {# PLANIFICACION DE SIEMBRA #}
+                    {% if is_granted("ROLE_SIEMBRA") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-list-ul icon-3x text-dark', 'nombreModulo': 'Ver Planificacion de Siembra', 'descripcionModulo': 'Aqui podras ver la planificacion de siembra' } %}
+                    {% endif %}
+
+                    {# ORDENES EN CAMARA #}
+                    {% if is_granted("ROLE_CAMARA") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-list-ul icon-3x text-dark', 'nombreModulo': 'Ordenes en camara', 'descripcionModulo': 'Aqui podras ver las ordenes en camara' } %}
+                    {% endif %}
+
+                    {# ORDENES DE SIEMBRA #}
+                    {% if is_granted("ROLE_SIEMBRA") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-leaf icon-3x text-dark', 'nombreModulo': 'Ordenes de siembra', 'descripcionModulo': 'Aqui podras ver las ordenes de siembra' } %}
+                    {% endif %}
+
+                    {# SOTCK #}
+                    {% if is_granted("ROLE_STOCK") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-hashtag icon-3x text-dark', 'nombreModulo': 'Bandejas en Stock ', 'descripcionModulo': 'Aqui podra ver las bandejas en stock' } %}
+                    {% endif %}
+
+                    {# PEDIDOS PROBLEMA #}
+                    {% if is_granted("ROLE_PROBLEMAS") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-exclamation-triangle icon-3x text-dark', 'nombreModulo': 'Pedidos con Problemas', 'descripcionModulo': 'Aqui podra ver los pedidos con problemas' } %}
+                    {% endif %}
+
+                    {# PLANIFICACION ENTREGA #}
+                    {% if is_granted("ROLE_ENTREGA") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-truck icon-3x text-dark', 'nombreModulo': 'Planificacion de Entregas', 'descripcionModulo': 'Aqui podra ver la planificacion de entregas' } %}
+                    {% endif %}
+
+                    {# AGENDA ENTREGA #}
+                    {% if is_granted("ROLE_AGENDA") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-calendar-alt icon-3x text-dark', 'nombreModulo': 'Agenda de Entregas', 'descripcionModulo': 'Aqui podra ver la agenda de entregas' } %}
+                    {% endif %}
+
+                    {# HISTORIAL ENTREGA #}
+                    {% if is_granted("ROLE_HISTORIAL") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-history icon-3x text-dark', 'nombreModulo': 'Historial de Entregas', 'descripcionModulo': 'Aqui podras ver el historial de entrega' } %}
+                    {% endif %}
+
+                    {# REMITOS #}
+                    {% if is_granted("ROLE_REMITOS") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-receipt icon-3x text-dark', 'nombreModulo': 'Remitos', 'descripcionModulo': 'Aqui podra ver los remitos' } %}
+                    {% endif %}
+
+                    {# ESTADISTICAS #}
+                    {% if is_granted("ROLE_ESTADISTICAS") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-poll icon-3x text-dark', 'nombreModulo': 'Estadisticas', 'descripcionModulo': 'Aqui podra ver las estadisticas' } %}
+                    {% endif %}
+
+                    {# MESADAS #}
+                    {% if is_granted("ROLE_MESADAS") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-table icon-3x text-dark', 'nombreModulo': 'Mesadas', 'descripcionModulo': 'Aqui podra ver las mesadas' } %}
+                    {% endif %}
+
+                    {# DATOS TECNICOS #}
+                    {% if is_granted("ROLE_TECNICOS") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-cogs icon-3x text-dark', 'nombreModulo': 'Datos Tecnicos', 'descripcionModulo': 'Aqui podra ver las mesadas' } %}
+                    {% endif %}
+
+                    {# SITUACION CLIENTE #}
+                    {% if is_granted("ROLE_SITUACION") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-users icon-3x text-dark', 'nombreModulo': 'Situacion Cliente', 'descripcionModulo': 'Aqui podra ver la situacion de los clientes' } %}
+                    {% endif %}
+                </div>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+
         </div>
     </div>
 {% endblock %}
@@ -57,4 +134,5 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/inscripcion/index.js') }}" ></script>
 {% endblock %}

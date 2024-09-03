@@ -1,0 +1,236 @@
+{% set __PREFIX_JAVASCRIPT__ =
+  constant('App\\Entity\\Constants\\ConstanteAPI::PREFIX_JAVASCRIPT')
+%}
+<html lang="en" >
+    <!--begin::Head-->
+    <head>
+        <meta charset="utf-8"/>
+        <title>
+            {%- block title -%}
+                {{ 'Sistema'|trim ~ (page_title is defined ? ( ' | ' ~ page_title) : '')}}
+            {%- endblock -%}
+        </title>
+        <meta name="description" content="Login page example"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+        <!--begin::Fonts-->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700"/>        <!--end::Fonts-->
+
+
+        <!--begin::Page Custom Styles(used by this page)-->
+        <link href="{{ asset('theme/css/pages/login/classic/login-4.css') }}" rel="stylesheet" type="text/css"/>
+        <!--end::Page Custom Styles-->
+
+        <!--begin::Global Theme Styles(used by all pages)-->
+        <link href="{{ asset('theme/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css"/>
+        <link href="{{ asset('theme/plugins/custom/prismjs/prismjs.bundle.css') }}" rel="stylesheet" type="text/css"/>
+        <link href="{{ asset('theme/css/style.bundle.css') }}" rel="stylesheet" type="text/css"/>
+        <!--end::Global Theme Styles-->
+
+        <!--begin::Layout Themes(used by all pages)-->
+
+        <link href="{{ asset('theme/css/themes/layout/header/base/light.css') }}" rel="stylesheet" type="text/css"/>
+        <link href="{{ asset('theme/css/themes/layout/header/menu/light.css') }}" rel="stylesheet" type="text/css"/>
+        <link href="{{ asset('theme/css/themes/layout/brand/dark.css') }}" rel="stylesheet" type="text/css"/>
+        <link href="{{ asset('theme/css/themes/layout/aside/dark.css') }}" rel="stylesheet" type="text/css"/>        <!--end::Layout Themes-->
+
+        {#  <link rel="shortcut icon" href="assets/media/logos/favicon.ico"/>#}
+
+        <style>
+            .login-title {
+                font-family: 'Poppins';
+                font-size: 36px;
+                color: #50535F;
+                font-weight: 600;
+            }
+            .login-subtitle {
+                font-family: 'Poppins';
+                font-size: 12px;
+                color: #50535F;
+                font-weight: 500;
+            }
+            .login-button, #kt_login_forgot_submit, #kt_login_forgot_cancel{
+                font-family: 'Poppins';
+                font-size: 16px;
+                font-weight: 600;
+                text-transform: uppercase;
+            }
+            .login-button, #kt_login_forgot_submit {
+                background: #37BBED;
+                border-color: #37BBED;
+                color: #FFFFFF;
+            }
+            #kt_login_forgot_cancel {
+                color: #37BBED;
+            }
+            .login-button:hover {
+                background: #2196f3;
+                border-color: #2196f3;
+                color: #FFFFFF;
+            }
+
+            .btn-afip {
+                background: #FFFFFF;
+                border-color: #37BBED;
+                font-family: 'Poppins';
+                font-size: 16px;
+                font-weight: 600;
+                color: #37BBED;
+                width: 100%;
+            }
+            form#kt_login_signin_form input, #reset_password_request_form_email {
+                border-color: #37BBED;
+                background: white;
+            }
+            .g-recaptcha {
+                margin: auto;
+                display: table;
+                margin-bottom: 1.75em;
+            }
+
+            .link-libro{
+                color: #37BBED;
+            }
+
+            .link-libro:hover{
+                color: #2196f3;
+            }
+        </style>
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon" />
+    </head>
+    <!--end::Head-->
+
+    <!--begin::Body-->
+    <body  id="kt_body"  class="header-fixed header-mobile-fixed subheader-enabled subheader-fixed aside-enabled aside-fixed aside-minimize-hoverable page-loading"  >
+
+        <!--begin::Main-->
+        <div class="d-flex flex-column flex-root">
+            <!--begin::Login-->
+            <div class="login login-4 login-signin-on d-flex flex-row-fluid" id="kt_login">
+                <div class="d-flex flex-center flex-row-fluid bgi-size-cover bgi-position-top bgi-no-repeat" 
+                     style="align-items: flex-start; background-image: url('{{ asset('theme/media/bg/bg-3.jpg') }}');">
+
+                    <div class="login-form text-center p-15 position-relative overflow-hidden">
+                        <!--begin::Login Header-->
+                        <div class="d-flex flex-center mb-15">
+                            <a href="#">
+                                <img src="{{ asset('images/logo/logo.png') }}" class="max-h-75px" alt=""/>
+                            </a>
+                        </div>
+                        <!--end::Login Header-->
+
+                        <!--begin::Login Sign in form-->
+                        <div class="login-signin">
+                            <div class="mb-10">
+                                <div class="login-title">Plataforma</div>
+                                <div class="login-subtitle">Acceso para personal</div>
+                            </div>
+                            {% include 'app/_flash_messages.html.twig' %}
+                            <form class="form" id="kt_login_signin_form" method="post">
+                                {% if error %}
+                                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                                {% endif %}
+                                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
+                                <div class="form-group mb-5">
+                                    <input type="string" value="{{ last_username }}" name="username" id="username" placeholder="Username" class="form-control h-auto form-control-solid py-4 px-8" required autofocus autocomplete="off">
+                                </div>
+                                <div class="form-group mb-5">
+                                    <div class="input-group">
+                                        <input type="password" name="password" placeholder="Contraseña" id="inputPassword" class="form-control h-auto form-control-solid py-4 px-8" required>
+                                        <div id="togglePassword" class="input-group-append" style="right: 10px; cursor: pointer;">
+                                            <span class="input-group-text">
+                                                <i class="la la-eye" ></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn login-button btn-block" type="submit">Ingresar</button>
+                            </form>                         
+                        </div>
+                        <!--end::Login Sign in form-->
+                    </div>
+
+
+
+                </div>
+            </div>
+            <!--end::Login-->
+        </div>
+        <!--end::Main-->
+
+        {% include 'footer.html.twig' %}
+
+        <!--begin::Global Config(global config for global JS scripts)-->
+        <script>
+            var KTAppSettings = {
+                "breakpoints": {
+                    "sm": 576,
+                    "md": 768,
+                    "lg": 992,
+                    "xl": 1200,
+                    "xxl": 1400
+                },
+                "colors": {
+                    "theme": {
+                        "base": {
+                            "white": "#ffffff",
+                            "primary": "#3699FF",
+                            "secondary": "#E5EAEE",
+                            "success": "#1BC5BD",
+                            "info": "#8950FC",
+                            "warning": "#FFA800",
+                            "danger": "#F64E60",
+                            "light": "#E4E6EF",
+                            "dark": "#181C32"
+                        },
+                        "light": {
+                            "white": "#ffffff",
+                            "primary": "#E1F0FF",
+                            "secondary": "#EBEDF3",
+                            "success": "#C9F7F5",
+                            "info": "#EEE5FF",
+                            "warning": "#FFF4DE",
+                            "danger": "#FFE2E5",
+                            "light": "#F3F6F9",
+                            "dark": "#D6D6E0"
+                        },
+                        "inverse": {
+                            "white": "#ffffff",
+                            "primary": "#ffffff",
+                            "secondary": "#3F4254",
+                            "success": "#ffffff",
+                            "info": "#ffffff",
+                            "warning": "#ffffff",
+                            "danger": "#ffffff",
+                            "light": "#464E5F",
+                            "dark": "#ffffff"
+                        }
+                    },
+                    "gray": {
+                        "gray-100": "#F3F6F9",
+                        "gray-200": "#EBEDF3",
+                        "gray-300": "#E4E6EF",
+                        "gray-400": "#D1D3E0",
+                        "gray-500": "#B5B5C3",
+                        "gray-600": "#7E8299",
+                        "gray-700": "#5E6278",
+                        "gray-800": "#3F4254",
+                        "gray-900": "#181C32"
+                    }
+                },
+                "font-family": "Poppins"
+            };
+        </script>
+        <!--end::Global Config-->
+
+        <!--begin::Global Theme Bundle(used by all pages)-->
+        <script src="{{asset('theme/plugins/global/plugins.bundle.js') }}"></script>
+        <script src="{{asset('theme/plugins/custom/prismjs/prismjs.bundle.js') }}"></script>
+        <script src="{{asset('theme/js/scripts.bundle.js') }}"></script>
+        <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/usuario/login.js') }}"></script>
+        
+
+        <!--end::Global Theme Bundle-->
+    </body>
+    <!--end::Body-->
+</html>

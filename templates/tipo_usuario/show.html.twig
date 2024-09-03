@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TipoUsuario{% endblock %}
+
+{% block body %}
+    <h1>TipoUsuario</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ tipo_usuario.nombre }}</td>
+            </tr>
+            <tr>
+                <th>Descripcion</th>
+                <td>{{ tipo_usuario.descripcion }}</td>
+            </tr>
+            <tr>
+                <th>Id</th>
+                <td>{{ tipo_usuario.id }}</td>
+            </tr>
+            <tr>
+                <th>FechaCreacion</th>
+                <td>{{ tipo_usuario.fechaCreacion ? tipo_usuario.fechaCreacion|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaUltimaModificacion</th>
+                <td>{{ tipo_usuario.fechaUltimaModificacion ? tipo_usuario.fechaUltimaModificacion|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaBaja</th>
+                <td>{{ tipo_usuario.fechaBaja ? tipo_usuario.fechaBaja|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>CodigoInterno</th>
+                <td>{{ tipo_usuario.codigoInterno }}</td>
+            </tr>
+            <tr>
+                <th>Habilitado</th>
+                <td>{{ tipo_usuario.habilitado ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>FechaDeshabilitado</th>
+                <td>{{ tipo_usuario.fechaDeshabilitado ? tipo_usuario.fechaDeshabilitado|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_tipo_usuario_index') }}">back to list</a>
+
+    <a href="{{ path('app_tipo_usuario_edit', {'id': tipo_usuario.id}) }}">edit</a>
+
+    {{ include('tipo_usuario/_delete_form.html.twig') }}
+{% endblock %}

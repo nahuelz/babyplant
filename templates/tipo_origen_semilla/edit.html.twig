@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit TipoOrigenSemilla{% endblock %}
+
+{% block body %}
+    <h1>Edit TipoOrigenSemilla</h1>
+
+    {{ include('tipo_origen_semilla/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_tipo_origen_semilla_index') }}">back to list</a>
+
+    {{ include('tipo_origen_semilla/_delete_form.html.twig') }}
+{% endblock %}

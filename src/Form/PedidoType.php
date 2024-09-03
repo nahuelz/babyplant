@@ -1,0 +1,70 @@
+<?php
+
+namespace App\Form;
+
+
+use App\Entity\Pedido;
+use App\Entity\Usuario;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class PedidoType extends AbstractType {
+
+    private $entityManager;
+
+    /**
+     *
+     * @param EntityManagerInterface $entityManager
+     */
+    public function __construct(EntityManagerInterface $entityManager) {
+        $this->entityManager = $entityManager;
+    }
+
+    public function buildForm(FormBuilderInterface $builder, array $options) {
+
+        $builder
+            ->add('cliente', EntityType::class, array(
+                'class' => Usuario::class,
+                'required' => true,
+                'label' => 'Cliente',
+                'placeholder' => '-- Elija --',
+                'attr' => array(
+                    'class' => 'form-control choice',
+                    'data-placeholder' => '-- Elija --',
+                    'tabindex' => '5'
+                ),
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('x')
+                        ->where('x.tipoUsuario = 1')
+                        ->orderBy('x.nombre', 'ASC');
+                },
+            ))
+            ->add('pedidoProducto', PedidoProductoType::class, array(
+                'required' => false,
+                'mapped' => false,
+                'data_class' => 'App\Entity\PedidoProducto',
+            ))
+            ->add('pedidosProductos', CollectionType::class, array(
+                    'entry_type' => PedidoProductoType::class,
+                    'allow_delete' => true,
+                    'allow_add' => true,
+                    'label' => '',
+                    'prototype_name' => '__pedido_producto__',
+                    'label_attr' => array('class' => 'hidden'),
+                    'attr' => array('class' => 'hidden'))
+            )
+        ;
+    }
+
+    public function configureOptions(OptionsResolver $resolver) {
+        $resolver->setDefaults([
+            'data_class' => Pedido::class,
+        ]);
+    }
+
+}

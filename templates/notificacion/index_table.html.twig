@@ -1,0 +1,35 @@
+{% for notificacion in notificaciones %}
+<!--begin::Item-->
+<a href="#" class="navi-item">
+    <div class="navi-link notificacion-link notificacion_ver" data-id-notificacion="{{ notificacion.id }}" data-contenido-notificacion="{{ notificacion.contenido }}">
+        <div class="navi-icon mr-2">
+            <i class="flaticon2-line-chart text-success"></i>
+        </div>
+        <div class="navi-text">
+            <div class="font-weight-bold">
+                {{ notificacion.titulo|clear_format|u.truncate(60, false, '...') }}
+            </div>
+            <div class="text-muted">
+                {{ notificacion.fechaCreacion|ago|capitalize }}
+            </div>
+        </div>
+    </div>
+</a>
+{% endfor %}
+
+{#
+
+    {% set iconColorClass = notificacion.prioridad == 'A' ? 'font-red' : (notificacion.prioridad == 'M' ? 'font-yellow' : 'font-green') %}
+    
+    <li>
+        <a class="notificacion-link notificacion_ver" href="javascript:;" 
+           data-id-notificacion="{{ notificacion.id }}" data-contenido-notificacion="{{ notificacion.contenido }}">
+            <span class="details">
+                <i class=" fa fa-exclamation-circle {{ iconColorClass }}" style="font-size: 15px"></i>
+                {{ notificacion.titulo|clear_format|truncate(60, false, '...') }}
+            </span>
+            <span class="time">{{ notificacion.fechaCreacion|time_ago_in_words }}</span>
+        </a>
+    </li>
+    
+#}    

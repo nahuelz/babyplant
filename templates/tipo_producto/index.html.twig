@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TipoProducto index{% endblock %}
+
+{% block body %}
+    <h1>TipoProducto index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripcion</th>
+                <th>Id</th>
+                <th>FechaCreacion</th>
+                <th>FechaUltimaModificacion</th>
+                <th>FechaBaja</th>
+                <th>CodigoInterno</th>
+                <th>Habilitado</th>
+                <th>FechaDeshabilitado</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for tipo_producto in tipo_productos %}
+            <tr>
+                <td>{{ tipo_producto.nombre }}</td>
+                <td>{{ tipo_producto.descripcion }}</td>
+                <td>{{ tipo_producto.id }}</td>
+                <td>{{ tipo_producto.fechaCreacion ? tipo_producto.fechaCreacion|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ tipo_producto.fechaUltimaModificacion ? tipo_producto.fechaUltimaModificacion|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ tipo_producto.fechaBaja ? tipo_producto.fechaBaja|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ tipo_producto.codigoInterno }}</td>
+                <td>{{ tipo_producto.habilitado ? 'Yes' : 'No' }}</td>
+                <td>{{ tipo_producto.fechaDeshabilitado ? tipo_producto.fechaDeshabilitado|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_tipo_producto_show', {'id': tipo_producto.id}) }}">show</a>
+                    <a href="{{ path('app_tipo_producto_edit', {'id': tipo_producto.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_tipo_producto_new') }}">Create new</a>
+{% endblock %}

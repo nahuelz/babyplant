@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Grupo;
+use App\Entity\TipoUsuario;
 use App\Entity\Usuario;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -15,7 +16,27 @@ class UsuarioType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add(
+                'tipoUsuario',
+                EntityType::class,
+                array(
+                    'class' => TipoUsuario::class,
+                    'required' => true,
+                    'label' => 'Tipo de Usuario',
+                    'placeholder' => '-- Elija --',
+                    'attr' => array(
+                        'placeholder' => 'Escriba el tipo aquí.',
+                        'class' => 'form-control choice',
+                        'data-placeholder' => '-- Elija --',
+                        'tabindex' => '5'
+                    )
+                )
+            )
             ->add('email', TextType::class, array(
+                    'attr' => array('class' => 'form-control'))
+            )
+            ->add('username', TextType::class, array(
+                    'label' => 'Usuario',
                     'attr' => array('class' => 'form-control'))
             )
             ->add('nombre', TextType::class, array(
@@ -27,6 +48,10 @@ class UsuarioType extends AbstractType
                     'required'=>true)
             )
             ->add('cuit', TextType::class, array(
+                    'attr' => array('class' => 'form-control'),
+                    'required'=>false)
+            )
+            ->add('razonSocial', TextType::class, array(
                     'attr' => array('class' => 'form-control'),
                     'required'=>false)
             )

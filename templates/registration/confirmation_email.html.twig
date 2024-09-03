@@ -1,0 +1,19 @@
+<h1>Hola. Por favor confirme su email</h1>
+
+<p>
+    Por favor confirme su casilla de email haciendo click en el siguiente link: <br><br>
+    <a href="{{ signedUrl|raw }}">Confirmar mi email</a>.
+    El mismo expirar&aacute; {{ expiresAt|date('g') }} hora(s).
+</p>
+
+{% if user_password is defined %}
+<p>
+    Para ingresar utilice las siguientes credenciales<br><br>
+    Usuario: {{user_user}}<br>
+    Contrase&ntilde;a: {{user_password}}<br>
+</p>
+{% endif %}
+
+<p>
+    Hasta luego
+</p>

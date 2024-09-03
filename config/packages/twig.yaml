@@ -3,8 +3,5 @@ imports:
 twig:
     default_path: '%kernel.project_dir%/templates'
     globals:
+        recaptcha_web_key: '%env(recaptcha_web_key)%'
         version: "%version%"
-
-when@test:
-    twig:
-        strict_variables: true

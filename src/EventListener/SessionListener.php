@@ -10,7 +10,7 @@ use Doctrine\DBAL\DBALException;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 /**
- * 
+ *
  */
 class SessionListener {
 
@@ -30,7 +30,7 @@ class SessionListener {
     private $session;
 
     /**
-     * 
+     *
      * @param TokenStorageInterface $tokenStorage
      * @param EntityManagerInterface $em
      * @param SessionInterface $session
@@ -42,7 +42,7 @@ class SessionListener {
     }
 
     /**
-     * 
+     *
      * @param RequestEvent $event
      * @return void
      */

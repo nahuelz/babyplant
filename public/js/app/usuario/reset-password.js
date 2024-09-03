@@ -15,8 +15,25 @@ const strongPassword = function() {
     };
 };
 
+const easyPassword = function() {
+    return {
+        validate: function(input) {
+            const password = input.value;
+            var respuesta = password.match(/^.*(?=.{4,}).*$/);
+            if (respuesta === null) {
+                return {
+                    valid: false,
+                };
+            }
+            return {
+                valid: true,
+            };
+        },
+    };
+};
+
 // Register the validator
-FormValidation.validators.checkPassword = strongPassword;
+FormValidation.validators.checkPassword = easyPassword;
 
 jQuery(document).ready(function () {
 
@@ -44,7 +61,7 @@ jQuery(document).ready(function () {
                                 message: 'Este campo es requerido'
                             },
                             checkPassword: {
-                                message: 'Debe tener 8 caracteres como mínimo, un número, una minúscula, una mayúscula, algún caracter que no sea numero o letra y no poseer grupos repetidos de más de dos caracteres'
+                                message: 'Debe tener 4 caracteres como mínimo.'
                             }
                         }
                     },
@@ -81,7 +98,7 @@ jQuery(document).ready(function () {
                                 message: 'Este campo es requerido'
                             },
                             checkPassword: {
-                                message: 'Debe tener 8 caracteres como mínimo, un número, una minúscula, una mayúscula, algún caracter que no sea numero o letra y no poseer grupos repetidos de más de dos caracteres'
+                                message: 'Debe tener 4 caracteres como mínimo.'
                             }
                         }
                     },

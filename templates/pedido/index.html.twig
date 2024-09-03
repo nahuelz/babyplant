@@ -1,0 +1,200 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+
+    {{ parent() }}
+
+    <link href="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css"/>
+
+{% endblock %}
+
+{% block body %}
+    <!--begin::Card-->
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon2-layers text-primary"></i></span>
+                <h3 class="card-label">Pedidos registrados</h3>
+            </div>
+            <div class="card-toolbar">
+                {% if is_granted('ROLE_PEDIDO') %}
+                    <a href="{{ path('pedido_new') }}" class="btn btn-primary font-weight-bolder mr-2">
+                        <i class="la la-plus"></i>
+                        Agregar
+                    </a>
+                {% endif %}
+                <div class="dropdown dropdown-inline">
+                    <div class="dropdown dropdown-inline ">
+                        <button type="button" class="btn btn-light-primary font-weight-bolder dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="svg-icon svg-icon-md">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <rect x="0" y="0" width="24" height="24"></rect>
+                                        <path d="M3,16 L5,16 C5.55228475,16 6,15.5522847 6,15 C6,14.4477153 5.55228475,14 5,14 L3,14 L3,12 L5,12 C5.55228475,12 6,11.5522847 6,11 C6,10.4477153 5.55228475,10 5,10 L3,10 L3,8 L5,8 C5.55228475,8 6,7.55228475 6,7 C6,6.44771525 5.55228475,6 5,6 L3,6 L3,4 C3,3.44771525 3.44771525,3 4,3 L10,3 C10.5522847,3 11,3.44771525 11,4 L11,19 C11,19.5522847 10.5522847,20 10,20 L4,20 C3.44771525,20 3,19.5522847 3,19 L3,16 Z" fill="#000000" opacity="0.3"></path>
+                                        <path d="M16,3 L19,3 C20.1045695,3 21,3.8954305 21,5 L21,15.2485298 C21,15.7329761 20.8241635,16.200956 20.5051534,16.565539 L17.8762883,19.5699562 C17.6944473,19.7777745 17.378566,19.7988332 17.1707477,19.6169922 C17.1540423,19.602375 17.1383289,19.5866616 17.1237117,19.5699562 L14.4948466,16.565539 C14.1758365,16.200956 14,15.7329761 14,15.2485298 L14,5 C14,3.8954305 14.8954305,3 16,3 Z" fill="#000000"></path>
+                                    </g>
+                                </svg>
+                            </span>Exportar
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right" style="">
+                            <ul class="navi flex-column navi-hover py-2">
+                                <li class="navi-header font-weight-bolder text-uppercase font-size-sm text-primary pb-2">Elija una opci&oacute;n:</li>
+                                <li class="navi-item" onClick="exportarCustom('pagina');">
+                                    <a href="#" class="navi-link">
+                                        <span class="navi-icon">
+                                            <i class="la la-file-excel-o text-success"></i>
+                                        </span>
+                                        <span class="navi-text">Excel - P&aacute;gina</span>
+                                    </a>
+                                </li>
+                                <li class="navi-item" onClick="exportarCustom('filtrados');">
+                                    <a href="#" class="navi-link">
+                                        <span class="navi-icon">
+                                            <i class="la la-file-excel-o text-success"></i>
+                                        </span>
+                                        <span class="navi-text">Excel - Filtrado</span>
+                                    </a>
+                                </li>
+                                <li class="navi-item" onClick="exportarCustom('todos');">
+                                    <a href="#" class="navi-link">
+                                        <span class="navi-icon">
+                                            <i class="la la-file-excel-o text-success"></i>
+                                        </span>
+                                        <span class="navi-text">Excel - Todo</span>
+                                    </a>
+                                </li>
+                                <li class="navi-item" onClick="exportarCustom('pdf');">
+                                    <a href="#" class="navi-link">
+                                        <span class="navi-icon">
+                                            <i class="la la-file-pdf-o text-danger"></i>
+                                        </span>
+                                        <span class="navi-text">PDF - Todo</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <div class="mb-15">
+                <div class="row mb-6">
+
+                    <div class="col-lg-3 mb-lg-0 mb-6">
+                        <label>Fecha</label>
+                        <div class="input-daterange input-group" id="kt_datepicker">
+                            <input type="text" class="form-control datepicker"
+                                   id="reporte_filtro_fechaDesde" name="reporte_filtro[fechaDesde]"
+                                   placeholder="Desde" value="{{ "now"|date_modify("-7 day")|date('d/m/Y') }}" />
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <i class="la la-ellipsis-h"></i>
+                                </span>
+                            </div>
+                            <input type="text" class="form-control datepicker"
+                                   id="reporte_filtro_fechaHasta" name="reporte_filtro[fechaHasta]"
+                                   placeholder="Hasta" value="{{ "now"|date('d/m/Y') }}">
+                        </div>
+                    </div>
+                    {#
+                    <div class="col-lg-3 mb-lg-0 mb-3">
+                        <label for="reporte_filtro_proveedorPago" class="control-label">Forma de Pago</label>
+                        <select class="choice form-control datatable-input" id="reporte_filtro_proveedorPago" name="reporte_filtro[proveedorPago]">
+                            <option value="">TODOS</option>
+                            {% for proveedorPago in proveedorPagoSelect %}
+                                <option value="{{ proveedorPago.id }}"> {{ proveedorPago.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-lg-3 mb-lg-0 mb-3">
+                        <label for="reporte_filtro_archivo" class="control-label">Archivo</label>
+                        <select class="choice form-control datatable-input" id="reporte_filtro_archivo" name="reporte_filtro[archivo]">
+                            <option value="">TODOS</option>
+                            {% for archivo in archivoSelect %}
+                                <option value="{{ archivo.id }}"> {{ archivo.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-lg-3 mb-lg-0 mb-3">
+                        <label for="reporte_filtro_tipoObligacion" class="control-label">Obligaci&oacute;n</label>
+                        <select class="choice form-control datatable-input" id="reporte_filtro_tipoObligacion" name="reporte_filtro[tipoObligacion]">
+                            <option value="">TODOS</option>
+                            {% for tipoObligacion in tipoObligacionSelect %}
+                                <option value="{{ tipoObligacion.id }}"> {{ tipoObligacion.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    #}
+                </div>
+
+                <div class="row mb-6">
+                    <div class="col-lg-8 mb-lg-0 mb-4">
+                        <label for="reporte_filtro_estado" class="control-label">Matriculado</label>
+                        <select class="choice form-control datatable-input" id="reporte_filtro_matriculado" name="reporte_filtro[matriculado]">
+                            <option value="">TODOS</option>
+                            {% for cliente in clienteSelect %}
+                                <option value="{{ cliente.id }}"> {{ cliente.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-lg-3 mt-8">
+                        <button class="btn btn-primary btn-primary--icon" id="kt_search">
+                            <span>
+                                <i class="la la-search"></i>
+                                <span>Buscar</span>
+                            </span>
+                        </button>&nbsp;&nbsp;
+                        <button class="btn btn-secondary btn-secondary--icon" id="kt_reset">
+                            <span>
+                                <i class="la la-close"></i>
+                                <span>Limpiar</span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!--begin: Datatable-->
+            <table class="table table-bordered table-hover table-checkable" id="table-pago">
+                <thead>
+                <tr>
+                    <th class="not-in-filter">ID</th>
+                    <th data-type="string" class="text-center">ID Pedido</th>
+                    <th data-type="string" class="text-center">Fecha Pedido</th>
+                    <th data-type="string" class="text-center">Producto</th>
+                    <th data-type="string" class="text-center">Cliente</th>
+                    <th data-type="string" class="text-center">Cantidad bandejas pedidas</th>
+                    <th data-type="string" class="text-center">Tipo Bandeja</th>
+                    <th data-type="string" class="text-center">Fecha Siembra</th>
+                    <th data-type="string" class="text-center">Fecha Entrega</th>
+                    <th data-type="string" class="text-center">Estado</th>
+                    <th data-type="string" class="text-center">Orden Siembra</th>
+                    <th data-type="string" class="text-center">Mesada</th>
+                    <th data-type="search">Acciones</th>
+                </tr>
+                </thead>
+            </table>
+            <!--end: Datatable-->
+        </div>
+    </div>
+    <!--end::Card-->
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script type="text/javascript" src="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.js') }}"></script>
+
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}" ></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-datatables.js') }}" ></script>
+
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/pedido/index.js') }}" ></script>
+
+{% endblock %}
+

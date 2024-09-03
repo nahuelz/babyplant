@@ -1,0 +1,15 @@
+{% import 'app/_macro_form.html.twig' as macro_form %}
+
+{{ form_start(requestForm, {'attr': {'id' : 'kt_login_forgot_form', 'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
+
+    <div class="form-group mb-10">
+        <input type="email" class="form-control form-control-solid h-auto py-4 px-8" type="text" placeholder="Email" id="reset_password_request_form_email" name="reset_password_request_form[email]" autocomplete="off"/>
+    </div>
+    <button id="kt_login_forgot_submit" class="btn btn-primary btn-block">Restablecer contrase&ntilde;a</button>
+    <button id="kt_login_forgot_cancel" class="btn btn-link btn-block mt-2">Cancelar</button>
+    <div class="mt-10">
+        <div class="login-subtitle text-left">Recibir&aacute;, en el mail indicado, un link para restablecer su contrase&ntilde;a</div>
+    </div>
+
+    {{ form_widget(requestForm._token) }}
+{{ form_end(requestForm, {"render_rest": false}) }}

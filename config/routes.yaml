@@ -3,5 +3,5 @@
 #    controller: App\Controller\DefaultController::index
 
 homepage:
-  path:  /
-  controller: App\Controller\IndexController::index
+    path:  /
+    controller: App\Controller\IndexController::index

@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% import 'app/_macro_form.html.twig' as macro_form %}
+
+{% block body %}
+    {{ form_start(requestForm, {'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
+    {% include ('app/_fields_errors.html.twig') %}
+
+    <div class="card card-custom">
+		<div class="card-header">
+			<div class="card-title">
+				<span class="card-icon"><i class="flaticon-lock text-primary"></i></span>
+				<h3 class="card-label">Reestablezca su contrase&ntilde;a</h3>
+			</div>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <p class="font-size-h4 font-size-lg-h2">
+                        Ingrese su email y le enviar&eacute;mos un link para restablecer su contrase&ntilde;a.
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                {{ macro_form._new_field(requestForm.email, "col-md-4") }}            
+            </div>
+        </div>
+
+        <div class="card-footer d-flex justify-content-between">
+            <button type="submit" class="btn btn-light-primary font-weight-bold submit-button">Enviar</button>
+        </div>
+    </div>
+    {{ form_end(requestForm) }}
+
+{% endblock %}
+
+{% block javascripts %}
+
+	{{ parent() }}
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}"></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/usuario/request-reset-password.js') }}"></script>
+
+{% endblock %}

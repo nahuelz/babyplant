@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% import 'app/_macro_form.html.twig' as macro_form %}
+
+{% block body %}
+    {{ form_start(registrationForm, {'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
+    {% include ('app/_fields_errors.html.twig') %}
+
+    <div class="card card-custom">
+		<div class="card-header">
+			<div class="card-title">
+				<span class="card-icon"><i class="flaticon-search text-primary"></i></span>
+				<h3 class="card-label">Crear usuario</h3>
+			</div>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                {{ macro_form._new_field(registrationForm.tipoUsuario, "col-md-4") }}
+                {{ macro_form._new_field(registrationForm.email, "col-md-8 email-nombre-apelldio") }}
+            </div>
+
+            <div class="row">
+                {{ macro_form._new_field(registrationForm.username, "col-md-3 user-password ") }}
+                {{ macro_form._new_field(registrationForm.plainPassword, "col-md-3 user-password") }}
+				{{ macro_form._new_field(registrationForm.nombre, "col-md-3 email-nombre-apelldio") }}
+                {{ macro_form._new_field(registrationForm.apellido, "col-md-3 email-nombre-apelldio") }}
+                {{ macro_form._new_field(registrationForm.cuit, "col-md-3 datos-personales") }}
+                {{ macro_form._new_field(registrationForm.razonSocial, "col-md-3 datos-personales") }}
+			</div>
+            <div class="row grupo">
+                {{ macro_form._new_field(registrationForm.grupos, "col-md-12") }}
+            </div>
+        </div>
+
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('usuario_index') }}" class="btn btn-light-dark font-weight-bold">Volver</a>
+            {{ form_widget(registrationForm.submit) }}
+        </div>
+    </div>
+    {{ form_widget(registrationForm._token) }}
+    {{ form_end(registrationForm, {"render_rest": false}) }}
+
+{% endblock %}
+
+{% block javascripts %}
+
+	{{ parent() }}
+	<script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}"></script>
+	<script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/usuario/register.js') }}"></script>
+
+{% endblock %}

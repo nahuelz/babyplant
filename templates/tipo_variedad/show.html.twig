@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TipoVariedad{% endblock %}
+
+{% block body %}
+    <h1>TipoVariedad</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ tipo_variedad.nombre }}</td>
+            </tr>
+            <tr>
+                <th>Descripcion</th>
+                <td>{{ tipo_variedad.descripcion }}</td>
+            </tr>
+            <tr>
+                <th>Id</th>
+                <td>{{ tipo_variedad.id }}</td>
+            </tr>
+            <tr>
+                <th>FechaCreacion</th>
+                <td>{{ tipo_variedad.fechaCreacion ? tipo_variedad.fechaCreacion|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaUltimaModificacion</th>
+                <td>{{ tipo_variedad.fechaUltimaModificacion ? tipo_variedad.fechaUltimaModificacion|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaBaja</th>
+                <td>{{ tipo_variedad.fechaBaja ? tipo_variedad.fechaBaja|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>CodigoInterno</th>
+                <td>{{ tipo_variedad.codigoInterno }}</td>
+            </tr>
+            <tr>
+                <th>Habilitado</th>
+                <td>{{ tipo_variedad.habilitado ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>FechaDeshabilitado</th>
+                <td>{{ tipo_variedad.fechaDeshabilitado ? tipo_variedad.fechaDeshabilitado|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_tipo_variedad_index') }}">back to list</a>
+
+    <a href="{{ path('app_tipo_variedad_edit', {'id': tipo_variedad.id}) }}">edit</a>
+
+    {{ include('tipo_variedad/_delete_form.html.twig') }}
+{% endblock %}

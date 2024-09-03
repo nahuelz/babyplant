@@ -1,0 +1,168 @@
+<?php
+
+namespace App\Controller;
+
+use App\Controller\BaseController;
+use DateInterval;
+use DateTime;
+use Doctrine\ORM\Query\ResultSetMapping;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+/**
+ * @Route("/pedido")
+ */
+class PedidoController extends BaseController {
+
+    /**
+     * @Route("/", name="pedido_index", methods={"GET"})
+     * @Template("pedido/index.html.twig")
+     * @IsGranted("ROLE_PEDIDO")
+     */
+    public function index(): Array {
+
+        $clienteSelect = $this->getSelectService()->getClienteFilter();
+
+        $bread = $this->baseBreadcrumbs;
+        $bread['Pedidos generados'] = null;
+
+        return array(
+            'clienteSelect' => $clienteSelect,
+            'breadcrumbs' => $bread,
+            'page_title' => 'Pedidos generados'
+        );
+    }
+
+    /**
+     * Tabla para app_pago.
+     *
+     * @Route("/index_table/", name="pago_table", methods={"GET|POST"})
+     * @IsGranted("ROLE_PEDIDO")
+     */
+    public function indexTableAction(Request $request): Response {
+
+        $em = $this->getDoctrine()->getManager();
+
+        $fechaDesde = $request->get('fechaDesde') ? DateTime::createFromFormat('d/m/Y H:i:s', $request->get('fechaDesde') . ' 00:00:00') : (new DateTime())->sub(new DateInterval('P7D'));
+        $fechaHasta = $request->get('fechaHasta') ? DateTime::createFromFormat('d/m/Y H:i:s', $request->get('fechaHasta') . ' 23:59:59') : new DateTime();
+
+        $idCliente = $request->get('idCliente') ?: NULL;
+
+        $rsm = new ResultSetMapping();
+
+        $rsm->addScalarResult('id', 'id');
+        $rsm->addScalarResult('fechaCreacion', 'fechaCreacion');
+        $rsm->addScalarResult('producto', 'producto');
+        $rsm->addScalarResult('cliente', 'cliente');
+        $rsm->addScalarResult('cantidadBandejas', 'cantidadBandejas');
+        $rsm->addScalarResult('fechaSiembra', 'fechaSiembra');
+        $rsm->addScalarResult('fechaEntrega', 'fechaEntrega');
+        $rsm->addScalarResult('estado', 'estado');
+        $rsm->addScalarResult('ordenSiembra', 'ordenSiembra');
+        $rsm->addScalarResult('mesada', 'mesada');
+
+        $nativeQuery = $em->createNativeQuery('call sp_index_pedido(?,?,?)', $rsm);
+
+        $nativeQuery->setParameter(1, $fechaDesde, 'datetime');
+        $nativeQuery->setParameter(2, $fechaHasta, 'datetime');
+        $nativeQuery->setParameter(3, $idCliente);
+
+        $entities = $nativeQuery->getResult();
+
+        return $this->render('pedido/index_table.html.twig', array('entities' => $entities));
+    }
+
+    /**
+     * @Route("/new", name="pedido_new", methods={"GET","POST"})
+     * @Template("pedido/new.html.twig")
+     * @IsGranted("ROLE_PEDIDO")
+     */
+    public function new(): Array {
+        return parent::baseNewAction();
+    }
+
+    /**
+     * @Route("/insertar", name="pedido_create", methods={"GET","POST"})
+     * @Template("pedido/new.html.twig")
+     * @IsGranted("ROLE_PEDIDO")
+     */
+    public function createAction(Request $request) {
+
+        $entityClassName = $this->getBaseEntityName($request);
+
+        $entity = new $entityClassName;
+
+        $this->preHandleRequestBaseCreateAction($entity, $request);
+
+        $form = $this->baseCreateCreateForm($entity);
+        $form->handleRequest($request);
+
+//      if ($form->isValid()) {
+        if (true) {
+
+            $isValid = $this->execPrePersistAction($entity, $request);
+
+            if ($isValid) {
+
+                $this->procesarLiquidacion($entity, $request);
+
+                return $this->redirectToRoute('pago_new');
+            } else {
+                $request->attributes->set('form-error', true);
+            }
+        } //.
+        else {
+            $request->attributes->set('form-error', true);
+        }
+
+        $breadcrumbs = $this->getNewBaseBreadcrumbs($form, $entity);
+
+        $parametros = array(
+            'entity' => $entity,
+            'form' => $form->createView(),
+            'breadcrumbs' => $breadcrumbs,
+            'page_title' => 'Agregar ' . $this->getEntityRenderName()
+        );
+
+        return array_merge($parametros, $this->getExtraParametersNewAction($entity));
+    }
+
+    /**
+     * @Route("/{id}", name="pedido_show", methods={"GET"})
+     * @Template("pedido/show.html.twig")
+     * @IsGranted("ROLE_PEDIDO")
+     */
+    public function show($id): Array {
+        return parent::baseShowAction($id);
+    }
+
+    /**
+     * @Route("/{id}/edit", name="pedido_edit", methods={"GET","POST"})
+     * @Template("pedido/new.html.twig")
+     * @IsGranted("ROLE_PEDIDO")
+     */
+    public function edit($id): Array {
+        return parent::baseEditAction($id);
+    }
+
+    /**
+     * @Route("/{id}/actualizar", name="pedido_update", methods={"PUT"})
+     * @Template("pedido/new.html.twig")
+     * @IsGranted("ROLE_PEDIDO")
+     */
+    public function update(Request $request, $id) {
+        return parent::baseUpdateAction($request, $id);
+    }
+
+    /**
+     * @Route("/{id}/borrar", name="pedido_delete", methods={"GET"})
+     * @IsGranted("ROLE_PEDIDO")
+     */
+    public function delete($id) {
+        return parent::baseDeleteAction($id);
+    }
+}

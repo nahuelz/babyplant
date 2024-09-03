@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TipoOrigenSemilla index{% endblock %}
+
+{% block body %}
+    <h1>TipoOrigenSemilla index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripcion</th>
+                <th>Id</th>
+                <th>FechaCreacion</th>
+                <th>FechaUltimaModificacion</th>
+                <th>FechaBaja</th>
+                <th>CodigoInterno</th>
+                <th>Habilitado</th>
+                <th>FechaDeshabilitado</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for tipo_origen_semilla in tipo_origen_semillas %}
+            <tr>
+                <td>{{ tipo_origen_semilla.nombre }}</td>
+                <td>{{ tipo_origen_semilla.descripcion }}</td>
+                <td>{{ tipo_origen_semilla.id }}</td>
+                <td>{{ tipo_origen_semilla.fechaCreacion ? tipo_origen_semilla.fechaCreacion|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ tipo_origen_semilla.fechaUltimaModificacion ? tipo_origen_semilla.fechaUltimaModificacion|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ tipo_origen_semilla.fechaBaja ? tipo_origen_semilla.fechaBaja|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ tipo_origen_semilla.codigoInterno }}</td>
+                <td>{{ tipo_origen_semilla.habilitado ? 'Yes' : 'No' }}</td>
+                <td>{{ tipo_origen_semilla.fechaDeshabilitado ? tipo_origen_semilla.fechaDeshabilitado|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_tipo_origen_semilla_show', {'id': tipo_origen_semilla.id}) }}">show</a>
+                    <a href="{{ path('app_tipo_origen_semilla_edit', {'id': tipo_origen_semilla.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_tipo_origen_semilla_new') }}">Create new</a>
+{% endblock %}

@@ -8,7 +8,7 @@ use Psr\Container\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
- * 
+ *
  */
 class AuditoriaListener {
 
@@ -26,7 +26,7 @@ class AuditoriaListener {
      * TRAIT_HABILITADO
      */
     const TRAIT_HABILITADO = 'App\Entity\Traits\Habilitado';
-    
+
     /**
      * @var \Symfony\Component\DependencyInjection\ContainerInterface
      */
@@ -39,7 +39,7 @@ class AuditoriaListener {
 
     /**
      * Constructor
-     * 
+     *
      * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container, TokenStorageInterface $tokenStorage) {
@@ -50,7 +50,7 @@ class AuditoriaListener {
 
     /**
      * Listener del evento "prePersist".
-     * 
+     *
      * @param \Doctrine\Persistence\Event\LifecycleEventArgs $args
      * @return boolean
      */
@@ -64,7 +64,7 @@ class AuditoriaListener {
 
     /**
      * Listener del evento "preUpdate".
-     * 
+     *
      * @param \Doctrine\ORM\Event\PreUpdateEventArgs  $args
      * @return boolean
      */
@@ -81,7 +81,7 @@ class AuditoriaListener {
 
     /**
      * Retorna si la entidad recibida como parámetro es o no auditable.
-     * 
+     *
      * @param type $entidad
      * @return type bool
      */
@@ -90,12 +90,12 @@ class AuditoriaListener {
         $traits = $this->class_uses_deep($entidad);
 
         return (in_array(self::TRAIT_AUDITORIA, $traits)) //
-                && !is_a($entidad, self::CLASE_USUARIO);
+            && !is_a($entidad, self::CLASE_USUARIO);
     }
 
     /**
      * Retorna si la entidad recibida como parámetro aplica el trait Habilitado.
-     * 
+     *
      * @param type $entidad
      * @return type bool
      */
@@ -105,7 +105,7 @@ class AuditoriaListener {
     }
 
     /**
-     * 
+     *
      * @param type $entidad
      */
     private function setUsuarioCreacion($entidad) {
@@ -116,7 +116,7 @@ class AuditoriaListener {
     }
 
     /**
-     * 
+     *
      * @param type $entidad
      */
     private function setUsuarioUltimaModificacion($entidad) {
@@ -127,7 +127,7 @@ class AuditoriaListener {
     }
 
     /**
-     * 
+     *
      * @return type
      */
     private function getUser() {
@@ -148,7 +148,7 @@ class AuditoriaListener {
     }
 
     /**
-     * 
+     *
      * @param type $class
      * @param type $autoload
      * @return array

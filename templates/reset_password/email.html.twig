@@ -1,0 +1,11 @@
+<h1>Hola {{user.email}}</h1>
+
+<p>
+    Para restablecer su contrase&ntilde;a, por favor visite el siguiente
+    <a href="{{ url('app_reset_password', {token: resetToken.token}) }}">link</a>
+    <br>El mismo expirar&aacute; en {{ tokenLifetime|date('g') }} hora(s)
+</p>
+
+<p>
+    Hasta luego
+</p>

@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TipoOrigenSemilla{% endblock %}
+
+{% block body %}
+    <h1>TipoOrigenSemilla</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ tipo_origen_semilla.nombre }}</td>
+            </tr>
+            <tr>
+                <th>Descripcion</th>
+                <td>{{ tipo_origen_semilla.descripcion }}</td>
+            </tr>
+            <tr>
+                <th>Id</th>
+                <td>{{ tipo_origen_semilla.id }}</td>
+            </tr>
+            <tr>
+                <th>FechaCreacion</th>
+                <td>{{ tipo_origen_semilla.fechaCreacion ? tipo_origen_semilla.fechaCreacion|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaUltimaModificacion</th>
+                <td>{{ tipo_origen_semilla.fechaUltimaModificacion ? tipo_origen_semilla.fechaUltimaModificacion|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaBaja</th>
+                <td>{{ tipo_origen_semilla.fechaBaja ? tipo_origen_semilla.fechaBaja|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>CodigoInterno</th>
+                <td>{{ tipo_origen_semilla.codigoInterno }}</td>
+            </tr>
+            <tr>
+                <th>Habilitado</th>
+                <td>{{ tipo_origen_semilla.habilitado ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>FechaDeshabilitado</th>
+                <td>{{ tipo_origen_semilla.fechaDeshabilitado ? tipo_origen_semilla.fechaDeshabilitado|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_tipo_origen_semilla_index') }}">back to list</a>
+
+    <a href="{{ path('app_tipo_origen_semilla_edit', {'id': tipo_origen_semilla.id}) }}">edit</a>
+
+    {{ include('tipo_origen_semilla/_delete_form.html.twig') }}
+{% endblock %}

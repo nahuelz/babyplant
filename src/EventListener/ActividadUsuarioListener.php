@@ -22,7 +22,7 @@ class ActividadUsuarioListener {
     }
 
     /**
-     * 
+     *
      * @param KernelEvent $event
      * @return type
      */

@@ -5,7 +5,90 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="config">
+      <change afterPath="$PROJECT_DIR$/public/images/logo/logo_consejo.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/logo/logo_consejo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/logo/logo_consejo0.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/logo/logo_consejo0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/logo/pdf_header.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/logo/presidente.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/logo/qr_competente.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/logo/qr_competente.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/logo/qr_matriculado.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/logo/qr_matriculado.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/archivo/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/archivoadjunto/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/auditoria/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/autogestion/boletapago/new_deuda.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/autogestion/honorarios/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/autogestion/matriculado/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/autogestion/perito/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/autogestion/peritoparte/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/boletapago/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/boletapago/modificar_deuda.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/boletapago/new_cuota.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/boletapago/new_deuda.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/coeficiente/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/colegio/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/colegio/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/cuota/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/cuota/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/cuotatarjetacredito/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/cuotatarjetacredito/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/datocontacto/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/departamentojudicial/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/departamentojudicial/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/especialidad/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/especialidad/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/estadomatriculado/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/estadomatriculado/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/estudiobase/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/estudiobase/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/fuero/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/fuero/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/grupo/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/grupo/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/honorario/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/honorario/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/inscripcion/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/inscripcion/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/localidad/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/localidad/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/matriculado/cambioEstado.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/matriculado/estado_cuenta.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/matriculado/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/matriculado/matriculadoHistorico.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/matriculado/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/pago/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/pago/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/partido/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/partido/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/perito/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/perito/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/peritoinscripcion/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/peritoinscripcion/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/rendicion/upload.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/reporte/cuotas_pagas.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/reporte/datos_completos.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/reporte/estados_por_fecha.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/reporte/matriculados_al_dia.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/sugerenciamotivo/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/sugerenciamotivo/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/tipomatricula/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/tipomatricula/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/titulo/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/titulo/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/universidad/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/universidad/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/utilidad/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/modulo.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/notificacion/index.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/notificacion/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/babyplant.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/babyplant.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/logo/logo.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/logo/logo.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/IndexController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/IndexController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,7 +97,6 @@
   </component>
   <component name="ComposerConfigs">
     <option name="configs">
-      <option value="$PROJECT_DIR$/public/libraries/tcpdf/composer.json" />
       <option value="$PROJECT_DIR$/public/plugins/inputmask/composer.json" />
       <option value="$PROJECT_DIR$/public/plugins/bootstrap-filestyle/composer.json" />
       <option value="$PROJECT_DIR$/public/plugins/select2/composer.json" />
@@ -175,25 +257,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/xampp81/htdocs/babyplant/src",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "php.override.implement.member.chooser.php.doc": "NONE",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/xampp81/htdocs/babyplant/templates&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;php.override.implement.member.chooser.php.doc&quot;: &quot;NONE&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\xampp81\htdocs\babyplant\src" />
       <recent name="C:\xampp81\htdocs\babyplant\templates" />
+      <recent name="C:\xampp81\htdocs\babyplant\public" />
+      <recent name="C:\xampp81\htdocs\babyplant\public\plugins" />
+      <recent name="C:\xampp81\htdocs\babyplant\public\theme\css" />
+      <recent name="C:\xampp81\htdocs\babyplant\public\theme\css\global" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp81\htdocs\babyplant\public\theme\css\custom" />
     </key>
   </component>
   <component name="RunManager">
@@ -212,7 +301,13 @@
       <updated>1724381555711</updated>
       <workItem from="1724381556739" duration="1000" />
       <workItem from="1724381583947" duration="3000" />
-      <workItem from="1724605228896" duration="8051000" />
+      <workItem from="1724605228896" duration="8224000" />
+      <workItem from="1724635555535" duration="1126000" />
+      <workItem from="1724683722399" duration="1297000" />
+      <workItem from="1724706336156" duration="2532000" />
+      <workItem from="1724764471605" duration="2021000" />
+      <workItem from="1724782169181" duration="3687000" />
+      <workItem from="1724802371690" duration="19000" />
     </task>
     <task id="LOCAL-00001" summary="config">
       <option name="closed" value="true" />
@@ -222,7 +317,15 @@
       <option name="project" value="LOCAL" />
       <updated>1724613147507</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="config">
+      <option name="closed" value="true" />
+      <created>1724615213083</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1724615213083</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -1,0 +1,118 @@
+{% import 'app/_macro_form.html.twig' as macro_form %}
+<div class="row-form-pedido-producto">
+    <div class="row">
+        {{ macro_form._new_field(form.pedidoProducto.tipoProducto, 'col-md-2') }}
+        {{ macro_form._new_field(form.pedidoProducto.tipoSubProducto, 'col-md-2') }}
+        {{ macro_form._new_field(form.pedidoProducto.tipoVariedad, 'col-md-2') }}
+        {{ macro_form._new_field(form.pedidoProducto.tipoBandeja, 'col-md-2') }}
+        {{ macro_form._new_field(form.pedidoProducto.cantSemillas, 'col-md-2') }}
+        {{ macro_form._new_field(form.pedidoProducto.cantBandejas, 'col-md-2') }}
+        {{ macro_form._new_field(form.pedidoProducto.origenSemilla, 'col-md-2') }}
+        {{ macro_form._new_field(form.pedidoProducto.fechaSiembra, 'col-md-2') }}
+        {{ macro_form._new_field(form.pedidoProducto.cantDiasProduccion, 'col-md-2') }}
+        {{ macro_form._new_field(form.pedidoProducto.fechaEntrega, 'col-md-2') }}
+
+        <div class="col-md-2 pull-left">
+            <div class="form-group">
+                <button class="btn btn-small blue-dark margin-top-20 link-save-pedido-producto">
+                    Agregar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="portlet-body">
+
+    {% set tienePedidoProducto = entity.pedidosProductos|length > 0 %}
+
+    {#
+    <div class="row row-pedido-producto-empty margin-top-20" {{ tienePedidoProducto ? 'style="display:none;"' : '' }}>
+        <div class="col-md-12">
+            <div class="alert alert-danger alert-form-error" style="background-color: #fbe1e3">
+                Debe ingresar al menos un producto.
+            </div>
+        </div>
+    </div>
+    #}
+
+    <div class="row row-pedido-producto margin-top-15" {{ tienePedidoProducto ? '' : 'style="display:none;"' }}>
+        <div class="col-md-12">
+            <div class="table-scrollable">
+                <table class="table table-striped table-bordered table-advance table-hover">
+                    <thead>
+                    <tr>
+                        <th class="text-center">Tipo Producto</th>
+                        <th class="text-center">Sub Tipo Producto</th>
+                        <th class="text-center">Tipo Variedad</th>
+                        <th class="text-center">Tipo Bandeja</th>
+                        <th class="text-center">Cantidad de Semillas</th>
+                        <th class="text-center">Cantidad de Bandejas</th>
+                        <th class="text-center">Orgen Semilla</th>
+                        <th class="text-center">Fecha de Siembra</th>
+                        <th class="text-center">Dias</th>
+                        <th class="text-center">Fecha de Entrega</th>
+                        <th class="nowrap text-center"></th>
+                    </tr>
+                    </thead>
+                    <tbody class="tbody-pedido-producto">
+
+                    {% for pedidoProducto in entity.pedidosProductos %}
+                        <tr class="tr-pedido-producto">
+                            <td class="hidden">
+                                <input type="hidden" name="pedido[pedidoProducto][{{ loop.index0 }}][tipoProducto]" value="{{ pedidoProducto.tipoProducto }}">
+                            </td>
+                            <td class="hidden">
+                                <input type="hidden" name="pedido[pedidoProducto][{{ loop.index0 }}][tipoSubProducto]" value="{{ pedidoProducto.tipoSubProducto }}">
+                            </td>
+                            <td class="hidden">
+                                <input type="hidden" name="pedido[pedidoProducto][{{ loop.index0 }}][tipoVariedad]" value="{{ pedidoProducto.tipoVariedad }}">
+                            </td>
+                            <td class="hidden">
+                                <input type="hidden" name="pedido[pedidoProducto][{{ loop.index0 }}][tipoBandeja]" value="{{ pedidoProducto.tipoBandeja }}">
+                            </td>
+                            <td class="hidden">
+                                <input type="hidden" name="pedido[pedidoProducto][{{ loop.index0 }}][cantSemillas]" value="{{ pedidoProducto.cantSemillas }}">
+                            </td>
+                            <td class="hidden">
+                                <input type="hidden" name="pedido[pedidoProducto][{{ loop.index0 }}][cantBandejas]" value="{{ pedidoProducto.cantBandejas }}">
+                            </td>
+                            <td class="hidden">
+                                <input type="hidden" name="pedido[pedidoProducto][{{ loop.index0 }}][origenSemilla]" value="{{ pedidoProducto.origenSemilla }}">
+                            </td>
+                            <td class="hidden">
+                                <input type="hidden" name="pedido[pedidoProducto][{{ loop.index0 }}][fechaSiembra]" value="{{ pedidoProducto.fechaSiembra }}">
+                            </td>
+                            <td class="hidden">
+                                <input type="hidden" name="pedido[pedidoProducto][{{ loop.index0 }}][cantDiasProduccion]" value="{{ pedidoProducto.cantDiasProduccion }}">
+                            </td>
+                            <td class="hidden">
+                                <input type="hidden" name="pedido[pedidoProducto][{{ loop.index0 }}][fechaEntrega]" value="{{ pedidoProducto.fechaEntrega }}">
+                            </td>
+
+                            <td class="v-middle text-center">{{ pedidoProducto.tipoProducto }}</td>
+                            <td class="v-middle text-center">{{ pedidoProducto.tipoSubProducto }}</td>
+                            <td class="v-middle text-center">{{ pedidoProducto.tipoVariedad }}</td>
+                            <td class="v-middle text-center">{{ pedidoProducto.tipoBandeja }}</td>
+                            <td class="v-middle text-center">{{ pedidoProducto.cantSemillas }}</td>
+                            <td class="v-middle text-center">{{ pedidoProducto.cantBandejas }}</td>
+                            <td class="v-middle text-center">{{ pedidoProducto.origenSemilla }}</td>
+                            <td class="v-middle text-center">{{ pedidoProducto.fechaSiembra }}</td>
+                            <td class="v-middle text-center">{{ pedidoProducto.cantDiasProduccion }}</td>
+                            <td class="v-middle text-center">{{ pedidoProducto.fechaEntrega }}</td>
+
+                            <td class="text-center v-middle">
+                                <a href="#" class="btn btn-sm delete-link-inline link-delete-pedido-producto pedido-producto-borrar tooltips"
+                                   data-placement="top" data-original-title="Eliminar">
+                                    <i class="fa fa-trash text-danger"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

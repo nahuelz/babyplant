@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mail restablecimiento de contrase&ntilde;a enviado{% endblock %}
+
+{% block body %}
+
+   <div class="alert alert-success mb-5 p-5" role="alert">
+        <h4 class="alert-heading">Operaci&oacute;n exitosa</h4>
+        <p>Se ha enviado un email que contiene un link al que puede acceder para restablecer su contrase&ntilde;a. El mismo expirar&aacute; en {{ tokenLifetime|date('g') }} hora(s).</p>
+        <div class="border-bottom border-white opacity-20 mb-5"></div>
+        <p>Si no recibe el mail, por favor revise su carpeta de spam o intente nuevamente haciendo <a class="text-dark" href="{{ path('app_forgot_password_request') }}">click aqu&iacute;</a>.</p>
+    </div>
+{% endblock %}
+

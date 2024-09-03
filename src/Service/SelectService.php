@@ -19,6 +19,38 @@ class SelectService {
 
     /**
      *
+     * @return type
+     */
+    public function getEstadoPedidoFilter() {
+
+        $sql = "SELECT x.id, x.nombre
+                FROM App\Entity\EstadoPedido x 
+                WHERE x.fechaBaja IS NULL 
+                ORDER BY x.nombre ASC";
+
+        $query = $this->em->createQuery($sql);
+
+        return $query->getResult();
+    }
+
+    /**
+     *
+     * @return type
+     */
+    public function getClienteFilter() {
+
+        $sql = "SELECT x.id, CONCAT(x.apellido, ', ', x.nombre) AS nombre, IF(x.razonSocial != '',CONCAT('(',x.razonSocial,')'),'') AS razon_social
+                FROM App\Entity\Usuario x 
+                WHERE x.fechaBaja IS NULL AND x.tipoUsuario = 1
+                ORDER BY x.apellido ASC";
+
+        $query = $this->em->createQuery($sql);
+        return $query->getResult();
+
+    }
+
+    /**
+     *
      * @param type $entities
      * @param type $useId
      * @param type $useEntities

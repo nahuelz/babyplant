@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TipoProducto{% endblock %}
+
+{% block body %}
+    <h1>TipoProducto</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ tipo_producto.nombre }}</td>
+            </tr>
+            <tr>
+                <th>Descripcion</th>
+                <td>{{ tipo_producto.descripcion }}</td>
+            </tr>
+            <tr>
+                <th>Id</th>
+                <td>{{ tipo_producto.id }}</td>
+            </tr>
+            <tr>
+                <th>FechaCreacion</th>
+                <td>{{ tipo_producto.fechaCreacion ? tipo_producto.fechaCreacion|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaUltimaModificacion</th>
+                <td>{{ tipo_producto.fechaUltimaModificacion ? tipo_producto.fechaUltimaModificacion|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaBaja</th>
+                <td>{{ tipo_producto.fechaBaja ? tipo_producto.fechaBaja|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>CodigoInterno</th>
+                <td>{{ tipo_producto.codigoInterno }}</td>
+            </tr>
+            <tr>
+                <th>Habilitado</th>
+                <td>{{ tipo_producto.habilitado ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>FechaDeshabilitado</th>
+                <td>{{ tipo_producto.fechaDeshabilitado ? tipo_producto.fechaDeshabilitado|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_tipo_producto_index') }}">back to list</a>
+
+    <a href="{{ path('app_tipo_producto_edit', {'id': tipo_producto.id}) }}">edit</a>
+
+    {{ include('tipo_producto/_delete_form.html.twig') }}
+{% endblock %}

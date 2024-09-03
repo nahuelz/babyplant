@@ -4,15 +4,18 @@ imports:
 framework:
     secret: '%env(APP_SECRET)%'
     #csrf_protection: true
-    http_method_override: false
+    #http_method_override: true
 
     # Enables session support. Note that the session will ONLY be started if you read or write from it.
     # Remove or comment this section to explicitly disable session support.
     session:
-        handler_id: null
+        handler_id: Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
         cookie_secure: auto
         cookie_samesite: lax
-        storage_factory_id: session.storage.factory.native
+        cookie_lifetime: 0
+        gc_maxlifetime: 14400
+        gc_probability: 0
+        gc_divisor: 100
 
     #esi: true
     #fragments: true
@@ -21,9 +24,4 @@ framework:
     assets:
         #json_manifest_path: "%kernel.project_dir%/public/build/manifest.json"
         version: "%version%"
-        version_format: "%%s?v=%%s"
-when@test:
-    framework:
-        test: true
-        session:
-            storage_factory_id: session.storage.factory.mock_file
+        version_format:  "%%s?v=%%s"

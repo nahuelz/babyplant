@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New TipoUsuario{% endblock %}
+
+{% block body %}
+    <h1>Create new TipoUsuario</h1>
+
+    {{ include('tipo_usuario/_form.html.twig') }}
+
+    <a href="{{ path('app_tipo_usuario_index') }}">back to list</a>
+{% endblock %}

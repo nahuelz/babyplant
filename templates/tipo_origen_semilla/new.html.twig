@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New TipoOrigenSemilla{% endblock %}
+
+{% block body %}
+    <h1>Create new TipoOrigenSemilla</h1>
+
+    {{ include('tipo_origen_semilla/_form.html.twig') }}
+
+    <a href="{{ path('app_tipo_origen_semilla_index') }}">back to list</a>
+{% endblock %}

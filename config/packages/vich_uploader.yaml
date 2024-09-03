@@ -1,0 +1,14 @@
+vich_uploader:
+    db_driver: orm
+
+    twig: true
+    storage: file_system
+    mappings:
+        archivo_adjunto:
+            delete_on_remove: false
+            delete_on_update: false
+            inject_on_load: true
+            uri_prefix: /uploads/archivo_adjunto
+            upload_destination: "%kernel.project_dir%/public/uploads/archivo_adjunto"
+            namer: App\Namer\ArchivoAdjuntoNamer
+            directory_namer: App\Namer\ArchivoAdjuntoNamer
