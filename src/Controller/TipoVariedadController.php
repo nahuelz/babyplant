@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\TipoSubProducto;
 use App\Entity\TipoVariedad;
 use App\Form\TipoVariedadType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -80,5 +82,23 @@ class TipoVariedadController extends AbstractController
         }
 
         return $this->redirectToRoute('app_tipo_variedad_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * @Route("/lista/variedades", name="lista_variedades")
+     */
+    public function listaVariedadesAction(Request $request) {
+        $idSubProducto = $request->request->get('id_entity');
+
+        $repository = $this->getDoctrine()->getRepository(TipoVariedad::class);
+
+        $query = $repository->createQueryBuilder('l')
+            ->select("l.id, l.nombre AS denominacion")
+            ->where('l.tipoSubProducto = :subProducto')
+            ->setParameter('subProducto', $idSubProducto)
+            ->orderBy('l.nombre', 'ASC')
+            ->getQuery();
+
+        return new JsonResponse($query->getResult());
     }
 }

@@ -7,11 +7,11 @@ use App\Entity\TipoBandeja;
 use App\Entity\TipoOrigenSemilla;
 use App\Entity\TipoProducto;
 use App\Entity\TipoSubProducto;
-use App\Entity\TipoUsuario;
 use App\Entity\TipoVariedad;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -22,14 +22,14 @@ class PedidoProductoType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
             ->add('tipoProducto', EntityType::class, array(
-                    'label' => 'Tipo Producto',
+                    'label' => 'Producto',
                     'class' => TipoProducto::class,
                     'required' => true,
                     'mapped' => false,
                     'attr' => array(
-                        'placeholder' => '-- Elija --',
+                        'placeholder' => '-- Elija el producto --',
                         'class' => 'form-control choice',
-                        'data-placeholder' => '-- Elija --',
+                        'data-placeholder' => '-- Elija el producto --',
                         'tabindex' => '5'
                     ),
                     'query_builder' => function (EntityRepository $er) {
@@ -37,18 +37,18 @@ class PedidoProductoType extends AbstractType {
                             ->orderBy('x.nombre', 'ASC');
                     },
                     'label_attr' => array('class' => 'control-label'),
-                    'placeholder' => '-- Elija --',
+                    'placeholder' => '-- Elija el producto --',
                     'auto_initialize' => false)
             )
             ->add('tipoSubProducto', EntityType::class, array(
-                    'label' => 'Tipo Sub Producto',
+                    'label' => 'Sub Producto',
                     'class' => TipoSubProducto::class,
                     'required' => true,
                     'mapped' => false,
                     'attr' => array(
-                        'placeholder' => '-- Elija --',
+                        'placeholder' => '-- Elija el sub producto --',
                         'class' => 'form-control choice',
-                        'data-placeholder' => '-- Elija --',
+                        'data-placeholder' => '-- Elija el sub producto --',
                         'tabindex' => '5'
                     ),
                     'query_builder' => function (EntityRepository $er) {
@@ -56,20 +56,20 @@ class PedidoProductoType extends AbstractType {
                             ->orderBy('x.nombre', 'ASC');
                     },
                     'label_attr' => array('class' => 'control-label'),
-                    'placeholder' => '-- Elija --',
+                    'placeholder' => '-- Elija el sub producto --',
                     'auto_initialize' => false)
             )
             ->add('tipoVariedad', EntityType::class, array(
                     'class' => TipoVariedad::class,
-                    'label' => 'Tipo Variedad',
+                    'label' => 'Variedad',
                     'required' => true,
                     'choice_label' => function ($variedad) {
                         return $variedad->getNombre();
                     },
                     'attr' => array(
-                        'placeholder' => '-- Elija --',
+                        'placeholder' => '-- Elija la variedad --',
                         'class' => 'form-control choice',
-                        'data-placeholder' => '-- Elija --',
+                        'data-placeholder' => '-- Elija la variedad --',
                         'tabindex' => '5'
                     ),
                     'query_builder' => function (EntityRepository $er) {
@@ -77,7 +77,7 @@ class PedidoProductoType extends AbstractType {
                             ->orderBy('x.nombre', 'ASC');
                     },
                     'label_attr' => array('class' => 'control-label'),
-                    'placeholder' => '-- Elija --',
+                    'placeholder' => '-- Elija la variedad --',
                     'auto_initialize' => false)
             )
             ->add(
@@ -86,8 +86,8 @@ class PedidoProductoType extends AbstractType {
                 array(
                     'class' => TipoBandeja::class,
                     'required' => true,
-                    'label' => 'Tipo de Bandeja',
-                    'placeholder' => '-- Elija --',
+                    'label' => 'Bandeja',
+                    'placeholder' => '-- Elija la bandeja --',
                     'attr' => array(
                         'placeholder' => 'Escriba el tipo aquí.',
                         'class' => 'form-control choice',
@@ -97,23 +97,32 @@ class PedidoProductoType extends AbstractType {
                 )
             )
             ->add('cantSemillas', TextType::class, array(
-                    'attr' => array('class' => 'form-control'))
+                    'required' => true,
+                    'label' => 'Cantidad de semillas',
+                    'attr' => array(
+                        'placeholder' => 'Cantidad de semillas necesarias',
+                        'class' => 'form-control',
+                        'readonly' => 'true',
+                        'tabindex' => '5'))
             )
+
             ->add('cantBandejas', TextType::class, array(
-                    'attr' => array('class' => 'form-control'))
+                    'attr' => array(
+                        'placeholder' => 'Escriba la cantidad de bandejas',
+                        'class' => 'form-control'))
             )
             ->add(
-                'origenSemilla',
+                'tipoOrigenSemilla',
                 EntityType::class,
                 array(
                     'class' => TipoOrigenSemilla::class,
                     'required' => true,
                     'label' => 'Tipo origen semilla',
-                    'placeholder' => '-- Elija --',
+                    'placeholder' => '-- Elija el origen de la semilla --',
                     'attr' => array(
-                        'placeholder' => 'Escriba el tipo aquí.',
+                        'placeholder' => '-- Elija el origen de la semilla --',
                         'class' => 'form-control choice',
-                        'data-placeholder' => '-- Elija --',
+                        'data-placeholder' => '-- Elija el origen de la semilla --',
                         'tabindex' => '5'
                     )
                 )
@@ -126,9 +135,12 @@ class PedidoProductoType extends AbstractType {
                     'model_timezone' => 'America/Argentina/Buenos_Aires',
                     'required' => true,
                     'label' => 'Fecha de Siembra',
+                    'placeholder' => 'Escriba la fecha de siembra',
                     'attr' => array(
+                        'readonly' => 'true',
+                        'disabled' => 'disabled',
+                        'placeholder' => 'Escriba la fecha de siembra',
                         'class' => 'form-control datepicker',
-                        'data-date-end-date' => "0d",
                         'tabindex' => '5'
                     ))
             )
@@ -136,18 +148,33 @@ class PedidoProductoType extends AbstractType {
                     'widget' => 'single_text',
                     'html5' => false,
                     'format' => 'dd/MM/yyyy',
-                    'years' => range(2024, 2050),
                     'model_timezone' => 'America/Argentina/Buenos_Aires',
                     'required' => true,
                     'label' => 'Fecha de Entrega',
                     'attr' => array(
+                        'placeholder' => 'Fecha de Entrega',
                         'class' => 'form-control datepicker',
-                        'data-date-end-date' => "0d",
+                        'data-date-start-date' => "+20d",
                         'tabindex' => '5'
                     ))
             )
-            ->add('cantDiasProduccion', TextType::class, array(
-                    'attr' => array('class' => 'form-control'))
+            ->add('cantDiasProduccion', ChoiceType::class, array(
+                    'label' => 'Cantidad de dias en produccion',
+                    'required' => true,
+                    'choices' => array(
+                        '20 días' => 20,
+                        '28 días' => 28,
+                        '30 días' => 30,
+                        '40 días' => 40,
+                        '50 días' => 50,
+                        '60 días' => 60,
+                        '70 días' => 70,
+                        '80 días' => 80,
+                        '90 días' => 90
+                    ),
+                    'attr' => array(
+                        'class' => 'form-control choice',
+                        'tabindex' => '5'))
             )
         ;
     }

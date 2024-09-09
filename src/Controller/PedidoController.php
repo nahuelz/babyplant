@@ -3,8 +3,20 @@
 namespace App\Controller;
 
 use App\Controller\BaseController;
+use App\Entity\Constants\ConstanteEstadoMatriculado;
+use App\Entity\Constants\ConstanteEstadoPedido;
+use App\Entity\Constants\ConstanteEstadoPedidoProducto;
+use App\Entity\EstadoMatriculado;
+use App\Entity\EstadoPedido;
+use App\Entity\EstadoPedidoHistorico;
+use App\Entity\EstadoPedidoProducto;
+use App\Entity\EstadoPedidoProductoHistorico;
+use App\Entity\Matriculado;
+use App\Entity\Pedido;
 use DateInterval;
 use DateTime;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -59,9 +71,11 @@ class PedidoController extends BaseController {
         $rsm->addScalarResult('producto', 'producto');
         $rsm->addScalarResult('cliente', 'cliente');
         $rsm->addScalarResult('cantidadBandejas', 'cantidadBandejas');
+        $rsm->addScalarResult('tipoBandeja', 'tipoBandeja');
         $rsm->addScalarResult('fechaSiembra', 'fechaSiembra');
         $rsm->addScalarResult('fechaEntrega', 'fechaEntrega');
         $rsm->addScalarResult('estado', 'estado');
+        $rsm->addScalarResult('colorEstado', 'colorEstado');
         $rsm->addScalarResult('ordenSiembra', 'ordenSiembra');
         $rsm->addScalarResult('mesada', 'mesada');
 
@@ -91,44 +105,7 @@ class PedidoController extends BaseController {
      * @IsGranted("ROLE_PEDIDO")
      */
     public function createAction(Request $request) {
-
-        $entityClassName = $this->getBaseEntityName($request);
-
-        $entity = new $entityClassName;
-
-        $this->preHandleRequestBaseCreateAction($entity, $request);
-
-        $form = $this->baseCreateCreateForm($entity);
-        $form->handleRequest($request);
-
-//      if ($form->isValid()) {
-        if (true) {
-
-            $isValid = $this->execPrePersistAction($entity, $request);
-
-            if ($isValid) {
-
-                $this->procesarLiquidacion($entity, $request);
-
-                return $this->redirectToRoute('pago_new');
-            } else {
-                $request->attributes->set('form-error', true);
-            }
-        } //.
-        else {
-            $request->attributes->set('form-error', true);
-        }
-
-        $breadcrumbs = $this->getNewBaseBreadcrumbs($form, $entity);
-
-        $parametros = array(
-            'entity' => $entity,
-            'form' => $form->createView(),
-            'breadcrumbs' => $breadcrumbs,
-            'page_title' => 'Agregar ' . $this->getEntityRenderName()
-        );
-
-        return array_merge($parametros, $this->getExtraParametersNewAction($entity));
+        return parent::baseCreateAction($request);
     }
 
     /**
@@ -164,5 +141,70 @@ class PedidoController extends BaseController {
      */
     public function delete($id) {
         return parent::baseDeleteAction($id);
+    }
+
+    function execPrePersistAction($entity, $request): bool {
+        /** @var Pedido $entity */
+        $em = $this->getDoctrine()->getManager();
+        $estadoPedido = $em->getRepository(EstadoPedido::class)->findOneByCodigoInterno(ConstanteEstadoPedido::NUEVO);
+        $estadoProducto = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::PENDIENTE);
+        $this->cambiarEstado($em, $entity, $estadoPedido, $estadoProducto);
+
+        return true;
+    }
+
+    /**
+     *
+     * @param type $em
+     * @param Pedido $pedido
+     * @param type $estado
+     * @param type $motivo
+     */
+    private function cambiarEstado($em, Pedido $pedido, $estadoPedido, $estadoProducto) {
+
+
+        $pedido->setEstado($estadoPedido);
+        /* SETEO EL ESTADO DEL PEDIDO */
+        $estadoPedidoHistorico = new EstadoPedidoHistorico();
+        $estadoPedidoHistorico->setPedido($pedido);
+        $estadoPedidoHistorico->setFecha(new DateTime());
+        $estadoPedidoHistorico->setEstado($estadoPedido);
+        $estadoPedidoHistorico->setMotivo('');
+        $pedido->addHistoricoEstado($estadoPedidoHistorico);
+
+        $em->persist($estadoPedidoHistorico);
+
+        /* SETEO EL ESTADO DE CADA UNO DE LOS PRODUCTOS */
+        foreach ($pedido->getPedidosProductos() as $pedidosProducto) {
+            $pedidosProducto->setEstado($estadoProducto);
+            $estadoPedidoProductoHistorico = new EstadoPedidoProductoHistorico();
+            $estadoPedidoProductoHistorico->setPedidoProducto($pedidosProducto);
+            $estadoPedidoProductoHistorico->setFecha(new DateTime());
+            $estadoPedidoProductoHistorico->setEstado($estadoProducto);
+            $estadoPedidoProductoHistorico->setMotivo('');
+            $pedidosProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
+
+            $em->persist($estadoPedidoProductoHistorico);
+        }
+    }
+
+    /**
+     *
+     * @return Array
+     */
+    protected function getExtraParametersNewAction($entity): Array {
+        return [
+            'preserve_values' => true
+        ];
+    }
+
+    /**
+     *
+     * @return Array
+     */
+    protected function getExtraParametersEditAction($entity): Array {
+        return [
+            'preserve_values' => true
+        ];
     }
 }

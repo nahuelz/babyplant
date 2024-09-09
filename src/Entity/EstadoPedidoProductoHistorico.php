@@ -30,7 +30,7 @@ class EstadoPedidoProductoHistorico {
      * @ORM\ManyToOne(targetEntity=PedidoProducto::class, inversedBy="historicoEstados")
      * @ORM\JoinColumn(name="id_pedido_producto", referencedColumnName="id", nullable=false)
      */
-    protected $pedido;
+    protected $pedidoProducto;
 
     /**
      * @ORM\ManyToOne(targetEntity=EstadoPedidoProducto::class)
@@ -58,7 +58,7 @@ class EstadoPedidoProductoHistorico {
         return $this->pedidoProducto;
     }
 
-    public function setPedido(?PedidoProducto $pedidoProducto): self {
+    public function setPedidoProducto(?PedidoProducto $pedidoProducto): self {
         $this->pedidoProducto = $pedidoProducto;
 
         return $this;

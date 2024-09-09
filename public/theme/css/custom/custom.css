@@ -1,5 +1,8 @@
 .hidden { display: none !important; }
-
+.form-control[disabled],.form-control[readonly],fieldset[disabled] .form-control {
+    background-color: #eef1f5;
+    opacity: 1
+}
 .detalle_show {
     background-color: #f3f6f9;
     color: #7e8299;

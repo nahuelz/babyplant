@@ -6,6 +6,7 @@ use App\Entity\TipoSubProducto;
 use App\Form\TipoSubProductoType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -80,5 +81,23 @@ class TipoSubProductoController extends AbstractController
         }
 
         return $this->redirectToRoute('app_tipo_sub_producto_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * @Route("/lista/subproductos", name="lista_subproductos")
+     */
+    public function listaSubProductosAction(Request $request) {
+        $id_producto = $request->request->get('id_entity');
+
+        $repository = $this->getDoctrine()->getRepository(TipoSubProducto::class);
+
+        $query = $repository->createQueryBuilder('l')
+            ->select("l.id, l.nombre AS denominacion")
+            ->where('l.tipoProducto = :producto')
+            ->andWhere('l.habilitado = 1')
+            ->setParameter('producto', $id_producto)
+            ->orderBy('l.nombre', 'ASC')
+            ->getQuery();
+        return new JsonResponse($query->getResult());
     }
 }

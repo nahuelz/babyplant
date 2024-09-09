@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Traits\Auditoria;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -99,6 +100,12 @@ class PedidoProducto {
      * @ORM\JoinColumn(name="id_estado_pedido_producto", referencedColumnName="id", nullable=false)
      */
     private $estado;
+
+    public function __construct()
+    {
+        $this->historicoEstados = new ArrayCollection();
+    }
+
 
     /**
      * @return int
@@ -291,6 +298,60 @@ class PedidoProducto {
     {
         $this->otroOrigenSemilla = $otroOrigenSemilla;
     }
+
+    public function addHistoricoEstado(EstadoPedidoProductoHistorico $historicoEstado): self {
+        if (!$this->historicoEstados->contains($historicoEstado)) {
+            $this->historicoEstados[] = $historicoEstado;
+            $historicoEstado->setPedidoProducto($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHistoricoEstado(EstadoPedidoProductoHistorico $historicoEstado): self {
+        if ($this->historicoEstados->removeElement($historicoEstado)) {
+            // set the owning side to null (unless already changed)
+            if ($historicoEstado->getPedidoProducto() === $this) {
+                $historicoEstado->setPedidoProducto(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getHistoricoEstados(): ArrayCollection
+    {
+        return $this->historicoEstados;
+    }
+
+    /**
+     * @param ArrayCollection $historicoEstados
+     */
+    public function setHistoricoEstados(ArrayCollection $historicoEstados): void
+    {
+        $this->historicoEstados = $historicoEstados;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEstado()
+    {
+        return $this->estado;
+    }
+
+    /**
+     * @param mixed $estado
+     */
+    public function setEstado($estado): void
+    {
+        $this->estado = $estado;
+    }
+
+
 
 
 

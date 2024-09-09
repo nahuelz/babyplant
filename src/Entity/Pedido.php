@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Traits;
 use App\Entity\Traits\Auditoria;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -54,6 +55,22 @@ class Pedido {
     private $estado;
 
     /**
+     * @ORM\Column(name="observacion", type="string", length=255, nullable=true)
+     */
+    private $observacion;
+
+    public function __construct()
+    {
+        $this->historicoEstados = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return 'Pedido '.$this->getId();
+    }
+
+
+    /**
      * @return int
      */
     public function getId()
@@ -83,6 +100,23 @@ class Pedido {
     public function setPedidosProductos($pedidosProductos): void
     {
         $this->pedidosProductos = $pedidosProductos;
+
+        foreach ($pedidosProductos as $pedidoProducto){
+            $pedidoProducto->setPedido($this);
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function addPedidosProductos($pedidoProducto)
+    {
+        if (!$this->pedidosProductos->contains($pedidoProducto)) {
+            $this->pedidosProductos[] = $pedidoProducto;
+            $pedidoProducto->setPedido($this);
+        }
+
+        return $this;
     }
 
     /**
@@ -133,12 +167,41 @@ class Pedido {
         $this->estado = $estado;
     }
 
+    public function addHistoricoEstado(EstadoPedidoHistorico $historicoEstado): self {
+        if (!$this->historicoEstados->contains($historicoEstado)) {
+            $this->historicoEstados[] = $historicoEstado;
+            $historicoEstado->setPedido($this);
+        }
 
+        return $this;
+    }
 
+    public function removeHistoricoEstado(EstadoPedidoHistorico $historicoEstado): self {
+        if ($this->historicoEstados->removeElement($historicoEstado)) {
+            // set the owning side to null (unless already changed)
+            if ($historicoEstado->getPedido() === $this) {
+                $historicoEstado->setPedido(null);
+            }
+        }
 
+        return $this;
+    }
 
+    /**
+     * @return mixed
+     */
+    public function getObservacion()
+    {
+        return $this->observacion;
+    }
 
-
+    /**
+     * @param mixed $observacion
+     */
+    public function setObservacion($observacion): void
+    {
+        $this->observacion = $observacion;
+    }
 
 
 }

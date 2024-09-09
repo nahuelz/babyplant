@@ -62,6 +62,12 @@
 
         {# Busy Load #}
         <link href="{{ asset('plugins/busy-load/app.min.css') }}" rel="stylesheet">
+
+        <style>
+            .disabled.day {
+                color: gainsboro !important;
+            }
+        </style>
     {% endblock %}
 
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon" />
@@ -389,6 +395,8 @@
             },
             "font-family": "Poppins"
         };
+
+
 
         var __HOMEPAGE_PATH__ = '{{ path('homepage') }}';
     </script>

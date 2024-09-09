@@ -13,17 +13,8 @@ class TipoSubProductoType extends AbstractType
     {
         $builder
             ->add('nombre')
-            ->add('descripcion')
-            ->add('fechaCreacion')
-            ->add('fechaUltimaModificacion')
-            ->add('fechaBaja')
-            ->add('codigoInterno')
             ->add('habilitado')
-            ->add('fechaDeshabilitado')
             ->add('tipoProducto')
-            ->add('usuarioCreacion')
-            ->add('usuarioUltimaModificacion')
-            ->add('usuarioDeshabilito')
         ;
     }
 

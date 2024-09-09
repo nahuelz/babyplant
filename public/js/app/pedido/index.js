@@ -144,6 +144,12 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
+            name: 'id',
+            className: 'dt-center',
+            type: 'num'
+        },
+        {
+            targets: index++,
             name: 'fechaCreacion',
             className: 'dt-center',
             type: 'num'
@@ -163,6 +169,12 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'cantidadBandejas',
+            className: 'dt-center',
+            type: 'num'
+        },
+        {
+            targets: index++,
+            name: 'tipoBandeja',
             className: 'dt-center',
             type: 'num'
         },

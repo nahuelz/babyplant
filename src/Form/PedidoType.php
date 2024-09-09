@@ -10,6 +10,8 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -54,9 +56,16 @@ class PedidoType extends AbstractType {
                     'allow_delete' => true,
                     'allow_add' => true,
                     'label' => '',
-                    'prototype_name' => '__pedido_producto__',
+                    'prototype_name' => '__pedidos_productos__',
                     'label_attr' => array('class' => 'hidden'),
                     'attr' => array('class' => 'hidden'))
+            )
+            ->add('observacion', TextareaType::class, array(
+                    'required' => false,
+                    'label' => 'Observaciones',
+                    'attr' => array(
+                        'class' => 'form-control',
+                        'tabindex' => '5'))
             )
         ;
     }

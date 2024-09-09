@@ -4,21 +4,22 @@
     {% for entity in entities %}
         [
         "{{ entity.id }}",
+        "{{ entity.id }}",
         "{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}",
         "{{ entity.producto|default('-') }}",
         "{{ entity.cliente|default('-') }}",
         "{{ entity.cantidadBandejas|default('-') }}",
+        "{{ entity.tipoBandeja|default('-') }}",
         "{{ entity.fechaSiembra is not null ? entity.fechaSiembra|date('d/m/Y') : '-' }}",
         "{{ entity.fechaEntrega is not null ? entity.fechaEntrega|date('d/m/Y') : '-' }}",
-        {#"{{ entity.estado|default('-') }}",#}
         {
-        "estado" : "{{ entity.estado|default('-') }}",
+        "estado" : "{{ entity.estado|default('Sin estado') }}",
         "colorEstado" : "{{ entity.colorEstado|default('default') }}"
         },
         "{{ entity.ordenSiembra|default('-') }}",
         "{{ entity.mesada|default('-') }}",
         {
-        "show" : " {{ path( "pedido_show", { "id": entity.id }) }}",
+        "show" : " {{ path( "pedido_show", { "id": entity.id }) }}"
         {#{% if is_granted('ROLE_PEDIDOS_EDIT') %}
             ,"edit" : " {{ path( "matriculado_edit", { "id": entity.id }) }}"
             ,"estados" : " {{ path( "matriculado_historico_estados", { "id": entity.id }) }}"
@@ -28,5 +29,5 @@
         }]{{ (loop.last ? '' : ',') }}
     {% endfor %}
     ]
-    #}
+    }
 {% endautoescape %}
