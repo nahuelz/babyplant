@@ -1,9 +1,10 @@
 
 var fv;
+var fvCliente;
 
 jQuery(document).ready(function () {
-
     initFormValidation();
+    initFormValidationCliente();
     initPedidoProductoHandler();
     initProductos();
     initCantSemillasHandler();
@@ -12,7 +13,18 @@ jQuery(document).ready(function () {
     initDiasProduccionHandler();
     initFechaSiembra();
     $('.row-pedido-producto-empty').hide();
+    initAgregarClienteModal();
+    initAgregarClienteHandler();
+    initRazonSocialHandler();
+
 });
+
+function initAgregarClienteHandler() {
+    $('.link-agregar-cliente').on('click', function(){
+        initTipoUsuario();
+        initRazonSocial();
+    });
+}
 
 function initFechaSiembra(){
     $( "#pedido_pedidoProducto_fechaSiembra" ).datepicker( "setDate", "today" );
@@ -78,6 +90,32 @@ function calcularSemillas(){
  */
 function initFormValidation() {
     fv = FormValidation.formValidation($("form[name=pedido]")[0], {
+        fields: {
+            requiredFields: {
+                selector: '[required="required"]',
+                validators: {
+                    notEmpty: {
+                        message: 'Este campo es requerido'
+                    }
+                }
+            }
+        },
+        plugins: {
+            trigger: new FormValidation.plugins.Trigger(),
+            bootstrap: new FormValidation.plugins.Bootstrap(),
+            submitButton: new FormValidation.plugins.SubmitButton(),
+//          defaultSubmit: new FormValidation.plugins.DefaultSubmit()
+        }
+
+    });
+}
+
+/**
+ *
+ * @returns {undefined}
+ */
+function initFormValidationCliente() {
+    fvCliente = FormValidation.formValidation($("form[name=registration_form]")[0], {
         fields: {
             requiredFields: {
                 selector: '[required="required"]',
@@ -334,4 +372,54 @@ function updateDeleteLinkPedidoProducto2(deleteLink, closestClassName) {
 function initProductos() {
     initChainedSelect($('#pedido_pedidoProducto_tipoSubProducto'), $('#pedido_pedidoProducto_tipoVariedad'), __HOMEPAGE_PATH__ + 'tipo/variedad/lista/variedades', preserve_values);
     initChainedSelect($('#pedido_pedidoProducto_tipoProducto'), $('#pedido_pedidoProducto_tipoSubProducto'), __HOMEPAGE_PATH__ + 'tipo/sub/producto/lista/subproductos', preserve_values);
+}
+
+/**
+ *
+ * @param {type} table
+ * @returns {undefined}
+ */
+function initAgregarClienteModal(table) {
+
+    $("#registration_form_submit").off('click').on('click', function (e) {
+        e.preventDefault();
+
+        fvCliente.revalidateField('requiredFields');
+
+        fvCliente.validate().then((status) => {
+
+            if (status === "Valid") {
+                $('form[name="registration_form"]').submit();
+                return false;
+            }
+        });
+
+        e.stopPropagation();
+    });
+}
+
+function initRazonSocialHandler(){
+    $('#registration_form_tieneRazonSocial').on('change', function (){
+        initRazonSocial();
+    });
+}
+
+function initRazonSocial(){
+    if ($('#registration_form_tieneRazonSocial').val() === '1'){
+        $('.razonSocial').show();
+    }else{
+        $('.razonSocial').hide();
+    }
+}
+
+function initTipoUsuario(){
+    $('#registration_form_tipoUsuario').val(1).select2();
+    $("#registration_form_grupos").val('3').select2();
+    $('.datos-personales').show();
+    $('.email-nombre-apelldio').show();
+    $('.user-password').hide();
+    $('.grupo').hide();
+    $('.tipo-usuario').hide();
+    $("#registration_form_cuit").inputmask("99-99999999-9");
+    $("#registration_form_razonSocial_cuit").inputmask("99-99999999-9");
 }

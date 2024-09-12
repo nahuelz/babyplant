@@ -3,9 +3,11 @@
 namespace App\Form;
 
 use App\Entity\Grupo;
+use App\Entity\RazonSocial;
 use App\Entity\TipoUsuario;
 use App\Entity\Usuario;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Validator\Constraints\Length;
@@ -44,46 +46,68 @@ class RegistrationFormType extends AbstractType {
             ->add('nombre', TextType::class, array(
                     'attr' => array('class' => 'form-control'))
             )
-                ->add('apellido', TextType::class, array(
+            ->add('apellido', TextType::class, array(
+                'attr' => array('class' => 'form-control'))
+            )
+            ->add('cuit', TextType::class, array(
+                'label' => 'Cuit Persona',
+                'required' => false,
+                'attr' => array('class' => 'form-control'))
+            )
+            ->add('domicilio', TextType::class, array(
+                    'required' => false,
                     'attr' => array('class' => 'form-control'))
-                )
-                ->add('cuit', TextType::class, array(
+            )
+            ->add('celular', TextType::class, array(
+                    'required' => false,
                     'attr' => array('class' => 'form-control'))
-                )
-                ->add('razonSocial', TextType::class, array(
-                        'attr' => array('class' => 'form-control'),
-                        'required'=>true)
-                )
-                ->add('plainPassword', PasswordType::class, [
-                    // instead of being set onto the object directly,
-                    // this is read and encoded in the controller
-                    'mapped' => false,
-                    'label' => 'Contraseña',
-                    'constraints' => [
-                        new NotBlank([
-                            'message' => 'Por favor ingrese una contraseña',
-                                ]),
-                        new Length([
-                            'min' => 6,
-                            'minMessage' => 'La contraseña debe contener al menos {{ limit }} caracteres',
-                            // max length allowed by Symfony for security reasons
-                            'max' => 4096,
-                                ]),
-                    ],
-                    'attr' => array('class' => 'form-control')
-                ])
-                ->add('grupos', EntityType::class, [
-                    'class' => Grupo::class,
+            )
+            ->add('tieneRazonSocial', ChoiceType::class, array(
                     'required' => true,
-                    'multiple' => true,
-                    'label' => 'Grupos',
-                    'placeholder' => '-- Elija grupo --',
+                    'label' => '¿Tiene razon social?',
+                    'choices' => array(
+                        'No' => false,
+                        'Si' => true
+                    ),
+                    'placeholder' => '-- Elija --',
                     'attr' => array(
-                        'placeholder' => 'Escriba el grupo aquí.',
                         'class' => 'form-control choice',
-                        'data-placeholder' => '-- Elija grupo --',
-                        'tabindex' => '5'),
-                ])
+                        'tabindex' => '5'))
+            )
+            ->add('razonSocial', RazonSocialType::class, array(
+                'required' => false,
+                'data_class' => 'App\Entity\RazonSocial',
+            ))
+            ->add('plainPassword', PasswordType::class, [
+                // instead of being set onto the object directly,
+                // this is read and encoded in the controller
+                'mapped' => false,
+                'label' => 'Contraseña',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Por favor ingrese una contraseña',
+                            ]),
+                    new Length([
+                        'min' => 6,
+                        'minMessage' => 'La contraseña debe contener al menos {{ limit }} caracteres',
+                        // max length allowed by Symfony for security reasons
+                        'max' => 4096,
+                            ]),
+                ],
+                'attr' => array('class' => 'form-control')
+            ])
+            ->add('grupos', EntityType::class, [
+                'class' => Grupo::class,
+                'required' => true,
+                'multiple' => true,
+                'label' => 'Grupos',
+                'placeholder' => '-- Elija grupo --',
+                'attr' => array(
+                    'placeholder' => 'Escriba el grupo aquí.',
+                    'class' => 'form-control choice',
+                    'data-placeholder' => '-- Elija grupo --',
+                    'tabindex' => '5'),
+            ])
         ;
     }
 

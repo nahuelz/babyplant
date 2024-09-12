@@ -39,8 +39,9 @@ class SelectService {
      */
     public function getClienteFilter() {
 
-        $sql = "SELECT x.id, CONCAT(x.apellido, ', ', x.nombre) AS nombre, IF(x.razonSocial != '',CONCAT('(',x.razonSocial,')'),'') AS razon_social
+        $sql = "SELECT x.id, CONCAT(x.apellido, ', ', x.nombre) AS nombre, IF(x.tieneRazonSocial = 1, CONCAT('(',r.razonSocial,')'),'') AS razon_social
                 FROM App\Entity\Usuario x 
+                LEFT JOIN x.razonSocial r
                 WHERE x.fechaBaja IS NULL AND x.tipoUsuario = 1
                 ORDER BY x.apellido ASC";
 

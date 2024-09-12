@@ -6,6 +6,8 @@ use App\Entity\ArchivoAdjunto;
 use App\Entity\Constants\ConstanteAPI;
 use App\Entity\Constants\ConstanteTipoConsulta;
 use App\Entity\Constants\ConstanteTipoFiltro;
+use App\Entity\Usuario;
+use App\Form\RegistrationFormType;
 use App\Service\EntityManagementGuesser;
 use App\Service\SelectService;
 use DateTime;
@@ -897,7 +899,17 @@ class BaseController extends AbstractController {
      * @param type $entity
      */
     protected function baseInitPreCreateForm($entity) {
+        $user = new Usuario();
 
+        $form = $this->createForm(RegistrationFormType::class, $user, array(
+            'action' => $this->generateUrl('app_register'),
+            'method' => 'PUT'
+        ));
+
+        $form->add('submit', SubmitType::class, array(
+                'label' => 'Agregar',
+                'attr' => array('class' => 'btn btn-light-primary font-weight-bold submit-button'))
+        );
     }
 
     /**

@@ -13,6 +13,8 @@ use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
 use App\Entity\Matriculado;
 use App\Entity\Pedido;
+use App\Entity\Usuario;
+use App\Form\RegistrationFormType;
 use DateInterval;
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -20,6 +22,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -62,7 +65,7 @@ class PedidoController extends BaseController {
         $fechaDesde = $request->get('fechaDesde') ? DateTime::createFromFormat('d/m/Y H:i:s', $request->get('fechaDesde') . ' 00:00:00') : (new DateTime())->sub(new DateInterval('P7D'));
         $fechaHasta = $request->get('fechaHasta') ? DateTime::createFromFormat('d/m/Y H:i:s', $request->get('fechaHasta') . ' 23:59:59') : new DateTime();
 
-        $idCliente = $request->get('idCliente') ?: NULL;
+        $cliente = $request->get('idCliente') ?: NULL;
 
         $rsm = new ResultSetMapping();
 
@@ -83,7 +86,7 @@ class PedidoController extends BaseController {
 
         $nativeQuery->setParameter(1, $fechaDesde, 'datetime');
         $nativeQuery->setParameter(2, $fechaHasta, 'datetime');
-        $nativeQuery->setParameter(3, $idCliente);
+        $nativeQuery->setParameter(3, $cliente);
 
         $entities = $nativeQuery->getResult();
 
@@ -98,6 +101,7 @@ class PedidoController extends BaseController {
     public function new(): Array {
         return parent::baseNewAction();
     }
+
 
     /**
      * @Route("/insertar", name="pedido_create", methods={"GET","POST"})
@@ -193,8 +197,21 @@ class PedidoController extends BaseController {
      * @return Array
      */
     protected function getExtraParametersNewAction($entity): Array {
+        $user = new Usuario();
+
+        $form = $this->createForm(RegistrationFormType::class, $user, array(
+            'action' => $this->generateUrl('app_register_ajax'),
+            'method' => 'POST'
+        ));
+
+        $form->add('submit', SubmitType::class, array(
+                'label' => 'Agregar',
+                'attr' => array('class' => 'btn btn-light-primary font-weight-bold submit-button'))
+        );
+
         return [
-            'preserve_values' => true
+            'preserve_values' => true,
+            'registrationForm' => $form->createView()
         ];
     }
 

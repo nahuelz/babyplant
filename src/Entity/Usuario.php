@@ -96,7 +96,8 @@ class Usuario implements UserInterface {
     private $tipoUsuario;
 
     /**
-     * @ORM\Column(type="string", length=180, unique=true, nullable=true)
+     * @ORM\ManyToOne(targetEntity=RazonSocial::class, cascade={"persist"})
+     * @ORM\JoinColumn(name="id_razon_social", referencedColumnName="id")
      */
     private $razonSocial;
 
@@ -121,6 +122,13 @@ class Usuario implements UserInterface {
      */
     protected $domicilio;
 
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="tiene_razon_social", type="boolean", options={"default": 0})
+     */
+    private $tieneRazonSocial;
+
     public function __construct() {
         $this->grupos = new \Doctrine\Common\Collections\ArrayCollection();
         $this->habilitado = true;
@@ -130,7 +138,9 @@ class Usuario implements UserInterface {
     public function __toString(): string {
         $nombre = $this->getNombre(). ' '.$this->getApellido();
         if ($this->getTipoUsuario()->getCodigoInterno() == Constants\ConstanteTipoUsuario::CLIENTE){
-            $nombre.=' ('.$this->getRazonSocial().')';
+            if ($this->razonSocial != null){
+                $nombre.=' ('.$this->getRazonSocial().')';
+            }
         }
         return $nombre;
     }
@@ -172,7 +182,7 @@ class Usuario implements UserInterface {
     /**
      * A visual identifier that represents this user.
      */
-    public function setUsername($username): string {
+    public function setUsername($username): self {
         $this->username = $username;
 
         return $this;
@@ -395,6 +405,22 @@ class Usuario implements UserInterface {
     /**
      * @return string
      */
+    public function getDomicilio(): string
+    {
+        return $this->domicilio;
+    }
+
+    /**
+     * @param string $domicilio
+     */
+    public function setDomicilio(string $domicilio): void
+    {
+        $this->domicilio = $domicilio;
+    }
+
+    /**
+     * @return string
+     */
     public function getTelefono(): string
     {
         return $this->telefono;
@@ -411,17 +437,36 @@ class Usuario implements UserInterface {
     /**
      * @return string
      */
-    public function getDomicilio(): string
+    public function getCelular(): string
     {
-        return $this->domicilio;
+        return $this->celular;
     }
 
     /**
-     * @param string $domicilio
+     * @param string $celular
      */
-    public function setDomicilio(string $domicilio): void
+    public function setCelular(string $celular): void
     {
-        $this->domicilio = $domicilio;
+        $this->celular = $celular;
     }
+
+    /**
+     * @return bool
+     */
+    public function getTieneRazonSocial(): bool
+    {
+        return $this->tieneRazonSocial;
+    }
+
+    /**
+     * @param bool $tieneRazonSocial
+     */
+    public function setTieneRazonSocial(bool $tieneRazonSocial): void
+    {
+        $this->tieneRazonSocial = $tieneRazonSocial;
+    }
+
+
+
 
 }

@@ -139,11 +139,11 @@
 
                 <div class="row mb-6">
                     <div class="col-lg-8 mb-lg-0 mb-4">
-                        <label for="reporte_filtro_estado" class="control-label">Matriculado</label>
-                        <select class="choice form-control datatable-input" id="reporte_filtro_matriculado" name="reporte_filtro[matriculado]">
+                        <label for="reporte_filtro_cliente" class="control-label">Cliente</label>
+                        <select class="choice form-control datatable-input" id="reporte_filtro_cliente" name="reporte_filtro[cliente]">
                             <option value="">TODOS</option>
                             {% for cliente in clienteSelect %}
-                                <option value="{{ cliente.id }}"> {{ cliente.nombre }}</option>
+                                <option value="{{ cliente.id }}"> {{ cliente.nombre }} {{ cliente.razon_social }}</option>
                             {% endfor %}
                         </select>
                     </div>

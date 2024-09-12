@@ -1,9 +1,8 @@
 <div class="col-xl-3">
     <!--begin::Stats Widget 13-->
-    <a href="#" class="card card-custom bg-radial-gradient-success bg-hover-state-primary card-stretch gutter-b">
+    <a href="{{ action|default('#') }}" class="card card-custom bg-radial-gradient-success bg-hover-state-primary card-stretch gutter-b">
         <!--begin::Body-->
         <div class="card-body">
-            {# <i class="fas fa-chart-line icon-3x text-dark"></i> #}
             <i class="{{ iconClass }}"></i>
             <div class="text-inverse-danger font-weight-bolder font-size-h5 mb-2 mt-5">{{ nombreModulo }}</div>
             <div class="font-weight-bold text-inverse-danger font-size-sm">{{ descripcionModulo }}</div>

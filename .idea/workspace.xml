@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Baso proyecto&#10;Configuracion&#10;Alta pedido">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Alta pedido validaciones" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -237,6 +234,7 @@
       <workItem from="1724782169181" duration="3687000" />
       <workItem from="1724802371690" duration="19000" />
       <workItem from="1725402119869" duration="341000" />
+      <workItem from="1725893161230" duration="66000" />
     </task>
     <task id="LOCAL-00001" summary="config">
       <option name="closed" value="true" />
@@ -262,7 +260,15 @@
       <option name="project" value="LOCAL" />
       <updated>1725402322497</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Alta pedido validaciones">
+      <option name="closed" value="true" />
+      <created>1725893208687</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1725893208687</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -271,6 +277,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="config" />
     <MESSAGE value="Baso proyecto&#10;Configuracion&#10;Alta pedido" />
-    <option name="LAST_COMMIT_MESSAGE" value="Baso proyecto&#10;Configuracion&#10;Alta pedido" />
+    <MESSAGE value="Alta pedido validaciones" />
+    <option name="LAST_COMMIT_MESSAGE" value="Alta pedido validaciones" />
   </component>
 </project>

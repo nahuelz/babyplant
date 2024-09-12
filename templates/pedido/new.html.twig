@@ -18,7 +18,13 @@
 
         <div class="card-body">
             <div class="row">
-                {{ macro_form._new_field(form.cliente, 'col-md-12') }}
+                {{ macro_form._new_field(form.cliente, 'col-md-9') }}
+                <div class="col-md-3">
+                    <!-- Button trigger modal-->
+                    <button type="button" class="btn btn-success link-agregar-cliente" data-toggle="modal" data-target="#exampleModalLong" style="margin-top: 6%;">
+                        NUEVO CLIENTE
+                    </button>
+                </div>
                 {{ macro_form._new_field(form.observacion, 'col-md-12') }}
             </div>
             <div class="row">
@@ -36,6 +42,30 @@
     {{ form_widget(form._token) }}
     {{ form_end(form, {"render_rest": false}) }}
 
+    <div class="modal fade" id="exampleModalLong" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Nuevo Cliente</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i aria-hidden="true" class="ki ki-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ form_start(registrationForm, {'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
+                    {% include 'registration/_form.html.twig' with {'modal' : true} %}
+                    <input type="hidden" name="href" id="href" value="{{ path('app_register_ajax') }}">
+                    {{ form_widget(registrationForm._token) }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Cerrar</button>
+                    {{ form_widget(registrationForm.submit) }}
+                </div>
+                {{ form_end(registrationForm, {"render_rest": false}) }}
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block javascripts %}
@@ -44,6 +74,7 @@
 
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}" ></script>
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/pedido/new.js') }}" ></script>
+
     <script>
         var preserve_values = {{ preserve_values is defined ? (preserve_values  ? 'true' : 'false'): 'false'}};
     </script>

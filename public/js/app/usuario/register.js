@@ -5,6 +5,7 @@ function initTipoUsuario(){
         $('.email-nombre-apelldio').show();
         $('.user-password').hide();
         $('.grupo').hide();
+        initRazonSocial();
     }
     if($('#registration_form_tipoUsuario').val() === '2'){
         $('.datos-personales').hide();
@@ -21,6 +22,20 @@ function initTipoUsuarioHandler(){
     });
 }
 
+function initRazonSocialHandler(){
+    $('#registration_form_tieneRazonSocial').on('change', function (){
+        initRazonSocial();
+    });
+}
+
+function initRazonSocial(){
+    if ($('#registration_form_tieneRazonSocial').val() === '1'){
+        $('.razonSocial').show();
+    }else{
+        $('.razonSocial').hide();
+    }
+}
+
 jQuery(document).ready(function () {
     if ($('#registration_form_tipoUsuario').val() === '') {
         $('.user-password').hide();
@@ -28,8 +43,10 @@ jQuery(document).ready(function () {
         $('.datos-personales').hide();
         $('.grupo').hide();
     }
+    $('.razonSocial').hide();
     initTipoUsuarioHandler();
     initTipoUsuario();
+    initRazonSocialHandler();
 
     FormValidation.formValidation(
         $("form[name=registration_form]")[0], {
@@ -92,6 +109,7 @@ jQuery(document).ready(function () {
             }
         }
     );
-    
+
     $("#registration_form_cuit").inputmask("99-99999999-9");
+    $("#registration_form_razonSocial_cuit").inputmask("99-99999999-9");
 });

@@ -26,7 +26,7 @@ class RegistrationController extends AbstractController {
     /**
      * @Route("/register", name="app_register")
      */
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response {
+    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, $isAjaxCall = false): Response {
 
         $user = new Usuario();
 
@@ -41,23 +41,22 @@ class RegistrationController extends AbstractController {
         );
 
         $form->handleRequest($request);
-
-
         if ($form->isSubmitted()) {
             $entityManager = $this->getDoctrine()->getManager();
-            $existeUsuario = $this->validarExisteUsuario($user,$entityManager);
-            if ($existeUsuario){
+            $existeUsuario = $this->validarExisteUsuario($user, $entityManager);
+            if ($existeUsuario) {
                 $this->get('session')->getFlashBag()->add('error', $existeUsuario);
-
-                return $this->render('registration/register.html.twig', [
-                    'registrationForm' => $form->createView(),
-                ]);
+                if (!$isAjaxCall) {
+                    return $this->render('registration/register.html.twig', [
+                        'registrationForm' => $form->createView(),
+                    ]);
+                }else {
+                    return $this->redirectToRoute('pedido_new');
+                }
             }
-
-
             // encode the plain password
             $user->setHabilitado(true);
-            if ($user->getTipoUsuario()->getCodigoInterno() == ConstanteTipoUsuario::CLIENTE){
+            if ($user->getTipoUsuario()->getCodigoInterno() == ConstanteTipoUsuario::CLIENTE) {
                 $user->setHabilitado(false);
                 $user->setUsername($user->getEmail());
                 $user->setPassword(
@@ -66,7 +65,7 @@ class RegistrationController extends AbstractController {
                         $user->getEmail()
                     )
                 );
-            }else {
+            } else {
                 $user->setPassword(
                     $passwordEncoder->encodePassword(
                         $user,
@@ -80,7 +79,11 @@ class RegistrationController extends AbstractController {
             // do anything else you need here, like send an email
             if ($this->getUser()) {
                 $this->get('session')->getFlashBag()->add('success', 'Usuario registrado con exito.');
-                return $this->redirectToRoute('usuario_index');
+                if(!$isAjaxCall) {
+                    return $this->redirectToRoute('usuario_index');
+                }else{
+                    return $this->redirectToRoute('pedido_new');
+                }
             }
             return $this->redirectToRoute('app_login');
         }
@@ -104,8 +107,13 @@ class RegistrationController extends AbstractController {
             $msg = 'Ya existe un usuario registrado con este mail.';
         }
         return ($msg);
-
-
     }
 
+
+    /**
+     * @Route("/registerAjax", name="app_register_ajax")
+     */
+    public function registerAjax(Request $request, UserPasswordEncoderInterface $passwordEncoder, $isAjaxCall = false): Response {
+        return $this->register($request, $passwordEncoder, true);
+    }
 }

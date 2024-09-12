@@ -6,6 +6,7 @@ use App\Entity\Grupo;
 use App\Entity\TipoUsuario;
 use App\Entity\Usuario;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -51,10 +52,30 @@ class UsuarioType extends AbstractType
                     'attr' => array('class' => 'form-control'),
                     'required'=>false)
             )
-            ->add('razonSocial', TextType::class, array(
-                    'attr' => array('class' => 'form-control'),
-                    'required'=>false)
+            ->add('domicilio', TextType::class, array(
+                    'required' => false,
+                    'attr' => array('class' => 'form-control'))
             )
+            ->add('celular', TextType::class, array(
+                    'required' => false,
+                    'attr' => array('class' => 'form-control'))
+            )
+            ->add('tieneRazonSocial', ChoiceType::class, array(
+                    'required' => true,
+                    'label' => '¿Tiene razon social?',
+                    'choices' => array(
+                        'No' => false,
+                        'Si' => true
+                    ),
+                    'placeholder' => '-- Elija --',
+                    'attr' => array(
+                        'class' => 'form-control choice',
+                        'tabindex' => '5'))
+            )
+            ->add('razonSocial', RazonSocialType::class, array(
+                'required' => false,
+                'data_class' => 'App\Entity\RazonSocial',
+            ))
             ->add('grupos', EntityType::class,[
                 'class' => Grupo::class,
                 'required' => true,

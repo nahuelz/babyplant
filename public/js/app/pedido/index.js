@@ -112,7 +112,7 @@ function initDataTable() {
             }
         ],
         columnDefs: datatablesGetColDef(),
-        order: [[1, 'asc']],
+        order: [[1, 'desc']],
         serverSide: false
     });
 
@@ -145,6 +145,7 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'id',
+            width: '30px',
             className: 'dt-center',
             type: 'num'
         },
@@ -169,12 +170,14 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'cantidadBandejas',
+            width: '30px',
             className: 'dt-center',
             type: 'num'
         },
         {
             targets: index++,
             name: 'tipoBandeja',
+            width: '30px',
             className: 'dt-center',
             type: 'num'
         },
@@ -214,12 +217,14 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'ordenSiembra',
+            width: '30px',
             className: 'dt-center',
             type: 'num'
         },
         {
             targets: index++,
             name: 'mesada',
+            width: '30px',
             className: 'dt-center',
             type: 'num'
         },
