@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Alta pedido validaciones" />
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Usuario Form Razon Social">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -188,7 +190,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/xampp81/htdocs/babyplant/templates&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/xampp81/htdocs/babyplant&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -235,6 +237,8 @@
       <workItem from="1724802371690" duration="19000" />
       <workItem from="1725402119869" duration="341000" />
       <workItem from="1725893161230" duration="66000" />
+      <workItem from="1726153379294" duration="661000" />
+      <workItem from="1726228131083" duration="1026000" />
     </task>
     <task id="LOCAL-00001" summary="config">
       <option name="closed" value="true" />
@@ -268,7 +272,23 @@
       <option name="project" value="LOCAL" />
       <updated>1725893208687</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Usuario Form Razon Social">
+      <option name="closed" value="true" />
+      <created>1726153423701</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1726153423701</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Usuario Form Razon Social">
+      <option name="closed" value="true" />
+      <created>1726228203383</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1726228203383</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -278,6 +298,7 @@
     <MESSAGE value="config" />
     <MESSAGE value="Baso proyecto&#10;Configuracion&#10;Alta pedido" />
     <MESSAGE value="Alta pedido validaciones" />
-    <option name="LAST_COMMIT_MESSAGE" value="Alta pedido validaciones" />
+    <MESSAGE value="Usuario Form Razon Social" />
+    <option name="LAST_COMMIT_MESSAGE" value="Usuario Form Razon Social" />
   </component>
 </project>
