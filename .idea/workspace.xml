@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Usuario Form Razon Social">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -177,6 +178,8 @@
       <path value="$PROJECT_DIR$/vendor/vich/uploader-bundle" />
       <path value="$PROJECT_DIR$/vendor/jms/metadata" />
       <path value="$PROJECT_DIR$/vendor/knplabs/knp-time-bundle" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/doctrine-fixtures-bundle" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/data-fixtures" />
     </include_path>
   </component>
   <component name="ProjectId" id="2l2cLRUxQzYdlFejuqfvpPGXKBm" />
@@ -239,6 +242,7 @@
       <workItem from="1725893161230" duration="66000" />
       <workItem from="1726153379294" duration="661000" />
       <workItem from="1726228131083" duration="1026000" />
+      <workItem from="1726229809917" duration="111000" />
     </task>
     <task id="LOCAL-00001" summary="config">
       <option name="closed" value="true" />
@@ -288,7 +292,15 @@
       <option name="project" value="LOCAL" />
       <updated>1726228203383</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Usuario Form Razon Social">
+      <option name="closed" value="true" />
+      <created>1726229830964</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1726229830964</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
