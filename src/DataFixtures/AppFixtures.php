@@ -2,6 +2,8 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\EstadoPedido;
+use App\Entity\EstadoPedidoProducto;
 use App\Entity\Grupo;
 use App\Entity\TipoUsuario;
 use App\Entity\Usuario;
@@ -20,6 +22,16 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
+        $estadoPedidoProducto = new EstadoPedidoProducto();
+        $estadoPedidoProducto->setCodigoInterno(1);
+        $estadoPedidoProducto->setNombre('PENDIENTE');
+        $manager->persist($estadoPedidoProducto);
+
+        $estadoPedido = new EstadoPedido();
+        $estadoPedido->setCodigoInterno(1);
+        $estadoPedido->setNombre('NUEVO');
+        $manager->persist($estadoPedido);
+
         $grupo = new Grupo();
         $grupo->setNombre("Administrador");
         $grupo->addRole("ROLE_USER");
