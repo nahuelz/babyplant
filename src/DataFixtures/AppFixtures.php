@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\TipoUsuario;
 use App\Entity\Usuario;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -18,6 +19,18 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
+        $tipoUsuario = new TipoUsuario();
+        $tipoUsuario->setHabilitado(1);
+        $tipoUsuario->setCodigoInterno(2);
+        $tipoUsuario->setNombre('Cliente');
+        $manager->persist($tipoUsuario);
+
+        $tipoUsuario2 = new TipoUsuario();
+        $tipoUsuario2->setHabilitado(1);
+        $tipoUsuario2->setCodigoInterno(2);
+        $tipoUsuario2->setNombre('Tecnico');
+        $manager->persist($tipoUsuario2);
+
         $user = new Usuario();
         $user->setHabilitado(1);
         $user->setNombre('admin');
@@ -29,7 +42,7 @@ class AppFixtures extends Fixture
                 '123456'
             )
         );
-
+        $manager->persist($user);
         $manager->flush();
     }
 }
