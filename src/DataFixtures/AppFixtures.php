@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Grupo;
 use App\Entity\TipoUsuario;
 use App\Entity\Usuario;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -19,6 +20,13 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
+        $grupo = new Grupo();
+        $grupo->setNombre("Administrador");
+        $grupo->addRole("ROLE_USER");
+        $grupo->addRole("ROLE_ALL");
+        $grupo->setDescripcion("Grupo para administrador");
+        $manager->persist($grupo);
+
         $tipoUsuario = new TipoUsuario();
         $tipoUsuario->setHabilitado(1);
         $tipoUsuario->setCodigoInterno(2);
@@ -35,6 +43,7 @@ class AppFixtures extends Fixture
         $user->setHabilitado(1);
         $user->setNombre('admin');
         $user->setApellido('admin');
+        $user->setUsername('admin');
         $user->setEmail('admin@admin.com');
         $user->setTieneRazonSocial(0);
         $user->setPassword(
