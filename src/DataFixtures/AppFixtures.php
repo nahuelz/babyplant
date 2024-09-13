@@ -36,6 +36,7 @@ class AppFixtures extends Fixture
         $user->setNombre('admin');
         $user->setApellido('admin');
         $user->setEmail('admin@admin.com');
+        $user->setTieneRazonSocial(0);
         $user->setPassword(
             $this->passwordEncoder->encodePassword(
                 $user,
