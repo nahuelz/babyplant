@@ -24,7 +24,7 @@ jQuery(document).ready(function () {
 
     initCurrencies();
 
-    //initChecksYRadios();
+    initChecksYRadios();
 
     initDatepickers();
 

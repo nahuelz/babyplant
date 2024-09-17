@@ -87,7 +87,6 @@
 
             <div class="mb-15">
                 <div class="row mb-6">
-
                     <div class="col-lg-3 mb-lg-0 mb-6">
                         <label>Fecha</label>
                         <div class="input-daterange input-group" id="kt_datepicker">
@@ -104,37 +103,6 @@
                                    placeholder="Hasta" value="{{ "now"|date('d/m/Y') }}">
                         </div>
                     </div>
-                    {#
-                    <div class="col-lg-3 mb-lg-0 mb-3">
-                        <label for="reporte_filtro_proveedorPago" class="control-label">Forma de Pago</label>
-                        <select class="choice form-control datatable-input" id="reporte_filtro_proveedorPago" name="reporte_filtro[proveedorPago]">
-                            <option value="">TODOS</option>
-                            {% for proveedorPago in proveedorPagoSelect %}
-                                <option value="{{ proveedorPago.id }}"> {{ proveedorPago.nombre }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="col-lg-3 mb-lg-0 mb-3">
-                        <label for="reporte_filtro_archivo" class="control-label">Archivo</label>
-                        <select class="choice form-control datatable-input" id="reporte_filtro_archivo" name="reporte_filtro[archivo]">
-                            <option value="">TODOS</option>
-                            {% for archivo in archivoSelect %}
-                                <option value="{{ archivo.id }}"> {{ archivo.nombre }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="col-lg-3 mb-lg-0 mb-3">
-                        <label for="reporte_filtro_tipoObligacion" class="control-label">Obligaci&oacute;n</label>
-                        <select class="choice form-control datatable-input" id="reporte_filtro_tipoObligacion" name="reporte_filtro[tipoObligacion]">
-                            <option value="">TODOS</option>
-                            {% for tipoObligacion in tipoObligacionSelect %}
-                                <option value="{{ tipoObligacion.id }}"> {{ tipoObligacion.nombre }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    #}
                 </div>
 
                 <div class="row mb-6">
@@ -162,6 +130,15 @@
                             </span>
                         </button>
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">
+                    <button class="btn btn-primary" id="mostrar_orden_semilla">
+                            <span>
+                                <span>Ocultar Orden Siembra</span>
+                            </span>
+                    </button>&nbsp;&nbsp;
                 </div>
             </div>
 

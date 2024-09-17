@@ -5,8 +5,28 @@ var $table = $('#table-pago');
 
 $(document).ready(function () {
     initTable();
+    initToggleHideColumnHandler();
 });
 
+function initToggleHideColumnHandler(){
+    $('#mostrar_orden_semilla').on ('click', function(){
+        initToggleHiddeColumn();
+    });
+}
+function initToggleHiddeColumn(){
+    var table = $('#table-pago').DataTable();
+    var column = table.column(10);
+    if (column.visible()){
+        column.visible(false);
+        $('.filter th:nth-child(10)').hide();
+        $('#mostrar_orden_semilla').text('Mostrar Orden Siembra');
+    }else{
+        $('.filter th:nth-child(10)').show();
+        column.visible(true);
+        $('#mostrar_orden_semilla').text('Ocultar Orden Siembra');
+    }
+    table.ajax.reload();
+}
 /**
  *
  * @returns {undefined}
@@ -119,6 +139,15 @@ function initDataTable() {
     init = true;
 }
 
+    // Hide/show columns
+    $('input.toggle-vis').on( 'change', function (e) {
+        e.preventDefault();
+        // Get the column API object
+        var column = table.column( $(this).attr('data-column') );
+        // Toggle the visibility
+        column.visible( ! column.visible() );
+    } );
+
 /**
  *
  * @returns {Array}
@@ -216,9 +245,10 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
-            name: 'ordenSiembra',
+            name: 'ordenSiembra'.indexx,
             width: '30px',
             className: 'dt-center',
+            searchable: false,
             type: 'num'
         },
         {
@@ -226,6 +256,8 @@ function datatablesGetColDef() {
             name: 'mesada',
             width: '30px',
             className: 'dt-center',
+            visible: false,
+            searchable: false,
             type: 'num'
         },
         {

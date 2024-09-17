@@ -2,27 +2,49 @@
 
 namespace App\Controller;
 
+use App\Entity\Constants\ConstanteTipoConsulta;
 use App\Entity\TipoUsuario;
 use App\Form\TipoUsuarioType;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/tipo/usuario')]
-class TipoUsuarioController extends AbstractController
+class TipoUsuarioController extends BaseController
 {
-    #[Route('/', name: 'app_tipo_usuario_index', methods: ['GET'])]
+    #[Route('/', name: 'tipousuario_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
-        $tipoUsuarios = $entityManager
-            ->getRepository(TipoUsuario::class)
-            ->findAll();
-
         return $this->render('tipo_usuario/index.html.twig', [
-            'tipo_usuarios' => $tipoUsuarios,
+            'select_boolean' => $this->selectService->getBooleanSelect(true)
         ]);
+    }
+
+    /**
+     *
+     * @Route("/index_table/", name="tipo_usuario_table", methods={"GET|POST"})
+     *
+     */
+    public function indexTableAction(Request $request): Response {
+        $entityTable = 'view_tipo_usuario';
+
+        $rsm = new ResultSetMapping();
+
+        $rsm->addScalarResult('id', 'id');
+        $rsm->addScalarResult('nombre', 'nombre');
+        $rsm->addScalarResult('habilitado', 'habilitado');
+
+        $columnDefinition = [
+            ['field' => 'id', 'type' => '', 'searchable' => false, 'sortable' => false],
+            ['field' => 'nombre', 'type' => 'string', 'searchable' => true, 'sortable' => true],
+            ['field' => 'habilitado', 'type' => 'select', 'searchable' => true, 'sortable' => true],
+            ['field' => 'acciones', 'type' => '', 'searchable' => false, 'sortable' => false]
+        ];
+
+        $renderPage = "tipo_usuario/index_table.html.twig";
+        return parent::baseIndexTableAction($request, $columnDefinition, $entityTable, ConstanteTipoConsulta::VIEW, $rsm, $renderPage);
     }
 
     #[Route('/new', name: 'app_tipo_usuario_new', methods: ['GET', 'POST'])]
@@ -36,7 +58,7 @@ class TipoUsuarioController extends AbstractController
             $entityManager->persist($tipoUsuario);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_tipo_usuario_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('tipousuario_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('tipo_usuario/new.html.twig', [
@@ -62,10 +84,10 @@ class TipoUsuarioController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_tipo_usuario_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('tipousuario_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('tipo_usuario/edit.html.twig', [
+        return $this->renderForm('tipo_usuario/new.html.twig', [
             'tipo_usuario' => $tipoUsuario,
             'form' => $form,
         ]);
@@ -79,6 +101,20 @@ class TipoUsuarioController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_tipo_usuario_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('tipousuario_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * @Route("/{id}/habilitar_deshabilitar", name="app_tipo_usuario_habilitar_deshabilitar", methods={"GET"})
+     */
+    public function tipoUsuarioHabilitarDeshabilitar($id) {
+        $em = $this->getDoctrine()->getManager();
+        $tipo = $em->getRepository(TipoUsuario::class)->findOneBy(array('id' => $id));
+        $tipo->setHabilitado(!$tipo->getHabilitado());
+        $message = ($tipo->getHabilitado()) ? 'habilitó' : 'deshabilitó';
+        $em->flush();
+        $this->get('session')->getFlashBag()->add('success', "Se " . $message . " correctamente al tipo usuario");
+
+        return $this->redirectToRoute('tipousuario_index');
     }
 }

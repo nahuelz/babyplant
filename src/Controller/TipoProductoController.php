@@ -2,27 +2,51 @@
 
 namespace App\Controller;
 
+use App\Entity\Constants\ConstanteTipoConsulta;
 use App\Entity\TipoProducto;
+use App\Entity\TipoUsuario;
 use App\Form\TipoProductoType;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/tipo/producto')]
-class TipoProductoController extends AbstractController
+class TipoProductoController extends BaseController
 {
-    #[Route('/', name: 'app_tipo_producto_index', methods: ['GET'])]
+    #[Route('/', name: 'tipoproducto_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
-        $tipoProductos = $entityManager
-            ->getRepository(TipoProducto::class)
-            ->findAll();
-
         return $this->render('tipo_producto/index.html.twig', [
-            'tipo_productos' => $tipoProductos,
+            'select_boolean' => $this->selectService->getBooleanSelect(true)
         ]);
+    }
+
+    /**
+     *
+     * @Route("/index_table/", name="tipo_producto_table", methods={"GET|POST"})
+     *
+     */
+    public function indexTableAction(Request $request): Response {
+        $entityTable = 'view_tipo_producto';
+
+        $rsm = new ResultSetMapping();
+
+        $rsm->addScalarResult('id', 'id');
+        $rsm->addScalarResult('nombre', 'nombre');
+        $rsm->addScalarResult('habilitado', 'habilitado');
+
+        $columnDefinition = [
+            ['field' => 'id', 'type' => '', 'searchable' => false, 'sortable' => false],
+            ['field' => 'nombre', 'type' => 'string', 'searchable' => true, 'sortable' => true],
+            ['field' => 'habilitado', 'type' => 'select', 'searchable' => true, 'sortable' => true],
+            ['field' => 'acciones', 'type' => '', 'searchable' => false, 'sortable' => false]
+        ];
+
+        $renderPage = "tipo_producto/index_table.html.twig";
+        return parent::baseIndexTableAction($request, $columnDefinition, $entityTable, ConstanteTipoConsulta::VIEW, $rsm, $renderPage);
     }
 
     #[Route('/new', name: 'app_tipo_producto_new', methods: ['GET', 'POST'])]
@@ -36,7 +60,7 @@ class TipoProductoController extends AbstractController
             $entityManager->persist($tipoProducto);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_tipo_producto_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('tipoproducto_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('tipo_producto/new.html.twig', [
@@ -62,10 +86,10 @@ class TipoProductoController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_tipo_producto_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('tipoproducto_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('tipo_producto/edit.html.twig', [
+        return $this->renderForm('tipo_producto/new.html.twig', [
             'tipo_producto' => $tipoProducto,
             'form' => $form,
         ]);
@@ -79,7 +103,21 @@ class TipoProductoController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_tipo_producto_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('tipoproducto_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * @Route("/{id}/habilitar_deshabilitar", name="app_tipo_producto_habilitar_deshabilitar", methods={"GET"})
+     */
+    public function tipoUsuarioHabilitarDeshabilitar($id) {
+        $em = $this->getDoctrine()->getManager();
+        $tipo = $em->getRepository(TipoProducto::class)->findOneBy(array('id' => $id));
+        $tipo->setHabilitado(!$tipo->getHabilitado());
+        $message = ($tipo->getHabilitado()) ? 'habilitó' : 'deshabilitó';
+        $em->flush();
+        $this->get('session')->getFlashBag()->add('success', "Se " . $message . " correctamente al tipo producto");
+
+        return $this->redirectToRoute('tipoproducto_index');
     }
 }
 

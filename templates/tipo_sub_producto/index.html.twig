@@ -1,49 +1,58 @@
 {% extends 'base.html.twig' %}
+{% block stylesheets %}
 
-{% block title %}TipoSubProducto index{% endblock %}
+    {{ parent() }}
+    <link href="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css"/>
+
+{% endblock %}
 
 {% block body %}
-    <h1>TipoSubProducto index</h1>
+    <!--begin::Card-->
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+				<span class="card-icon">
+					<i class="flaticon2-layers text-primary"></i>
+				</span>
+                <h3 class="card-label">Listado de tipo sub_productos</h3>
+            </div>
+            <div class="card-toolbar">
+                {% if is_granted('ROLE_MENU_CONFIGURACION') %}
+                    <!--begin::Button-->
+                    <a href="{{ path('app_tipo_sub_producto_new') }}" class="btn btn-primary font-weight-bolder">
+                        <i class="la la-plus"></i>
+                        Agregar
+                    </a>
+                    <!--end::Button-->
+                {% endif %}
+            </div>
+        </div>
+        <div
+                class="card-body">
+            <!--begin: Datatable-->
+            <table class="table table-bordered table-hover table-checkable" id="table-sub_producto">
+                <thead>
+                <tr>
+                    <th class="not-in-filter">ID</th>
+                    <th data-type="string">Nombre</th>
+                    <th class="text-center" data-type="select" data-select="{{ select_boolean }}">Habilitado</th>
+                    <th data-type="search">Acciones</th>
+                </tr>
+                </thead>
+            </table>
+            <!--end: Datatable-->
+        </div>
+    </div>
+    <!--end::Card-->
+{% endblock %}
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Descripcion</th>
-                <th>Id</th>
-                <th>FechaCreacion</th>
-                <th>FechaUltimaModificacion</th>
-                <th>FechaBaja</th>
-                <th>CodigoInterno</th>
-                <th>Habilitado</th>
-                <th>FechaDeshabilitado</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for tipo_sub_producto in tipo_sub_productos %}
-            <tr>
-                <td>{{ tipo_sub_producto.nombre }}</td>
-                <td>{{ tipo_sub_producto.descripcion }}</td>
-                <td>{{ tipo_sub_producto.id }}</td>
-                <td>{{ tipo_sub_producto.fechaCreacion ? tipo_sub_producto.fechaCreacion|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ tipo_sub_producto.fechaUltimaModificacion ? tipo_sub_producto.fechaUltimaModificacion|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ tipo_sub_producto.fechaBaja ? tipo_sub_producto.fechaBaja|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ tipo_sub_producto.codigoInterno }}</td>
-                <td>{{ tipo_sub_producto.habilitado ? 'Yes' : 'No' }}</td>
-                <td>{{ tipo_sub_producto.fechaDeshabilitado ? tipo_sub_producto.fechaDeshabilitado|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_tipo_sub_producto_show', {'id': tipo_sub_producto.id}) }}">show</a>
-                    <a href="{{ path('app_tipo_sub_producto_edit', {'id': tipo_sub_producto.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="10">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+{% block javascripts %}
 
-    <a href="{{ path('app_tipo_sub_producto_new') }}">Create new</a>
+    {{ parent() }}
+
+    <script type="text/javascript" src="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.js') }}"></script>
+
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-datatables.js') }}"></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/tiposubproducto/index.js') }}"></script>
+
 {% endblock %}

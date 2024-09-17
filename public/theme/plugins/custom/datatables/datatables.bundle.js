@@ -5283,11 +5283,19 @@
 			divBodyStyle.width = '100%';
 			divHeader[0].style.width = '100%';
 		}
-	
-		$.each( _fnGetUniqueThs( settings, headerCopy ), function ( i, el ) {
-			idx = _fnVisibleToColumnIndex( settings, i );
-			el.style.width = settings.aoColumns[idx].sWidth;
-		} );
+        /*
+            $.each( _fnGetUniqueThs( settings, headerCopy ), function ( i, el ) {
+                idx = _fnVisibleToColumnIndex( settings, i );
+                el.style.width = settings.aoColumns[idx].sWidth;
+            } );*/
+
+        $.each( _fnGetUniqueThs( settings, headerCopy ), function ( i, el ) {
+            idx = _fnVisibleToColumnIndex( settings, i );
+            //error when using hidden cols
+            if ( idx != null ){
+                el.style.width = settings.aoColumns[idx].sWidth;
+            }
+        } );
 	
 		if ( footer ) {
 			_fnApplyToChildren( function(n) {

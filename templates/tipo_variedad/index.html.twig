@@ -1,49 +1,58 @@
 {% extends 'base.html.twig' %}
+{% block stylesheets %}
 
-{% block title %}TipoVariedad index{% endblock %}
+    {{ parent() }}
+    <link href="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css"/>
+
+{% endblock %}
 
 {% block body %}
-    <h1>TipoVariedad index</h1>
+    <!--begin::Card-->
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+				<span class="card-icon">
+					<i class="flaticon2-layers text-primary"></i>
+				</span>
+                <h3 class="card-label">Listado de tipo variedads</h3>
+            </div>
+            <div class="card-toolbar">
+                {% if is_granted('ROLE_MENU_CONFIGURACION') %}
+                    <!--begin::Button-->
+                    <a href="{{ path('app_tipo_variedad_new') }}" class="btn btn-primary font-weight-bolder">
+                        <i class="la la-plus"></i>
+                        Agregar
+                    </a>
+                    <!--end::Button-->
+                {% endif %}
+            </div>
+        </div>
+        <div
+                class="card-body">
+            <!--begin: Datatable-->
+            <table class="table table-bordered table-hover table-checkable" id="table-variedad">
+                <thead>
+                <tr>
+                    <th class="not-in-filter">ID</th>
+                    <th data-type="string">Nombre</th>
+                    <th class="text-center" data-type="select" data-select="{{ select_boolean }}">Habilitado</th>
+                    <th data-type="search">Acciones</th>
+                </tr>
+                </thead>
+            </table>
+            <!--end: Datatable-->
+        </div>
+    </div>
+    <!--end::Card-->
+{% endblock %}
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Descripcion</th>
-                <th>Id</th>
-                <th>FechaCreacion</th>
-                <th>FechaUltimaModificacion</th>
-                <th>FechaBaja</th>
-                <th>CodigoInterno</th>
-                <th>Habilitado</th>
-                <th>FechaDeshabilitado</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for tipo_variedad in tipo_variedads %}
-            <tr>
-                <td>{{ tipo_variedad.nombre }}</td>
-                <td>{{ tipo_variedad.descripcion }}</td>
-                <td>{{ tipo_variedad.id }}</td>
-                <td>{{ tipo_variedad.fechaCreacion ? tipo_variedad.fechaCreacion|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ tipo_variedad.fechaUltimaModificacion ? tipo_variedad.fechaUltimaModificacion|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ tipo_variedad.fechaBaja ? tipo_variedad.fechaBaja|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ tipo_variedad.codigoInterno }}</td>
-                <td>{{ tipo_variedad.habilitado ? 'Yes' : 'No' }}</td>
-                <td>{{ tipo_variedad.fechaDeshabilitado ? tipo_variedad.fechaDeshabilitado|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_tipo_variedad_show', {'id': tipo_variedad.id}) }}">show</a>
-                    <a href="{{ path('app_tipo_variedad_edit', {'id': tipo_variedad.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="10">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+{% block javascripts %}
 
-    <a href="{{ path('app_tipo_variedad_new') }}">Create new</a>
+    {{ parent() }}
+
+    <script type="text/javascript" src="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.js') }}"></script>
+
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-datatables.js') }}"></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/tipovariedad/index.js') }}"></script>
+
 {% endblock %}

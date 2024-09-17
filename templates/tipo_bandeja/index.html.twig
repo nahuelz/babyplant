@@ -16,52 +16,7 @@
 				</span>
             <h3 class="card-label">Listado de tipo bandeja</h3>
         </div>
-        <div
-                class="card-toolbar">
-            <!--begin::Dropdown-->
-            <div class="dropdown dropdown-inline mr-2">
-                {#
-                <button type="button" class="btn btn-light-primary font-weight-bolder dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="la la-download"></i>
-                    Exportar
-                #}
-                </button>
-                <!--begin::Dropdown Menu-->
-                <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
-                    <ul class="nav flex-column nav-hover">
-                        <li class="nav-header font-weight-bolder text-uppercase  text-primary pb-2">
-                            Seleccione una opci&oacute;n:
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon la la-print"></i>
-                                <span class="nav-text">Imprimir</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon la la-copy"></i>
-                                <span class="nav-text">Copiar</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon la la-file-excel-o"></i>
-                                <span class="nav-text">Excel</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon la la-file-pdf-o"></i>
-                                <span class="nav-text">PDF</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <!--end::Dropdown Menu-->
-            </div>
-            <!--end::Dropdown-->
-
+        <div class="card-toolbar">
             {% if is_granted('ROLE_MENU_CONFIGURACION') %}
                 <!--begin::Button-->
                 <a href="{{ path('app_tipo_bandeja_new') }}" class="btn btn-primary font-weight-bolder">
@@ -102,53 +57,3 @@
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/tipobandeja/index.js') }}"></script>
 
 {% endblock %}
-
-{#
-{% block title %}TipoBandeja index{% endblock %}
-
-{% block body %}
-    <h1>TipoBandeja index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Descripcion</th>
-                <th>Id</th>
-                <th>FechaCreacion</th>
-                <th>FechaUltimaModificacion</th>
-                <th>FechaBaja</th>
-                <th>CodigoInterno</th>
-                <th>Habilitado</th>
-                <th>FechaDeshabilitado</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for tipo_bandeja in tipo_bandejas %}
-            <tr>
-                <td>{{ tipo_bandeja.nombre }}</td>
-                <td>{{ tipo_bandeja.descripcion }}</td>
-                <td>{{ tipo_bandeja.id }}</td>
-                <td>{{ tipo_bandeja.fechaCreacion ? tipo_bandeja.fechaCreacion|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ tipo_bandeja.fechaUltimaModificacion ? tipo_bandeja.fechaUltimaModificacion|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ tipo_bandeja.fechaBaja ? tipo_bandeja.fechaBaja|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ tipo_bandeja.codigoInterno }}</td>
-                <td>{{ tipo_bandeja.habilitado ? 'Yes' : 'No' }}</td>
-                <td>{{ tipo_bandeja.fechaDeshabilitado ? tipo_bandeja.fechaDeshabilitado|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_tipo_bandeja_show', {'id': tipo_bandeja.id}) }}">show</a>
-                    <a href="{{ path('app_tipo_bandeja_edit', {'id': tipo_bandeja.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="10">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_tipo_bandeja_new') }}">Create new</a>
-{% endblock %}
-#}

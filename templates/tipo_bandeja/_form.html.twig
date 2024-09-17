@@ -1,4 +1,6 @@
 {% import 'app/_macro_form.html.twig' as macro_form %}
-    	{{ macro_form._new_field(form.nombre, "col-md-3") }}
-    	{{ macro_form._new_field(form.estandar, "col-md-3") }}
-{{ form_end(form) }}
+{{ macro_form._new_field(form.nombre, "col-md-3") }}
+{{ macro_form._new_field(form.estandar, "col-md-3") }}
+{{ macro_form._new_field(form.habilitado, 'col-md-2') }}
+{{ form_widget(form._token) }}
+{{ form_end(form, {"render_rest": false}) }}

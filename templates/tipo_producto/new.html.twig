@@ -1,11 +1,41 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New TipoProducto{% endblock %}
+{% set edit = form.vars.value.id != null %}
 
 {% block body %}
-    <h1>Create new TipoProducto</h1>
+    {{ form_start(form, {'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
+    {% include ('app/_fields_errors.html.twig') %}
 
-    {{ include('tipo_producto/_form.html.twig') }}
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+				<span class="card-icon">
+					<i class="flaticon-search text-primary"></i>
+				</span>
+                <h3 class="card-label">Editar Tipo producto</h3>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {{ include('tipo_producto/_form.html.twig') }}
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('tipoproducto_index') }}" class="btn btn-light-dark font-weight-bold">Volver</a>
+            <button type="submit" id="tipo_producto_submit" name="tipo_producto[submit]" class="btn btn-light-primary font-weight-bold submit-button">{{ button_label|default('Guardar') }}</button>
+        </div>
+    </div>
 
-    <a href="{{ path('app_tipo_producto_index') }}">back to list</a>
+
 {% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}"></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/tipoproducto/new.js') }}"></script>
+
+{% endblock %}
+
+
+

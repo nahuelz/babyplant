@@ -19,7 +19,6 @@ class TipoBandejaController extends BaseController
     #[Route('/', name: 'tipobandeja_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
-
         return $this->render('tipo_bandeja/index.html.twig', [
             'select_boolean' => $this->selectService->getBooleanSelect(true)
         ]);

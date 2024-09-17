@@ -24,11 +24,13 @@ class AppFixtures extends Fixture
     {
         $estadoPedidoProducto = new EstadoPedidoProducto();
         $estadoPedidoProducto->setCodigoInterno(1);
+        $estadoPedidoProducto->setHabilitado(1);
         $estadoPedidoProducto->setNombre('PENDIENTE');
         $manager->persist($estadoPedidoProducto);
 
         $estadoPedido = new EstadoPedido();
         $estadoPedido->setCodigoInterno(1);
+        $estadoPedido->setHabilitado(1);
         $estadoPedido->setNombre('NUEVO');
         $manager->persist($estadoPedido);
 

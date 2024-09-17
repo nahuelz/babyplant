@@ -20,9 +20,9 @@ class TipoUsuarioType extends AbstractType
                         'class' => 'form-control',
                         'tabindex' => '5'))
             )
-            ->add('descripcion', TextType::class, array(
+            ->add('habilitado', null, array(
                     'required' => false,
-                    'label' => 'Descripción',
+                    'label' => 'Habilitado',
                     'attr' => array(
                         'class' => 'form-control',
                         'tabindex' => '5'))

@@ -1,54 +1,42 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}TipoProducto{% endblock %}
+{% import 'app/_macro_show.html.twig' as macro_show %}
 
 {% block body %}
-    <h1>TipoProducto</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Nombre</th>
-                <td>{{ tipo_producto.nombre }}</td>
-            </tr>
-            <tr>
-                <th>Descripcion</th>
-                <td>{{ tipo_producto.descripcion }}</td>
-            </tr>
-            <tr>
-                <th>Id</th>
-                <td>{{ tipo_producto.id }}</td>
-            </tr>
-            <tr>
-                <th>FechaCreacion</th>
-                <td>{{ tipo_producto.fechaCreacion ? tipo_producto.fechaCreacion|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>FechaUltimaModificacion</th>
-                <td>{{ tipo_producto.fechaUltimaModificacion ? tipo_producto.fechaUltimaModificacion|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>FechaBaja</th>
-                <td>{{ tipo_producto.fechaBaja ? tipo_producto.fechaBaja|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>CodigoInterno</th>
-                <td>{{ tipo_producto.codigoInterno }}</td>
-            </tr>
-            <tr>
-                <th>Habilitado</th>
-                <td>{{ tipo_producto.habilitado ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <th>FechaDeshabilitado</th>
-                <td>{{ tipo_producto.fechaDeshabilitado ? tipo_producto.fechaDeshabilitado|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+				<span class="card-icon">
+					<i class="flaticon-search text-primary"></i>
+				</span>
+                <h3 class="card-label">Detalles del tipo producto
+                    {{ tipo_producto }}</h3>
+            </div>
+            {% if is_granted('ROLE_BANDEJA_EDIT') %}
+                <div class="card-toolbar">
+                    <!--begin::Button-->
+                    <a href="{{ path('app_tipo_producto_edit', {'id': tipo_producto.id}) }}" class="btn btn-primary font-weight-bolder">
+                        <i class="la la-pen"></i>
+                        Editar
+                    </a>
+                    <!--end::Button-->
+                </div>
+            {% endif %}
+        </div>
 
-    <a href="{{ path('app_tipo_producto_index') }}">back to list</a>
+        <div class="card-body">
+            <div class="row">
+                {{ macro_show._show_detail('Nombre', tipo_producto.nombre, 'col-md-4') }}
+                {{ macro_show._show_detail('Habilitado', tipo_producto.habilitado, 'col-md-4') }}
+            </div>
 
-    <a href="{{ path('app_tipo_producto_edit', {'id': tipo_producto.id}) }}">edit</a>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('tipoproducto_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
+        </div>
 
-    {{ include('tipo_producto/_delete_form.html.twig') }}
+    </div>
+
+
 {% endblock %}

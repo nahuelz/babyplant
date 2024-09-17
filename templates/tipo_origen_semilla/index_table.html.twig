@@ -1,0 +1,30 @@
+{
+"data": [
+{% for entity in entities %}
+    [
+    "{{ entity.id }}",
+    "{{ entity.nombre|default('-') }}",
+    "{{ entity.habilitado|boolean_format }}",
+    {
+    {% if is_granted('ROLE_MENU_CONFIGURACION') %}
+        "show" : " {{ path( "app_tipo_origen_semilla_show", { "id": entity.id }) }}"
+    {% endif %}
+    {% if is_granted('ROLE_MENU_CONFIGURACION') %}
+        ,"edit" : " {{ path( "app_tipo_origen_semilla_edit", { "id": entity.id }) }}"
+    {% endif %}
+    {% if is_granted('ROLE_MENU_CONFIGURACION') and entity.habilitado %}
+        ,"deshabilitar": "{{ path('app_tipo_origen_semilla_habilitar_deshabilitar', { "id": entity.id }) }}"
+    {% elseif is_granted('ROLE_MENU_CONFIGURACION') and not entity.habilitado %}
+        ,"habilitar": "{{ path('app_tipo_origen_semilla_habilitar_deshabilitar', {"id": entity.id})}}"
+    {% endif %}
+    {% if is_granted('ROLE_CONFIGURACION') %}p
+        ,"delete" : " {{ path( "app_tipo_origen_semilla_delete", { "id": entity.id }) }}"
+    {% endif %}
+    }
+    ]{{ (loop.last ? '' : ',') }}
+{% endfor %}
+],
+"draw": {{ draw }},
+"recordsTotal": {{ totalRows }},
+"recordsFiltered": {{ totalFiltered }}
+}
