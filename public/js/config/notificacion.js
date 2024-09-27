@@ -246,7 +246,7 @@ function showDialog(options) {
         buttons: {
             danger: {
                 label: options.labelCancel ? options.labelCancel : "Cancelar",
-                className: "btn-sm btn-default pull-left cancel",
+                className: "btn-sm btn-light-dark pull-left font-weight-bold cancel ",
                 callback: function () {
                     var result = options.callbackCancel();
                     return result;
@@ -254,7 +254,7 @@ function showDialog(options) {
             },
             success: {
                 label: options.labelSuccess ? options.labelSuccess : "Guardar",
-                className: "btn-sm btn-submit submit-button success " + (options.color ? options.color : ''),
+                className: "btn-sm btn-submit submit-button btn-light-primary font-weight-bold success " + (options.color ? options.color : ''),
                 callback: function () {
                     var result = options.callbackSuccess();
                     return result;
@@ -270,12 +270,13 @@ function showDialog(options) {
     $(d).find('.modal-header').addClass(options.color ? options.color : '');
 
     // Add resizable function to modal
+    /*
     $(d).find(".modal-dialog").resizable({
         alsoResize: " .bootbox-body",
         handles: "e, s",
         minHeight: 250,
         minWidth: 350
-    });
+    });*/
 
     return d;
 }

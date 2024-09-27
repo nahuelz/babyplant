@@ -158,9 +158,20 @@ class PedidoProductoType extends AbstractType {
                         'tabindex' => '5'
                     ))
             )
-            ->add('cantDiasProduccion', ChoiceType::class, array(
+            ->add('cantDiasProduccion', TextType::class, array(
                     'label' => 'Cantidad de dias en produccion',
                     'required' => true,
+                    'attr' => array(
+                        'class' => 'form-control',
+                        'tabindex' => '5'))
+            )
+            ->add('cantDiasProduccionSelect', ChoiceType::class, array(
+                    'label' => 'Cantidad de dias en produccion',
+                    'required' => false,
+                    'mapped' => false,
+                    'attr' => array(
+                        'class' => 'form-control choice',
+                        'tabindex' => '5'),
                     'choices' => array(
                         '20 días' => 20,
                         '28 días' => 28,
@@ -172,9 +183,8 @@ class PedidoProductoType extends AbstractType {
                         '80 días' => 80,
                         '90 días' => 90
                     ),
-                    'attr' => array(
-                        'class' => 'form-control choice',
-                        'tabindex' => '5'))
+                    'data' => 20
+                )
             )
         ;
     }

@@ -1,0 +1,37 @@
+{% if entity is defined %}
+<div class="timeline timeline-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="note note-info text-center">
+                <p class="font-size-14">Hist&oacute;rico de estados del <span class="bold">Producto N&deg; {{ entity.id }} </span>.</p>
+            </div>
+        </div>
+    </div>
+
+    {% if historicoEstados is defined and historicoEstados|length > 0 %}
+        <div class="timeline-items">
+            {% for estadoHistorico in historicoEstados %}
+                <!--begin::Item-->
+                <div class="timeline-item">
+                    <!--begin::Icon-->
+                    <div class="timeline-media bg-light-{{ estadoHistorico.estado.colorIcono }}">
+                        <span class="{{ estadoHistorico.estado.icono }}"></span>
+                    </div>
+                    <!--end::Icon-->
+
+                    <!--begin::Info-->
+                    <div class="timeline-desc timeline-desc-light-{{ estadoHistorico.estado.colorIcono }}">
+                        <span class="font-weight-bolder text-{{ estadoHistorico.estado.colorIcono }}">{{ estadoHistorico.fecha|date('d/m/y H:i') }}</span>
+                        <p class="font-weight-normal text-dark-50 pb-2">
+                            {{ estadoHistorico.motivo|default('-') }} <br>
+                            Usuario: {{ estadoHistorico.usuarioUltimaModificacion|default('-') }}
+                        </p>
+                    </div>
+                    <!--end::Info-->
+                </div>
+                <!--end::Item-->
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endif  %}

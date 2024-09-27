@@ -33,6 +33,13 @@ class TipoBandejaType extends AbstractType
                         'class' => 'form-control choice',
                         'tabindex' => '5'))
             )
+            ->add('habilitado', null, array(
+                    'required' => false,
+                    'label' => 'Habilitado',
+                    'attr' => array(
+                        'class' => 'form-control',
+                        'tabindex' => '5'))
+            )
         ;
     }
 

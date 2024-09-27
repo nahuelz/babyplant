@@ -4,68 +4,41 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Fixtures">
-      <change afterPath="$PROJECT_DIR$/public/js/app/tipoorigensemilla/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/app/tipoorigensemilla/new.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/app/tipoproducto/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/app/tipoproducto/new.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/app/tiposubproducto/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/app/tiposubproducto/new.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/app/tipousuario/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/app/tipousuario/new.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/app/tipovariedad/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/app/tipovariedad/new.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/tipo_origen_semilla/index_table.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/tipo_producto/index_table.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/tipo_sub_producto/index_table.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/tipo_usuario/index_table.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/tipo_variedad/index_table.html.twig" afterDir="false" />
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Configuracion vistas">
+      <change afterPath="$PROJECT_DIR$/public/js/app/pedido/show.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/planificacion/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/planificacion/index2.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Controller/PlanificacionController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/pedido/header_acciones_button.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/pedido/historico_estados.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/pedido/show.cliente.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/pedido/show.observaciones.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/pedido/show.producto.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/planificacion/index.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/planificacion/index_table.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/app/pedido/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/config/config-form.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/config/config-form.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/theme/plugins/custom/datatables/datatables.bundle.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/plugins/custom/datatables/datatables.bundle.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/TipoBandejaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/TipoBandejaController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/TipoOrigenSemillaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/TipoOrigenSemillaController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/TipoProductoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/TipoProductoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/TipoSubProductoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/TipoSubProductoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/TipoUsuarioController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/TipoUsuarioController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/TipoVariedadController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/TipoVariedadController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/TipoOrigenSemillaType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/TipoOrigenSemillaType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/TipoProductoType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/TipoProductoType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/TipoSubProductoType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/TipoSubProductoType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/TipoUsuarioType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/TipoUsuarioType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/TipoVariedadType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/TipoVariedadType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/menu/menu_configuracion.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu_configuracion.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/pedido/new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/new.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/config/notificacion.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/config/notificacion.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/theme/css/style.bundle.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/css/style.bundle.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/theme/css/style.bundle.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PedidoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PedidoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/EstadoPedidoProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/EstadoPedidoProducto.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Pedido.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Pedido.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/TipoSubProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/TipoSubProducto.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/TipoVariedad.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/TipoVariedad.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Usuario.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Usuario.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/PedidoProductoType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/PedidoProductoType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/TipoBandejaType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/TipoBandejaType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/menu/menu_pedido.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu_pedido.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/pedido/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_bandeja/_form.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_bandeja/_form.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_bandeja/edit.html.twig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_bandeja/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_bandeja/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_origen_semilla/_form.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_origen_semilla/_form.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_origen_semilla/edit.html.twig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_origen_semilla/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_origen_semilla/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_origen_semilla/new.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_origen_semilla/new.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_origen_semilla/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_origen_semilla/show.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_producto/_form.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_producto/_form.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_producto/edit.html.twig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_producto/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_producto/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_producto/new.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_producto/new.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_producto/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_producto/show.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_sub_producto/_form.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_sub_producto/_form.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_sub_producto/edit.html.twig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_sub_producto/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_sub_producto/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_sub_producto/new.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_sub_producto/new.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedido/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedido/new.producto.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/new.producto.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedido/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/show.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/tipo_sub_producto/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_sub_producto/show.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_usuario/_form.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_usuario/_form.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_usuario/edit.html.twig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_usuario/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_usuario/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_usuario/new.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_usuario/new.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_usuario/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_usuario/show.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_variedad/_form.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_variedad/_form.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_variedad/edit.html.twig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_variedad/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_variedad/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_variedad/new.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_variedad/new.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_variedad/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_variedad/show.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,6 +58,10 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/public/js/app/planificacion/index.js" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/public/theme/plugins/custom/fullcalendar/fullcalendar.bundle.js" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -246,28 +223,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/xampp81/htdocs/babyplant/public/js/app/tipoorigensemilla",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "php.override.implement.member.chooser.php.doc": "NONE",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/xampp81/htdocs/babyplant/public/js/app/tipoorigensemilla&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;php.override.implement.member.chooser.php.doc&quot;: &quot;NONE&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\xampp81\htdocs\babyplant\public\js\app\tipoorigensemilla" />
@@ -311,7 +288,12 @@
       <workItem from="1726446490515" duration="2185000" />
       <workItem from="1726496416930" duration="600000" />
       <workItem from="1726498261079" duration="1374000" />
-      <workItem from="1726504632068" duration="7999000" />
+      <workItem from="1726504632068" duration="23881000" />
+      <workItem from="1726677506038" duration="15519000" />
+      <workItem from="1726840699677" duration="3303000" />
+      <workItem from="1727043280550" duration="22719000" />
+      <workItem from="1727124763923" duration="10867000" />
+      <workItem from="1727385481213" duration="6141000" />
     </task>
     <task id="LOCAL-00001" summary="config">
       <option name="closed" value="true" />
@@ -409,7 +391,15 @@
       <option name="project" value="LOCAL" />
       <updated>1726236196954</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Configuracion vistas">
+      <option name="closed" value="true" />
+      <created>1726543399334</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1726543399334</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -421,6 +411,7 @@
     <MESSAGE value="Alta pedido validaciones" />
     <MESSAGE value="Usuario Form Razon Social" />
     <MESSAGE value="Fixtures" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixtures" />
+    <MESSAGE value="Configuracion vistas" />
+    <option name="LAST_COMMIT_MESSAGE" value="Configuracion vistas" />
   </component>
 </project>

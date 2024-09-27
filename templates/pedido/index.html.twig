@@ -92,7 +92,7 @@
                         <div class="input-daterange input-group" id="kt_datepicker">
                             <input type="text" class="form-control datepicker"
                                    id="reporte_filtro_fechaDesde" name="reporte_filtro[fechaDesde]"
-                                   placeholder="Desde" value="{{ "now"|date_modify("-7 day")|date('d/m/Y') }}" />
+                                   placeholder="Desde" value="{{ "now"|date_modify("-90 day")|date('d/m/Y') }}" />
                             <div class="input-group-append">
                                 <span class="input-group-text">
                                     <i class="la la-ellipsis-h"></i>
@@ -133,10 +133,17 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-3">
+                <div class="col-lg-1">
                     <button class="btn btn-primary" id="mostrar_orden_semilla">
                             <span>
                                 <span>Ocultar Orden Siembra</span>
+                            </span>
+                    </button>&nbsp;&nbsp;
+                </div>
+                <div class="col-lg-1">
+                    <button class="btn btn-primary" id="mostrar_mesada">
+                            <span>
+                                <span>Ocultar Mesada</span>
                             </span>
                     </button>&nbsp;&nbsp;
                 </div>
@@ -148,11 +155,11 @@
                 <tr>
                     <th class="not-in-filter">ID</th>
                     <th data-type="string" class="text-center">ID Pedido</th>
+                    <th data-type="string" class="text-center">ID Producto</th>
                     <th data-type="string" class="text-center">Fecha Pedido</th>
                     <th data-type="string" class="text-center">Producto</th>
                     <th data-type="string" class="text-center">Cliente</th>
                     <th data-type="string" class="text-center">Cantidad bandejas pedidas</th>
-                    <th data-type="string" class="text-center">Tipo Bandeja</th>
                     <th data-type="string" class="text-center">Fecha Siembra</th>
                     <th data-type="string" class="text-center">Fecha Entrega</th>
                     <th data-type="string" class="text-center">Estado</th>
@@ -165,7 +172,25 @@
             <!--end: Datatable-->
         </div>
     </div>
-    <!--end::Card-->
+
+<!-- Modal-->
+<div class="modal fade" id="exampleModalCustomScrollable" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Historico Estados</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div data-scroll="false" data-height="300">
+                    {% include 'pedido/historico_estados.html.twig' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block javascripts %}

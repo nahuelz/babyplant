@@ -22,6 +22,10 @@ class TipoSubProducto extends EntidadBasica {
         $this->habilitado = true;
     }
 
+    public function getNombreCompleto($nombreVariedad){
+        return $this->getTipoProducto()->getNombre().' '.$this->getNombre(). ' '.$nombreVariedad;
+    }
+
     /**
      * @return mixed
      */

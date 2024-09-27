@@ -50,7 +50,7 @@
 
                     {# PEDIDOS PLANIFICAR #}
                     {% if is_granted("ROLE_PLANIFICAR") %}
-                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-calendar icon-3x text-dark', 'nombreModulo': 'Pedidos Para Planificar','action': '#', 'descripcionModulo': 'Aqui podras ver los pedidos para planificar' } %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-calendar icon-3x text-dark', 'nombreModulo': 'Pedidos Para Planificar','action': path('planificacion_index'), 'descripcionModulo': 'Aqui podras ver los pedidos para planificar' } %}
                     {% endif %}
 
                     {# PLANIFICACION DE SIEMBRA #}

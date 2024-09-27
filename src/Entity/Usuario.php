@@ -421,7 +421,7 @@ class Usuario implements UserInterface {
     /**
      * @return string
      */
-    public function getTelefono(): string
+    public function getTelefono()
     {
         return $this->telefono;
     }
@@ -437,7 +437,7 @@ class Usuario implements UserInterface {
     /**
      * @return string
      */
-    public function getCelular(): string
+    public function getCelular()
     {
         return $this->celular;
     }

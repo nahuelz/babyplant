@@ -3,21 +3,18 @@
 namespace App\Controller;
 
 use App\Controller\BaseController;
-use App\Entity\Constants\ConstanteEstadoMatriculado;
 use App\Entity\Constants\ConstanteEstadoPedido;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
-use App\Entity\EstadoMatriculado;
 use App\Entity\EstadoPedido;
 use App\Entity\EstadoPedidoHistorico;
 use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
-use App\Entity\Matriculado;
 use App\Entity\Pedido;
+use App\Entity\PedidoProducto;
 use App\Entity\Usuario;
 use App\Form\RegistrationFormType;
 use DateInterval;
 use DateTime;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -55,7 +52,7 @@ class PedidoController extends BaseController {
     /**
      * Tabla para app_pago.
      *
-     * @Route("/index_table/", name="pago_table", methods={"GET|POST"})
+     * @Route("/index_table/", name="pedido_table", methods={"GET|POST"})
      * @IsGranted("ROLE_PEDIDO")
      */
     public function indexTableAction(Request $request): Response {
@@ -70,6 +67,7 @@ class PedidoController extends BaseController {
         $rsm = new ResultSetMapping();
 
         $rsm->addScalarResult('id', 'id');
+        $rsm->addScalarResult('idProducto', 'idProducto');
         $rsm->addScalarResult('fechaCreacion', 'fechaCreacion');
         $rsm->addScalarResult('producto', 'producto');
         $rsm->addScalarResult('cliente', 'cliente');
@@ -193,6 +191,28 @@ class PedidoController extends BaseController {
     }
 
     /**
+     * @Route("/{id}/historico_estados", name="pedido_historico_estado", methods={"POST"})
+     * @Template("pedido/historico_estados.html.twig")
+     */
+    public function showHistoricoEstadoAction($id) {
+
+        $em = $this->getDoctrine()->getManager();
+
+        /* @var $pedidoProducto PedidoProducto */
+        $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($id);
+
+        if (!$pedidoProducto) {
+            throw $this->createNotFoundException('No se puede encontrar el producto.');
+        }
+
+        return array(
+            'entity' => $pedidoProducto,
+            'historicoEstados' => $pedidoProducto->getHistoricoEstados(),
+            'page_title' => 'Histórico de estados'
+        );
+    }
+
+    /**
      *
      * @return Array
      */
@@ -220,8 +240,21 @@ class PedidoController extends BaseController {
      * @return Array
      */
     protected function getExtraParametersEditAction($entity): Array {
+        $user = new Usuario();
+
+        $form = $this->createForm(RegistrationFormType::class, $user, array(
+            'action' => $this->generateUrl('app_register_ajax'),
+            'method' => 'POST'
+        ));
+
+        $form->add('submit', SubmitType::class, array(
+                'label' => 'Agregar',
+                'attr' => array('class' => 'btn btn-light-primary font-weight-bold submit-button'))
+        );
+
         return [
-            'preserve_values' => true
+            'preserve_values' => true,
+            'registrationForm' => $form->createView()
         ];
     }
 }

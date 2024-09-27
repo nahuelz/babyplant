@@ -1,34 +1,157 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Pedido{% endblock %}
+{% import 'app/_macro_show.html.twig' as macro_show %}
+
+{% block stylesheets %}
+
+    {{ parent() }}
+
+    <style type="text/css">
+        .card.card-detail .card-header {
+            padding: 15px;
+            background-color: #f5f5f5;
+        }
+
+        .card.card-detail {
+            margin-bottom: 20px;
+        }
+    </style>
+
+{% endblock %}
 
 {% block body %}
-    <h1>Pedido</h1>
+<div class="card card-custom">
+    <div class="card-header">
+        <div class="card-title">
+            <span class="card-icon"><i class="flaticon-search text-primary"></i></span>
+            <h3 class="card-label">{{ entity }}</h3>
+        </div>
+        <div class="card-toolbar">
+            {% include 'pedido/header_acciones_button.html.twig' with {'entity': entity } %}
+        </div>
+    </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ entity.id }}</td>
-            </tr>
-            <tr>
-                <th>FechaCreacion</th>
-                <td>{{ entity.fechaCreacion ? entity.fechaCreacion|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>FechaUltimaModificacion</th>
-                <td>{{ entity.fechaUltimaModificacion ? entity.fechaUltimaModificacion|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>FechaBaja</th>
-                <td>{{ entity.fechaBaja ? entity.fechaBaja|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="card-body">
+        <div class="card card-detail">
+            <h4 class="card-header">Productos</h4>
+            <div class="card-body">
+                <div class="row">
+                    {% for producto in entity.pedidosProductos %}
+                        {{ macro_show._show_detail('Producto ID', producto.id|default('-'), 'col-md-2') }}
+                        {{ macro_show._show_detail('Fecha Pedido', producto.fechaCreacion is not null ? producto.fechaCreacion|date("d/m/Y") : '-', 'col-md-2') }}
+                        {{ macro_show._show_detail('Fecha de Siembra', producto.fechaSiembra is not null ? producto.fechaSiembra|date("d/m/Y") : '-', 'col-md-2') }}
+                        {{ macro_show._show_detail('Fecha de Entrega', producto.fechaEntrega is not null ? producto.fechaEntrega|date("d/m/Y") : '-', 'col-md-2') }}
+                        {{ macro_show._show_detail('Estado', producto.estado|default('-'), 'col-md-3') }}
+                        <div class="dropdown dropdown-inline" style="margin-top: 25px;">
+                            <button type="button" class="btn btn-light-primary font-weight-bolder dropdown-toggle" data-toggle="dropdown">
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+                                <ul class="navi flex-column navi-hover py-2">
+                                    {% if is_granted('ROLE_PEDIDO') %}
+                                        <li class="navi-item">
+                                            <a href="#" data-href="{{ path( "pedido_historico_estado", { "id": producto.id }) }}" class="navi-link link-ver-historico-pedido">
+                                                <span class="navi-icon">
+                                                    <i class="la la-refresh"></i>
+                                                </span>
+                                                <span class="navi-text">Historico estados</span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
 
-    <a href="{{ path('pedido_index') }}">back to list</a>
-
-    <a href="{{ path('pedido_edit', {'id': entity.id}) }}">edit</a>
-
-    {{ include('pedido/_delete_form.html.twig') }}
+        <div class="card card-detail">
+            <h4 class="card-header">Datos Cliente</h4>
+            <div class="card-body">
+                <div class="row">
+                    {{ macro_show._show_detail('Apellido', entity.cliente.apellido|default('-'), 'col-md-4') }}
+                    {{ macro_show._show_detail('Nombre', entity.cliente.nombre|default('-'), 'col-md-4') }}
+                    {{ macro_show._show_detail('CUIT', entity.cliente.cuit|default('-'), 'col-md-4') }}
+                    {{ macro_show._show_detail('Email', entity.cliente.email|default('-'), 'col-md-4') }}
+                    {{ macro_show._show_detail('Celular', entity.cliente.celular|default('-'), 'col-md-4') }}
+                    {{ macro_show._show_detail('Domicilio', entity.cliente.domicilio|default('-'), 'col-md-4') }}
+                </div>
+                <div class="row">
+                    {{ macro_show._show_detail('Razon Social', entity.cliente.razonSocial.razonSocial|default('-'), 'col-md-2') }}
+                    {{ macro_show._show_detail('CUIT Razon Social', entity.cliente.razonSocial.cuit|default('-'), 'col-md-2') }}
+                </div>
+            </div>
+        </div>
+        <div class="card card-detail">
+            <h4 class="card-header">Observaciones</h4>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="detalle_show">{{ entity.observacion|default('-') }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('pedido_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
+        </div>
+    </div>
+    <!-- Modal-->
+    <div class="modal fade" id="exampleModalCustomScrollable" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Historico Estados</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i aria-hidden="true" class="ki ki-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div data-scroll="false" data-height="300">
+                        {% include 'pedido/historico_estados.html.twig' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/pedido/show.js') }}" ></script>
+
+{% endblock %}
+
+    {#
+    <div class="col-md-12">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab-1" data-toggle="tab" href="#home-1">
+                    <span class="nav-icon"><i class="flaticon2-chat-1"></i></span>
+                    <span class="nav-text">Datos Pedido</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab-1" data-toggle="tab" href="#profile-1" aria-controls="profile">
+                    <span class="nav-icon"><i class="flaticon2-layers-1"></i></span>
+                    <span class="nav-text">Datos Personales Cliente</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="contact-tab-1" data-toggle="tab" href="#contact-1" aria-controls="contact">
+                    <span class="nav-icon"><i class="flaticon2-rocket-1"></i></span>
+                    <span class="nav-text">Datos Contacto Cliente</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="tab-content mt-5" id="myTabContent">
+        ...
+    </div>
+    #}
+

@@ -41,6 +41,7 @@
                                                                                        <!--begin::Global Theme Styles(used by all pages)-->
         <link href="{{ asset(plugins_path ~ 'global/plugins.bundle.css') }}" rel="stylesheet" type="text/css"/>
         <link href="{{ asset(plugins_path ~ 'custom/prismjs/prismjs.bundle.css') }}" rel="stylesheet" type="text/css"/>
+        <link href="{{ asset(plugins_path ~ 'custom/fullcalendar/fullcalendar.bundle.css') }}" rel="stylesheet" type="text/css"/>
         <link href="{{ asset(css_path ~ 'style.bundle.css') }}" rel="stylesheet" type="text/css"/>
         <!--end::Global Theme Styles-->
 
@@ -407,6 +408,7 @@
     <!--begin::Global Theme Bundle(used by all pages)-->
     <script src="{{ asset(plugins_path ~ 'global/plugins.bundle.js') }}"></script>
     <script src="{{ asset(plugins_path ~ 'custom/prismjs/prismjs.bundle.js') }}"></script>
+    <script src="{{ asset(plugins_path ~ 'custom/fullcalendar/fullcalendar.bundle.js') }}"></script>
     <script src="{{ asset(js_path ~ 'scripts.bundle.js') }}"></script>
     <!--end::Global Theme Bundle-->
 
@@ -438,6 +440,7 @@
 
     {# Busy Load #}
     <script src="{{ asset('plugins/busy-load/app.min.js') }}"></script>
+
 {% endblock %}
 </body>
 <!-- END BODY -->

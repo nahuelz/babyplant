@@ -5,15 +5,39 @@ var $table = $('#table-pago');
 
 $(document).ready(function () {
     initTable();
-    initToggleHideColumnHandler();
+    initToggleHideColumnHandlerOrdenSiembra();
+    initToggleHideColumnHandlerMesada();
+    initVerHistoricoEstadoHandler();
+
 });
 
-function initToggleHideColumnHandler(){
-    $('#mostrar_orden_semilla').on ('click', function(){
-        initToggleHiddeColumn();
+function initToggleHideColumnHandlerMesada(){
+    $('#mostrar_mesada').on ('click', function(){
+        initToggleHiddeColumnMesada();
     });
 }
-function initToggleHiddeColumn(){
+
+function initToggleHideColumnHandlerOrdenSiembra() {
+    $('#mostrar_orden_semilla').on('click', function () {
+        initToggleHiddeColumnOrdenSiembra();
+    });
+}
+function initToggleHiddeColumnMesada() {
+    var table = $('#table-pago').DataTable();
+    var column = table.column(11);
+    if (column.visible()) {
+        column.visible(false);
+        $('.filter th:nth-child(11)').hide();
+        $('#mostrar_mesada').text('Mostrar Mesada');
+    } else {
+        $('.filter th:nth-child(11)').show();
+        column.visible(true);
+        $('#mostrar_mesada').text('Ocultar Mesada');
+    }
+    table.ajax.reload();
+}
+
+function initToggleHiddeColumnOrdenSiembra(){
     var table = $('#table-pago').DataTable();
     var column = table.column(10);
     if (column.visible()){
@@ -74,9 +98,6 @@ function initDataTable() {
                 "data": {
                     "fechaDesde": $('#reporte_filtro_fechaDesde').val(),
                     "fechaHasta": $('#reporte_filtro_fechaHasta').val(),
-                    //"idTipoObligacion": $('#reporte_filtro_tipoObligacion').val(),
-                    //"nombreArchivo": $('#reporte_filtro_archivo').val() ? $('#reporte_filtro_archivo option:selected').text().trim() : null,
-                    //"idProveedorPago": $('#reporte_filtro_proveedorPago').val(),
                     "idCliente": $('#reporte_filtro_cliente').val()
                 },
                 "success": fnCallback
@@ -133,6 +154,9 @@ function initDataTable() {
         ],
         columnDefs: datatablesGetColDef(),
         order: [[1, 'desc']],
+        rowGroup: {
+            dataSrc: 1
+        },
         serverSide: false
     });
 
@@ -180,6 +204,14 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
+            name: 'id',
+            width: '30px',
+            visible: false,
+            className: 'dt-center',
+            type: 'num'
+        },
+        {
+            targets: index++,
             name: 'fechaCreacion',
             className: 'dt-center',
             type: 'num'
@@ -199,13 +231,6 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'cantidadBandejas',
-            width: '30px',
-            className: 'dt-center',
-            type: 'num'
-        },
-        {
-            targets: index++,
-            name: 'tipoBandeja',
             width: '30px',
             className: 'dt-center',
             type: 'num'
@@ -245,10 +270,11 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
-            name: 'ordenSiembra'.indexx,
+            name: 'ordenSiembra',
             width: '30px',
             className: 'dt-center',
-            searchable: false,
+            visible: true,
+            searchable: true,
             type: 'num'
         },
         {
@@ -256,8 +282,8 @@ function datatablesGetColDef() {
             name: 'mesada',
             width: '30px',
             className: 'dt-center',
-            visible: false,
-            searchable: false,
+            visible: true,
+            searchable: true,
             type: 'num'
         },
         {
@@ -292,11 +318,7 @@ function dataTablesActionFormatter(data, type, full, meta) {
             +
             (data.edit !== undefined ? '<a class="dropdown-item" href="' + data.edit + '"><i class="la la-edit" style="margin-right: 5px;"></i> Editar</a>' : '')
             +
-            (data.estados !== undefined ? '<a class="dropdown-item" href="' + data.estados + '"><i class="la la-refresh" style="margin-right: 5px;"></i> Administrar estados</a>' : '')
-            +
-            (data.estados !== undefined ? '<a class="dropdown-item" href="' + data.matriculado_historico + '"><i class="la la-address-card" style="margin-right: 5px;"></i> Administrar matrícula</a>' : '')
-            +
-            (data.estado_cuenta !== undefined ? '<a class="dropdown-item" href="' + data.estado_cuenta + '"><i class="la la-file-alt" style="margin-right: 5px;"></i> Estado de cuenta</a>' : '')
+            (data.historico_estado !== undefined ? '<a class="dropdown-item link-ver-historico-pedido" href="#" data-href="' + data.historico_estado + '"><i class="la la-file-alt" style="margin-right: 5px;" data-original-title="Hist&oacute;rico de estados"></i>Hist&oacute;rico de estados</a>' : '')
             +
             (data.delete !== undefined ? '<a class="dropdown-item accion-borrar" href="' + data.delete + '"><i class="la la-remove" style="margin-right: 5px;"></i> Borrar</a>' : '')
         ;
@@ -310,4 +332,47 @@ function dataTablesActionFormatter(data, type, full, meta) {
     }
 
     return actions;
+}
+
+/**
+ *
+ * @returns {undefined}
+ */
+function initVerHistoricoEstadoHandler() {
+
+    $(document).off('click', '.link-ver-historico-pedido').on('click', '.link-ver-historico-pedido', function (e) {
+
+        e.preventDefault();
+
+        var idAmenaza = $(this).data('id');
+
+        var actionUrl = $(this).data('href');
+
+        $.ajax({
+            type: 'POST',
+            url: actionUrl,
+            data: {
+                id: idAmenaza
+            }
+        }).done(function (form) {
+
+            showDialog({
+                titulo: '<i class="fa fa-list-ul margin-right-10"></i> Hist&oacute;rico de estados',
+                contenido: form,
+                color: 'yellow',
+                labelCancel: 'Cerrar',
+                labelSuccess: 'Cerrar',
+                closeButton: true,
+                callbackCancel: function () {
+                    return;
+                },
+                callbackSuccess: function () {
+                    return;
+                }
+            });
+
+            $('.modal-dialog').css('width', '80%');
+            $('.btn-submit').hide();
+        });
+    });
 }

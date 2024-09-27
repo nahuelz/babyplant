@@ -11,13 +11,21 @@ jQuery(document).ready(function () {
     initCantBandejasHandler();
     initFechaEntregaHandler();
     initDiasProduccionHandler();
-    initFechaSiembra();
     $('.row-pedido-producto-empty').hide();
     initAgregarClienteModal();
     initAgregarClienteHandler();
     initRazonSocialHandler();
+    $('#pedido_pedidoProducto_cantDiasProduccion').val('20');
+    initFechaSiembra();
+    initDiasProduccionSelectHandler();
 
 });
+
+function initDiasProduccionSelectHandler(){
+    $('#pedido_pedidoProducto_cantDiasProduccionSelect').on('change', function(){
+        $('#pedido_pedidoProducto_cantDiasProduccion').val($('#pedido_pedidoProducto_cantDiasProduccionSelect').val()).change()
+    });
+}
 
 function initAgregarClienteHandler() {
     $('.link-agregar-cliente').on('click', function(){
@@ -44,12 +52,31 @@ function setFechaSiembra(){
     var fechaSiembra = $('#pedido_pedidoProducto_fechaEntrega').datepicker('getDate');
     if (fechaSiembra !== null) {
         fechaSiembra.setDate(fechaSiembra.getDate() - dias);
+        if (fechaSiembra.getDay() == 0) {
+            fechaSiembra.setDate(fechaSiembra.getDate() + 1);
+        }
         $('#pedido_pedidoProducto_fechaSiembra').datepicker('setDate', fechaSiembra);
     }
 }
 
-function initDiasProduccionHandler(){
-    $('#pedido_pedidoProducto_cantDiasProduccion').change(function() {
+function initDiasProduccionHandler() {
+    $('#pedido_pedidoProducto_cantDiasProduccion').on('change', function () {
+        setFechaEntrega();
+    });
+
+    $('#pedido_pedidoProducto_cantDiasProduccion').on('keyup', function(){
+        setFechaEntrega();
+    });
+
+    $('#pedido_pedidoProducto_cantDiasProduccion').on('keypress', function(){
+        setFechaEntrega();
+    });
+
+    $('#pedido_pedidoProducto_cantDiasProduccion').on('paste', function(){
+        setFechaEntrega();
+    });
+
+    $('#pedido_pedidoProducto_cantDiasProduccion').on('input', function(){
         setFechaEntrega();
     });
 }
@@ -253,7 +280,7 @@ function initPedidoProductoHandler() {
             //  Reset form
             $('.row-agregar-pedido-producto').show('slow');
             clearPedidoProductoForm();
-            $('#pedido_pedidoProducto_cantDiasProduccion').val('20').select2();
+            $('#pedido_pedidoProducto_cantDiasProduccion').val('20');
             initFechaSiembra();
         }
 

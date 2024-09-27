@@ -31,7 +31,7 @@ class PedidoProducto {
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Pedido::class)
+     * @ORM\ManyToOne(targetEntity=Pedido::class, inversedBy="pedidosProductos")
      * @ORM\JoinColumn(name="id_pedido", referencedColumnName="id", nullable=true)
      */
     private $pedido;
@@ -90,7 +90,7 @@ class PedidoProducto {
     private $otroOrigenSemilla;
 
     /**
-     * @ORM\OneToMany(targetEntity=EstadoPedidoProductoHistorico::class, mappedBy="matriculado", cascade={"all"})
+     * @ORM\OneToMany(targetEntity=EstadoPedidoProductoHistorico::class, mappedBy="pedidoProducto", cascade={"all"})
      * @ORM\OrderBy({"fecha" = "DESC", "id" = "DESC"})
      */
     private $historicoEstados;
@@ -104,6 +104,10 @@ class PedidoProducto {
     public function __construct()
     {
         $this->historicoEstados = new ArrayCollection();
+    }
+
+    public function getNombreCompleto(){
+        return $this->getTipoVariedad()->getNombreCompleto();
     }
 
 
@@ -322,7 +326,7 @@ class PedidoProducto {
     /**
      * @return ArrayCollection
      */
-    public function getHistoricoEstados(): ArrayCollection
+    public function getHistoricoEstados()
     {
         return $this->historicoEstados;
     }

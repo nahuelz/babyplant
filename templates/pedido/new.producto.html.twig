@@ -11,23 +11,6 @@
 </div>
 
 <div class="row-form-pedido-producto">
-    {#
-    <div class="row">
-        <div class="col-md-4">
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">
-                    <label class="checkbox checkbox-inline checkbox-success">
-                        <input type="checkbox" checked="">
-                        <span></span>
-                    </label>
-                </span>
-                </div>
-                <input type="text" class="form-control" aria-label="Text input with checkbox">
-            </div>
-        </div>
-    </div>
-    #}
 <div class="row">
     {{ macro_form._new_field(form.pedidoProducto.tipoProducto, 'col-md-4') }}
     {{ macro_form._new_field(form.pedidoProducto.tipoSubProducto, 'col-md-4') }}
@@ -41,7 +24,15 @@
 </div>
 <div class="row">
     {{ macro_form._new_field(form.pedidoProducto.fechaSiembra, 'col-md-3') }}
-    {{ macro_form._new_field(form.pedidoProducto.cantDiasProduccion, 'col-md-3') }}
+    <div class="col-md-3">
+        <div class="form-group">
+            {{ form_label(form.pedidoProducto.cantDiasProduccion) }}
+            <div class="form_field">
+                {{ form_widget(form.pedidoProducto.cantDiasProduccionSelect, {'attr': {'class' : 'form-control col-md-4', 'style': 'display: inline' }}) }}
+                {{ form_widget(form.pedidoProducto.cantDiasProduccion, {'attr': {'class' : 'form-control col-md-7', 'style': 'display: inline' }}) }}
+            </div>
+        </div>
+    </div>
     {{ macro_form._new_field(form.pedidoProducto.fechaEntrega, 'col-md-3') }}
     <div class="col-md-3 pull-left">
         <div class="form-group">

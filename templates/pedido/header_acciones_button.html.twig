@@ -1,0 +1,36 @@
+<div class="dropdown dropdown-inline">
+    <button type="button" class="btn btn-light-primary font-weight-bolder dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Acciones
+    </button>
+    <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right" style="">
+        <ul class="navi flex-column navi-hover py-2">
+            <li class="navi-item">
+            <a href="{{ path( "pedido_show", { "id": entity.id }) }}" class="navi-link">
+                    <span class="navi-icon">
+                        <i class="la la-search"></i>
+                    </span>
+                <span class="navi-text">Ver</span>
+            </a>
+            </li>
+
+            {% if is_granted('ROLE_PEDIDO') %}
+                <li class="navi-item">
+                <a href="{{ path('pedido_edit', {'id': entity.id}) }}" class="navi-link">
+                        <span class="navi-icon">
+                            <i class="la la-pen"></i>
+                        </span>
+                    <span class="navi-text">Editar</span>
+                </a>
+                </li>
+                <li class="navi-item">
+                    <a href="#" data-href="{{ path( "pedido_historico_estado", { "id": entity.id }) }}" class="navi-link link-ver-historico-pedido">
+                            <span class="navi-icon">
+                                <i class="la la-refresh"></i>
+                            </span>
+                        <span class="navi-text">Historico estados</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>

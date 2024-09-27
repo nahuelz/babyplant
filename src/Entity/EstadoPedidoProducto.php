@@ -17,6 +17,21 @@ class EstadoPedidoProducto extends EntidadBasica
      */
     private $inicial;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $color;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $icono;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $colorIcono;
+
     public function getInicial(): ?string
     {
         return $this->inicial;
@@ -28,4 +43,48 @@ class EstadoPedidoProducto extends EntidadBasica
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+    /**
+     * @param mixed $color
+     */
+    public function setColor($color): void
+    {
+        $this->color = $color;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIcono()
+    {
+        return $this->icono;
+    }
+
+    /**
+     * @param mixed $icono
+     */
+    public function setIcono($icono): void
+    {
+        $this->icono = $icono;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getColorIcono()
+    {
+        return $this->colorIcono;
+    }
+
+
+
+
 }

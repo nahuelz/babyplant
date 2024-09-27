@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+
+    {{ parent() }}
+
+    <link href="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css"/>
+
+    <style>
+        .label-light-secondary{
+            color:black !important;
+        }
+    </style>
+
+{% endblock %}
+
+{% block body %}
+<div class="card card-custom">
+    <div class="card-header">
+        <div class="card-title">
+            <h3 class="card-label">
+                Planificacion
+            </h3>
+        </div>
+        <div class="card-toolbar">
+            <a href="#" class="btn btn-light-primary font-weight-bold" id="btn-fscreen">
+                <i class="fas fa-expand"></i>
+            </a>
+        </div>
+    </div>
+    <div class="card-body" id="fScreen">
+        <div id="kt_calendar"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/planificacion/index.js') }}" ></script>
+{% endblock %}
