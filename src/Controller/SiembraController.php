@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
+use App\Controller\BaseController;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Constants\ConstanteTipoConsulta;
-use App\Controller\BaseController;
 use App\Entity\EstadoPedidoHistorico;
 use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
@@ -20,41 +20,42 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/planificacion")
+ * @Route("/siembra")
  */
-class PlanificacionController extends BaseController
+class SiembraController extends BaseController
 {
 
     /**
-     * @Route("/", name="planificacion_index", methods={"GET"})
-     * @Template("planificacion/index.html.twig")
+     * @Route("/", name="siembra_index", methods={"GET"})
+     * @Template("siembra/index.html.twig")
      * @IsGranted("ROLE_PEDIDO")
      */
     public function index(): array
     {
         $bread = $this->baseBreadcrumbs;
-        $bread['Planificacion'] = null;
+        $bread['Siembra'] = null;
 
         return array(
             'breadcrumbs' => $bread,
-            'page_title' => 'Planificacion'
+            'page_title' => 'Siembra'
         );
     }
 
     /**
      *
-     * @Route("/index_table/", name="planificacion_table", methods={"GET|POST"})
+     * @Route("/index_table/", name="siembra_table", methods={"GET|POST"})
      * @IsGranted("ROLE_PEDIDO")
      */
     public function indexTableAction(Request $request): Response {
 
-        $entityTable = 'view_planificacion';
+        $entityTable = 'view_siembra';
 
         $rsm = new ResultSetMapping();
 
         $rsm->addScalarResult('id', 'id');
         $rsm->addScalarResult('nombreCompleto', 'nombreCompleto');
         $rsm->addScalarResult('nombreCorto', 'nombreCorto');
+        $rsm->addScalarResult('title', 'title');
         $rsm->addScalarResult('cantidadTipoBandejabandeja', 'cantidadTipoBandejabandeja');
         $rsm->addScalarResult('cantidadBandejas', 'cantidadBandejas');
         $rsm->addScalarResult('tipoBandeja', 'tipoBandeja');
@@ -67,38 +68,13 @@ class PlanificacionController extends BaseController
         $rsm->addScalarResult('codigoSobre', 'codigoSobre');
         $rsm->addScalarResult('className', 'className');
 
-        $renderPage = "planificacion/index_table.html.twig";
+        $renderPage = "siembra/index_table.html.twig";
         return parent::baseIndexTableAction($request, [], $entityTable, ConstanteTipoConsulta::VIEW, $rsm, $renderPage);
     }
 
     /**
-     * @Route("/{id}", name="planificacion_show", methods={"GET"})
-     * @Template("pedido/show.html.twig")
-     * @IsGranted("ROLE_PEDIDO")
-     */
-    public function show($id): Array {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository("App\Entity\Pedido")->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException("No se puede encontrar la entidad Pedido.");
-        }
-
-        $breadcrumbs = $this->getShowBaseBreadcrumbs($entity);
-
-        $parametros = array(
-            'entity' => $entity,
-            'breadcrumbs' => $breadcrumbs,
-            'page_title' => 'Detalle ' . $this->getEntityRenderName()
-        );
-
-        return array_merge($parametros, $this->getExtraParametersShowAction($entity));
-    }
-
-    /**
      *
-     * @Route("/cambiar_fecha_planificacion/", name="cambiar_fecha_planificacion", methods={"POST"})
+     * @Route("/cambiar_fecha_siembra/", name="cambiar_fecha_siembra", methods={"POST"})
      * @IsGranted("ROLE_PEDIDO")
      */
     public function setChangeData(Request $request){
@@ -132,13 +108,13 @@ class PlanificacionController extends BaseController
      */
     public function setOrdenSiembra(Request $request){
 
-        $codSobre = $request->get('codSobre');
+        $observacion = $request->get('observacion');
         $idPedidoProducto = $request->get('idPedidoProducto');
 
         $em = $this->getDoctrine()->getManager();
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
-        $pedidoProducto->setCodigoSobre($codSobre);
+        $pedidoProducto->setObservacion($observacion);
         if ($pedidoProducto->getEstado()->getCodigoInterno() != ConstanteEstadoPedidoProducto::PLANIFICADO) {
             $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::PLANIFICADO);
             $this->cambiarEstado($em, $pedidoProducto, $estado);
@@ -172,5 +148,26 @@ class PlanificacionController extends BaseController
         $pedidoProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
 
         $em->persist($estadoPedidoProductoHistorico);
+    }
+
+    /**
+     * @Route("/{id}/pedido_producto_siembra", name="pedido_producto_siembra", methods={"GET","POST"})
+     * @Template("siembra/producto_show.html.twig")
+     */
+    public function showPedidoProductoAction($id) {
+
+        $em = $this->getDoctrine()->getManager();
+
+        /* @var $pedidoProducto PedidoProducto */
+        $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($id);
+
+        if (!$pedidoProducto) {
+            throw $this->createNotFoundException('No se puede encontrar el producto.');
+        }
+
+        return array(
+            'entity' => $pedidoProducto,
+            'page_title' => 'Pedido Producto'
+        );
     }
 }

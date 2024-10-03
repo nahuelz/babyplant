@@ -219,8 +219,13 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'producto',
-            className: 'dt-center',
-            type: 'num'
+            className: 'nowrap text-center align-middle',
+            render: function (data, type, full, meta) {
+                if (type === 'display') {
+                    return '<span class="label label-inline ' + data.nombreProducto + ' font-weight-bold p-4 ml-15 mr-15" style="width: 135px">' + data.producto + '</span>';
+                }
+                return data.producto;
+            }
         },
         {
             targets: index++,

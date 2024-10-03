@@ -32,6 +32,11 @@ class EstadoPedidoProducto extends EntidadBasica
      */
     private $colorIcono;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $className;
+
     public function getInicial(): ?string
     {
         return $this->inicial;
@@ -79,10 +84,35 @@ class EstadoPedidoProducto extends EntidadBasica
     /**
      * @return mixed
      */
+    public function setColorIcono($colorIcono)
+    {
+        $this->colorIcono = $colorIcono;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getColorIcono()
     {
         return $this->colorIcono;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getClassName()
+    {
+        return $this->className;
+    }
+
+    /**
+     * @param mixed $className
+     */
+    public function setClassName($className): void
+    {
+        $this->className = $className;
+    }
+
 
 
 

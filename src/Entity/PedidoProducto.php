@@ -54,6 +54,11 @@ class PedidoProducto {
     private $cantBandejas;
 
     /**
+     * @ORM\Column(name="cantidad_bandejas_reales", type="string", length=50, nullable=true)
+     */
+    private $cantBandejasReales;
+
+    /**
      * @ORM\Column(name="cantidad_semillas", type="string", length=50, nullable=true)
      */
     private $cantSemillas;
@@ -67,6 +72,16 @@ class PedidoProducto {
      * @ORM\Column(name="fecha_entrega", type="datetime", nullable=true)
      */
     private $fechaEntrega;
+
+    /**
+     * @ORM\Column(name="fecha_siembra_pedido", type="datetime", nullable=true)
+     */
+    private $fechaSiembraPedido;
+
+    /**
+     * @ORM\Column(name="fecha_entrega_pedido", type="datetime", nullable=true)
+     */
+    private $fechaEntregaPedido;
 
     /**
      * @ORM\Column(name="fecha_pedido", type="datetime", nullable=true)
@@ -100,6 +115,21 @@ class PedidoProducto {
      * @ORM\JoinColumn(name="id_estado_pedido_producto", referencedColumnName="id", nullable=false)
      */
     private $estado;
+
+    /**
+     * @ORM\Column(name="codigo_sobre", type="string", length=50, nullable=true)
+     */
+    private $codigoSobre;
+
+    /**
+     * @ORM\Column(name="observacion", type="string", length=255, nullable=true)
+     */
+    private $observacion;
+
+    /**
+     * @ORM\Column(name="hora_siembra", type="datetime", length=255, nullable=true)
+     */
+    private $horaSiembra;
 
     public function __construct()
     {
@@ -355,13 +385,99 @@ class PedidoProducto {
         $this->estado = $estado;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getCodigoSobre()
+    {
+        return $this->codigoSobre;
+    }
 
+    /**
+     * @param mixed $codigoSobre
+     */
+    public function setCodigoSobre($codigoSobre): void
+    {
+        $this->codigoSobre = $codigoSobre;
+    }
 
+    /**
+     * @return mixed
+     */
+    public function getFechaSiembraPedido()
+    {
+        return $this->fechaSiembraPedido;
+    }
 
+    /**
+     * @param mixed $fechaSiembraPedido
+     */
+    public function setFechaSiembraPedido($fechaSiembraPedido): void
+    {
+        $this->fechaSiembraPedido = $fechaSiembraPedido;
+    }
 
+    /**
+     * @return mixed
+     */
+    public function getFechaEntregaPedido()
+    {
+        return $this->fechaEntregaPedido;
+    }
 
+    /**
+     * @param mixed $fechaEntregaPedido
+     */
+    public function setFechaEntregaPedido($fechaEntregaPedido): void
+    {
+        $this->fechaEntregaPedido = $fechaEntregaPedido;
+    }
 
+    /**
+     * @return mixed
+     */
+    public function getObservacion()
+    {
+        return $this->observacion;
+    }
 
+    /**
+     * @param mixed $observacion
+     */
+    public function setObservacion($observacion): void
+    {
+        $this->observacion = $observacion;
+    }
 
+    /**
+     * @return mixed
+     */
+    public function getCantBandejasReales()
+    {
+        return $this->cantBandejasReales;
+    }
 
+    /**
+     * @param mixed $cantBandejasReales
+     */
+    public function setCantBandejasReales($cantBandejasReales): void
+    {
+        $this->cantBandejasReales = $cantBandejasReales;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHoraSiembra()
+    {
+        return $this->horaSiembra;
+    }
+
+    /**
+     * @param mixed $horaSiembra
+     */
+    public function setHoraSiembra($horaSiembra): void
+    {
+        $this->horaSiembra = $horaSiembra;
+    }
 }

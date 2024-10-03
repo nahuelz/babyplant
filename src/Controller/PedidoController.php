@@ -70,6 +70,7 @@ class PedidoController extends BaseController {
         $rsm->addScalarResult('idProducto', 'idProducto');
         $rsm->addScalarResult('fechaCreacion', 'fechaCreacion');
         $rsm->addScalarResult('producto', 'producto');
+        $rsm->addScalarResult('nombreProducto', 'nombreProducto');
         $rsm->addScalarResult('cliente', 'cliente');
         $rsm->addScalarResult('cantidadBandejas', 'cantidadBandejas');
         $rsm->addScalarResult('tipoBandeja', 'tipoBandeja');
@@ -152,6 +153,12 @@ class PedidoController extends BaseController {
         $estadoProducto = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::PENDIENTE);
         $this->cambiarEstado($em, $entity, $estadoPedido, $estadoProducto);
 
+        /** @var PedidoProducto $pedidoProducto */
+        foreach ($entity->getPedidosProductos() as $pedidoProducto){
+            $pedidoProducto->setFechaEntregaPedido($pedidoProducto->getFechaEntrega());
+            $pedidoProducto->setFechaSiembraPedido($pedidoProducto->getFechaSiembra());
+        }
+
         return true;
     }
 
@@ -171,7 +178,7 @@ class PedidoController extends BaseController {
         $estadoPedidoHistorico->setPedido($pedido);
         $estadoPedidoHistorico->setFecha(new DateTime());
         $estadoPedidoHistorico->setEstado($estadoPedido);
-        $estadoPedidoHistorico->setMotivo('');
+        $estadoPedidoHistorico->setMotivo('Creacion del pedido.');
         $pedido->addHistoricoEstado($estadoPedidoHistorico);
 
         $em->persist($estadoPedidoHistorico);
@@ -183,7 +190,7 @@ class PedidoController extends BaseController {
             $estadoPedidoProductoHistorico->setPedidoProducto($pedidosProducto);
             $estadoPedidoProductoHistorico->setFecha(new DateTime());
             $estadoPedidoProductoHistorico->setEstado($estadoProducto);
-            $estadoPedidoProductoHistorico->setMotivo('');
+            $estadoPedidoProductoHistorico->setMotivo('Creacion del pedido.');
             $pedidosProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
 
             $em->persist($estadoPedidoProductoHistorico);
@@ -256,5 +263,26 @@ class PedidoController extends BaseController {
             'preserve_values' => true,
             'registrationForm' => $form->createView()
         ];
+    }
+
+    /**
+     * @Route("/{id}/pedido_producto", name="pedido_producto", methods={"GET","POST"})
+     * @Template("pedido/producto_show.html.twig")
+     */
+    public function showPedidoProductoAction($id) {
+
+        $em = $this->getDoctrine()->getManager();
+
+        /* @var $pedidoProducto PedidoProducto */
+        $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($id);
+
+        if (!$pedidoProducto) {
+            throw $this->createNotFoundException('No se puede encontrar el producto.');
+        }
+
+        return array(
+            'entity' => $pedidoProducto,
+            'page_title' => 'Pedido Producto'
+        );
     }
 }

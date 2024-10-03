@@ -13,4 +13,9 @@ class ConstanteEstadoPedidoProducto {
      */
     const PENDIENTE = 1;
 
+    /**
+     * PLANIFICADO
+     */
+    const PLANIFICADO = 2;
+
 }

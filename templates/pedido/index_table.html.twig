@@ -7,7 +7,10 @@
         "{{ entity.id }}",
         "{{ entity.idProducto }}",
         "{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}",
-        "{{ entity.producto|default('-') }}",
+        {
+        "producto" : "{{ entity.producto|default('Sin estado') }}",
+        "nombreProducto" : "{{ entity.nombreProducto|default('default') }}"
+        },
         "{{ entity.cliente|default('-') }}",
         "{{ entity.cantidadBandejas|default('-') }}",
         "{{ entity.fechaSiembra is not null ? entity.fechaSiembra|date('d/m/Y') : '-' }}",
@@ -21,12 +24,6 @@
         {
         "show" : " {{ path( "pedido_show", { "id": entity.id }) }}",
         "historico_estado": "{{ path( "pedido_historico_estado", { 'id': entity.idProducto }) }}"
-        {#{% if is_granted('ROLE_PEDIDOS_EDIT') %}
-            ,"edit" : " {{ path( "matriculado_edit", { "id": entity.id }) }}"
-            ,"estados" : " {{ path( "matriculado_historico_estados", { "id": entity.id }) }}"
-            ,"estado_cuenta" : " {{ path( "matriculado_show_estado_cuenta", { "id": entity.id }) }}"
-            ,"matriculado_historico" : " {{ path( "matriculado_historico", { "id": entity.id }) }}"
-        {% endif %}#}
         }]{{ (loop.last ? '' : ',') }}
     {% endfor %}
     ]
