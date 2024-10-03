@@ -103,7 +103,7 @@ class SiembraController extends BaseController
 
     /**
      *
-     * @Route("/guardar_orden_siembra/", name="guardar_orden_siembra", methods={"POST"})
+     * @Route("/guardar_orden_siembra_2/", name="guardar_orden_siembra_2", methods={"POST"})
      * @IsGranted("ROLE_PEDIDO")
      */
     public function setOrdenSiembra(Request $request){
