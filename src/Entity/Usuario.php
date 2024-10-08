@@ -454,7 +454,7 @@ class Usuario implements UserInterface {
     /**
      * @return bool
      */
-    public function getTieneRazonSocial(): bool
+    public function getTieneRazonSocial()
     {
         return $this->tieneRazonSocial;
     }
@@ -462,7 +462,7 @@ class Usuario implements UserInterface {
     /**
      * @param bool $tieneRazonSocial
      */
-    public function setTieneRazonSocial(bool $tieneRazonSocial): void
+    public function setTieneRazonSocial(bool $tieneRazonSocial)
     {
         $this->tieneRazonSocial = $tieneRazonSocial;
     }
