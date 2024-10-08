@@ -462,7 +462,7 @@ class Usuario implements UserInterface {
     /**
      * @param bool $tieneRazonSocial
      */
-    public function setTieneRazonSocial(bool $tieneRazonSocial)
+    public function setTieneRazonSocial($tieneRazonSocial = false)
     {
         $this->tieneRazonSocial = $tieneRazonSocial;
     }
