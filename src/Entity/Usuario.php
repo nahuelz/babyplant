@@ -125,7 +125,7 @@ class Usuario implements UserInterface {
     /**
      * @var boolean
      *
-     * @ORM\Column(name="tiene_razon_social", type="boolean", options={"default": 0})
+     * @ORM\Column(name="tiene_razon_social", type="boolean", nullable=true, options={"default": 0})
      */
     private $tieneRazonSocial;
 
