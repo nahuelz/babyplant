@@ -132,6 +132,7 @@ class Usuario implements UserInterface {
     public function __construct() {
         $this->grupos = new \Doctrine\Common\Collections\ArrayCollection();
         $this->habilitado = true;
+        $this->tieneRazonSocial = false;
     }
 
 
