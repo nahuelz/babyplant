@@ -11,31 +11,34 @@ var KTCalendarListView = function() {
             var calendarEl = document.getElementById('kt_calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 locale: 'es',
-                plugins: ['dayGrid'],
+                plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
                 isRTL: KTUtil.isRTL(),
                 header: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridDay'
+                    right: 'dayGridMonth,dayGridWeek,dayGridDay,listWeek'
                 },
                 hiddenDays:  [ 0 ],
-                height: 1200,
-                contentHeight: 1200,
+                height: 800,
+                contentHeight: 750,
                 aspectRatio: 3,  // see: https://fullcalendar.io/docs/aspectRatio
 
                 views: {
-                    dayGridDay: { buttonText: 'dia' }
+                    dayGridMonth: { buttonText: 'mes' },
+                    dayGridWeek: { buttonText: 'semana' },
+                    dayGridDay: { buttonText: 'dia' },
+                    listWeek: { buttonText: 'lista' }
                 },
 
                 defaultView: 'dayGridDay',
                 defaultDate: TODAY,
 
-                editable: false,
+                editable: true,
                 eventLimit: true, // allow "more" link when too many events
                 navLinks: true,
                 eventSources: [
                     {
-                        url: __HOMEPAGE_PATH__ + "siembra/index_table/",
+                        url: __HOMEPAGE_PATH__ + "entrada_camara/index_table/",
                         method: 'POST',
                         extraParams: {
                             custom_param1: 'something',
@@ -58,51 +61,26 @@ var KTCalendarListView = function() {
                         }
                     }).done(function (form) {
                         showDialog({
-                            titulo: '<i class="fa fa-list-ul margin-right-10"></i> Orden de siembra pedido N° '+idProducto,
+                            titulo: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar a camara pedido N° '+idProducto,
                             contenido: form,
-                            className: 'modal-dialog-small',
                             color: 'yellow ',
                             labelCancel: 'Cerrar',
-                            labelSave: 'Guardar',
-                            labelSuccess: 'Guardar y Sembrar',
+                            labelSuccess: 'Guardar',
                             closeButton: true,
                             class: 'codigo-sobre-submit',
                             callbackCancel: function () {
                                 return;
                             },
-                            callbackSave: function () {
-                                $.ajax({
-                                    type: 'post',
-                                    dataType: 'json',
-                                    data: {
-                                        observacion: $('#observacion').val(),
-                                        bandejas: $('#bandejas').val(),
-                                        idPedidoProducto: info.event.id
-                                    },
-                                    url: __HOMEPAGE_PATH__ + "siembra/guardar/",
-                                    success: function (data) {
-                                        if (!jQuery.isEmptyObject(data)) {
-                                            $('.alert-success').hide();
-                                            showFlashMessage("success", data.message);
-                                            calendar.refetchEvents()
-                                        }
-                                    },
-                                    error: function () {
-                                        alert('ah ocurrido un error.');
-                                    }
-                                });
-                            },
                             callbackSuccess: function () {
+
                                 $.ajax({
                                     type: 'post',
                                     dataType: 'json',
                                     data: {
-                                        observacion: $('#observacion').val(),
-                                        bandejas: $('#bandejas').val(),
-                                        horaSiembra: $('#horaSiembra').val(),
+                                        codSobre: $('#codSobre').val(),
                                         idPedidoProducto: info.event.id
                                     },
-                                    url: __HOMEPAGE_PATH__ + "siembra/guardar_y_sembrar/",
+                                    url: __HOMEPAGE_PATH__ + "entrada_camara/guardar/",
                                     success: function (data) {
                                         if (!jQuery.isEmptyObject(data)) {
                                             $('.alert-success').hide();
@@ -117,23 +95,6 @@ var KTCalendarListView = function() {
                             }
                         });
                         $('.modal-dialog').css('width', '80%');
-                        $('.modal-dialog').addClass('modal-xl');
-                        $('.observacion').click(function(){
-                            $('.observacion-edit').toggle();
-                        });
-                        $('.bandejas').click(function(){
-                            $('.bandejas-edit').toggle();
-                        });
-                        $('.hora').click(function(){
-                            $('.hora-edit').toggle();
-                        });
-                        let date = new Date();
-                        let hour = date.getHours(),
-                            min = date.getMinutes();
-                        hour = (hour < 10 ? "0" : "") + hour;
-                        min = (min < 10 ? "0" : "") + min;
-                        let displayTime = hour + ":" + min;
-                        $('#horaSiembra').val(displayTime);
                     });
                 },
                 eventRender: function(info) {
@@ -214,7 +175,7 @@ var KTCalendarListView = function() {
                             </div>\n\
                         </div>';
                     showDialog({
-                        titulo: '<span class="font-white text-center"> Modificar fecha de siembra pedido N° '+info.event.id +'</span>',
+                        titulo: '<span class="font-white text-center"> Modificar fecha de entrada a camara pedido N° '+info.event.id +'</span>',
                         contenido: dialogFinalizarForm,
                         className: 'modal-dialog-small',
                         color: 'green',
@@ -232,7 +193,7 @@ var KTCalendarListView = function() {
                                     nuevaFechaSiembra: info.event.start.toISOString().substring(0, 10),
                                     idPedidoProducto: info.event.id
                                 },
-                                url: __HOMEPAGE_PATH__ + "siembra/cambiar_fecha_siembra/",
+                                url: __HOMEPAGE_PATH__ + "entrada_camara/cambiar_fecha_entrada_camara/",
                                 success: function (data) {
                                     if (!jQuery.isEmptyObject(data)) {
                                         $('.alert-success').hide();
@@ -256,45 +217,24 @@ jQuery(document).ready(function() {
     KTCalendarListView.init();
 });
 
-function showDialog(options) {
+/**
+ *
+ * @returns {undefined}
+ */
+function initPreValidation() {
 
-    var d = bootbox.dialog({
-        backdrop: true,
-        buttons: {
-            cancel: {
-                label: options.labelCancel ? options.labelCancel : "Cancelar",
-                className: "btn-sm btn-light-dark pull-left font-weight-bold cancel ",
-                callback: function () {
-                    var result = options.callbackCancel();
-                    return result;
-                }
-            },
-            danger: {
-                label: options.labelSave ? options.labelSave : "Guardar",
-                className: "btn-sm btn-submit submit-button btn-light-primary font-weight-bold success",
-                callback: function () {
-                    var result = options.callbackSave();
-                    return result;
-                }
-            },
-            success: {
-                label: options.labelSuccess ? options.labelSuccess : "Guardar",
-                className: "btn-sm btn-submit submit-button btn-light-success font-weight-bold success " + (options.color ? options.color : '') + (options.class ? options.class : ''),
-                callback: function () {
-                    var result = options.callbackSuccess();
-                    return result;
-                }
-            }
-        },
-        className: options.className,
-        message: options.contenido,
-        title: options.titulo
+    $(".codigo-sobre-submit").off('click').on('click', function (e) {
+        e.preventDefault();
 
+       if ($('#codSobre').val() != ''){
+           return true;
+       } else {
+           Swal.fire({
+               title: 'Ingrese el codigo del sobre.',
+               icon: "error"
+           });
+       }
+
+        e.stopPropagation();
     });
-
-    $(d).find('.modal-header').addClass(options.color ? options.color : '');
-    initPreValidation();
-
-
-    return d;
 }

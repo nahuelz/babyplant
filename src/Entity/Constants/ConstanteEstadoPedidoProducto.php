@@ -18,4 +18,14 @@ class ConstanteEstadoPedidoProducto {
      */
     const PLANIFICADO = 2;
 
+    /**
+     * SEMBRADO
+     */
+    const SEMBRADO = 3;
+
+    /**
+     * EN_CAMARA
+     */
+    const EN_CAMARA = 4;
+
 }

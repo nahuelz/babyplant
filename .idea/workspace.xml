@@ -4,9 +4,28 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Siembra">
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Siembra fix">
+      <change afterPath="$PROJECT_DIR$/public/js/app/entradacamara/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Controller/EntradaCamaraController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Controller/SalidaCamaraController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Repository/PedidoProductoRepository.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Repository/PedidoRepository.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/entrada_camara/index.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/entrada_camara/index_table.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/salida_camara/index.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/salida_camara/index_table.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/siembra/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/siembra/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/theme/css/colores.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/css/colores.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PedidoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PedidoController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/SiembraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SiembraController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Constants/ConstanteEstadoPedidoProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Constants/ConstanteEstadoPedidoProducto.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Pedido.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Pedido.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/menu/menu_pedido.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu_pedido.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/siembra/producto_show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/siembra/producto_show.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -191,35 +210,36 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/xampp81/htdocs/babyplant/public/js/app/siembra&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;php.override.implement.member.chooser.php.doc&quot;: &quot;NONE&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/xampp81/htdocs/babyplant/public/js/app/salidacamara",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "php.override.implement.member.chooser.php.doc": "NONE",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp81\htdocs\babyplant\public\js\app\salidacamara" />
+      <recent name="C:\xampp81\htdocs\babyplant\templates\salida_camara" />
+      <recent name="C:\xampp81\htdocs\babyplant\public\js\app\camara" />
+      <recent name="C:\xampp81\htdocs\babyplant\templates\camara" />
       <recent name="C:\xampp81\htdocs\babyplant\public\js\app\siembra" />
-      <recent name="C:\xampp81\htdocs\babyplant\templates\siembra" />
-      <recent name="C:\xampp81\htdocs\babyplant\public\js\app\tipoorigensemilla" />
-      <recent name="C:\xampp81\htdocs\babyplant\public\js\app\tipoproducto" />
-      <recent name="C:\xampp81\htdocs\babyplant\public\js\app\tiposubproducto" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp81\htdocs\babyplant\public\theme\css\custom" />
@@ -264,7 +284,10 @@
       <workItem from="1727385481213" duration="6840000" />
       <workItem from="1727545989387" duration="42169000" />
       <workItem from="1727885639605" duration="5059000" />
-      <workItem from="1727963271840" duration="11174000" />
+      <workItem from="1727963271840" duration="11416000" />
+      <workItem from="1728060443648" duration="2995000" />
+      <workItem from="1728254284539" duration="22519000" />
+      <workItem from="1728406669511" duration="6895000" />
     </task>
     <task id="LOCAL-00001" summary="config">
       <option name="closed" value="true" />
@@ -386,7 +409,15 @@
       <option name="project" value="LOCAL" />
       <updated>1727983077270</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Siembra fix">
+      <option name="closed" value="true" />
+      <created>1727984988949</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1727984988949</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -401,6 +432,7 @@
     <MESSAGE value="Configuracion vistas" />
     <MESSAGE value="Planificacion" />
     <MESSAGE value="Siembra" />
-    <option name="LAST_COMMIT_MESSAGE" value="Siembra" />
+    <MESSAGE value="Siembra fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="Siembra fix" />
   </component>
 </project>

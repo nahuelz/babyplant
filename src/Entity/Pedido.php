@@ -3,8 +3,10 @@
 namespace App\Entity;
 
 use App\Entity\Traits;
+use App\Repository\PedidoRepository;
 use App\Entity\Traits\Auditoria;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -12,8 +14,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * Grupo
  *
  * @ORM\Table(name="pedido")
- * @ORM\Entity
- *
+ * @ORM\Entity(repositoryClass=PedidoRepository::class)
  *
  * @Gedmo\SoftDeleteable(fieldName="fechaBaja")
  */
@@ -62,6 +63,7 @@ class Pedido {
     public function __construct()
     {
         $this->historicoEstados = new ArrayCollection();
+        $this->pedidosProductos = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -201,6 +203,28 @@ class Pedido {
     public function setObservacion($observacion): void
     {
         $this->observacion = $observacion;
+    }
+
+    public function addPedidosProducto(PedidoProducto $pedidosProducto): static
+    {
+        if (!$this->pedidosProductos->contains($pedidosProducto)) {
+            $this->pedidosProductos->add($pedidosProducto);
+            $pedidosProducto->setPedido($this);
+        }
+
+        return $this;
+    }
+
+    public function removePedidosProducto(PedidoProducto $pedidosProducto): static
+    {
+        if ($this->pedidosProductos->removeElement($pedidosProducto)) {
+            // set the owning side to null (unless already changed)
+            if ($pedidosProducto->getPedido() === $this) {
+                $pedidosProducto->setPedido(null);
+            }
+        }
+
+        return $this;
     }
 
 

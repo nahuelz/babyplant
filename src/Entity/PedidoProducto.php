@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Traits\Auditoria;
+use App\Repository\PedidoProductoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -12,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Grupo
  *
  * @ORM\Table(name="pedido_producto")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass=PedidoProductoRepository::class)
  *
  *
  * @Gedmo\SoftDeleteable(fieldName="fechaBaja")
@@ -130,6 +131,16 @@ class PedidoProducto {
      * @ORM\Column(name="hora_siembra", type="datetime", length=255, nullable=true)
      */
     private $horaSiembra;
+
+    /**
+     * @ORM\Column(name="fechaIngresoCamara", type="datetime", length=255, nullable=true)
+     */
+    private $fechaIngresoCamara;
+
+    /**
+     * @ORM\Column(name="numero_orden", type="integer", nullable=true)
+     */
+    private $numeroOrden;
 
     public function __construct()
     {
@@ -478,6 +489,57 @@ class PedidoProducto {
      */
     public function setHoraSiembra($horaSiembra): void
     {
-        $this->horaSiembra = $horaSiembra;
+        if ($horaSiembra != null) {
+            $fecha = $this->getFechaSiembra();
+            $hora = intval(substr($horaSiembra, 0, 2));
+            $minutos = intval(substr($horaSiembra, 3, 2));
+            $fecha->setTime($hora, $minutos);
+            $this->horaSiembra = $fecha;
+        }else{
+            $this->horaSiembra = new \DateTime();
+        }
     }
+
+    /**
+     * @return mixed
+     */
+    public function getNumeroOrden()
+    {
+        return $this->numeroOrden;
+    }
+
+    /**
+     * @param mixed $numeroOrden
+     */
+    public function setNumeroOrden($numeroOrden): void
+    {
+        $this->numeroOrden = $numeroOrden;
+    }
+
+    public function getTipoProducto(){
+        return $this->getTipoVariedad()->getTipoSubProducto()->getTipoProducto();
+    }
+
+    public function getNumeroOrdenCompleto(){
+        return ($this->numeroOrden . ' ' . strtoupper(substr($this->getTipoProducto(), 0, 3)));
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFechaIngresoCamara()
+    {
+        return $this->fechaIngresoCamara;
+    }
+
+    /**
+     * @param mixed $fechaIngresoCamara
+     */
+    public function setFechaIngresoCamara($fechaIngresoCamara): void
+    {
+        $this->fechaIngresoCamara = $fechaIngresoCamara;
+    }
+
+
+
 }

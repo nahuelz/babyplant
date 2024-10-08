@@ -1,0 +1,21 @@
+{% autoescape false %}
+    [
+    {% for entity in entities %}
+        {
+        "id": "{{ entity.id }}",
+        "title": "{{ entity.nombreCorto|default('-') }}",
+        "start": "{{ entity.fechaSiembra is not null ? entity.fechaSiembra|date('Y-m-d') : '-' }}",
+        "description": "{{ entity.descripcion|default('-') }}",
+        "cliente": "{{ entity.cliente|default('-') }}",
+        "producto": "{{ entity.nombreCompleto|default('-') }}",
+        "cantidadTipoBandejabandeja": "{{ entity.cantidadTipoBandejabandeja|default('-') }}",
+        "fechaSiembra": "{{ entity.fechaSiembra is not null ? entity.fechaSiembra|date('Y-m-d') : '-' }}",
+        "href":  "{{ path( "pedido_producto", { 'id': entity.id }) }}",
+        "codigoSobre": "{{ entity.codigoSobre|default('-') }}",
+        "className": "{{ entity.className|default('fc-event-danger fc-event-solid-danger') }}"
+        }
+        {{ (loop.last ? '' : ',') }}
+    {% endfor %}
+    ]
+
+{% endautoescape %}

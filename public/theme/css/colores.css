@@ -63,7 +63,13 @@
     background-color: #000454 !important;
 }
 
-HINOJO {
+.HINOJO {
     color: #ffffff;
     background-color: #cacaca !important;
 }
+
+.SEMBRADO{
+    color: #ffffff;
+    background-color: grey !important;
+}
+

@@ -103,32 +103,61 @@ class SiembraController extends BaseController
 
     /**
      *
-     * @Route("/guardar_orden_siembra_2/", name="guardar_orden_siembra_2", methods={"POST"})
+     * @Route("/guardar_y_sembrar/", name="guardar_y_sembrar", methods={"POST"})
      * @IsGranted("ROLE_PEDIDO")
      */
-    public function setOrdenSiembra(Request $request){
+    public function guardarOrdenSiembra(Request $request){
 
         $observacion = $request->get('observacion');
         $idPedidoProducto = $request->get('idPedidoProducto');
+        $bandejas = $request->get('bandejas');
+        $horaSiembra = $request->get('horaSiembra');
 
         $em = $this->getDoctrine()->getManager();
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
         $pedidoProducto->setObservacion($observacion);
-        if ($pedidoProducto->getEstado()->getCodigoInterno() != ConstanteEstadoPedidoProducto::PLANIFICADO) {
-            $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::PLANIFICADO);
-            $this->cambiarEstado($em, $pedidoProducto, $estado);
+        $pedidoProducto->setCantBandejasReales($bandejas);
+        $pedidoProducto->setHoraSiembra($horaSiembra);
+        if ($pedidoProducto->getEstado()->getCodigoInterno() != ConstanteEstadoPedidoProducto::SEMBRADO) {
+            $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::SEMBRADO);
+            $motivo = 'Producto sembrado.';
+            $this->cambiarEstado($em, $pedidoProducto, $estado, $motivo);
         }
         $em->flush();
 
-        $message = 'Se guardo correctamente el orden de siembra';
+        $message = 'Se sembró correctamente el producto con N° de orden: '.$pedidoProducto->getNumeroOrdenCompleto(). ' - Fecha y hora de siembra: '.$pedidoProducto->getHoraSiembra()->format('Y-m-d H:i');
         $result = array(
             'status' => 'OK',
             'message' => $message
         );
-
         return new JsonResponse($result);
+    }
 
+    /**
+     *
+     * @Route("/guardar/", name="guardar", methods={"POST"})
+     * @IsGranted("ROLE_PEDIDO")
+     */
+    public function guardarSiembra(Request $request){
+
+        $observacion = $request->get('observacion');
+        $idPedidoProducto = $request->get('idPedidoProducto');
+        $bandejas = $request->get('bandejas');
+
+        $em = $this->getDoctrine()->getManager();
+        /* @var $pedidoProducto PedidoProducto */
+        $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
+        $pedidoProducto->setObservacion($observacion);
+        $pedidoProducto->setCantBandejasReales($bandejas);
+        $em->flush();
+
+        $message = 'Se guardó correctamente el producto con N° de orden: '.$pedidoProducto->getNumeroOrdenCompleto();
+        $result = array(
+            'status' => 'OK',
+            'message' => $message
+        );
+        return new JsonResponse($result);
     }
 
     /**
@@ -137,14 +166,14 @@ class SiembraController extends BaseController
      * @param PedidoProducto $pedidoProducto
      * @param EstadoPedidoProducto $estadoProducto
      */
-    private function cambiarEstado($em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto) {
+    private function cambiarEstado($em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto, $motivo) {
 
         $pedidoProducto->setEstado($estadoProducto);
         $estadoPedidoProductoHistorico = new EstadoPedidoProductoHistorico();
         $estadoPedidoProductoHistorico->setPedidoProducto($pedidoProducto);
         $estadoPedidoProductoHistorico->setFecha(new DateTime());
         $estadoPedidoProductoHistorico->setEstado($estadoProducto);
-        $estadoPedidoProductoHistorico->setMotivo('Producto planificado.');
+        $estadoPedidoProductoHistorico->setMotivo($motivo);
         $pedidoProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
 
         $em->persist($estadoPedidoProductoHistorico);
@@ -169,5 +198,18 @@ class SiembraController extends BaseController
             'entity' => $pedidoProducto,
             'page_title' => 'Pedido Producto'
         );
+    }
+
+    /**
+     * @Route("/test_hora", name="test_hora", methods={"GET","POST"})
+     */
+    public function testHoraAction() {
+        $fecha = new DateTime();
+        $horaMinutos= '12:30';
+        $hora =  intval(substr($horaMinutos,0,2));
+        $minutos = intval(substr($horaMinutos,3,2));
+        $fecha->setTime($hora,$minutos);
+        var_dump($fecha);
+        die();
     }
 }

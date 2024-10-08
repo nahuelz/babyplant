@@ -55,12 +55,12 @@
 
                     {# PLANIFICACION DE SIEMBRA #}
                     {% if is_granted("ROLE_SIEMBRA") %}
-                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-list-ul icon-3x text-dark', 'nombreModulo': 'Ver Planificacion de Siembra','action': '#', 'descripcionModulo': 'Aqui podras ver la planificacion de siembra' } %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-list-ul icon-3x text-dark', 'nombreModulo': 'Ver Siembra','action': '#', 'descripcionModulo': 'Aqui podras ver la planificacion de siembra' } %}
                     {% endif %}
 
                     {# ORDENES EN CAMARA #}
                     {% if is_granted("ROLE_CAMARA") %}
-                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-list-ul icon-3x text-dark', 'nombreModulo': 'Ordenes en camara','action': '#', 'descripcionModulo': 'Aqui podras ver las ordenes en camara' } %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-list-ul icon-3x text-dark', 'nombreModulo': 'Ver Camara','action': '#', 'descripcionModulo': 'Aqui podras ver las ordenes en camara' } %}
                     {% endif %}
 
                     {# ORDENES DE SIEMBRA #}
