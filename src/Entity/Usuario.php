@@ -43,7 +43,7 @@ class Usuario implements UserInterface {
     private $username;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $nombre;
 
@@ -58,13 +58,13 @@ class Usuario implements UserInterface {
     private $cuit;
 
     /**
-     * @ORM\Column(type="json")
+     * @ORM\Column(type="json", nullable=true)
      */
     private $roles = [];
 
     /**
      * @var string The hashed password
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $password;
 
@@ -91,13 +91,13 @@ class Usuario implements UserInterface {
 
     /**
      * @ORM\ManyToOne(targetEntity=TipoUsuario::class)
-     * @ORM\JoinColumn(name="id_tipo_usuario", referencedColumnName="id")
+     * @ORM\JoinColumn(name="id_tipo_usuario", referencedColumnName="id", nullable=true)
      */
     private $tipoUsuario;
 
     /**
      * @ORM\ManyToOne(targetEntity=RazonSocial::class, cascade={"persist"})
-     * @ORM\JoinColumn(name="id_razon_social", referencedColumnName="id")
+     * @ORM\JoinColumn(name="id_razon_social", referencedColumnName="id", nullable=true)
      */
     private $razonSocial;
 
