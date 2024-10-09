@@ -34,6 +34,7 @@ class PedidoProductoType extends AbstractType {
                     ),
                     'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('x')
+                            ->where('x.habilitado = 1')
                             ->orderBy('x.nombre', 'ASC');
                     },
                     'label_attr' => array('class' => 'control-label'),
@@ -53,6 +54,7 @@ class PedidoProductoType extends AbstractType {
                     ),
                     'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('x')
+                            ->where('x.habilitado = 1')
                             ->orderBy('x.nombre', 'ASC');
                     },
                     'label_attr' => array('class' => 'control-label'),
@@ -74,6 +76,7 @@ class PedidoProductoType extends AbstractType {
                     ),
                     'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('x')
+                            ->where('x.habilitado = 1')
                             ->orderBy('x.nombre', 'ASC');
                     },
                     'label_attr' => array('class' => 'control-label'),
@@ -93,7 +96,12 @@ class PedidoProductoType extends AbstractType {
                         'class' => 'form-control choice',
                         'data-placeholder' => '-- Elija --',
                         'tabindex' => '5'
-                    )
+                    ),
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('x')
+                            ->where('x.habilitado = 1')
+                            ->orderBy('x.nombre', 'ASC');
+                    },
                 )
             )
             ->add('cantSemillas', TextType::class, array(
@@ -124,7 +132,12 @@ class PedidoProductoType extends AbstractType {
                         'class' => 'form-control choice',
                         'data-placeholder' => '-- Elija el origen de la semilla --',
                         'tabindex' => '5'
-                    )
+                    ),
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('x')
+                            ->where('x.habilitado = 1')
+                            ->orderBy('x.nombre', 'ASC');
+                    },
                 )
             )
             ->add('fechaSiembra', DateType::class, array(
