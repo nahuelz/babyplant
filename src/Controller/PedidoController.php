@@ -157,6 +157,7 @@ class PedidoController extends BaseController {
         foreach ($entity->getPedidosProductos() as $pedidoProducto){
             $pedidoProducto->setFechaEntregaPedido($pedidoProducto->getFechaEntrega());
             $pedidoProducto->setFechaSiembraPedido($pedidoProducto->getFechaSiembra());
+            $pedidoProducto->setPedido($entity);
         }
 
         return true;
