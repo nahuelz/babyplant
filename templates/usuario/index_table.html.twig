@@ -4,10 +4,13 @@
     [
     "{{ entity.id }}",
     "{{ entity.email|default('-') }}",
+    "{{ entity.nombre|default('-') }}",
+    "{{ entity.apellido|default('-') }}",
+    "{{ entity.telefono|default('-') }}",
     "{{ entity.grupos|default('-') }}",
-    "{{ entity.last_seen != null ? entity.last_seen|date('d/m/Y H:i:s') }}",
+    {#"{{ entity.last_seen != null ? entity.last_seen|date('d/m/Y H:i:s') }}",
     "{{ entity.logueado|boolean_format }}",
-    "{{ entity.habilitado|boolean_format }}",
+    "{{ entity.habilitado|boolean_format }}",#}
     {    
     {% if is_granted('ROLE_USUARIO_VIEW') %}                                    
         "show" : " {{ path( "usuario_show", { "id": entity.id }) }}"
@@ -20,9 +23,9 @@
     {% elseif is_granted('ROLE_USUARIO_HABILITAR') and not entity.habilitado %}
         ,"habilitar": "{{ path('usuario_habilitar_deshabilitar', {"id": entity.id})}}"
     {% endif %}
-{#    {% if is_granted('ROLE_USUARIO_DELETE') %}
+    {% if is_granted('ROLE_USUARIO_DELETE') %}
         ,"delete" : " {{ path( "usuario_delete", { "id": entity.id }) }}"
-    {% endif %}#}
+    {% endif %}
     }
     ]{{ (loop.last ? '' : ',') }}
 {% endfor %}

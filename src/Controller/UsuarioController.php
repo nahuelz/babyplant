@@ -46,19 +46,25 @@ class UsuarioController extends BaseController {
 
         $rsm->addScalarResult('id', 'id');
         $rsm->addScalarResult('email', 'email');
+        $rsm->addScalarResult('nombre', 'nombre');
+        $rsm->addScalarResult('apellido', 'apellido');
+        $rsm->addScalarResult('telefono', 'telefono');
         $rsm->addScalarResult('grupos', 'grupos');
-        $rsm->addScalarResult('last_seen', 'last_seen');
-        $rsm->addScalarResult('logueado', 'logueado');
         $rsm->addScalarResult('habilitado', 'habilitado');
-        $rsm->addScalarResult('sesiones', 'sesiones');
+        /*$rsm->addScalarResult('last_seen', 'last_seen');
+        $rsm->addScalarResult('logueado', 'logueado');
+        $rsm->addScalarResult('sesiones', 'sesiones');*/
 
         $columnDefinition = [
             ['field' => 'id', 'type' => '', 'searchable' => false, 'sortable' => false],
             ['field' => 'email', 'type' => 'string', 'searchable' => true, 'sortable' => true],
+            ['field' => 'nombre', 'type' => 'string', 'searchable' => true, 'sortable' => true],
+            ['field' => 'apellido', 'type' => 'string', 'searchable' => true, 'sortable' => true],
+            ['field' => 'telefono', 'type' => 'string', 'searchable' => true, 'sortable' => true],
             ['field' => 'grupos', 'type' => 'string', 'searchable' => true, 'sortable' => true],
-            ['field' => 'last_seen', 'type' => 'string', 'searchable' => true, 'sortable' => true],
+            /*['field' => 'last_seen', 'type' => 'string', 'searchable' => true, 'sortable' => true],
             ['field' => 'logueado', 'type' => 'select', 'searchable' => true, 'sortable' => true],
-            ['field' => 'habilitado', 'type' => 'select', 'searchable' => true, 'sortable' => true],
+            ['field' => 'habilitado', 'type' => 'select', 'searchable' => true, 'sortable' => true],*/
             ['field' => 'acciones', 'type' => '', 'searchable' => false, 'sortable' => false]
         ];
 

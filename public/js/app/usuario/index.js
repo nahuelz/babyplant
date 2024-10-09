@@ -53,15 +53,19 @@ function datatablesGetColDef() {
     },
     {
       targets: index++,
+      name: 'nombre',
+    },
+    {
+      targets: index++,
+      name: 'apellido',
+    },
+    {
+      targets: index++,
+      name: 'telefono',
+    },
+    {
+      targets: index++,
       name: 'grupos',
-    },
-    {
-      targets: index++,
-      name: 'last_seen',
-    },
-    {
-      targets: index++,
-      name: 'logueado',
     },
     {
       targets: -1,
