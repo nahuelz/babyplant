@@ -79690,7 +79690,7 @@ code {
 .fc-unthemed .fc-description {
   font-size: 0.9rem;
   margin-top: 0.25rem;
-  font-weight: normal;
+  font-weight: 500;
 }
 .fc-unthemed .fc-list-item-title > a {
   font-size: 1rem;
@@ -79865,7 +79865,7 @@ code {
   color: #3F4254;
 }
 .fc-unthemed .fc-description {
-  color: #B5B5C3;
+  color: #fff;
 }
 .fc-unthemed .fc-list-item-title > a[href]:hover {
   color: #3699FF;
@@ -83202,7 +83202,7 @@ body {
     padding-top: 65px;
   }
   .header-fixed.subheader-fixed.subheader-enabled .wrapper {
-    padding-top: 119px;
+    padding-top: 80px;
   }
   .aside-fixed .wrapper {
     padding-left: 265px;

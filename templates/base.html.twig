@@ -199,10 +199,12 @@
             </div>
 
             <div class="content d-flex flex-column flex-column-fluid"
-                 id="kt_content">
+                 id="kt_content" style="padding-top: 0px">
+                {#
                 {% if breadcrumbs is defined %}
                     {% include 'app/_breadcrumbs.html.twig' %}
                 {% endif %}
+                #}
 
                 <!-- end:: Subheader -->
 
