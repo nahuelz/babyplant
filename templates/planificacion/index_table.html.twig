@@ -11,7 +11,7 @@
         "producto": "{{ entity.nombreCompleto|default('-') }}",
         "cantidadTipoBandejabandeja": "{{ entity.cantidadTipoBandejabandeja|default('-') }}",
         "fechaSiembra": "{{ entity.fechaSiembra is not null ? entity.fechaSiembra|date('Y-m-d') : '-' }}",
-        "href":  "{{ path( "pedido_producto", { 'id': entity.id }) }}",
+        "href":  "{{ path( "planificacion_producto_show", { 'id': entity.id }) }}",
         "codigoSobre": "{{ entity.codigoSobre|default('-') }}",
         "colorEstado": "{{ entity.colorEstado|default('-') }}",
         "tipoProducto": "{{ entity.tipoProducto|default('-') }}",

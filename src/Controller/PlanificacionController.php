@@ -174,4 +174,25 @@ class PlanificacionController extends BaseController
 
         $em->persist($estadoPedidoProductoHistorico);
     }
+
+    /**
+     * @Route("/{id}/producto_show", name="planificacion_producto_show", methods={"GET","POST"})
+     * @Template("planificacion/producto_show.html.twig")
+     */
+    public function showPedidoProductoAction($id) {
+
+        $em = $this->getDoctrine()->getManager();
+
+        /* @var $pedidoProducto PedidoProducto */
+        $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($id);
+
+        if (!$pedidoProducto) {
+            throw $this->createNotFoundException('No se puede encontrar el producto.');
+        }
+
+        return array(
+            'entity' => $pedidoProducto,
+            'page_title' => 'Pedido Producto'
+        );
+    }
 }

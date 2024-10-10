@@ -134,6 +134,7 @@ var KTCalendarListView = function() {
                         min = (min < 10 ? "0" : "") + min;
                         let displayTime = hour + ":" + min;
                         $('#horaSiembra').val(displayTime);
+                        $('.hora-siembra').text(displayTime);
                     });
                 },
                 eventRender: function(info) {

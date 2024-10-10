@@ -442,6 +442,14 @@
     {# Busy Load #}
     <script src="{{ asset('plugins/busy-load/app.min.js') }}"></script>
 
+    <script>
+        $('#btn-fscreen').on('click', function(){
+            var elem = document.getElementById("kt_body");
+            req = elem.requestFullScreen || elem.webkitRequestFullScreen || elem.mozRequestFullScreen;
+            req.call(elem);
+        });
+    </script>
+
 {% endblock %}
 </body>
 <!-- END BODY -->
