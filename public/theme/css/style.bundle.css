@@ -79865,7 +79865,7 @@ code {
   color: #3F4254;
 }
 .fc-unthemed .fc-description {
-  color: #fff;
+ /*color: #fff;*/
 }
 .fc-unthemed .fc-list-item-title > a[href]:hover {
   color: #3699FF;
