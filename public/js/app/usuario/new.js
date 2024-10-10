@@ -49,30 +49,9 @@ jQuery(document).ready(function () {
     initRazonSocialHandler();
 
     FormValidation.formValidation(
-        $("form[name=registration_form]")[0], {
+        $("form[name=usuario_form]")[0], {
             fields: {
                 'registration_form[email]': {
-                    validators: {
-                        notEmpty: {
-                            message: 'Este campo es requerido'
-                        }
-                    }
-                },
-                'registration_form[username]': {
-                    validators: {
-                        notEmpty: {
-                            message: 'Este campo es requerido'
-                        }
-                    }
-                },
-                'registration_form[roles]': {
-                    validators: {
-                        notEmpty: {
-                            message: 'Este campo es requerido'
-                        }
-                    }
-                },
-                'registration_form[plainPassword]': {
                     validators: {
                         notEmpty: {
                             message: 'Este campo es requerido'
@@ -87,13 +66,6 @@ jQuery(document).ready(function () {
                     }
                 },
                 'registration_form[apellido]': {
-                    validators: {
-                        notEmpty: {
-                            message: 'Este campo es requerido'
-                        }
-                    }
-                },
-                'registration_form[grupos][]': {
                     validators: {
                         notEmpty: {
                             message: 'Este campo es requerido'

@@ -43,7 +43,7 @@ class PedidoType extends AbstractType {
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('x')
                         ->where('x.tipoUsuario = 1')
-                        ->orderBy('x.nombre', 'ASC');
+                        ->orderBy('x.apellido', 'ASC');
                 },
             ))
             ->add('pedidoProducto', PedidoProductoType::class, array(

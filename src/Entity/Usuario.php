@@ -137,7 +137,7 @@ class Usuario implements UserInterface {
 
 
     public function __toString(): string {
-        $nombre = $this->getNombre(). ' '.$this->getApellido();
+        $nombre = $this->getApellido(). ' '.$this->getNombre();
         if ($this->getTipoUsuario()->getCodigoInterno() == Constants\ConstanteTipoUsuario::CLIENTE){
             if ($this->razonSocial != null){
                 $nombre.=' ('.$this->getRazonSocial().')';
