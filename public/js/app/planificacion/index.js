@@ -72,7 +72,6 @@ var KTCalendarListView = function() {
                                 return;
                             },
                             callbackSuccess: function () {
-
                                 $.ajax({
                                     type: 'post',
                                     dataType: 'json',
@@ -95,6 +94,8 @@ var KTCalendarListView = function() {
                             }
                         });
                         $('.modal-dialog').css('width', '80%');
+                        $('.modal-dialog').addClass('modal-xl');
+                        initSobreInput();
                     });
                 },
                 eventRender: function(info) {
@@ -117,69 +118,94 @@ var KTCalendarListView = function() {
                 },
                 eventDrop: function(info) {
                     dialogFinalizarForm = '\
-                        <div class="d-flex align-items-center mb-10">\n\
-                            <div class="symbol symbol-40 symbol-light-primary mr-5">\n\
-                                <span class="symbol-label">\n\
-                                    <span class="svg-icon svg-icon-xl svg-icon-primary">\n\
-                                        <i class="fas fa-calendar-alt icon-2x text-dark"></i>\n\
+                        <div class="row">\n\
+                            <div class="col-md-4">\n\
+                                <div class="d-flex align-items-center mb-10">\n\
+                                    <div class="symbol symbol-40 symbol-light-primary mr-5">\n\
+                                        <span class="symbol-label">\n\
+                                            <span class="svg-icon svg-icon-xl svg-icon-primary">\n\
+                                                <i class="fas fa-calendar-alt icon-2x text-dark"></i>\n\
+                                            </span>\n\
+                                        </span>\n\
+                                    </div>\n\
+                                    <div class="d-flex flex-column font-weight-bold">\n\
+                                        <label class="text-dark text-hover-primary mb-1 font-size-lg"><strong>Nueva fecha de siembra</strong></label>\n\
+                                        <span class="text-muted">'+info.event.extendedProps.fechaSiembra+ '<i class="fas fa-arrow-right" style="padding: 0px 10px;"></i>' +info.event.start.toISOString().substring(0, 10)+'</span>\n\
+                                    </div>\n\
+                                </div>\n\
+                            </div>\n\
+                            <div class="col-md-4">\n\
+                                <div class="d-flex align-items-center mb-10">\n\
+                                    <div class="symbol symbol-40 symbol-light-primary mr-5">\n\
+                                    <span class="symbol-label">\n\
+                                        <span class="svg-icon svg-icon-xl svg-icon-primary">\n\
+                                            <i class="fas fa-leaf icon-2x text-dark"></i>\n\
+                                        </span>\n\
                                     </span>\n\
-                                </span>\n\
+                                    </div>\n\
+                                    <div class="d-flex flex-column font-weight-bold">\n\
+                                        <span class="label label-inline '+info.event.extendedProps.tipoProducto+' font-weight-bold" style="padding: 20px">'+info.event.extendedProps.producto+'</span>\n\
+                                    </div>\n\
+                                </div>\n\
                             </div>\n\
-                            <div class="d-flex flex-column font-weight-bold">\n\
-                                <label class="text-dark text-hover-primary mb-1 font-size-lg"><strong>Nueva fecha de siembra</strong></label>\n\
-                                <span class="text-muted">'+info.event.extendedProps.fechaSiembra+ '<i class="fas fa-arrow-right" style="padding: 0px 10px;"></i>' +info.event.start.toISOString().substring(0, 10)+'</span>\n\
+                            <div class="col-md-4">\n\
+                                <div class="d-flex align-items-center mb-10">\n\
+                                    <div class="symbol symbol-40 symbol-light-primary mr-5">\n\
+                                        <span class="symbol-label">\n\
+                                            <span class="svg-icon svg-icon-xl svg-icon-primary">\n\
+                                                <i class="la la-file-alt icon-2x text-dark"></i>\n\
+                                            </span>\n\
+                                        </span>\n\
+                                    </div>\n\
+                                    <div class="d-flex flex-column font-weight-bold">\n\
+                                        <span class="label label-inline font-weight-bold '+info.event.extendedProps.colorEstado+'" style="padding: 20px 50px;">'+info.event.extendedProps.estado+'</span>\n\
+                                    </div>\n\
+                                </div>\n\
                             </div>\n\
-                        </div>\n\
-                        <div class="d-flex align-items-center mb-10">\n\
-                            <div class="symbol symbol-40 symbol-light-primary mr-5">\n\
-                                <span class="symbol-label">\n\
-                                    <span class="svg-icon svg-icon-xl svg-icon-primary">\n\
-                                        <i class="fas fa-user icon-2x text-dark"></i>\n\
-                                    </span>\n\
-                                </span>\n\
+                            <div class="col-md-4">\n\
+                                <div class="d-flex align-items-center mb-10">\n\
+                                    <div class="symbol symbol-40 symbol-light-primary mr-5">\n\
+                                        <span class="symbol-label">\n\
+                                            <span class="svg-icon svg-icon-xl svg-icon-primary">\n\
+                                                <i class="fas fa-user icon-2x text-dark"></i>\n\
+                                            </span>\n\
+                                        </span>\n\
+                                    </div>\n\
+                                    <div class="d-flex flex-column font-weight-bold">\n\
+                                        <label class="text-dark text-hover-primary mb-1 font-size-lg">Cliente</label>\n\
+                                        <span class="text-muted">'+info.event.extendedProps.cliente+'</span>\n\
+                                    </div>\n\
+                                </div>\n\
                             </div>\n\
-                            <div class="d-flex flex-column font-weight-bold">\n\
-                                <label class="text-dark text-hover-primary mb-1 font-size-lg">Cliente</label>\n\
-                                <span class="text-muted">'+info.event.extendedProps.cliente+'</span>\n\
+                            <div class="col-md-4">\n\
+                                <div class="d-flex align-items-center mb-10">\n\
+                                    <div class="symbol symbol-40 symbol-light-primary mr-5">\n\
+                                        <span class="symbol-label">\n\
+                                            <span class="svg-icon svg-icon-xl svg-icon-primary">\n\
+                                                <i class="fas fa-table icon-2x text-dark"></i>\n\
+                                            </span>\n\
+                                        </span>\n\
+                                    </div>\n\
+                                    <div class="d-flex flex-column font-weight-bold">\n\
+                                        <label class="text-dark text-hover-primary mb-1 font-size-lg">Bandejas</label>\n\
+                                        <span class="text-muted">'+info.event.extendedProps.cantidadTipoBandejabandeja+'</span>\n\
+                                    </div>\n\
+                                </div>\n\
                             </div>\n\
-                        </div>\n\
-                        <div class="d-flex align-items-center mb-10">\n\
-                            <div class="symbol symbol-40 symbol-light-primary mr-5">\n\
-                                <span class="symbol-label">\n\
-                                    <span class="svg-icon svg-icon-xl svg-icon-primary">\n\
-                                        <i class="fas fa-leaf icon-2x text-dark"></i>\n\
-                                    </span>\n\
-                                </span>\n\
-                            </div>\n\
-                            <div class="d-flex flex-column font-weight-bold">\n\
-                                <label class="text-dark text-hover-primary mb-1 font-size-lg">Producto</label>\n\
-                                <span class="text-muted">'+info.event.extendedProps.producto+'</span>\n\
-                            </div>\n\
-                        </div>\n\
-                        <div class="d-flex align-items-center mb-10">\n\
-                            <div class="symbol symbol-40 symbol-light-primary mr-5">\n\
-                                <span class="symbol-label">\n\
-                                    <span class="svg-icon svg-icon-xl svg-icon-primary">\n\
-                                        <i class="fas fa-table icon-2x text-dark"></i>\n\
-                                    </span>\n\
-                                </span>\n\
-                            </div>\n\
-                            <div class="d-flex flex-column font-weight-bold">\n\
-                                <label class="text-dark text-hover-primary mb-1 font-size-lg">Bandejas</label>\n\
-                                <span class="text-muted">'+info.event.extendedProps.cantidadTipoBandejabandeja+'</span>\n\
-                            </div>\n\
-                        </div>\n\
-                        <div class="d-flex align-items-center mb-10">\n\
-                            <div class="symbol symbol-40 symbol-light-primary mr-5">\n\
-                                <span class="symbol-label">\n\
-                                    <span class="svg-icon svg-icon-xl svg-icon-primary">\n\
-                                        <i class="fas fa-table icon-2x text-dark"></i>\n\
-                                    </span>\n\
-                                </span>\n\
-                            </div>\n\
-                            <div class="d-flex flex-column font-weight-bold">\n\
-                                <label class="text-dark text-hover-primary mb-1 font-size-lg">Codigo de sobre</label>\n\
-                                <span class="text-muted">'+info.event.extendedProps.codigoSobre+'</span>\n\
+                            <div class="col-md-4">\n\
+                                <div class="d-flex align-items-center mb-10">\n\
+                                    <div class="symbol symbol-40 symbol-light-primary mr-5">\n\
+                                        <span class="symbol-label">\n\
+                                            <span class="svg-icon svg-icon-xl svg-icon-primary">\n\
+                                                <i class="fas fa-table icon-2x text-dark"></i>\n\
+                                            </span>\n\
+                                        </span>\n\
+                                    </div>\n\
+                                    <div class="d-flex flex-column font-weight-bold">\n\
+                                        <label class="text-dark text-hover-primary mb-1 font-size-lg">Codigo de sobre</label>\n\
+                                        <span class="text-muted">'+info.event.extendedProps.codigoSobre+'</span>\n\
+                                    </div>\n\
+                                </div>\n\
                             </div>\n\
                         </div>';
                     showDialog({
@@ -214,6 +240,8 @@ var KTCalendarListView = function() {
                             });
                         }
                     });
+                    $('.modal-dialog').css('width', '80%');
+                    $('.modal-dialog').addClass('modal-xl');
                 }
             });
             calendar.render();
@@ -225,6 +253,14 @@ jQuery(document).ready(function() {
     KTCalendarListView.init();
 });
 
+function initSobreInput(){
+    if ($('#codSobre').val() != ''){
+        $('.sobre-input').hide();
+    }
+    $('.sobre').click(function(){
+        $('.sobre-input').toggle();
+    });
+}
 /**
  *
  * @returns {undefined}
