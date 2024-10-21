@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% import 'app/_macro_show.html.twig' as macro_show %}
+
+{% block body %}
+
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+				<span class="card-icon">
+					<i class="flaticon-search text-primary"></i>
+				</span>
+                <h3 class="card-label">Detalles del tipo mesada
+                    {{ tipo_mesada }}</h3>
+            </div>
+            {% if is_granted('ROLE_BANDEJA_EDIT') %}
+                <div class="card-toolbar">
+                    <!--begin::Button-->
+                    <a href="{{ path('app_tipo_mesada_edit', {'id': tipo_mesada.id}) }}" class="btn btn-primary font-weight-bolder">
+                        <i class="la la-pen"></i>
+                        Editar
+                    </a>
+                    <!--end::Button-->
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                {{ macro_show._show_detail('Numero', tipo_mesada.nombre, 'col-md-3') }}
+                {{ macro_show._show_detail('Capacidad', tipo_mesada.capacidad, 'col-md-3') }}
+                {{ macro_show._show_detail('Tipo Mesada', tipo_mesada.tipoProducto, 'col-md-3') }}
+                {{ macro_show._show_detail('Habilitado', tipo_mesada.habilitado, 'col-md-3') }}
+            </div>
+
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('tipomesada_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
+        </div>
+
+    </div>
+
+
+{% endblock %}

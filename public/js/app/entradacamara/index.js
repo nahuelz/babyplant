@@ -16,7 +16,7 @@ var KTCalendarListView = function() {
                 header: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,dayGridWeek,dayGridDay,listWeek'
+                    right: 'dayGridDay'
                 },
                 hiddenDays:  [ 0 ],
                 height: 800,
@@ -24,10 +24,7 @@ var KTCalendarListView = function() {
                 aspectRatio: 3,  // see: https://fullcalendar.io/docs/aspectRatio
 
                 views: {
-                    dayGridMonth: { buttonText: 'mes' },
-                    dayGridWeek: { buttonText: 'semana' },
-                    dayGridDay: { buttonText: 'dia' },
-                    listWeek: { buttonText: 'lista' }
+                    dayGridDay: { buttonText: 'dia' }
                 },
 
                 defaultView: 'dayGridDay',
@@ -67,7 +64,7 @@ var KTCalendarListView = function() {
                             labelCancel: 'Cerrar',
                             labelSuccess: 'Guardar',
                             closeButton: true,
-                            class: 'codigo-sobre-submit',
+                            class: 'entrada-camara-submit',
                             callbackCancel: function () {
                                 return;
                             },
@@ -77,7 +74,7 @@ var KTCalendarListView = function() {
                                     type: 'post',
                                     dataType: 'json',
                                     data: {
-                                        codSobre: $('#codSobre').val(),
+                                        fechaIngresoCamara: $('#fecha-ingreso-camara').val(),
                                         idPedidoProducto: info.event.id
                                     },
                                     url: __HOMEPAGE_PATH__ + "entrada_camara/guardar/",
@@ -85,7 +82,7 @@ var KTCalendarListView = function() {
                                         if (!jQuery.isEmptyObject(data)) {
                                             $('.alert-success').hide();
                                             showFlashMessage("success", data.message);
-                                            calendar.refetchEvents()
+                                            calendar.refetchEvents();
                                         }
                                     },
                                     error: function () {
@@ -95,6 +92,26 @@ var KTCalendarListView = function() {
                             }
                         });
                         $('.modal-dialog').css('width', '80%');
+                        $('.modal-dialog').addClass('modal-xl');
+                        $('.fecha-ingreso').click(function(){
+                            $('.fecha-ingreso-camara-edit').toggle();
+                        });
+                        let date = new Date();
+                        let hour = date.getHours();
+                        let min = date.getMinutes();
+                        hour = (hour < 10 ? "0" : "") + hour;
+                        min = (min < 10 ? "0" : "") + min;
+                        let hora = hour + ":" + min;
+                        $('.fecha-ingreso-camara').text($('.fecha-ingreso-camara').text() + ' ' +  hora);
+                        $('.fecha-ingreso-camara-hidden').text($('.fecha-ingreso-camara-hidden').text() + ' ' +  hora);
+                        let fechaCompleta = $('.fecha-ingreso-camara-hidden').text();
+                        fechaCompleta = fechaCompleta.replace(' ', 'T');
+                        console.log(fechaCompleta);
+                        $('#fecha-ingreso-camara').val(fechaCompleta);
+                        if ($('.estado').text() == 'EN CAMARA'){
+                            $('.entrada-camara-submit').hide();
+                            $('.fecha-ingreso-camara-edit').remove();
+                        }
                     });
                 },
                 eventRender: function(info) {
@@ -106,106 +123,6 @@ var KTCalendarListView = function() {
                     element.css('min-height', '75px');
                     element.find('.fc-title').css('font-size', '1.1rem');
                     element.find('.fc-content').css('margin-top', '1%');
-                },
-                eventDrop: function(info) {
-                    dialogFinalizarForm = '\
-                        <div class="d-flex align-items-center mb-10">\n\
-                            <div class="symbol symbol-40 symbol-light-primary mr-5">\n\
-                                <span class="symbol-label">\n\
-                                    <span class="svg-icon svg-icon-xl svg-icon-primary">\n\
-                                        <i class="fas fa-calendar-alt icon-2x text-dark"></i>\n\
-                                    </span>\n\
-                                </span>\n\
-                            </div>\n\
-                            <div class="d-flex flex-column font-weight-bold">\n\
-                                <label class="text-dark text-hover-primary mb-1 font-size-lg"><strong>Nueva fecha de siembra</strong></label>\n\
-                                <span class="text-muted">'+info.event.extendedProps.fechaSiembra+ '<i class="fas fa-arrow-right" style="padding: 0px 10px;"></i>' +info.event.start.toISOString().substring(0, 10)+'</span>\n\
-                            </div>\n\
-                        </div>\n\
-                        <div class="d-flex align-items-center mb-10">\n\
-                            <div class="symbol symbol-40 symbol-light-primary mr-5">\n\
-                                <span class="symbol-label">\n\
-                                    <span class="svg-icon svg-icon-xl svg-icon-primary">\n\
-                                        <i class="fas fa-user icon-2x text-dark"></i>\n\
-                                    </span>\n\
-                                </span>\n\
-                            </div>\n\
-                            <div class="d-flex flex-column font-weight-bold">\n\
-                                <label class="text-dark text-hover-primary mb-1 font-size-lg">Cliente</label>\n\
-                                <span class="text-muted">'+info.event.extendedProps.cliente+'</span>\n\
-                            </div>\n\
-                        </div>\n\
-                        <div class="d-flex align-items-center mb-10">\n\
-                            <div class="symbol symbol-40 symbol-light-primary mr-5">\n\
-                                <span class="symbol-label">\n\
-                                    <span class="svg-icon svg-icon-xl svg-icon-primary">\n\
-                                        <i class="fas fa-leaf icon-2x text-dark"></i>\n\
-                                    </span>\n\
-                                </span>\n\
-                            </div>\n\
-                            <div class="d-flex flex-column font-weight-bold">\n\
-                                <label class="text-dark text-hover-primary mb-1 font-size-lg">Producto</label>\n\
-                                <span class="text-muted">'+info.event.extendedProps.producto+'</span>\n\
-                            </div>\n\
-                        </div>\n\
-                        <div class="d-flex align-items-center mb-10">\n\
-                            <div class="symbol symbol-40 symbol-light-primary mr-5">\n\
-                                <span class="symbol-label">\n\
-                                    <span class="svg-icon svg-icon-xl svg-icon-primary">\n\
-                                        <i class="fas fa-table icon-2x text-dark"></i>\n\
-                                    </span>\n\
-                                </span>\n\
-                            </div>\n\
-                            <div class="d-flex flex-column font-weight-bold">\n\
-                                <label class="text-dark text-hover-primary mb-1 font-size-lg">Bandejas</label>\n\
-                                <span class="text-muted">'+info.event.extendedProps.cantidadTipoBandejabandeja+'</span>\n\
-                            </div>\n\
-                        </div>\n\
-                        <div class="d-flex align-items-center mb-10">\n\
-                            <div class="symbol symbol-40 symbol-light-primary mr-5">\n\
-                                <span class="symbol-label">\n\
-                                    <span class="svg-icon svg-icon-xl svg-icon-primary">\n\
-                                        <i class="fas fa-table icon-2x text-dark"></i>\n\
-                                    </span>\n\
-                                </span>\n\
-                            </div>\n\
-                            <div class="d-flex flex-column font-weight-bold">\n\
-                                <label class="text-dark text-hover-primary mb-1 font-size-lg">Codigo de sobre</label>\n\
-                                <span class="text-muted">'+info.event.extendedProps.codigoSobre+'</span>\n\
-                            </div>\n\
-                        </div>';
-                    showDialog({
-                        titulo: '<span class="font-white text-center"> Modificar fecha de entrada a camara pedido N° '+info.event.id +'</span>',
-                        contenido: dialogFinalizarForm,
-                        className: 'modal-dialog-small',
-                        color: 'green',
-                        labelSuccess: 'Aceptar',
-                        closeButton: false,
-                        callbackCancel: function () {
-                            info.revert();
-                            return;
-                        },
-                        callbackSuccess: function () {
-                            $.ajax({
-                                type: 'post',
-                                dataType: 'json',
-                                data: {
-                                    nuevaFechaSiembra: info.event.start.toISOString().substring(0, 10),
-                                    idPedidoProducto: info.event.id
-                                },
-                                url: __HOMEPAGE_PATH__ + "entrada_camara/cambiar_fecha_entrada_camara/",
-                                success: function (data) {
-                                    if (!jQuery.isEmptyObject(data)) {
-                                        $('.alert-success').hide();
-                                        showFlashMessage("success", data.message);
-                                    }
-                                },
-                                error: function() {
-                                    alert('ah ocurrido un error.');
-                                }
-                            });
-                        }
-                    });
                 }
             });
             calendar.render();
@@ -223,14 +140,14 @@ jQuery(document).ready(function() {
  */
 function initPreValidation() {
 
-    $(".codigo-sobre-submit").off('click').on('click', function (e) {
+    $(".entrada-camara-submit").off('click').on('click', function (e) {
         e.preventDefault();
 
-       if ($('#codSobre').val() != ''){
+       if ($('#fecha-ingreso-camara').val() != ''){
            return true;
        } else {
            Swal.fire({
-               title: 'Ingrese el codigo del sobre.',
+               title: 'Ingrese la fecha de ingreso a camara.',
                icon: "error"
            });
        }

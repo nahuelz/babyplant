@@ -8,9 +8,10 @@
         "description": "{{ entity.descripcion|default('-') }}",
         "cliente": "{{ entity.cliente|default('-') }}",
         "producto": "{{ entity.nombreCompleto|default('-') }}",
+        "idProducto": "{{ entity.idProducto|default('-') }}",
         "cantidadTipoBandejabandeja": "{{ entity.cantidadTipoBandejabandeja|default('-') }}",
         "fechaSiembra": "{{ entity.fechaSiembra is not null ? entity.fechaSiembra|date('Y-m-d') : '-' }}",
-        "href":  "{{ path( "pedido_producto", { 'id': entity.id }) }}",
+        "href":  "{{ path( "salida_camara_show", { 'id': entity.id }) }}",
         "codigoSobre": "{{ entity.codigoSobre|default('-') }}",
         "className": "{{ entity.className|default('fc-event-danger fc-event-solid-danger') }}"
         }

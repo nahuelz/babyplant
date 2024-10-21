@@ -133,14 +133,31 @@ class PedidoProducto {
     private $horaSiembra;
 
     /**
-     * @ORM\Column(name="fechaIngresoCamara", type="datetime", length=255, nullable=true)
+     * @ORM\Column(name="fecha_ingreso_camara", type="datetime", length=255, nullable=true)
      */
     private $fechaIngresoCamara;
+
+    /**
+     * @ORM\Column(name="fecha_salida_camara_estimada", type="datetime", length=255, nullable=true)
+     */
+    private $fechaSalidaCamaraEstimada;
+
+    /**
+     * @ORM\Column(name="fecha_salida_camara_real", type="datetime", length=255, nullable=true)
+     */
+    private $fechaSalidaCamaraReal;
 
     /**
      * @ORM\Column(name="numero_orden", type="integer", nullable=true)
      */
     private $numeroOrden;
+
+    /**
+     * @ORM\OneToMany(targetEntity=PedidoProductoMesada::class, mappedBy="pedidoProducto", cascade={"all"})
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $mesadas;
+
 
     public function __construct()
     {
@@ -539,6 +556,88 @@ class PedidoProducto {
     {
         $this->fechaIngresoCamara = $fechaIngresoCamara;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getFechaSalidaCamara()
+    {
+        return $this->fechaSalidaCamara;
+    }
+
+    /**
+     * @param mixed $fechaSalidaCamara
+     */
+    public function setFechaSalidaCamara($fechaSalidaCamara): void
+    {
+        $this->fechaSalidaCamara = $fechaSalidaCamara;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFechaSalidaCamaraEstimada()
+    {
+        return $this->fechaSalidaCamaraEstimada;
+    }
+
+    /**
+     * @param mixed $fechaSalidaCamaraEstimada
+     */
+    public function setFechaSalidaCamaraEstimada($fechaSalidaCamaraEstimada): void
+    {
+        $this->fechaSalidaCamaraEstimada = $fechaSalidaCamaraEstimada;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFechaSalidaCamaraReal()
+    {
+        return $this->fechaSalidaCamaraReal;
+    }
+
+    /**
+     * @param mixed $fechaSalidaCamaraReal
+     */
+    public function setFechaSalidaCamaraReal($fechaSalidaCamaraReal): void
+    {
+        $this->fechaSalidaCamaraReal = $fechaSalidaCamaraReal;
+    }
+
+    public function getDiasEnCamara(){
+        return '+' . $this->getTipoVariedad()->getTipoSubProducto()->getTipoProducto()->getCantDiasCamara() . ' day';
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMesadas()
+    {
+        return $this->mesadas;
+    }
+
+    /**
+     * @param mixed $mesadas
+     */
+    public function setMesadas($mesadas): void
+    {
+        $this->mesadas = $mesadas;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function addMesadas($mesada)
+    {
+        if (!$this->mesadas->contains($mesada)) {
+            $this->mesadas[] = $mesada;
+            $mesada->setPedidoProducto($this);
+        }
+
+        return $this;
+    }
+
 
 
 

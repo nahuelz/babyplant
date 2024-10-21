@@ -1,9 +1,9 @@
-var producto_table = null
+var mesada_table = null
 
 jQuery(document).ready(function () {
-    producto_table = $('#table-producto')
-    dataTablesInit(producto_table, {
-        ajax: __HOMEPAGE_PATH__ + 'tipo/producto/index_table/',
+    mesada_table = $('#table-mesada')
+    dataTablesInit(mesada_table, {
+        ajax: __HOMEPAGE_PATH__ + 'tipo/mesada/index_table/',
         columnDefs: datatablesGetColDef(),
         order: [[1, 'asc']],
     })
@@ -15,7 +15,7 @@ jQuery(document).ready(function () {
         show_confirm({
             title: 'Confirmación',
             type: 'warning',
-            msg: '¿Desea '+ msg +' este tipo producto?',
+            msg: '¿Desea '+ msg +' este tipo mesada?',
             callbackOK: function () {
                 location.href = a_href;
             }
@@ -53,7 +53,15 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
-            name: 'cantidad_dias_camara',
+            name: 'capacidad',
+        },
+        {
+            targets: index++,
+            name: 'tipoMesada',
+        },
+        {
+            targets: index++,
+            name: 'habilitado',
         },
         {
             targets: -1,

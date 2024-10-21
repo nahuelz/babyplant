@@ -17,8 +17,18 @@ class TipoProducto extends EntidadBasica {
      */
     private $color;
 
+    /**
+     * @ORM\Column(name="catidad_dias_camara", type="string", length=50, nullable=true)
+     */
+    private $cantDiasCamara;
+
     public function __construct() {
         $this->habilitado = true;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getNombre();
     }
 
     /**
@@ -36,6 +46,24 @@ class TipoProducto extends EntidadBasica {
     {
         $this->color = $color;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getCantDiasCamara()
+    {
+        return $this->cantDiasCamara;
+    }
+
+    /**
+     * @param mixed $cantDiasCamara
+     */
+    public function setCantDiasCamara($cantDiasCamara): void
+    {
+        $this->cantDiasCamara = $cantDiasCamara;
+    }
+
+
 
 
 }

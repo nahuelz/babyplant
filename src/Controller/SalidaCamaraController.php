@@ -10,10 +10,15 @@ use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
 use App\Entity\Pedido;
 use App\Entity\PedidoProducto;
+use App\Entity\PedidoProductoMesada;
+use App\Form\PedidoProductoMesadaType;
+use App\Form\RegistrationFormType;
+use App\Form\SalidaCamaraType;
 use DateTime;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -53,6 +58,7 @@ class SalidaCamaraController extends BaseController
         $rsm = new ResultSetMapping();
 
         $rsm->addScalarResult('id', 'id');
+        $rsm->addScalarResult('idProducto', 'idProducto');
         $rsm->addScalarResult('nombreCompleto', 'nombreCompleto');
         $rsm->addScalarResult('nombreCorto', 'nombreCorto');
         $rsm->addScalarResult('cantidadTipoBandejabandeja', 'cantidadTipoBandejabandeja');
@@ -72,56 +78,58 @@ class SalidaCamaraController extends BaseController
     }
 
     /**
-     * @Route("/{id}", name="salida_camara_show", methods={"GET"})
-     * @Template("pedido/show.html.twig")
+     * @Route("/{id}", name="salida_camara_show", methods={"GET","POST"})
      * @IsGranted("ROLE_PEDIDO")
      */
-    public function show($id): Array {
+    public function show(Request $request, $id) {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository("App\Entity\Pedido")->find($id);
+        /* @var $entity PedidoProducto */
+        $entity = $em->getRepository("App\Entity\PedidoProducto")->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException("No se puede encontrar la entidad Pedido.");
+            throw $this->createNotFoundException('No se puede encontrar la entidad.');
         }
 
-        $breadcrumbs = $this->getShowBaseBreadcrumbs($entity);
+        $form = $this->createMesadaForm($entity);
 
-        $parametros = array(
-            'entity' => $entity,
-            'breadcrumbs' => $breadcrumbs,
-            'page_title' => 'Detalle ' . $this->getEntityRenderName()
-        );
+        $form->handleRequest($request);
 
-        return array_merge($parametros, $this->getExtraParametersShowAction($entity));
+        if ($form->isSubmitted()) {
+            if ($entity->getEstado()->getCodigoInterno() != ConstanteEstadoPedidoProducto::EN_INVERNACULO) {
+                $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::EN_INVERNACULO);
+                $this->cambiarEstado($em, $entity, $estado);
+                $entity->setFechaSalidaCamaraReal(new \DateTime());
+            }
+            foreach ($entity->getMesadas() as $mesada){
+                $mesada->setPedidoProducto($entity);
+            }
+            $em->flush();
+            $message = 'Producto enviado a mesada correctamente.';
+            $this->get('session')->getFlashBag()->set('success', $message);
+            return $this->redirectToRoute('salidacamara_index');
+        }
+        return $this->render('salida_camara/producto_show.html.twig', [
+            'form' => $form->createView(),
+            'pedidoProducto' => $entity,
+            'entity' => $entity
+        ]);
     }
 
-    /**
-     *
-     * @Route("/cambiar_fecha_salida_camara/", name="cambiar_fecha_salida_camara", methods={"POST"})
-     * @IsGranted("ROLE_PEDIDO")
-     */
-    public function setChangeData(Request $request){
+    public function createMesadaForm($entity){
 
-        $nuevaFechaSiembraParam = $request->get('nuevaFechaSiembra');
-        $idPedidoProducto = $request->get('idPedidoProducto');
-        $datetime = new DateTime();
-        $nuevaFechaSiembra = $datetime->createFromFormat('Y-m-d', $nuevaFechaSiembraParam);
+        $form = $this->createForm(SalidaCamaraType::class, $entity, array(
+            'action' => $this->generateUrl('salida_camara_show', array('id' => $entity->getId())),
+            'method' => 'POST',
+        ));
 
-        $em = $this->getDoctrine()->getManager();
-        /* @var $pedidoProducto PedidoProducto */
-        $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
-        $fechaSiembraOriginal = $pedidoProducto->getFechaSiembra();
-        $pedidoProducto->setFechaSiembra($nuevaFechaSiembra);
-        $em->flush();
-
-        $message = 'Se modifico correctamente la fecha de siembra del producto '.$pedidoProducto->getNombreCompleto().' del dia: '.$fechaSiembraOriginal->format('d/m/Y').' al dia: '.$nuevaFechaSiembra->format('d/m/Y');
-        $result = array(
-            'status' => 'OK',
-            'message' => $message
+        $form->add('submit', SubmitType::class, array(
+                'label' => 'Agregar',
+                'attr' => array('class' => 'btn btn-light-primary font-weight-bold submit-button'))
         );
 
-        return new JsonResponse($result);
+        return $form;
+
 
     }
 
@@ -130,10 +138,9 @@ class SalidaCamaraController extends BaseController
      * @Route("/guardar/", name="guardar", methods={"POST"})
      * @IsGranted("ROLE_PEDIDO")
      */
-    public function setOrdenSiembra(Request $request){
+    public function guardarSalidaCamara(Request $request){
 
-        $codSobre = $request->get('codSobre');
-        $idPedidoProducto = $request->get('idPedidoProducto');
+        $form = $request->get('form');
 
         $em = $this->getDoctrine()->getManager();
         /* @var $pedidoProducto PedidoProducto */

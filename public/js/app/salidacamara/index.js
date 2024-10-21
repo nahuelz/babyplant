@@ -18,7 +18,6 @@ var KTCalendarListView = function() {
                     center: 'title',
                     right: 'dayGridMonth,dayGridWeek,dayGridDay,listWeek'
                 },
-                hiddenDays:  [ 0 ],
                 height: 800,
                 contentHeight: 750,
                 aspectRatio: 3,  // see: https://fullcalendar.io/docs/aspectRatio
@@ -32,8 +31,7 @@ var KTCalendarListView = function() {
 
                 defaultView: 'dayGridWeek',
                 defaultDate: TODAY,
-
-                editable: true,
+                editable: false,
                 eventLimit: true, // allow "more" link when too many events
                 navLinks: true,
                 eventSources: [
@@ -63,11 +61,11 @@ var KTCalendarListView = function() {
                         showDialog({
                             titulo: '<i class="fa fa-list-ul margin-right-10"></i> Salida de camara pedido N° '+idProducto,
                             contenido: form,
-                            color: 'yellow ',
+                            color: 'btn-light-success ',
                             labelCancel: 'Cerrar',
-                            labelSuccess: 'Guardar',
+                            labelSuccess: 'Enviar a mesada',
                             closeButton: true,
-                            class: 'codigo-sobre-submit',
+                            class: 'salida_camara_submit',
                             callbackCancel: function () {
                                 return;
                             },
@@ -77,10 +75,9 @@ var KTCalendarListView = function() {
                                     type: 'post',
                                     dataType: 'json',
                                     data: {
-                                        codSobre: $('#codSobre').val(),
-                                        idPedidoProducto: info.event.id
+                                        form: $('form[name="salida_camara"]').serialize()
                                     },
-                                    url: __HOMEPAGE_PATH__ + "salida_camara/guardar/",
+                                    url: __HOMEPAGE_PATH__ + "salida_camara/"+idProducto,
                                     success: function (data) {
                                         if (!jQuery.isEmptyObject(data)) {
                                             $('.alert-success').hide();
@@ -95,6 +92,13 @@ var KTCalendarListView = function() {
                             }
                         });
                         $('.modal-dialog').css('width', '80%');
+                        $('.modal-dialog').addClass('modal-xl');
+                        $('.modal-dialog').addClass('modal-fullscreen-xl-down');
+                        $('.row-mesada-empty').hide();
+                        initMesadaHandler();
+                        $('#salida_camara_mesada_tipoMesada').val(info.event.extendedProps.idProducto).select2();
+                        $('#salida_camara_mesada_mesada').select2();
+                        initMesadaChainedSelect();
                     });
                 },
                 eventRender: function(info) {
@@ -114,106 +118,6 @@ var KTCalendarListView = function() {
                             element.find('.fc-list-item-title').append('<div class="fc-description">' + info.event.extendedProps.description + '</div>');
                         }
                     }
-                },
-                eventDrop: function(info) {
-                    dialogFinalizarForm = '\
-                        <div class="d-flex align-items-center mb-10">\n\
-                            <div class="symbol symbol-40 symbol-light-primary mr-5">\n\
-                                <span class="symbol-label">\n\
-                                    <span class="svg-icon svg-icon-xl svg-icon-primary">\n\
-                                        <i class="fas fa-calendar-alt icon-2x text-dark"></i>\n\
-                                    </span>\n\
-                                </span>\n\
-                            </div>\n\
-                            <div class="d-flex flex-column font-weight-bold">\n\
-                                <label class="text-dark text-hover-primary mb-1 font-size-lg"><strong>Nueva fecha de siembra</strong></label>\n\
-                                <span class="text-muted">'+info.event.extendedProps.fechaSiembra+ '<i class="fas fa-arrow-right" style="padding: 0px 10px;"></i>' +info.event.start.toISOString().substring(0, 10)+'</span>\n\
-                            </div>\n\
-                        </div>\n\
-                        <div class="d-flex align-items-center mb-10">\n\
-                            <div class="symbol symbol-40 symbol-light-primary mr-5">\n\
-                                <span class="symbol-label">\n\
-                                    <span class="svg-icon svg-icon-xl svg-icon-primary">\n\
-                                        <i class="fas fa-user icon-2x text-dark"></i>\n\
-                                    </span>\n\
-                                </span>\n\
-                            </div>\n\
-                            <div class="d-flex flex-column font-weight-bold">\n\
-                                <label class="text-dark text-hover-primary mb-1 font-size-lg">Cliente</label>\n\
-                                <span class="text-muted">'+info.event.extendedProps.cliente+'</span>\n\
-                            </div>\n\
-                        </div>\n\
-                        <div class="d-flex align-items-center mb-10">\n\
-                            <div class="symbol symbol-40 symbol-light-primary mr-5">\n\
-                                <span class="symbol-label">\n\
-                                    <span class="svg-icon svg-icon-xl svg-icon-primary">\n\
-                                        <i class="fas fa-leaf icon-2x text-dark"></i>\n\
-                                    </span>\n\
-                                </span>\n\
-                            </div>\n\
-                            <div class="d-flex flex-column font-weight-bold">\n\
-                                <label class="text-dark text-hover-primary mb-1 font-size-lg">Producto</label>\n\
-                                <span class="text-muted">'+info.event.extendedProps.producto+'</span>\n\
-                            </div>\n\
-                        </div>\n\
-                        <div class="d-flex align-items-center mb-10">\n\
-                            <div class="symbol symbol-40 symbol-light-primary mr-5">\n\
-                                <span class="symbol-label">\n\
-                                    <span class="svg-icon svg-icon-xl svg-icon-primary">\n\
-                                        <i class="fas fa-table icon-2x text-dark"></i>\n\
-                                    </span>\n\
-                                </span>\n\
-                            </div>\n\
-                            <div class="d-flex flex-column font-weight-bold">\n\
-                                <label class="text-dark text-hover-primary mb-1 font-size-lg">Bandejas</label>\n\
-                                <span class="text-muted">'+info.event.extendedProps.cantidadTipoBandejabandeja+'</span>\n\
-                            </div>\n\
-                        </div>\n\
-                        <div class="d-flex align-items-center mb-10">\n\
-                            <div class="symbol symbol-40 symbol-light-primary mr-5">\n\
-                                <span class="symbol-label">\n\
-                                    <span class="svg-icon svg-icon-xl svg-icon-primary">\n\
-                                        <i class="fas fa-table icon-2x text-dark"></i>\n\
-                                    </span>\n\
-                                </span>\n\
-                            </div>\n\
-                            <div class="d-flex flex-column font-weight-bold">\n\
-                                <label class="text-dark text-hover-primary mb-1 font-size-lg">Codigo de sobre</label>\n\
-                                <span class="text-muted">'+info.event.extendedProps.codigoSobre+'</span>\n\
-                            </div>\n\
-                        </div>';
-                    showDialog({
-                        titulo: '<span class="font-white text-center"> Modificar fecha de entrada a camara pedido N° '+info.event.id +'</span>',
-                        contenido: dialogFinalizarForm,
-                        className: 'modal-dialog-small',
-                        color: 'green',
-                        labelSuccess: 'Aceptar',
-                        closeButton: false,
-                        callbackCancel: function () {
-                            info.revert();
-                            return;
-                        },
-                        callbackSuccess: function () {
-                            $.ajax({
-                                type: 'post',
-                                dataType: 'json',
-                                data: {
-                                    nuevaFechaSiembra: info.event.start.toISOString().substring(0, 10),
-                                    idPedidoProducto: info.event.id
-                                },
-                                url: __HOMEPAGE_PATH__ + "salida_camara/cambiar_fecha_salida_camara/",
-                                success: function (data) {
-                                    if (!jQuery.isEmptyObject(data)) {
-                                        $('.alert-success').hide();
-                                        showFlashMessage("success", data.message);
-                                    }
-                                },
-                                error: function() {
-                                    alert('ah ocurrido un error.');
-                                }
-                            });
-                        }
-                    });
                 }
             });
             calendar.render();
@@ -231,18 +135,142 @@ jQuery(document).ready(function() {
  */
 function initPreValidation() {
 
-    $(".codigo-sobre-submit").off('click').on('click', function (e) {
+    $(".salida_camara_submit").off('click').on('click', function (e) {
         e.preventDefault();
 
-       if ($('#codSobre').val() != ''){
-           return true;
-       } else {
-           Swal.fire({
-               title: 'Ingrese el codigo del sobre.',
-               icon: "error"
-           });
-       }
+        $('form[name="salida_camara"]').submit();
 
         e.stopPropagation();
     });
+}
+
+/**
+ *
+ * @returns {undefined}
+ */
+function initMesadaHandler() {
+
+    $('.tbody-mesada').data('index', $('.tr-mesada').length);
+
+    updateDeleteLinkMesada($(".link-delete-mesada"), '.tr-mesada');
+
+    // Save CaracteristicaProducto handler
+    $(document).off('click', '.link-save-mesada').on('click', '.link-save-mesada', function (e) {
+
+        e.preventDefault();
+
+
+        var mesadaSelect = $('#salida_camara_mesada_mesada');
+        var mesada = mesadaSelect.val();
+        var cantBandejas = $('#salida_camara_mesada_cantidadBandejas').val();
+
+
+        if (mesada === '' || cantBandejas === '' ) {
+            Swal.fire({
+                title: "Debe completar todos los datos de la mesada.",
+                icon: "warning"
+            });
+
+        } else {
+
+            var index = $('.tbody-mesada').data('index');
+
+            var removeLink = '\
+                        <a href="#" class="btn btn-sm delete-link-inline link-delete-mesada mesada-borrar tooltips" \n\
+                            data-placement="top" data-original-title="Eliminar">\n\
+                            <i class="fa fa-trash text-danger"></i>\n\
+                        </a>';
+
+            var item = '\
+                        <tr class="tr-mesada">\n\
+                            <td class="hidden"><input type="hidden" name="salida_camara[mesadas][' + index + '][mesada]" value="' + mesada + '"></td>\n\
+                            <td class="hidden"><input type="hidden" name="salida_camara[mesadas][' + index + '][cantidadBandejas]" value="' + cantBandejas + '"></td>\n\
+                            <td class="text-center v-middle">' + mesadaSelect.find('option:selected').text()  + '</td>\n\
+                            <td class="text-center v-middle">' + cantBandejas + '</td>\n\
+                            <td class="text-center v-middle">' + removeLink + '</td>\n\
+                        </tr>';
+
+            $('.tbody-mesada').append(item);
+            $('.tbody-mesada').data('index', index + 1);
+
+            $('.tbody-mesada tr.tr-mesada:last').hide();
+            $('.tbody-mesada tr.tr-mesada').fadeIn("slow");
+
+            updateDeleteLinkMesada($(".link-delete-mesada"), '.tr-mesada');
+
+            $('.row-mesada-empty').hide('slow');
+            $('.row-mesada').show('slow');
+
+            //  Reset form
+            $('.row-agregar-mesada').show('slow');
+            clearMesadaForm();
+        }
+
+        e.stopPropagation();
+    });
+}
+
+/**
+ *
+ * @returns {undefined}
+ */
+function clearMesadaForm() {
+    $('#salida_camara_mesada_mesada').val('').select2();
+    $('#salida_camara_mesada_cantidadBandejas').val('');
+}
+
+/**
+ *
+ * @param {type} deleteLink
+ * @param {type} closestClassName
+ * @returns {undefined}
+ */
+function updateDeleteLinkMesada(deleteLink, closestClassName) {
+    closestClassName = typeof closestClassName !== 'undefined' ? closestClassName : '.row';
+    deleteLink.each(function () {
+        $(this).tooltip();
+        $(this).off("click").on('click', function (e) {
+            e.preventDefault();
+            var deletableRow = $(this).closest(closestClassName);
+            if (!checkFormIsEmpty(deletableRow)) {
+                show_confirm({
+                    title: 'Confirmar',
+                    type: 'warning',
+                    msg: '¿Confirma la eliminación?',
+                    callbackOK: function () {
+                        deletableRow.hide('slow', function () {
+                            customPreDeleteLinkOnCallbackOk(deletableRow);
+                            deletableRow.remove();
+                            if ($('.tr-mesada').length === 0) {
+                                $('.row-mesada-empty').show('slow');
+                                $('.row-mesada').hide('slow');
+                            }
+                            customDeleteLinkOnCallbackOk();
+                        });
+                    }
+                });
+            } else {
+                deletableRow.hide('slow', function () {
+                    customPreDeleteLinkOnCallbackOk(deletableRow);
+                    deletableRow.remove();
+                    if ($('.tr-mesada').length === 0) {
+                        $('.row-mesada-empty').show('slow');
+                        $('.row-mesada').hide('slow');
+                    }
+                    customDeleteLinkOnCallbackOk();
+                });
+            }
+
+            e.stopPropagation();
+
+        });
+    });
+}
+
+function initMesadaChainedSelect() {
+    initChainedSelect($('#salida_camara_mesada_tipoMesada'), $('#salida_camara_mesada_mesada'), __HOMEPAGE_PATH__ + 'tipo/mesada/lista/mesada/producto', true);
+}
+
+function getExtraDataChainedSelect(){
+    return ($('#salida_camara_mesada_tipoMesada').select2('data')[0]['text']);
 }

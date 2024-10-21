@@ -1,0 +1,91 @@
+{% if entity is defined %}
+    <div class="row">
+        <div class="modal-body" style="padding-top: 0px;padding-bottom: 0px;">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center mb-10">
+                        <div class="symbol symbol-40 symbol-light-primary mr-5">
+                        <span class="symbol-label">
+                            <span class="svg-icon svg-icon-xl svg-icon-primary">
+                                <i class="fas fa-leaf icon-2x text-dark"></i>
+                            </span>
+                        </span>
+                        </div>
+                        <div class="d-flex flex-column font-weight-bold">
+                            <span class="label label-inline {{ entity.tipoProducto.nombre}} font-weight-bold" style="padding: 20px">{{ entity.tipoVariedad }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center mb-10">
+                        <div class="symbol symbol-40 symbol-light-primary mr-5">
+                            <span class="symbol-label">
+                                <span class="svg-icon svg-icon-xl svg-icon-primary">
+                                    <i class="la la-file-alt icon-2x text-dark"></i>
+                                </span>
+                            </span>
+                        </div>
+                        <div class="d-flex flex-column font-weight-bold">
+                            <span class="label label-inline font-weight-bold {{ entity.estado.color }} estado" style="padding: 20px;">{{ entity.estado.nombre }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center mb-10 observacion">
+                        <div class="symbol symbol-40 symbol-light-primary mr-5">
+                        <span class="symbol-label">
+                            <span class="svg-icon svg-icon-xl svg-icon-primary">
+                                <i class="fas fa-comment icon-2x text-dark"></i>
+                            </span>
+                        </span>
+                        </div>
+                        <div class="d-flex flex-column font-weight-bold">
+                            <label class="text-dark text-hover-primary mb-1 font-size-lg">Observacion</label>
+                            <span class="text-muted">{{ entity.observacion|default('-') }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center mb-10 bandejas">
+                        <div class="symbol symbol-40 symbol-light-primary mr-5">
+                    <span class="symbol-label">
+                        <span class="svg-icon svg-icon-xl svg-icon-primary">
+                            <i class="fas fa-table icon-2x text-dark"></i>
+                        </span>
+                    </span>
+                        </div>
+                        <div class="d-flex flex-column font-weight-bold">
+                            <label class="text-dark text-hover-primary mb-1 font-size-lg">Bandejas Reales</label>
+                            <span class="text-muted">{{ entity.cantBandejasReales|default(entity.cantBandejas) }}(X{{ entity.tipoBandeja }})</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center mb-10 fecha-ingreso">
+                        <div class="symbol symbol-40 symbol-light-primary mr-5">
+                            <span class="symbol-label">
+                                <span class="svg-icon svg-icon-xl svg-icon-primary">
+                                    <i class="fas fa-calendar-alt icon-2x text-dark"></i>
+                                </span>
+                            </span>
+                        </div>
+                        <div class="d-flex flex-column font-weight-bold">
+                            <label class="text-dark text-hover-primary mb-1 font-size-lg"><strong>Dia y hora de ingreso a camara</strong></label>
+                            <span class="text-muted fecha-ingreso-camara-hidden" style="display: none">{{ entity.fechaIngresoCamara is not null ? entity.fechaIngresoCamara|date('d/m/Y H:i') : entity.fechaSiembra|date('Y-m-d') }}</span>
+                            <span class="text-muted fecha-ingreso-camara">{{ entity.fechaIngresoCamara is not null ? entity.fechaIngresoCamara|date('d/m/Y H:i') : entity.fechaSiembra|date('d/m/Y') }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group fecha-ingreso-camara-edit" style="display: none;">
+                        <label class="text-dark text-hover-primary mb-1 font-size-lg font-weight-bold">DIA Y HORA DE INGRESO A CAMARA:</label>
+                        <div class="input-group input-group-lg">
+                            <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-calendar"></i></span></div>
+                            <input type="datetime-local" class="form-control" min="07:00" max="20:00" id="fecha-ingreso-camara" placeholder="Ingrese una fecha" value=">{{ entity.fechaIngresoCamara is not null ? entity.fechaIngresoCamara|date('H:i') : '-' }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif  %}

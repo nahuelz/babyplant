@@ -1,0 +1,17 @@
+{% import 'app/_macro_form.html.twig' as macro_form %}
+
+<fieldset class="form-section-fieldset mesada-content">
+
+    {% set mesada = pedidoProductoMesada.mesada %}
+
+    <div class="row row-mesada">
+        {{ macro_form._new_field(mesada.nombre, 'col-md-3') }}
+        {{ macro_form._new_field(mesada.capacidad, 'col-md-8') }}
+
+        <div class="col-md-1 no-padding">
+            <a href="#" class="btn btn-sm mt-9 delete-link-inline prototype-link-remove-mesada">
+                <i class="fa fa-trash text-danger"></i>
+            </a>
+        </div>
+    </div>
+</fieldset>

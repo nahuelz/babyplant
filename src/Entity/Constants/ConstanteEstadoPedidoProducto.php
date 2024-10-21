@@ -28,4 +28,9 @@ class ConstanteEstadoPedidoProducto {
      */
     const EN_CAMARA = 4;
 
+    /**
+     * EN INVERNACULO
+     */
+    const EN_INVERNACULO = 5;
+
 }

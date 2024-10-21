@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% set edit = form.vars.value.id != null %}
+
+{% block body %}
+    {{ form_start(form, {'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
+    {% include ('app/_fields_errors.html.twig') %}
+
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+				<span class="card-icon">
+					<i class="flaticon-search text-primary"></i>
+				</span>
+                <h3 class="card-label">Editar Tipo mesada</h3>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {{ include('tipo_mesada/_form.html.twig') }}
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('tipomesada_index') }}" class="btn btn-light-dark font-weight-bold">Volver</a>
+            <button type="submit" id="tipo_mesada_submit" name="tipo_mesada[submit]" class="btn btn-light-primary font-weight-bold submit-button">{{ button_label|default('Guardar') }}</button>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}"></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/tipomesada/new.js') }}"></script>
+
+{% endblock %}
+
+
+

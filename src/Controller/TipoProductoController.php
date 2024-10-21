@@ -36,11 +36,13 @@ class TipoProductoController extends BaseController
 
         $rsm->addScalarResult('id', 'id');
         $rsm->addScalarResult('nombre', 'nombre');
+        $rsm->addScalarResult('cantidad_dias_camara', 'cantidad_dias_camara');
         $rsm->addScalarResult('habilitado', 'habilitado');
 
         $columnDefinition = [
             ['field' => 'id', 'type' => '', 'searchable' => false, 'sortable' => false],
             ['field' => 'nombre', 'type' => 'string', 'searchable' => true, 'sortable' => true],
+            ['field' => 'cantidad_dias_camara', 'type' => 'string', 'searchable' => true, 'sortable' => true],
             ['field' => 'habilitado', 'type' => 'select', 'searchable' => true, 'sortable' => true],
             ['field' => 'acciones', 'type' => '', 'searchable' => false, 'sortable' => false]
         ];

@@ -73,76 +73,45 @@ class EntradaCamaraController extends BaseController
     }
 
     /**
-     * @Route("/{id}", name="entrada_camara_show", methods={"GET"})
-     * @Template("pedido/show.html.twig")
-     * @IsGranted("ROLE_PEDIDO")
+     * @Route("/{id}/pedido_producto_entrada_camara", name="pedido_producto_entrada_camara", methods={"GET","POST"})
+     * @Template("entrada_camara/producto_show.html.twig")
      */
-    public function show($id): Array {
+    public function showPedidoProductoEntradaCamaraAction($id) {
+
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository("App\Entity\Pedido")->find($id);
+        /* @var $pedidoProducto PedidoProducto */
+        $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($id);
 
-        if (!$entity) {
-            throw $this->createNotFoundException("No se puede encontrar la entidad Pedido.");
+        if (!$pedidoProducto) {
+            throw $this->createNotFoundException('No se puede encontrar el producto.');
         }
 
-        $breadcrumbs = $this->getShowBaseBreadcrumbs($entity);
-
-        $parametros = array(
-            'entity' => $entity,
-            'breadcrumbs' => $breadcrumbs,
-            'page_title' => 'Detalle ' . $this->getEntityRenderName()
+        return array(
+            'entity' => $pedidoProducto,
+            'page_title' => 'Pedido Producto'
         );
-
-        return array_merge($parametros, $this->getExtraParametersShowAction($entity));
     }
 
     /**
      *
-     * @Route("/cambiar_fecha_entrada_camara/", name="cambiar_fecha_entrada_camara", methods={"POST"})
+     * @Route("/guardar/", name="guardar_entrada_camara", methods={"POST"})
      * @IsGranted("ROLE_PEDIDO")
      */
-    public function setChangeData(Request $request){
+    public function guardarEntradaCamara(Request $request){
 
-        $nuevaFechaSiembraParam = $request->get('nuevaFechaSiembra');
         $idPedidoProducto = $request->get('idPedidoProducto');
-        $datetime = new DateTime();
-        $nuevaFechaSiembra = $datetime->createFromFormat('Y-m-d', $nuevaFechaSiembraParam);
-
+        $fechaIngresoCamara = $request->get('fechaIngresoCamara');
+        $dateTime = new DateTime($fechaIngresoCamara);
         $em = $this->getDoctrine()->getManager();
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
-        $fechaSiembraOriginal = $pedidoProducto->getFechaSiembra();
-        $pedidoProducto->setFechaSiembra($nuevaFechaSiembra);
-        $em->flush();
-
-        $message = 'Se modifico correctamente la fecha de siembra del producto '.$pedidoProducto->getNombreCompleto().' del dia: '.$fechaSiembraOriginal->format('d/m/Y').' al dia: '.$nuevaFechaSiembra->format('d/m/Y');
-        $result = array(
-            'status' => 'OK',
-            'message' => $message
-        );
-
-        return new JsonResponse($result);
-
-    }
-
-    /**
-     *
-     * @Route("/guardar/", name="guardar", methods={"POST"})
-     * @IsGranted("ROLE_PEDIDO")
-     */
-    public function setOrdenSiembra(Request $request){
-
-        $codSobre = $request->get('codSobre');
-        $idPedidoProducto = $request->get('idPedidoProducto');
-
-        $em = $this->getDoctrine()->getManager();
-        /* @var $pedidoProducto PedidoProducto */
-        $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
-        $pedidoProducto->setCodigoSobre($codSobre);
-        if ($pedidoProducto->getEstado()->getCodigoInterno() != ConstanteEstadoPedidoProducto::PLANIFICADO) {
-            $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::PLANIFICADO);
+        $pedidoProducto->setFechaIngresoCamara($dateTime);
+        if ($pedidoProducto->getEstado()->getCodigoInterno() != ConstanteEstadoPedidoProducto::EN_CAMARA) {
+            $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::EN_CAMARA);
             $this->cambiarEstado($em, $pedidoProducto, $estado);
+            $cantDiasEnCamara = new DateTime($fechaIngresoCamara);
+            $pedidoProducto->setFechaSalidaCamaraEstimada($cantDiasEnCamara->modify($pedidoProducto->getDiasEnCamara()));
         }
         $em->flush();
 
@@ -169,7 +138,7 @@ class EntradaCamaraController extends BaseController
         $estadoPedidoProductoHistorico->setPedidoProducto($pedidoProducto);
         $estadoPedidoProductoHistorico->setFecha(new DateTime());
         $estadoPedidoProductoHistorico->setEstado($estadoProducto);
-        $estadoPedidoProductoHistorico->setMotivo('Producto planificado.');
+        $estadoPedidoProductoHistorico->setMotivo('Producto en camara.');
         $pedidoProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
 
         $em->persist($estadoPedidoProductoHistorico);

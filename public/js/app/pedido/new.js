@@ -354,48 +354,6 @@ function updateDeleteLinkPedidoProducto(deleteLink, closestClassName) {
     });
 }
 
-/**
- *
- * @param {type} deleteLink
- * @param {type} closestClassName
- * @returns {undefined}
- */
-function updateDeleteLinkPedidoProducto2(deleteLink, closestClassName) {
-
-    deleteLink.each(function () {
-
-        $(this).tooltip();
-
-        $(this).off("click").on('click', function (e) {
-
-            e.preventDefault();
-
-            var deletableRow = $(this).closest(closestClassName);
-
-            showConfirm({
-                msg: '¿Desea eliminar el producto?',
-                className: 'modal-dialog-small',
-                color: 'red',
-                callbackOK: function () {
-                    deletableRow.hide('slow', function () {
-
-                        deletableRow.remove();
-
-                        if ($('.tr-pedido-producto').length === 0) {
-                            $('.row-pedido-producto-empty').show('slow');
-                            $('.row-pedido-producto').hide('slow');
-                        }
-
-                        return true;
-                    });
-                }
-            });
-
-            e.stopPropagation();
-        });
-    });
-}
-
 function initProductos() {
     initChainedSelect($('#pedido_pedidoProducto_tipoSubProducto'), $('#pedido_pedidoProducto_tipoVariedad'), __HOMEPAGE_PATH__ + 'tipo/variedad/lista/variedades', preserve_values);
     initChainedSelect($('#pedido_pedidoProducto_tipoProducto'), $('#pedido_pedidoProducto_tipoSubProducto'), __HOMEPAGE_PATH__ + 'tipo/sub/producto/lista/subproductos', preserve_values);
