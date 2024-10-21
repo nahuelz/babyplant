@@ -4,11 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Constants\ConstanteTipoConsulta;
-use App\Controller\BaseController;
-use App\Entity\EstadoPedidoHistorico;
 use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
-use App\Entity\Pedido;
 use App\Entity\PedidoProducto;
 use DateTime;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -143,6 +140,7 @@ class PlanificacionController extends BaseController
         if ($pedidoProducto->getEstado()->getCodigoInterno() != ConstanteEstadoPedidoProducto::PLANIFICADO) {
             $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::PLANIFICADO);
             $this->cambiarEstado($em, $pedidoProducto, $estado);
+            $pedidoProducto->setNumeroOrden($this->getDoctrine()->getRepository(PedidoProducto::class)->getSiguienteNumeroOrden($pedidoProducto->getTipoProducto()));
         }
         $em->flush();
 

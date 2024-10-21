@@ -286,38 +286,4 @@ class PedidoController extends BaseController {
             'page_title' => 'Pedido Producto'
         );
     }
-
-    /**
-     * @Route("/{id}/get_numero_orden", name="get_numero_orden", methods={"GET","POST"})
-     */
-    public function getNumeroOrden($id) {
-
-        $em = $this->getDoctrine()->getManager();
-
-        /* @var $pedidoProducto PedidoProducto */
-        $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($id);
-
-        if (!$pedidoProducto) {
-            throw $this->createNotFoundException('No se puede encontrar el producto.');
-        }
-        var_dump($pedidoProducto->getNumeroOrdenCompleto()); die();
-    }
-
-    /**
-     * @Route("/{id}/set_numero_orden", name="set_numero_orden", methods={"GET","POST"})
-     */
-    public function setNumeroOrden($id) {
-
-        $em = $this->getDoctrine()->getManager();
-
-        /* @var $pedidoProducto PedidoProducto */
-        $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($id);
-
-        if (!$pedidoProducto) {
-            throw $this->createNotFoundException('No se puede encontrar el producto.');
-        }
-        $pedidoRepository = $this->getDoctrine()->getRepository(PedidoProducto::class);
-        $siguienteNumeroOrden = $pedidoRepository->getSiguienteNumeroOrden($pedidoProducto->getTipoProducto()->getId());
-        var_dump($siguienteNumeroOrden); die();
-    }
 }

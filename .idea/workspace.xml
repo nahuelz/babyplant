@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Salida de camara" />
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="NumeroOrden">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PedidoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PedidoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PlanificacionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PlanificacionController.php" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -273,7 +277,7 @@
       <workItem from="1728915107552" duration="21586000" />
       <workItem from="1729171392557" duration="6992000" />
       <workItem from="1729214985556" duration="3002000" />
-      <workItem from="1729220177548" duration="33449000" />
+      <workItem from="1729220177548" duration="35607000" />
     </task>
     <task id="LOCAL-00001" summary="config">
       <option name="closed" value="true" />
@@ -523,7 +527,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729528125485</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="Salida de camara">
+      <option name="closed" value="true" />
+      <created>1729529021532</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1729529021532</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -550,6 +562,7 @@
     <MESSAGE value="Fix vista, hide breadcrumbs" />
     <MESSAGE value="Vista fullscreen" />
     <MESSAGE value="Salida de camara" />
-    <option name="LAST_COMMIT_MESSAGE" value="Salida de camara" />
+    <MESSAGE value="NumeroOrden" />
+    <option name="LAST_COMMIT_MESSAGE" value="NumeroOrden" />
   </component>
 </project>
