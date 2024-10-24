@@ -91,6 +91,7 @@ var KTCalendarListView = function() {
                                 });
                             }
                         });
+                        $('.bs-popover-top').hide();
                         $('.modal-dialog').css('width', '80%');
                         $('.modal-dialog').addClass('modal-xl');
                         $('.modal-dialog').addClass('modal-fullscreen-xl-down');
@@ -99,6 +100,7 @@ var KTCalendarListView = function() {
                         $('#salida_camara_mesada_tipoMesada').val(info.event.extendedProps.idProducto).select2();
                         $('#salida_camara_mesada_mesada').select2();
                         initMesadaChainedSelect();
+                        initValidations();
                     });
                 },
                 eventRender: function(info) {
@@ -125,6 +127,13 @@ var KTCalendarListView = function() {
     };
 }();
 
+function initValidations(){
+    $('#salida_camara_mesada_cantidadBandejas').on('keyup', function(){
+        if ($(this).val() > $('#cantBandejasReales').val()){
+            $(this).val($('#cantBandejasReales').val());
+        }
+    });
+}
 jQuery(document).ready(function() {
     KTCalendarListView.init();
 });
@@ -138,8 +147,20 @@ function initPreValidation() {
     $(".salida_camara_submit").off('click').on('click', function (e) {
         e.preventDefault();
 
-        $('form[name="salida_camara"]').submit();
+        let res = 0;
+        $('.cantBandejas').each(function() {
+            res += parseInt($(this).val());
+        });
 
+        if (res == $('#cantBandejasReales').val()){
+            $('form[name="salida_camara"]').submit();
+        }else {
+            Swal.fire({
+                title: 'La cantidad de bandejas debe coincidir con las bandejas reales.',
+                icon: "error"
+            });
+            return false;
+        }
         e.stopPropagation();
     });
 }
@@ -184,7 +205,7 @@ function initMesadaHandler() {
             var item = '\
                         <tr class="tr-mesada">\n\
                             <td class="hidden"><input type="hidden" name="salida_camara[mesadas][' + index + '][mesada]" value="' + mesada + '"></td>\n\
-                            <td class="hidden"><input type="hidden" name="salida_camara[mesadas][' + index + '][cantidadBandejas]" value="' + cantBandejas + '"></td>\n\
+                            <td class="hidden"><input type="hidden" class="cantBandejas" name="salida_camara[mesadas][' + index + '][cantidadBandejas]" value="' + cantBandejas + '"></td>\n\
                             <td class="text-center v-middle">' + mesadaSelect.find('option:selected').text()  + '</td>\n\
                             <td class="text-center v-middle">' + cantBandejas + '</td>\n\
                             <td class="text-center v-middle">' + removeLink + '</td>\n\
@@ -260,7 +281,7 @@ function updateDeleteLinkMesada(deleteLink, closestClassName) {
                     customDeleteLinkOnCallbackOk();
                 });
             }
-
+            $('.bs-tooltip-top').hide();
             e.stopPropagation();
 
         });

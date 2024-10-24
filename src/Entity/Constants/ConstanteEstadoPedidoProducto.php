@@ -33,4 +33,15 @@ class ConstanteEstadoPedidoProducto {
      */
     const EN_INVERNACULO = 5;
 
+    /**
+     * ENTREGADO
+     */
+    const ENTREGADO = 6;
+
+
+    /**
+     * CANCELADO
+     */
+    const CANCELADO = 7;
+
 }

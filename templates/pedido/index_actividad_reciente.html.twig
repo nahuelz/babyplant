@@ -1,0 +1,35 @@
+<div class="portlet light bordered" style="padding: 5px 10px; max-height: 185px; overflow-y: auto;margin-left: 30px;margin-right: 30px;border-radius: 5px;background-color: #E1F0FF">
+    <div class="portlet-title tabbable-line margin-bottom-0">
+        <div class="caption">
+            <span class="caption-subject" style="font-size: 13px !important;
+                                    text-transform: uppercase !important;
+                                    color: #525e64 !important;
+                                    font-weight: 500 !important;">
+                Actividad reciente
+            </span>
+        </div>
+    </div>
+    <div class="portlet-body actividad-reciente padding-top-5">
+        <table class="actividad-reciente-table" style="width: 100%;">
+            {% if actividadReciente|length > 0 %}
+                {% for actividad in actividadReciente %}
+                    <div class="timeline timeline-2">
+                        <div class="timeline-bar"></div>
+                        <div class="timeline-item" style="padding: 5px 0px">
+                            <div class="timeline-badge bg-{{ actividad.colorClass }}"></div>
+                            <div class="timeline-content d-flex align-items-center justify-content-between">
+                                <span>
+                                    <a href="{{ path('pedido_show', {'id': actividad.id}) }}" target="_blank" class="text-td-reciente text-{{ actividad.colorClass }}">{{ actividad.actividad }}</a>
+                                </span>
+                                <span class="text-muted text-right text-td-reciente">{{ actividad.fecha|ago|capitalize }}</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                No hay actividad reciente a&uacute;n
+            {% endif %}
+        </table>
+    </div>
+</div>
+

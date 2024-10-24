@@ -21,22 +21,6 @@ class SelectService {
      *
      * @return type
      */
-    public function getEstadoPedidoFilter() {
-
-        $sql = "SELECT x.id, x.nombre
-                FROM App\Entity\EstadoPedido x 
-                WHERE x.fechaBaja IS NULL 
-                ORDER BY x.nombre ASC";
-
-        $query = $this->em->createQuery($sql);
-
-        return $query->getResult();
-    }
-
-    /**
-     *
-     * @return type
-     */
     public function getClienteFilter() {
 
         $sql = "SELECT x.id, CONCAT(x.apellido, ', ', x.nombre) AS nombre, IF(x.tieneRazonSocial = 1, CONCAT('(',r.razonSocial,')'),'') AS razon_social
@@ -52,32 +36,20 @@ class SelectService {
 
     /**
      *
-     * @param type $entities
-     * @param type $useId
-     * @param type $useEntities
-     * @param type $showAll
-     * @param type $localSearch
-     * @return string
+     * @return type
      */
-    public function getResponseData($entities, $useId = false, $useEntities = false, $showAll = true, $localSearch = false) {
+    public function getEstadoSelect($useId = false) {
 
-        $responseData = $showAll ? (!$localSearch ? "Todos:Todos;" : ":TODOS;") : "";
+        $sql = "SELECT x.id, x.nombre AS nombre
+                FROM App\Entity\EstadoPedidoProducto x 
+                WHERE x.fechaBaja IS NULL";
 
-        $count = count($entities);
+        $query = $this->em->createQuery($sql);
 
-        foreach ($entities as $entity) {
+        $entities = $query->getArrayResult();
 
-            $id = $useEntities ? $entity->getId() : $entity['id'];
-            $text = $useEntities ? $entity->__toString() : $entity['nombre'];
+        return $this->getResponseData($entities, $useId, false, true, true);
 
-            $responseData .= ($useId ? $id : $text) . ':' . $text;
-
-            if (--$count > 0) {
-                $responseData .= ';';
-            }
-        }
-
-        return $responseData;
     }
 
     /**
@@ -117,6 +89,36 @@ class SelectService {
             $responseData = "Todos:Todos;0:No;1:S&iacute";
         } else {
             $responseData = ":Todos;No:No;Si:S&iacute";
+        }
+
+        return $responseData;
+    }
+
+    /**
+     *
+     * @param type $entities
+     * @param type $useId
+     * @param type $useEntities
+     * @param type $showAll
+     * @param type $localSearch
+     * @return string
+     */
+    public function getResponseData($entities, $useId = false, $useEntities = false, $showAll = true, $localSearch = false) {
+
+        $responseData = $showAll ? (!$localSearch ? "Todos:Todos;" : ":TODOS;") : "";
+
+        $count = count($entities);
+
+        foreach ($entities as $entity) {
+
+            $id = $useEntities ? $entity->getId() : $entity['id'];
+            $text = $useEntities ? $entity->__toString() : $entity['nombre'];
+
+            $responseData .= ($useId ? $id : $text) . ':' . $text;
+
+            if (--$count > 0) {
+                $responseData .= ';';
+            }
         }
 
         return $responseData;

@@ -32,7 +32,7 @@ var KTCalendarListView = function() {
 
                 defaultView: 'dayGridWeek',
                 defaultDate: TODAY,
-
+                eventDurationEditable: false,
                 editable: true,
                 eventLimit: true, // allow "more" link when too many events
                 navLinks: true,
@@ -93,8 +93,10 @@ var KTCalendarListView = function() {
                                 });
                             }
                         });
+                        $('.bs-popover-top').hide();
                         $('.modal-dialog').css('width', '80%');
                         $('.modal-dialog').addClass('modal-xl');
+                        $('.modal-dialog').addClass('modal-fullscreen-xl-down');
                         initSobreInput();
                     });
                 },
@@ -240,8 +242,10 @@ var KTCalendarListView = function() {
                             });
                         }
                     });
+                    $('.bs-popover-top').hide();
                     $('.modal-dialog').css('width', '80%');
                     $('.modal-dialog').addClass('modal-xl');
+                    $('.modal-dialog').addClass('modal-fullscreen-xl-down');
                 }
             });
             calendar.render();

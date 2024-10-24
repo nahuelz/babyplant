@@ -5,51 +5,68 @@ var $table = $('#table-pago');
 
 $(document).ready(function () {
     initTable();
-    initToggleHideColumnHandlerOrdenSiembra();
-    initToggleHideColumnHandlerMesada();
     initVerHistoricoEstadoHandler();
-
+    initFiltrosHandler();
+    initColumnsHandler();
+    $('#multiple').select2();
 });
 
-function initToggleHideColumnHandlerMesada(){
-    $('#mostrar_mesada').on ('click', function(){
-        initToggleHiddeColumnMesada();
+function initColumnsHandler (){
+    $('#multiple').on('change', function(e){
+        e.preventDefault();
+        $.ajax({
+            type: 'post',
+            dataType: 'json',
+            data: {
+                columns: JSON.stringify(getTargets())
+            },
+            url: __HOMEPAGE_PATH__ + "pedido/save_columns/",
+            success: function (response) {
+                toastr.success(response.message);
+                //toggleHiddeColumn();
+                location.reload();
+            },
+            error: function () {
+                alert('ah ocurrido un error.');
+            }
+        });
     });
 }
 
-function initToggleHideColumnHandlerOrdenSiembra() {
-    $('#mostrar_orden_semilla').on('click', function () {
-        initToggleHiddeColumnOrdenSiembra();
+function toggleHiddeColumn() {
+    var targets = getTargets();
+    $.each(targets , function(index, val) {
+        var column = $table.DataTable().columns(val);
+        if (column.visible()[0]) {
+            column.visible(false);
+            $('.filter th:nth-child(' + val + ')').hide();
+        }/* else {
+            $('.filter th:nth-child(' + val + ')').show();
+            column.visible(true);
+        }*/
     });
-}
-function initToggleHiddeColumnMesada() {
-    var table = $('#table-pago').DataTable();
-    var column = table.column(11);
-    if (column.visible()) {
-        column.visible(false);
-        $('.filter th:nth-child(11)').hide();
-        $('#mostrar_mesada').text('Mostrar Mesada');
-    } else {
-        $('.filter th:nth-child(11)').show();
-        column.visible(true);
-        $('#mostrar_mesada').text('Ocultar Mesada');
-    }
-    table.ajax.reload();
+    $table.DataTable().ajax.reload();
 }
 
-function initToggleHiddeColumnOrdenSiembra(){
-    var table = $('#table-pago').DataTable();
-    var column = table.column(10);
-    if (column.visible()){
-        column.visible(false);
-        $('.filter th:nth-child(10)').hide();
-        $('#mostrar_orden_semilla').text('Mostrar Orden Siembra');
-    }else{
-        $('.filter th:nth-child(10)').show();
-        column.visible(true);
-        $('#mostrar_orden_semilla').text('Ocultar Orden Siembra');
+function getTargets(){
+    let stringArray = $('#multiple').val();
+    let numberArray = [];
+    length = stringArray.length;
+    for (let i = 0; i < length; i++) {
+        numberArray.push(parseInt(stringArray[i]));
     }
-    table.ajax.reload();
+    console.log(numberArray);
+    return numberArray;
+}
+
+function initFiltrosHandler(){
+    $('.mostrar-filtros').on('click', function (){
+        $('#filtros').toggle();
+        $("#reporte_filtro_cliente").select2();
+    });
+    $('.mostrar-actividad-reciente').on('click', function (){
+        $('#actividad-reciente').toggle();
+    });
 }
 /**
  *
@@ -60,7 +77,6 @@ function initTable() {
     initDataTable();
 
     $('#kt_search').on('click', function () {
-        $('.div-sin-filtrar').hide();
         if (init) {
             $table.DataTable().ajax.reload();
         }
@@ -103,6 +119,9 @@ function initDataTable() {
                 "success": fnCallback
             });
         },
+        lengthMenu: [5, 10, 25, 50, 100, 500, 1000],
+        pageLength: 5,
+        destroy: true,
         buttons: [
             {
                 extend: 'excelHtml5',
@@ -157,7 +176,7 @@ function initDataTable() {
         rowGroup: {
             dataSrc: 1
         },
-        serverSide: false
+        serverSide: false,
     });
 
     init = true;
@@ -184,7 +203,7 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'id',
-            width: '30px',
+            width: '15px',
             className: 'dt-center',
             orderable: false,
             render: function (data, type, full, meta) {
@@ -206,19 +225,20 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'id',
             width: '30px',
-            visible: false,
             className: 'dt-center',
             type: 'num'
         },
         {
             targets: index++,
             name: 'fechaCreacion',
+            width: '30px',
             className: 'dt-center',
             type: 'num'
         },
         {
             targets: index++,
             name: 'producto',
+            width: '50px',
             className: 'nowrap text-center align-middle',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
@@ -230,6 +250,7 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'cliente',
+            width: '35px',
             className: 'dt-center',
             type: 'num'
         },
@@ -243,6 +264,7 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'fechaSiembra',
+            width: '30px',
             className: 'dt-center',
             render: function (data, type, full, meta) {
                 if (type === 'sort') {
@@ -254,6 +276,7 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'fechaEntrega',
+            width: '30px',
             className: 'dt-center',
             render: function (data, type, full, meta) {
                 if (type === 'sort') {
@@ -278,7 +301,6 @@ function datatablesGetColDef() {
             name: 'ordenSiembra',
             width: '30px',
             className: 'dt-center',
-            visible: true,
             searchable: true,
             type: 'num'
         },
@@ -287,7 +309,6 @@ function datatablesGetColDef() {
             name: 'mesada',
             width: '30px',
             className: 'dt-center',
-            visible: true,
             searchable: true,
             type: 'num'
         },
@@ -299,7 +320,12 @@ function datatablesGetColDef() {
             orderable: false,
             width: '90px',
             render: dataTablesActionFormatter
-        }
+        },
+        {
+            // hide columns by index number
+            targets: getTargets(),
+            visible: false,
+        },
     ];
 }
 
@@ -375,8 +401,7 @@ function initVerHistoricoEstadoHandler() {
                     return;
                 }
             });
-
-            $('.modal-dialog').css('width', '80%');
+            $('.bs-popover-top').hide();
             $('.btn-submit').hide();
         });
     });

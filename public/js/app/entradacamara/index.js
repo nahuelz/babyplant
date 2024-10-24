@@ -91,8 +91,10 @@ var KTCalendarListView = function() {
                                 });
                             }
                         });
+                        $('.bs-popover-top').hide();
                         $('.modal-dialog').css('width', '80%');
                         $('.modal-dialog').addClass('modal-xl');
+                        $('.modal-dialog').addClass('modal-fullscreen-xl-down');
                         $('.fecha-ingreso').click(function(){
                             $('.fecha-ingreso-camara-edit').toggle();
                         });

@@ -116,8 +116,10 @@ var KTCalendarListView = function() {
                                 });
                             }
                         });
+                        $('.bs-popover-top').hide();
                         $('.modal-dialog').css('width', '80%');
                         $('.modal-dialog').addClass('modal-xl');
+                        $('.modal-dialog').addClass('modal-fullscreen-xl-down');
                         $('.observacion').click(function(){
                             $('.observacion-edit').toggle();
                         });
@@ -305,8 +307,5 @@ function showDialog(options) {
     });
 
     $(d).find('.modal-header').addClass(options.color ? options.color : '');
-    initPreValidation();
-
-
     return d;
 }

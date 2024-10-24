@@ -1,0 +1,56 @@
+<div class="portlet light bordered" style="padding: 5px 10px; margin-left: 30px;margin-right: 30px;border-radius: 5px;background-color: #E1F0FF">
+    <div class="col-md-12 padding-0">
+        <label>Fecha</label>
+        <div class="input-daterange input-group" id="kt_datepicker">
+            <input type="text" class="form-control datepicker" id="reporte_filtro_fechaDesde" name="reporte_filtro[fechaDesde]"  placeholder="Desde" value="{{ "now"|date_modify("-90 day")|date('d/m/Y') }}" />
+            <div class="input-group-append">
+                <span class="input-group-text">
+                    <i class="la la-ellipsis-h"></i>
+                </span>
+            </div>
+            <input type="text" class="form-control datepicker" id="reporte_filtro_fechaHasta" name="reporte_filtro[fechaHasta]" placeholder="Hasta" value="{{ "now"|date('d/m/Y') }}">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <label for="reporte_filtro_cliente" class="control-label">Cliente</label>
+            <select class="choice form-control datatable-input" id="reporte_filtro_cliente" name="reporte_filtro[cliente]">
+                <option value="">TODOS</option>
+                {% for cliente in clienteSelect %}
+                    <option value="{{ cliente.id }}"> {{ cliente.nombre }} {{ cliente.razon_social }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-5 padding-top-25">
+            <button class="btn btn-primary btn-primary--icon" id="kt_search">
+                <span>
+                    <i class="la la-search"></i>
+                    <span>Buscar</span>
+                </span>
+            </button>
+            <button class="btn btn-secondary btn-secondary--icon" id="kt_reset">
+                <span>
+                    <i class="la la-close"></i>
+                    <span>Limpiar</span>
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <div class="col-md-12 padding-left-0 padding-top-6">
+        Columnas ocultas
+        <select class="form-control" multiple="multiple" id="multiple">
+            <option value="1" {% if 1 in columnasOcultas %}selected="selected"{% endif %}>ID Pedido</option>
+            <option value="2" {% if 2 in columnasOcultas %}selected="selected"{% endif %}>ID Producto</option>
+            <option value="3" {% if 3 in columnasOcultas %}selected="selected"{% endif %}>Fecha Pedido</option>
+            <option value="4" {% if 4 in columnasOcultas %}selected="selected"{% endif %}>Producto</option>
+            <option value="5" {% if 5 in columnasOcultas %}selected="selected"{% endif %}>Cliente</option>
+            <option value="6" {% if 6 in columnasOcultas %}selected="selected"{% endif %}>Bandejas Pedidas</option>
+            <option value="7" {% if 7 in columnasOcultas %}selected="selected"{% endif %}>Fecha Siembra</option>
+            <option value="8" {% if 8 in columnasOcultas %}selected="selected"{% endif %}>Fecha Entrega</option>
+            <option value="9" {% if 9 in columnasOcultas %}selected="selected"{% endif %}>Estado</option>
+            <option value="11" {% if 11 in columnasOcultas %}selected="selected"{% endif %}>Mesada</option>
+            <option value="10" {% if 10 in columnasOcultas %}selected="selected"{% endif %}>Orden Siembra</option>
+        </select>
+    </div>
+</div>

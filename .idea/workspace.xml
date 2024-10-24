@@ -5,9 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="NumeroOrden">
+      <change afterPath="$PROJECT_DIR$/src/Entity/GlobalConfig.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/LogAuditoria.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/pedido/filtros.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/pedido/index_actividad_reciente.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/pedido/index_panel.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/phpspec.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/phpspec.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/entradacamara/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/entradacamara/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/pedido/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/pedido/show.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/show.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/planificacion/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/planificacion/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/siembra/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/siembra/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/utilidad/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/theme/css/custom/custom.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/css/custom/custom.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/PedidoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PedidoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/PlanificacionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PlanificacionController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Constants/ConstanteEstadoPedidoProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Constants/ConstanteEstadoPedidoProducto.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/SelectService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/SelectService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedido/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedido/new.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/new.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/salida_camara/producto_show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/salida_camara/producto_show.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,6 +51,7 @@
     <setting file="file://$PROJECT_DIR$/public/js/app/planificacion/index.js" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/public/theme/css/style.bundle.css" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/public/theme/plugins/custom/fullcalendar/fullcalendar.bundle.js" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/Controller/PedidoController.php" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -277,7 +297,10 @@
       <workItem from="1728915107552" duration="21586000" />
       <workItem from="1729171392557" duration="6992000" />
       <workItem from="1729214985556" duration="3002000" />
-      <workItem from="1729220177548" duration="35607000" />
+      <workItem from="1729220177548" duration="48142000" />
+      <workItem from="1729614290451" duration="21137000" />
+      <workItem from="1729697622758" duration="15309000" />
+      <workItem from="1729789331084" duration="9353000" />
     </task>
     <task id="LOCAL-00001" summary="config">
       <option name="closed" value="true" />
@@ -535,7 +558,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729529021532</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="NumeroOrden">
+      <option name="closed" value="true" />
+      <created>1729531002462</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1729531002462</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

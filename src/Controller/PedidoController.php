@@ -9,6 +9,7 @@ use App\Entity\EstadoPedido;
 use App\Entity\EstadoPedidoHistorico;
 use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
+use App\Entity\GlobalConfig;
 use App\Entity\Pedido;
 use App\Entity\PedidoProducto;
 use App\Entity\Usuario;
@@ -31,6 +32,35 @@ use Symfony\Component\Routing\Annotation\Route;
 class PedidoController extends BaseController {
 
     /**
+     * @Route("/save_columns/", name="save_columns", methods={"GET","POST"})
+     */
+    public function saveColumns(Request $request) {
+
+        $em = $this->getDoctrine()->getManager();
+
+        /* @var $columnas GlobalConfig */
+        $columnas = $em->getRepository('App\Entity\GlobalConfig')->find(1);
+
+        if (!$columnas) {
+            throw $this->createNotFoundException('No se configuraron las columnas visibles en la base de datos.');
+        }
+
+        $columnasOcultas = json_decode($request->request->get('columns'), false);
+        $columnas->setColumnasOcultas(implode(",", $columnasOcultas));
+        $em->flush();
+
+        $message = 'Se guardó la configuración de columnas.';
+        $response = new Response();
+        $response->setContent(json_encode(array(
+            'message' => $message,
+            'statusCode' => 200,
+            'statusText' => 'OK'
+        )));
+
+        return $response;
+    }
+
+    /**
      * @Route("/", name="pedido_index", methods={"GET"})
      * @Template("pedido/index.html.twig")
      * @IsGranted("ROLE_PEDIDO")
@@ -38,13 +68,17 @@ class PedidoController extends BaseController {
     public function index(): Array {
 
         $clienteSelect = $this->getSelectService()->getClienteFilter();
+        $estadoSelect = $this->getSelectService()->getEstadoSelect();
 
-        $bread = $this->baseBreadcrumbs;
-        $bread['Pedidos generados'] = null;
+        $em = $this->getDoctrine()->getManager();
+        $columnasOcultas = $em->getRepository('App\Entity\GlobalConfig')->find(1);
 
         return array(
+            'columnasOcultas' => $columnasOcultas->getColumnasOcultas(),
+            'indicadorEstadoData' => $this->getIndicadorEstadoData(),
+            'actividadReciente' => $this->getActividadRecienteData(),
             'clienteSelect' => $clienteSelect,
-            'breadcrumbs' => $bread,
+            'estadoSelect' => $estadoSelect,
             'page_title' => 'Pedidos generados'
         );
     }
@@ -90,6 +124,99 @@ class PedidoController extends BaseController {
         $entities = $nativeQuery->getResult();
 
         return $this->render('pedido/index_table.html.twig', array('entities' => $entities));
+    }
+
+    /**
+     *
+     * @return type
+     */
+    private function getIndicadorEstadoData() {
+
+        $em = $this->getDoctrine()->getManager();
+
+        $rsm = new ResultSetMapping();
+
+        $rsm->addScalarResult('id', 'id');
+        $rsm->addScalarResult('estado', 'estado');
+        $rsm->addScalarResult('cantidad', 'cantidad');
+        $rsm->addScalarResult('colorClass', 'colorClass');
+        $rsm->addScalarResult('color', 'color');
+        $rsm->addScalarResult('iconClass', 'iconClass');
+
+        $estadosValidos = [
+            ConstanteEstadoPedidoProducto::PENDIENTE,
+            ConstanteEstadoPedidoProducto::PLANIFICADO,
+            ConstanteEstadoPedidoProducto::SEMBRADO,
+            ConstanteEstadoPedidoProducto::EN_CAMARA,
+            ConstanteEstadoPedidoProducto::EN_INVERNACULO,
+            ConstanteEstadoPedidoProducto::ENTREGADO,
+            ConstanteEstadoPedidoProducto::CANCELADO
+        ];
+
+        $sql = '
+            SELECT
+                est.nombre AS estado,
+                COUNT(pp.id) AS cantidad,
+                est.color AS colorClass,
+                est.color_icono AS color,
+                CASE
+                    WHEN est.id = 0 THEN "fa-circle-o-notch"
+                    WHEN est.id = 1 THEN "fa-spinner"
+                    WHEN est.id = 2 THEN "fa-clipboard-list"
+                    WHEN est.id = 3 THEN "fa-leaf"
+                    WHEN est.id = 4 THEN "fa-list-ul"
+                    WHEN est.id = 5 THEN "fa-home"
+                    WHEN est.id = 6 THEN "fa-check"
+                    WHEN est.id = 7 THEN "fa-exclamation-triangle"
+                    ELSE "fa-check"
+                    END AS iconClass,
+                est.id
+            FROM pedido_producto AS pp
+                     INNER JOIN estado_pedido_producto AS est ON pp.id_estado_pedido_producto = est.id
+            WHERE pp.fecha_baja IS NULL
+              AND est.codigo_interno IN (?)
+            GROUP BY est.id';
+
+        $nativeQuery = $em->createNativeQuery($sql, $rsm);
+
+        $nativeQuery->setParameter(1, $estadosValidos, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
+
+        return $nativeQuery->getResult();
+    }
+
+    /**
+     *
+     * @return type
+     */
+    private function getActividadRecienteData() {
+
+        $em = $this->getDoctrine()->getManager();
+
+        $rsm = new ResultSetMapping();
+
+        $rsm->addScalarResult('actividad', 'actividad');
+        $rsm->addScalarResult('fecha', 'fecha');
+        $rsm->addScalarResult('id', 'id');
+        $rsm->addScalarResult('colorClass', 'colorClass');
+
+        $sql = '
+            SELECT
+                p.id AS id,
+                CONCAT_WS(" ", "El pedido producto nº", LPAD(pp.id, 5, 0), "cambió su estado a", est.nombre) AS actividad,
+                h.fecha_creacion AS fecha,
+                est.color_icono as colorClass
+            FROM estado_pedido_producto_historico AS h
+                     INNER JOIN pedido_producto AS pp ON pp.id = h.id_pedido_producto
+                     INNER JOIN pedido AS p ON p.id = pp.id_pedido
+                     INNER JOIN estado_pedido_producto AS est ON h.id_estado_pedido_producto = est.id
+            WHERE pp.fecha_baja IS NULL
+              AND h.fecha_baja IS NULL
+            ORDER BY h.id DESC
+            LIMIT 0, 20';
+
+        $nativeQuery = $em->createNativeQuery($sql, $rsm);
+
+        return $nativeQuery->getResult();
     }
 
     /**

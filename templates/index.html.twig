@@ -45,78 +45,78 @@
 
                     {# MODULO PEDIDO #}
                     {% if is_granted("ROLE_USER") %}
-                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-shopping-bag icon-3x text-dark', 'nombreModulo': 'Pedidos','action': path('pedido_index'), 'descripcionModulo': 'Aqui podras ver todos los pedidos' } %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-shopping-bag icon-3x text-dark', 'nombreModulo': 'Ver Pedidos','action': path('pedido_index'), 'descripcionModulo': 'Aqui podras ver todos los pedidos' } %}
                     {% endif %}
 
                     {# PEDIDOS PLANIFICAR #}
                     {% if is_granted("ROLE_PLANIFICAR") %}
-                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-calendar icon-3x text-dark', 'nombreModulo': 'Pedidos Para Planificar','action': path('planificacion_index'), 'descripcionModulo': 'Aqui podras ver los pedidos para planificar' } %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-clipboard-list icon-3x text-dark', 'nombreModulo': 'Ver Planificacion','action': path('planificacion_index'), 'descripcionModulo': 'Aqui podras ver los pedidos para planificar' } %}
                     {% endif %}
 
                     {# PLANIFICACION DE SIEMBRA #}
                     {% if is_granted("ROLE_SIEMBRA") %}
-                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-list-ul icon-3x text-dark', 'nombreModulo': 'Ver Siembra','action': '#', 'descripcionModulo': 'Aqui podras ver la planificacion de siembra' } %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-leaf icon-3x text-dark', 'nombreModulo': 'Ver Siembra','action': path('planificacion_index'), 'descripcionModulo': 'Aqui podras ver la planificacion de siembra' } %}
                     {% endif %}
 
                     {# ORDENES EN CAMARA #}
                     {% if is_granted("ROLE_CAMARA") %}
-                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-list-ul icon-3x text-dark', 'nombreModulo': 'Ver Camara','action': '#', 'descripcionModulo': 'Aqui podras ver las ordenes en camara' } %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-list-ul icon-3x text-dark', 'nombreModulo': 'Ver Camara','action': path('entradacamara_index'), 'descripcionModulo': 'Aqui podras ver las ordenes en camara' } %}
                     {% endif %}
 
-                    {# ORDENES DE SIEMBRA #}
+                    {# ORDENES DE SIEMBRA
                     {% if is_granted("ROLE_SIEMBRA") %}
-                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-leaf icon-3x text-dark', 'nombreModulo': 'Ordenes de siembra','action': '#','descripcionModulo': 'Aqui podras ver las ordenes de siembra' } %}
-                    {% endif %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-leaf icon-3x text-dark', 'nombreModulo': 'Ordenes de siembra','action': path('siembra_index'),'descripcionModulo': 'Aqui podras ver las ordenes de siembra' } %}
+                    {% endif %}#}
 
-                    {# SOTCK #}
+                    {# SOTCK
                     {% if is_granted("ROLE_STOCK") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-hashtag icon-3x text-dark', 'nombreModulo': 'Bandejas en Stock ','action': '#', 'descripcionModulo': 'Aqui podra ver las bandejas en stock' } %}
-                    {% endif %}
+                    {% endif %}#}
 
-                    {# PEDIDOS PROBLEMA #}
+                    {# PEDIDOS PROBLEMA
                     {% if is_granted("ROLE_PROBLEMAS") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-exclamation-triangle icon-3x text-dark', 'nombreModulo': 'Pedidos con Problemas','action': '#', 'descripcionModulo': 'Aqui podra ver los pedidos con problemas' } %}
-                    {% endif %}
+                    {% endif %}#}
 
-                    {# PLANIFICACION ENTREGA #}
+                    {# PLANIFICACION ENTREGA
                     {% if is_granted("ROLE_ENTREGA") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-truck icon-3x text-dark', 'nombreModulo': 'Planificacion de Entregas','action': '#', 'descripcionModulo': 'Aqui podra ver la planificacion de entregas' } %}
-                    {% endif %}
+                    {% endif %}#}
 
-                    {# AGENDA ENTREGA #}
+                    {# AGENDA ENTREGA
                     {% if is_granted("ROLE_AGENDA") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-calendar-alt icon-3x text-dark', 'nombreModulo': 'Agenda de Entregas','action': '#', 'descripcionModulo': 'Aqui podra ver la agenda de entregas' } %}
-                    {% endif %}
+                    {% endif %}#}
 
-                    {# HISTORIAL ENTREGA #}
+                    {# HISTORIAL ENTREGA
                     {% if is_granted("ROLE_HISTORIAL") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-history icon-3x text-dark', 'nombreModulo': 'Historial de Entregas','action': '#', 'descripcionModulo': 'Aqui podras ver el historial de entrega' } %}
-                    {% endif %}
+                    {% endif %}#}
 
-                    {# REMITOS #}
+                    {# REMITOS
                     {% if is_granted("ROLE_REMITOS") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-receipt icon-3x text-dark', 'nombreModulo': 'Remitos','action': '#', 'descripcionModulo': 'Aqui podra ver los remitos' } %}
-                    {% endif %}
+                    {% endif %}#}
 
-                    {# ESTADISTICAS #}
+                    {# ESTADISTICAS
                     {% if is_granted("ROLE_ESTADISTICAS") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-poll icon-3x text-dark', 'nombreModulo': 'Estadisticas','action': '#', 'descripcionModulo': 'Aqui podra ver las estadisticas' } %}
-                    {% endif %}
+                    {% endif %}#}
 
                     {# MESADAS #}
                     {% if is_granted("ROLE_MESADAS") %}
-                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-table icon-3x text-dark', 'nombreModulo': 'Mesadas','action': '#', 'descripcionModulo': 'Aqui podra ver las mesadas' } %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-table icon-3x text-dark', 'nombreModulo': 'Ver Mesadas','action': '#', 'descripcionModulo': 'Aqui podra ver las mesadas' } %}
                     {% endif %}
 
-                    {# DATOS TECNICOS #}
+                    {# DATOS TECNICOS
                     {% if is_granted("ROLE_TECNICOS") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-cogs icon-3x text-dark', 'nombreModulo': 'Datos Tecnicos','action': '#', 'descripcionModulo': 'Aqui podra ver las mesadas' } %}
-                    {% endif %}
+                    {% endif %} #}
 
-                    {# SITUACION CLIENTE #}
+                    {# SITUACION CLIENTE
                     {% if is_granted("ROLE_SITUACION") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-users icon-3x text-dark', 'nombreModulo': 'Situacion Cliente','action': '#', 'descripcionModulo': 'Aqui podra ver la situacion de los clientes' } %}
-                    {% endif %}
+                    {% endif %}#}
                 </div>
             </div>
         </div>
