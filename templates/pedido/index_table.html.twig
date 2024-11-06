@@ -19,11 +19,14 @@
         "estado" : "{{ entity.estado|default('Sin estado') }}",
         "colorEstado" : "{{ entity.colorEstado|default('default') }}"
         },
+        "{{ entity.diasEnCamara|default('-') }}",
+        "{{ entity.diasEnInvernaculo|default('-') }}",
         "{{ entity.ordenSiembra|default('-') }}",
         "{{ entity.mesada|default('-') }}",
         {
         "show" : " {{ path( "pedido_show", { "id": entity.id }) }}",
-        "historico_estado": "{{ path( "pedido_historico_estado", { 'id': entity.idProducto }) }}"
+        "historico_estado": "{{ path( "pedido_historico_estado", { 'id': entity.idProducto }) }}",
+        "print" : " {{ path( "imprimir_pedido", { "id": entity.id }) }}"
         }]{{ (loop.last ? '' : ',') }}
     {% endfor %}
     ]

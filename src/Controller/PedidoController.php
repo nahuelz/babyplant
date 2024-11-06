@@ -10,10 +10,12 @@ use App\Entity\EstadoPedidoHistorico;
 use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
 use App\Entity\GlobalConfig;
+use App\Entity\MYPDF;
 use App\Entity\Pedido;
 use App\Entity\PedidoProducto;
 use App\Entity\Usuario;
 use App\Form\RegistrationFormType;
+use App\Service\LogAuditoriaService;
 use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManager;
@@ -114,6 +116,8 @@ class PedidoController extends BaseController {
         $rsm->addScalarResult('colorEstado', 'colorEstado');
         $rsm->addScalarResult('ordenSiembra', 'ordenSiembra');
         $rsm->addScalarResult('mesada', 'mesada');
+        $rsm->addScalarResult('diasEnCamara', 'diasEnCamara');
+        $rsm->addScalarResult('diasEnInvernaculo', 'diasEnInvernaculo');
 
         $nativeQuery = $em->createNativeQuery('call sp_index_pedido(?,?,?)', $rsm);
 
@@ -241,7 +245,6 @@ class PedidoController extends BaseController {
     /**
      * @Route("/{id}", name="pedido_show", methods={"GET"})
      * @Template("pedido/show.html.twig")
-     * @IsGranted("ROLE_PEDIDO")
      */
     public function show($id): Array {
         return parent::baseShowAction($id);
@@ -286,8 +289,14 @@ class PedidoController extends BaseController {
             $pedidoProducto->setFechaSiembraPedido($pedidoProducto->getFechaSiembra());
             $pedidoProducto->setPedido($entity);
         }
-
         return true;
+    }
+
+    function execPostPersistAction($em, $entity, $request)
+    {
+        $logAuditoriaService = new LogAuditoriaService($this->getDoctrine());
+        $logAuditoriaService->generarLog($entity, 'Crear pedido', 'PEDIDO');
+        $em->flush();
     }
 
     /**
@@ -412,5 +421,51 @@ class PedidoController extends BaseController {
             'entity' => $pedidoProducto,
             'page_title' => 'Pedido Producto'
         );
+    }
+
+
+    /**
+     * Print a Pedido Entity.
+     *
+     * @Route("/imprimir-pedido/{id}", name="imprimir_pedido", methods={"GET"})
+     */
+    public function imprimirPedidoAction($id) {
+        $em = $this->getDoctrine()->getManager();
+
+        $pedido = $em->getRepository("App\Entity\Pedido")->find($id);
+        /* @var $pedido Pedido */
+
+        if (!$pedido) {
+            throw $this->createNotFoundException("No se puede encontrar la entidad PEDIDO.");
+        }
+
+        $html = $this->renderView('pedido/pedido_pdf.html.twig', array('entity' => $pedido));
+
+        $filename = 'pedido.pdf';
+
+        $pdfService = new MYPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+
+        $pdfService->AddPage();
+        $pdfService->SetTitle($filename);
+        $pdfService->WriteHTML($html);
+
+        // set style for barcode
+        $style = array(
+            'border' => 0,
+            'vpadding' => 'auto',
+            'hpadding' => 'auto',
+            'fgcolor' => array(0,0,0),
+            'bgcolor' => false, //array(255,255,255)
+            'module_width' => 1, // width of a single module in points
+            'module_height' => 1 // height of a single module in points
+        );
+        $url = $this->generateUrl('pedido_show', array('id' => $pedido->getId()));
+        $pdfService->Text(82, 180, 'Seguimiento del pedido');
+        $pdfService->write2DBarcode($url, 'QRCODE,L', 80, 180, 50, 50, $style, 'N');
+
+
+        $mpdfOutput = $pdfService->Output($filename, 'I');
+
+        return new Response($mpdfOutput);
     }
 }

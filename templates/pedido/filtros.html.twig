@@ -1,4 +1,4 @@
-<div class="portlet light bordered" style="padding: 5px 10px; margin-left: 30px;margin-right: 30px;border-radius: 5px;background-color: #E1F0FF">
+<div class="portlet light bordered portlet-nivel-1" style="padding: 5px 10px; margin-left: 30px;border-radius: 5px;background-color: #E1F0FF">
     <div class="col-md-12 padding-0">
         <label>Fecha</label>
         <div class="input-daterange input-group" id="kt_datepicker">
@@ -49,8 +49,11 @@
             <option value="7" {% if 7 in columnasOcultas %}selected="selected"{% endif %}>Fecha Siembra</option>
             <option value="8" {% if 8 in columnasOcultas %}selected="selected"{% endif %}>Fecha Entrega</option>
             <option value="9" {% if 9 in columnasOcultas %}selected="selected"{% endif %}>Estado</option>
-            <option value="11" {% if 11 in columnasOcultas %}selected="selected"{% endif %}>Mesada</option>
-            <option value="10" {% if 10 in columnasOcultas %}selected="selected"{% endif %}>Orden Siembra</option>
+            <option value="10" {% if 10 in columnasOcultas %}selected="selected"{% endif %}>Dias en camara</option>
+            <option value="11" {% if 11 in columnasOcultas %}selected="selected"{% endif %}>Dias en invernaculo</option>
+            <option value="12" {% if 12 in columnasOcultas %}selected="selected"{% endif %}>Orden Siembra</option>
+            <option value="13" {% if 13 in columnasOcultas %}selected="selected"{% endif %}>Mesada</option>
+
         </select>
     </div>
 </div>

@@ -1,0 +1,61 @@
+{% set image_path = 'images/' %}
+{% block stylesheets %}
+
+
+    <style>
+        body {
+            font-family: Tahoma, Helvetica, Arial;
+            margin: 2cm 0;
+            text-align: justify;
+            font-size:14px;
+            line-height:20px;
+        }
+
+        body div {
+            text-align: center;
+        }
+
+        th td {
+            text-align: center;
+            padding: 2px;
+            border-collapse: collapse;
+        }
+    </style>
+
+{% endblock %}
+
+{% block content %}
+<body>
+
+    <br><br><br><br>
+
+    <table cellspacing="2" cellpadding="5" border="1" style="font-size: 8px">
+        <tr>
+            <td align="center">Cliente:{{ entity.cliente }}</td>
+            <td align="center">N° Pedido:{{ entity.id }}</td>
+            <td align="center">Fecha Pedido:{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}</td>
+        </tr>
+    </table>
+    <br>
+    <div>
+        <table border="1" cellpadding="2" cellspacing="2" nobr="true" style="font-size: 8px">
+            <tr>
+                <th colspan="1" align="center" width="60">N° Producto</th>
+                <th colspan="1" align="center" width="250">Producto</th>
+                <th colspan="1" align="center" width="60">Bandejas</th>
+                <th colspan="1" align="center" width="151">Fecha de entrega estimada</th>
+            </tr>
+            {% for producto in entity.pedidosProductos %}
+                <tr>
+                    <td align="center">{{ producto.id }}</td>
+                    <td align="center">{{ producto.nombreCompleto }}</td>
+                    <td align="center">{{ producto.bandejas }}</td>
+                    <td align="center">{{ producto.fechaEntregaPedido is not null ? producto.fechaEntregaPedido|date('d/m/Y') : '-' }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+{% endblock %}
+
+

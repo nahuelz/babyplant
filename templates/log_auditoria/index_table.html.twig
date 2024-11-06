@@ -1,0 +1,18 @@
+{
+"data": [
+{% for entity in entities %}
+    [
+    "{{ entity.id }}",
+    "{{ entity.idPedido|default('-') }}",
+    "{{ entity.idProducto|default('-') }}",
+    "{{ entity.accion|default('-') }}",
+    "{{ entity.modulo|default('-') }}",
+    "{{ entity.usuario|default('-') }}",
+    "{{ entity.fecha is not null ? entity.fecha|date('d/m/Y H:i') : '-' }}"
+    ]{{ (loop.last ? '' : ',') }}
+{% endfor %}
+],
+"draw": {{ draw }},
+"recordsTotal": {{ totalRows }},
+"recordsFiltered": {{ totalFiltered }}
+}

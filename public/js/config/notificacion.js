@@ -271,8 +271,8 @@ function showDialog(options) {
     initPreValidation();
 
     // Add resizable function to modal
-    /*
-    $(d).find(".modal-dialog").resizable({
+        /*
+    $(d).find(".modal-content").resizable({
         alsoResize: " .bootbox-body",
         handles: "e, s",
         minHeight: 250,

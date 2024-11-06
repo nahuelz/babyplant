@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+
+    {{ parent() }}
+    <link href="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css"/>
+
+{% endblock %}
+
+{% block body %}
+    <!--begin::Card-->
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+				<span class="card-icon">
+					<i class="flaticon2-layers text-primary"></i>
+				</span>
+                <h3 class="card-label">Auditoria</h3>
+            </div>
+            <div class="card-toolbar">
+            </div>
+        </div>
+        <div
+                class="card-body">
+            <!--begin: Datatable-->
+            <table class="table table-bordered table-hover table-checkable" id="table-auditoria">
+                <thead>
+                <tr>
+                    <th class="not-in-filter">ID</th>
+                    <th data-type="string">ID PEDIDO</th>
+                    <th data-type="string">ID PRODUCTO</th>
+                    <th data-type="string">ACCION</th>
+                    <th data-type="string">MODULO</th>
+                    <th data-type="string">USUARIO</th>
+                    <th data-type="string">FECHA</th>
+                </tr>
+                </thead>
+            </table>
+            <!--end: Datatable-->
+        </div>
+    </div>
+    <!--end::Card-->
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script type="text/javascript" src="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.js') }}"></script>
+
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-datatables.js') }}"></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/logauditoria/index.js') }}"></script>
+
+{% endblock %}

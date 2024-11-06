@@ -75,14 +75,19 @@ class PedidoProducto {
     private $fechaEntrega;
 
     /**
-     * @ORM\Column(name="fecha_siembra_pedido", type="datetime", nullable=true)
-     */
-    private $fechaSiembraPedido;
-
-    /**
      * @ORM\Column(name="fecha_entrega_pedido", type="datetime", nullable=true)
      */
     private $fechaEntregaPedido;
+
+    /**
+     * @ORM\Column(name="fecha_entrega_real", type="datetime", nullable=true)
+     */
+    private $fechaEntregaReal;
+
+    /**
+     * @ORM\Column(name="fecha_siembra_pedido", type="datetime", nullable=true)
+     */
+    private $fechaSiembraPedido;
 
     /**
      * @ORM\Column(name="fecha_pedido", type="datetime", nullable=true)
@@ -638,7 +643,23 @@ class PedidoProducto {
         return $this;
     }
 
+    public function getBandejas(){
+        return ($this->cantBandejas.' (x'.$this->getTipoBandeja()->getNombre().') ');
+    }
 
+    /**
+     * @return mixed
+     */
+    public function getFechaEntregaReal()
+    {
+        return $this->fechaEntregaReal;
+    }
 
-
+    /**
+     * @param mixed $fechaEntregaReal
+     */
+    public function setFechaEntregaReal($fechaEntregaReal): void
+    {
+        $this->fechaEntregaReal = $fechaEntregaReal;
+    }
 }

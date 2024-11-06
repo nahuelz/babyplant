@@ -37,6 +37,14 @@
                         <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right" style="">
                             <ul class="navi flex-column navi-hover py-2">
                                 <li class="navi-header font-weight-bolder text-uppercase font-size-sm text-primary pb-2">Elija una opci&oacute;n:</li>
+                                <li class="navi-item" onClick="exportarCustom('print');">
+                                    <a href="#" class="navi-link">
+                                        <span class="navi-icon">
+                                            <i class="la la-file-excel-o text-success"></i>
+                                        </span>
+                                        <span class="navi-text">Print</span>
+                                    </a>
+                                </li>
                                 <li class="navi-item" onClick="exportarCustom('pagina');">
                                     <a href="#" class="navi-link">
                                         <span class="navi-icon">
@@ -83,12 +91,12 @@
                                 <li class="navi-header font-weight-bolder text-uppercase font-size-sm text-primary pb-2">Elija una opci&oacute;n:</li>
                                 <li class="navi-item">
                                     <a href="#" class="navi-link">
-                                        <span class="navi-text mostrar-filtros">Mostrar Filtros</span>
+                                        <span class="navi-text mostrar-filtros">Mostrar Tiles</span>
                                     </a>
                                 </li>
-                                <li class="navi-item">
+                                <li class="navi-item">qqq
                                     <a href="#" class="navi-link">
-                                        <span class="navi-text mostrar-actividad-reciente">Mostrar Actividad Reciente</span>
+                                        <span class="navi-text mostrar-actividad-reciente">Mostrar Filtros</span>
                                     </a>
                                 </li>
                             </ul>
@@ -98,14 +106,14 @@
             </div>
         </div>
 
-        <div class="row padding-top-15 tiles">
-            <div class="col-md-12" id="tiles">
+        <div class="row padding-top-15">
+            <div class="col-md-12" id="filtros">
                 {% include 'pedido/index_panel.html.twig' %}
             </div>
-            <div class="col-md-6" id="filtros">
+            <div class="col-md-6 actividad-reciente">
                 {% include 'pedido/filtros.html.twig' %}
             </div>
-            <div class="col-md-6" id="actividad-reciente">
+            <div class="col-md-6 actividad-reciente">
                 {% include 'pedido/index_actividad_reciente.html.twig' %}
             </div>
         </div>
@@ -125,6 +133,8 @@
                     <th data-type="string" class="text-center">Fecha Siembra</th>
                     <th data-type="string" class="text-center">Fecha Entrega</th>
                     <th data-type="select" data-select="{{ estadoSelect }}">Estado</th>
+                    <th data-type="string" class="text-center">Dias en camara</th>
+                    <th data-type="string" class="text-center">Dias en invernaculo</th>
                     <th data-type="string" class="text-center">Orden Siembra</th>
                     <th data-type="string" class="text-center">Mesada</th>
                     <th data-type="search">Acciones</th>
