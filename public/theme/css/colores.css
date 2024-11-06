@@ -68,6 +68,10 @@
     background-color: #cacaca !important;
 }
 
+.PENDIENTE{
+    filter: opacity(0.5);
+}
+
 .SEMBRADO{
     color: #ffffff !important;
     background-color: #363636 !important;

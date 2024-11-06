@@ -79669,8 +79669,8 @@ code {
   height: 15px;
   width: 15px;
   border-radius: 50%;
-  top: 0.7rem;
-  left: 0.75rem;
+  top: 0.5rem;
+  left: 0.3rem;
 }
 .fc-unthemed .fc-event.fc-not-start.fc-end .fc-content,
 .fc-unthemed .fc-event-dot.fc-not-start.fc-end .fc-content {
@@ -79989,6 +79989,9 @@ code {
 .fc-unthemed .fc-event.fc-event-warning.fc-start .fc-content:before,
 .fc-unthemed .fc-event-dot.fc-event-warning.fc-start .fc-content:before {
   background: #FFA800;
+    border-color: black!important;
+    border-style: groove;
+    border-width: 1px;
 }
 .fc-unthemed .fc-event.fc-event-solid-warning.fc-start, .fc-unthemed .fc-event.fc-event-solid-warning.fc-not-start.fc-not-end, .fc-unthemed .fc-event.fc-event-solid-warning.fc-not-start.fc-end,
 .fc-unthemed .fc-event-dot.fc-event-solid-warning.fc-start,
@@ -80017,6 +80020,9 @@ code {
 .fc-unthemed .fc-event.fc-event-danger.fc-start .fc-content:before,
 .fc-unthemed .fc-event-dot.fc-event-danger.fc-start .fc-content:before {
   background: #F64E60;
+    border-color: black!important;
+    border-style: groove;
+    border-width: 1px;
 }
 .fc-unthemed .fc-event.fc-event-solid-danger.fc-start, .fc-unthemed .fc-event.fc-event-solid-danger.fc-not-start.fc-not-end, .fc-unthemed .fc-event.fc-event-solid-danger.fc-not-start.fc-end,
 .fc-unthemed .fc-event-dot.fc-event-solid-danger.fc-start,
