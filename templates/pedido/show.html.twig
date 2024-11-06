@@ -58,7 +58,7 @@
                         </div>
                     </div>
                 </div>
-            <div class="card-body">
+                <div class="card-body">
                 <div class="row">
                     {{ macro_show._show_detail('Producto ID', producto.id|default('-'), 'col-md-4') }}
                     {{ macro_show._show_detail('Nombre producto', producto.nombreCompleto|default('-'), 'col-md-4') }}
@@ -68,7 +68,7 @@
                     {{ macro_show._show_detail('Estado', producto.estado|default('-'), 'col-md-4') }}
                 </div>
                 <div class="row">
-                    {% if producto.estado.id in [2,3,4,5,6] %}
+                    {% if producto.estado.id in [3,4,5,6] %}
                         <div class="col-md-12">
                             <div class="row">
                                 <span class="label label-inline label-light-success font-weight-bold margin-top-25 p-6 ml-5" style="width: 140px"> <span class="fas fa-leaf"></span> SEMBRADO</span>
@@ -76,15 +76,7 @@
                             </div>
                         </div>
                     {% endif %}
-                    {% if producto.estado.id in [3,4,5,6] %}
-                        <div class="col-md-12">
-                            <div class="row">
-                                <span class="label label-inline label-light-primary font-weight-bold margin-top-25 p-6 ml-5" style="width: 140px"> <span class="fas fa-list-ul"></span> EN CAMARA</span>
-                                {{ macro_show._show_detail('Fecha de entrada a camara', producto.fechaIngresoCamara is not null ? producto.fechaIngresoCamara|date("d/m/Y H:i") : '-', 'col-md-6') }}
-                            </div>
-                        </div>
-                    {% endif %}
-                    {% if producto.estado.id in [4,5,6] %}
+                    {% if producto.estado.id in [5,6] %}
                         <div class="col-md-12">
                             <div class="row">
                                 <span class="label label-inline label-light-info font-weight-bold margin-top-25 p-6 ml-5" style="width: 140px"> <span class="fas fa-home"></span> EN INVERNACULO</span>
@@ -94,8 +86,8 @@
                     {% endif %}
                 </div>
             </div>
-        {% endfor %}
             </div>
+        {% endfor %}
 
         <div class="card card-detail">
             <h4 class="card-header">Datos Cliente</h4>
