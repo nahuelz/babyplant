@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Traits\Auditoria;
 use App\Repository\PedidoProductoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -661,5 +662,16 @@ class PedidoProducto {
     public function setFechaEntregaReal($fechaEntregaReal): void
     {
         $this->fechaEntregaReal = $fechaEntregaReal;
+    }
+
+    public function getCantidadDiasEnInvernaculo (){
+        $fechaEntradaInvernaculo = $this->fechaSalidaCamaraReal;
+
+        if ($this->getEstado()->getCodigoInterno() == ConstanteEstadoPedidoProducto::EN_INVERNACULO) {
+            $hasta = new \DateTime();
+        }else{
+            $hasta = $this->getFechaEntregaPedido();
+        }
+        return($hasta->diff($fechaEntradaInvernaculo)->format("%a") + 1);
     }
 }

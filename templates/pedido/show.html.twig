@@ -59,33 +59,32 @@
                     </div>
                 </div>
                 <div class="card-body">
-                <div class="row">
-                    {{ macro_show._show_detail('Producto ID', producto.id|default('-'), 'col-md-4') }}
-                    {{ macro_show._show_detail('Nombre producto', producto.nombreCompleto|default('-'), 'col-md-4') }}
-                    {{ macro_show._show_detail('Fecha pedido', producto.fechaCreacion is not null ? producto.fechaCreacion|date("d/m/Y") : '-', 'col-md-4') }}
-                    {{ macro_show._show_detail('Fecha de siembra pedido', producto.fechaSiembraPedido is not null ? producto.fechaSiembraPedido|date("d/m/Y") : '-', 'col-md-4') }}
-                    {{ macro_show._show_detail('Fecha de entrega pedido', producto.fechaEntrega is not null ? producto.fechaEntrega|date("d/m/Y") : '-', 'col-md-4') }}
-                    {{ macro_show._show_detail('Estado', producto.estado|default('-'), 'col-md-4') }}
-                </div>
-                <div class="row">
-                    {% if producto.estado.id in [3,4,5,6] %}
-                        <div class="col-md-12">
-                            <div class="row">
-                                <span class="label label-inline label-light-success font-weight-bold margin-top-25 p-6 ml-5" style="width: 140px"> <span class="fas fa-leaf"></span> SEMBRADO</span>
-                                {{ macro_show._show_detail('Fecha de siembra', producto.fechaSiembra is not null ? producto.fechaSiembra|date("d/m/Y H:i") : '-', 'col-md-6') }}
-                            </div>
+                    <div class="row">
+                        {{ macro_show._show_detail('Producto ID', producto.id|default('-'), 'col-md-4') }}
+                        {{ macro_show._show_detail('Nombre producto', producto.nombreCompleto|default('-'), 'col-md-4') }}
+                        {{ macro_show._show_detail('Fecha pedido', producto.fechaCreacion is not null ? producto.fechaCreacion|date("d/m/Y") : '-', 'col-md-4') }}
+                        {{ macro_show._show_detail('Fecha de siembra pedido', producto.fechaSiembraPedido is not null ? producto.fechaSiembraPedido|date("d/m/Y") : '-', 'col-md-4') }}
+                        {{ macro_show._show_detail('Fecha de entrega pedido', producto.fechaEntrega is not null ? producto.fechaEntrega|date("d/m/Y") : '-', 'col-md-4') }}
+                        {{ macro_show._show_detail('Estado', producto.estado|default('-'), 'col-md-4') }}
+                    </div>
+                {% if producto.estado.id in [3,4,5,6] %}
+                    <div class="row">
+                        <div class="col-md-2">
+                            <span class="label label-inline label-light-success font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-leaf"></span> SEMBRADO</span>
                         </div>
-                    {% endif %}
-                    {% if producto.estado.id in [5,6] %}
-                        <div class="col-md-12">
-                            <div class="row">
-                                <span class="label label-inline label-light-info font-weight-bold margin-top-25 p-6 ml-5" style="width: 140px"> <span class="fas fa-home"></span> EN INVERNACULO</span>
-                                {{ macro_show._show_detail('Fecha de entrada a invernaculo', producto.fechaSalidaCamaraReal is not null ? producto.fechaSalidaCamaraReal|date("d/m/Y H:i") : '-', 'col-md-6') }}
-                            </div>
+                        {{ macro_show._show_detail('Fecha de siembra', producto.fechaSiembra is not null ? producto.fechaSiembra|date("d/m/Y H:i") : '-', 'col-md-7') }}
+                    </div>
+                {% endif %}
+                {% if producto.estado.id in [5,6] %}
+                    <div class="row">
+                        <div class="col-md-2">
+                            <span class="label label-inline label-light-info font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-home"></span> EN INVERNACULO</span>
                         </div>
-                    {% endif %}
+                        {{ macro_show._show_detail('Fecha de entrada a invernaculo', producto.fechaSalidaCamaraReal is not null ? producto.fechaSalidaCamaraReal|date("d/m/Y H:i") : '-', 'col-md-4') }}
+                        {{ macro_show._show_detail('Dias en invernaculo', producto.cantidadDiasEnInvernaculo|default('-'), 'col-md-3') }}
+                    </div>
+                {% endif %}
                 </div>
-            </div>
             </div>
         {% endfor %}
 
