@@ -110,8 +110,8 @@ class PedidoController extends BaseController {
         $rsm->addScalarResult('cliente', 'cliente');
         $rsm->addScalarResult('cantidadBandejas', 'cantidadBandejas');
         $rsm->addScalarResult('tipoBandeja', 'tipoBandeja');
-        $rsm->addScalarResult('fechaSiembra', 'fechaSiembra');
-        $rsm->addScalarResult('fechaEntrega', 'fechaEntrega');
+        $rsm->addScalarResult('fechaSiembraPedido', 'fechaSiembraPedido');
+        $rsm->addScalarResult('fechaEntregaPedido', 'fechaEntregaPedido');
         $rsm->addScalarResult('estado', 'estado');
         $rsm->addScalarResult('colorEstado', 'colorEstado');
         $rsm->addScalarResult('ordenSiembra', 'ordenSiembra');
@@ -285,8 +285,10 @@ class PedidoController extends BaseController {
 
         /** @var PedidoProducto $pedidoProducto */
         foreach ($entity->getPedidosProductos() as $pedidoProducto){
-            $pedidoProducto->setFechaEntregaPedido($pedidoProducto->getFechaEntrega());
-            $pedidoProducto->setFechaSiembraPedido($pedidoProducto->getFechaSiembra());
+            $pedidoProducto->setFechaEntregaReal($pedidoProducto->getFechaEntregaPedido());
+            $pedidoProducto->setFechaSiembraReal($pedidoProducto->getFechaSiembraPedido());
+            $pedidoProducto->setFechaEntregaReal($pedidoProducto->getFechaEntregaPedido());
+            $pedidoProducto->setCantBandejasReales($pedidoProducto->getCantBandejasPedidas());
             $pedidoProducto->setPedido($entity);
         }
         return true;

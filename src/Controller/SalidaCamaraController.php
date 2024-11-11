@@ -16,6 +16,7 @@ use App\Form\RegistrationFormType;
 use App\Form\SalidaCamaraType;
 use DateTime;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -68,7 +69,8 @@ class SalidaCamaraController extends BaseController
         $rsm->addScalarResult('estado', 'estado');
         $rsm->addScalarResult('colorEstado', 'colorEstado');
         $rsm->addScalarResult('colorIcono', 'colorIcono');
-        $rsm->addScalarResult('fechaSiembra', 'fechaSiembra');
+        $rsm->addScalarResult('fechaSalidaCamara', 'fechaSalidaCamara');
+        $rsm->addScalarResult('fechaSalidaCamaraReal', 'fechaSalidaCamaraReal');
         $rsm->addScalarResult('descripcion', 'descripcion');
         $rsm->addScalarResult('codigoSobre', 'codigoSobre');
         $rsm->addScalarResult('className', 'className');
@@ -82,7 +84,7 @@ class SalidaCamaraController extends BaseController
      * @IsGranted("ROLE_PEDIDO")
      */
     public function show(Request $request, $id) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         /* @var $entity PedidoProducto */
         $entity = $em->getRepository("App\Entity\PedidoProducto")->find($id);
@@ -109,7 +111,7 @@ class SalidaCamaraController extends BaseController
             $this->get('session')->getFlashBag()->set('success', $message);
             return $this->redirectToRoute('salidacamara_index');
         }
-        return $this->render('salida_camara/producto_show.html.twig', [
+        return $this->render('pedidoproducto/show/salida_camara_show.html.twig', [
             'form' => $form->createView(),
             'pedidoProducto' => $entity,
             'entity' => $entity
@@ -135,24 +137,43 @@ class SalidaCamaraController extends BaseController
 
     /**
      *
-     * @Route("/guardar/", name="guardar", methods={"POST"})
+     * @param ObjectManager $em
+     * @param PedidoProducto $pedidoProducto
+     * @param EstadoPedidoProducto $estadoProducto
+     */
+    private function cambiarEstado(ObjectManager $em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto) {
+
+        $pedidoProducto->setEstado($estadoProducto);
+        $estadoPedidoProductoHistorico = new EstadoPedidoProductoHistorico();
+        $estadoPedidoProductoHistorico->setPedidoProducto($pedidoProducto);
+        $estadoPedidoProductoHistorico->setFecha(new DateTime());
+        $estadoPedidoProductoHistorico->setEstado($estadoProducto);
+        $estadoPedidoProductoHistorico->setMotivo('Producto enviado a invernaculo.');
+        $pedidoProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
+
+        $em->persist($estadoPedidoProductoHistorico);
+    }
+
+    /**
+     *
+     * @Route("/cambiar_fecha_salida_camara/", name="cambiar_fecha_salida_camara", methods={"POST"})
      * @IsGranted("ROLE_PEDIDO")
      */
-    public function guardarSalidaCamara(Request $request){
+    public function cambiarFechaSalidaCamara(Request $request){
 
-        $form = $request->get('form');
+        $nuevaFechaSalidaCamaraParam = $request->get('nuevaFechaSalidaCamara');
+        $idPedidoProducto = $request->get('idPedidoProducto');
+        $datetime = new DateTime();
+        $nuevaFechaSalidaCamara = $datetime->createFromFormat('Y-m-d', $nuevaFechaSalidaCamaraParam);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
-        $pedidoProducto->setCodigoSobre($codSobre);
-        if ($pedidoProducto->getEstado()->getCodigoInterno() != ConstanteEstadoPedidoProducto::PLANIFICADO) {
-            $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::PLANIFICADO);
-            $this->cambiarEstado($em, $pedidoProducto, $estado);
-        }
+        $fechaSalidaCamaraOriginal = $pedidoProducto->getFechaSalidaCamaraReal();
+        $pedidoProducto->setFechaSalidaCamaraReal($nuevaFechaSalidaCamara);
         $em->flush();
 
-        $message = 'Se guardo correctamente el orden de siembra';
+        $message = 'Se modifico correctamente la fecha de salida a camara del producto '.$pedidoProducto->getNombreCompleto().' del dia: '.$fechaSalidaCamaraOriginal->format('d/m/Y').' al dia: '.$nuevaFechaSalidaCamara->format('d/m/Y');
         $result = array(
             'status' => 'OK',
             'message' => $message
@@ -160,24 +181,5 @@ class SalidaCamaraController extends BaseController
 
         return new JsonResponse($result);
 
-    }
-
-    /**
-     *
-     * @param type $em
-     * @param PedidoProducto $pedidoProducto
-     * @param EstadoPedidoProducto $estadoProducto
-     */
-    private function cambiarEstado($em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto) {
-
-        $pedidoProducto->setEstado($estadoProducto);
-        $estadoPedidoProductoHistorico = new EstadoPedidoProductoHistorico();
-        $estadoPedidoProductoHistorico->setPedidoProducto($pedidoProducto);
-        $estadoPedidoProductoHistorico->setFecha(new DateTime());
-        $estadoPedidoProductoHistorico->setEstado($estadoProducto);
-        $estadoPedidoProductoHistorico->setMotivo('Producto planificado.');
-        $pedidoProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
-
-        $em->persist($estadoPedidoProductoHistorico);
     }
 }

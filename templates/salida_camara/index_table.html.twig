@@ -4,13 +4,13 @@
         {
         "id": "{{ entity.id }}",
         "title": "{{ entity.nombreCorto|default('-') }}",
-        "start": "{{ entity.fechaSiembra is not null ? entity.fechaSiembra|date('Y-m-d') : '-' }}",
+        "start": "{{ entity.fechaSalidaCamara is not null ? entity.fechaSalidaCamara|date('Y-m-d') : '-' }}",
         "description": "{{ entity.descripcion|default('-') }}",
         "cliente": "{{ entity.cliente|default('-') }}",
         "producto": "{{ entity.nombreCompleto|default('-') }}",
         "idProducto": "{{ entity.idProducto|default('-') }}",
         "cantidadTipoBandejabandeja": "{{ entity.cantidadTipoBandejabandeja|default('-') }}",
-        "fechaSiembra": "{{ entity.fechaSiembra is not null ? entity.fechaSiembra|date('Y-m-d') : '-' }}",
+        "fechaSalidaCamaraReal": "{{ entity.fechaSalidaCamaraReal is not null ? entity.fechaSalidaCamaraReal|date('Y-m-d') : '-' }}",
         "href":  "{{ path( "salida_camara_show", { 'id': entity.id }) }}",
         "codigoSobre": "{{ entity.codigoSobre|default('-') }}",
         "className": "{{ entity.className|default('fc-event-danger fc-event-solid-danger') }}"

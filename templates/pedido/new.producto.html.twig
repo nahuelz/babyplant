@@ -18,12 +18,12 @@
 </div>
 <div class="row">
     {{ macro_form._new_field(form.pedidoProducto.tipoOrigenSemilla, 'col-md-3') }}
-    {{ macro_form._new_field(form.pedidoProducto.cantBandejas, 'col-md-3') }}
+    {{ macro_form._new_field(form.pedidoProducto.cantBandejasPedidas, 'col-md-3') }}
     {{ macro_form._new_field(form.pedidoProducto.tipoBandeja, 'col-md-3') }}
     {{ macro_form._new_field(form.pedidoProducto.cantSemillas, 'col-md-3') }}
 </div>
 <div class="row">
-    {{ macro_form._new_field(form.pedidoProducto.fechaSiembra, 'col-md-3') }}
+    {{ macro_form._new_field(form.pedidoProducto.fechaSiembraPedido, 'col-md-3') }}
     <div class="col-md-3">
         <div class="form-group">
             {{ form_label(form.pedidoProducto.cantDiasProduccion) }}
@@ -33,7 +33,7 @@
             </div>
         </div>
     </div>
-    {{ macro_form._new_field(form.pedidoProducto.fechaEntrega, 'col-md-3') }}
+    {{ macro_form._new_field(form.pedidoProducto.fechaEntregaPedido, 'col-md-3') }}
     <div class="col-md-3 pull-left">
         <div class="form-group">
             <button class="btn btn-light-primary font-weight-bold margin-top-25 link-save-pedido-producto">
@@ -85,19 +85,19 @@
                         <input type="hidden" name="pedido[pedidosProductos][{{ loop.index0 }}][cantSemillas]" value="{{ pedidoProducto.cantSemillas }}">
                     </td>
                     <td class="hidden">
-                        <input type="hidden" name="pedido[pedidosProductos][{{ loop.index0 }}][cantBandejas]" value="{{ pedidoProducto.cantBandejas }}">
+                        <input type="hidden" name="pedido[pedidosProductos][{{ loop.index0 }}][cantBandejasPedidas]" value="{{ pedidoProducto.cantBandejasPedidas }}">
                     </td>
                     <td class="hidden">
                         <input type="hidden" name="pedido[pedidosProductos][{{ loop.index0 }}][origenSemilla]" value="{{ pedidoProducto.tipoOrigenSemilla }}">
                     </td>
                     <td class="hidden">
-                        <input type="hidden" name="pedido[pedidosProductos][{{ loop.index0 }}][fechaSiembra]" value="{{ pedidoProducto.fechaSiembra|date('d/m/Y') }}">
+                        <input type="hidden" name="pedido[pedidosProductos][{{ loop.index0 }}][fechaSiembraPedido]" value="{{ pedidoProducto.fechaSiembraPedido|date('d/m/Y') }}">
                     </td>
                     <td class="hidden">
                         <input type="hidden" name="pedido[pedidosProductos][{{ loop.index0 }}][cantDiasProduccion]" value="{{ pedidoProducto.cantDiasProduccion }}">
                     </td>
                     <td class="hidden">
-                        <input type="hidden" name="pedido[pedidosProductos][{{ loop.index0 }}][fechaEntrega]" value="{{ pedidoProducto.fechaEntrega|date('d/m/Y') }}">
+                        <input type="hidden" name="pedido[pedidosProductos][{{ loop.index0 }}][fechaEntregaPedido]" value="{{ pedidoProducto.fechaEntregaPedido|date('d/m/Y') }}">
                     </td>
 
                     <td class="v-middle text-center">{{ pedidoProducto.tipoVariedad.tipoSubProducto.tipoProducto }}</td>
@@ -105,11 +105,11 @@
                     <td class="v-middle text-center">{{ pedidoProducto.tipoVariedad }}</td>
                     <td class="v-middle text-center">{{ pedidoProducto.tipoBandeja }}</td>
                     <td class="v-middle text-center">{{ pedidoProducto.cantSemillas }}</td>
-                    <td class="v-middle text-center">{{ pedidoProducto.cantBandejas }}</td>
+                    <td class="v-middle text-center">{{ pedidoProducto.cantBandejasPedidas }}</td>
                     <td class="v-middle text-center">{{ pedidoProducto.tipoOrigenSemilla }}</td>
-                    <td class="v-middle text-center">{{ pedidoProducto.fechaSiembra|date('d/m/Y') }}</td>
+                    <td class="v-middle text-center">{{ pedidoProducto.fechaSiembraPedido|date('d/m/Y') }}</td>
                     <td class="v-middle text-center">{{ pedidoProducto.cantDiasProduccion }}</td>
-                    <td class="v-middle text-center">{{ pedidoProducto.fechaEntrega|date('d/m/Y') }}</td>
+                    <td class="v-middle text-center">{{ pedidoProducto.fechaEntregaPedido|date('d/m/Y') }}</td>
 
                     <td class="text-center v-middle">
                         <a href="#" class="btn btn-sm delete-link-inline link-delete-pedido-producto pedido-producto-borrar tooltips"

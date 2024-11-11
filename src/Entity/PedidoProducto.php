@@ -51,9 +51,9 @@ class PedidoProducto {
     private $tipoBandeja;
 
     /**
-     * @ORM\Column(name="cantidad_bandejas", type="string", length=50, nullable=true)
+     * @ORM\Column(name="cantidad_bandejas_pedidas", type="string", length=50, nullable=true)
      */
-    private $cantBandejas;
+    private $cantBandejasPedidas;
 
     /**
      * @ORM\Column(name="cantidad_bandejas_reales", type="string", length=50, nullable=true)
@@ -66,24 +66,9 @@ class PedidoProducto {
     private $cantSemillas;
 
     /**
-     * @ORM\Column(name="fecha_siembra", type="datetime", nullable=true)
+     * @ORM\Column(name="fecha_pedido", type="datetime", nullable=true)
      */
-    private $fechaSiembra;
-
-    /**
-     * @ORM\Column(name="fecha_entrega", type="datetime", nullable=true)
-     */
-    private $fechaEntrega;
-
-    /**
-     * @ORM\Column(name="fecha_entrega_pedido", type="datetime", nullable=true)
-     */
-    private $fechaEntregaPedido;
-
-    /**
-     * @ORM\Column(name="fecha_entrega_real", type="datetime", nullable=true)
-     */
-    private $fechaEntregaReal;
+    private $fechaPedido;
 
     /**
      * @ORM\Column(name="fecha_siembra_pedido", type="datetime", nullable=true)
@@ -91,9 +76,35 @@ class PedidoProducto {
     private $fechaSiembraPedido;
 
     /**
-     * @ORM\Column(name="fecha_pedido", type="datetime", nullable=true)
+     * @ORM\Column(name="fecha_siembra_real", type="datetime", nullable=true)
      */
-    private $fechaPedido;
+    private $fechaSiembraReal;
+
+    /**
+     * @ORM\Column(name="fecha_entrada_camara", type="datetime", length=255, nullable=true)
+     */
+    private $fechaEntradaCamara;
+
+    /**
+     * @ORM\Column(name="fecha_salida_camara", type="datetime", length=255, nullable=true)
+     */
+    private $fechaSalidaCamara;
+
+    /**
+     * @ORM\Column(name="fecha_salida_camara_real", type="datetime", length=255, nullable=true)
+     */
+    private $fechaSalidaCamaraReal;
+
+    /**
+     * @ORM\Column(name="fecha_entrega_pedido", type="datetime", nullable=true)
+     */
+    private $fechaEntregaPedido;
+
+    /**
+     * @ORM\Column(name="fecha_entrega", type="datetime", nullable=true)
+     */
+    private $fechaEntregaReal;
+
 
     /**
      * @ORM\Column(name="cantidad_dias_produccion", type="string", length=50, nullable=true)
@@ -139,21 +150,6 @@ class PedidoProducto {
     private $horaSiembra;
 
     /**
-     * @ORM\Column(name="fecha_ingreso_camara", type="datetime", length=255, nullable=true)
-     */
-    private $fechaIngresoCamara;
-
-    /**
-     * @ORM\Column(name="fecha_salida_camara_estimada", type="datetime", length=255, nullable=true)
-     */
-    private $fechaSalidaCamaraEstimada;
-
-    /**
-     * @ORM\Column(name="fecha_salida_camara_real", type="datetime", length=255, nullable=true)
-     */
-    private $fechaSalidaCamaraReal;
-
-    /**
      * @ORM\Column(name="numero_orden", type="integer", nullable=true)
      */
     private $numeroOrden;
@@ -169,11 +165,6 @@ class PedidoProducto {
     {
         $this->historicoEstados = new ArrayCollection();
     }
-
-    public function getNombreCompleto(){
-        return $this->getTipoVariedad()->getNombreCompleto();
-    }
-
 
     /**
      * @return int
@@ -242,17 +233,33 @@ class PedidoProducto {
     /**
      * @return mixed
      */
-    public function getCantBandejas()
+    public function getCantBandejasPedidas()
     {
-        return $this->cantBandejas;
+        return $this->cantBandejasPedidas;
     }
 
     /**
-     * @param mixed $cantBandejas
+     * @param mixed $cantBandejasPedidas
      */
-    public function setCantBandejas($cantBandejas): void
+    public function setCantBandejasPedidas($cantBandejasPedidas): void
     {
-        $this->cantBandejas = $cantBandejas;
+        $this->cantBandejasPedidas = $cantBandejasPedidas;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCantBandejasReales()
+    {
+        return $this->cantBandejasReales;
+    }
+
+    /**
+     * @param mixed $cantBandejasReales
+     */
+    public function setCantBandejasReales($cantBandejasReales): void
+    {
+        $this->cantBandejasReales = $cantBandejasReales;
     }
 
     /**
@@ -274,38 +281,6 @@ class PedidoProducto {
     /**
      * @return mixed
      */
-    public function getFechaSiembra()
-    {
-        return $this->fechaSiembra;
-    }
-
-    /**
-     * @param mixed $fechaSiembra
-     */
-    public function setFechaSiembra($fechaSiembra): void
-    {
-        $this->fechaSiembra = $fechaSiembra;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFechaEntrega()
-    {
-        return $this->fechaEntrega;
-    }
-
-    /**
-     * @param mixed $fechaEntrega
-     */
-    public function setFechaEntrega($fechaEntrega): void
-    {
-        $this->fechaEntrega = $fechaEntrega;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getFechaPedido()
     {
         return $this->fechaPedido;
@@ -317,6 +292,118 @@ class PedidoProducto {
     public function setFechaPedido($fechaPedido): void
     {
         $this->fechaPedido = $fechaPedido;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFechaSiembraPedido()
+    {
+        return $this->fechaSiembraPedido;
+    }
+
+    /**
+     * @param mixed $fechaSiembraPedido
+     */
+    public function setFechaSiembraPedido($fechaSiembraPedido): void
+    {
+        $this->fechaSiembraPedido = $fechaSiembraPedido;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFechaSiembraReal()
+    {
+        return $this->fechaSiembraReal;
+    }
+
+    /**
+     * @param mixed $fechaSiembraReal
+     */
+    public function setFechaSiembraReal($fechaSiembraReal): void
+    {
+        $this->fechaSiembraReal = $fechaSiembraReal;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFechaEntradaCamara()
+    {
+        return $this->fechaEntradaCamara;
+    }
+
+    /**
+     * @param mixed $fechaEntradaCamara
+     */
+    public function setFechaEntradaCamara($fechaEntradaCamara): void
+    {
+        $this->fechaEntradaCamara = $fechaEntradaCamara;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFechaSalidaCamara()
+    {
+        return $this->fechaSalidaCamara;
+    }
+
+    /**
+     * @param mixed $fechaSalidaCamara
+     */
+    public function setFechaSalidaCamara($fechaSalidaCamara): void
+    {
+        $this->fechaSalidaCamara = $fechaSalidaCamara;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFechaSalidaCamaraReal()
+    {
+        return $this->fechaSalidaCamaraReal;
+    }
+
+    /**
+     * @param mixed $fechaSalidaCamaraReal
+     */
+    public function setFechaSalidaCamaraReal($fechaSalidaCamaraReal): void
+    {
+        $this->fechaSalidaCamaraReal = $fechaSalidaCamaraReal;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFechaEntregaPedido()
+    {
+        return $this->fechaEntregaPedido;
+    }
+
+    /**
+     * @param mixed $fechaEntregaPedido
+     */
+    public function setFechaEntregaPedido($fechaEntregaPedido): void
+    {
+        $this->fechaEntregaPedido = $fechaEntregaPedido;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFechaEntregaReal()
+    {
+        return $this->fechaEntregaReal;
+    }
+
+    /**
+     * @param mixed $fechaEntregaReal
+     */
+    public function setFechaEntregaReal($fechaEntregaReal): void
+    {
+        $this->fechaEntregaReal = $fechaEntregaReal;
     }
 
     /**
@@ -365,26 +452,6 @@ class PedidoProducto {
     public function setOtroOrigenSemilla($otroOrigenSemilla): void
     {
         $this->otroOrigenSemilla = $otroOrigenSemilla;
-    }
-
-    public function addHistoricoEstado(EstadoPedidoProductoHistorico $historicoEstado): self {
-        if (!$this->historicoEstados->contains($historicoEstado)) {
-            $this->historicoEstados[] = $historicoEstado;
-            $historicoEstado->setPedidoProducto($this);
-        }
-
-        return $this;
-    }
-
-    public function removeHistoricoEstado(EstadoPedidoProductoHistorico $historicoEstado): self {
-        if ($this->historicoEstados->removeElement($historicoEstado)) {
-            // set the owning side to null (unless already changed)
-            if ($historicoEstado->getPedidoProducto() === $this) {
-                $historicoEstado->setPedidoProducto(null);
-            }
-        }
-
-        return $this;
     }
 
     /**
@@ -438,38 +505,6 @@ class PedidoProducto {
     /**
      * @return mixed
      */
-    public function getFechaSiembraPedido()
-    {
-        return $this->fechaSiembraPedido;
-    }
-
-    /**
-     * @param mixed $fechaSiembraPedido
-     */
-    public function setFechaSiembraPedido($fechaSiembraPedido): void
-    {
-        $this->fechaSiembraPedido = $fechaSiembraPedido;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFechaEntregaPedido()
-    {
-        return $this->fechaEntregaPedido;
-    }
-
-    /**
-     * @param mixed $fechaEntregaPedido
-     */
-    public function setFechaEntregaPedido($fechaEntregaPedido): void
-    {
-        $this->fechaEntregaPedido = $fechaEntregaPedido;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getObservacion()
     {
         return $this->observacion;
@@ -481,46 +516,6 @@ class PedidoProducto {
     public function setObservacion($observacion): void
     {
         $this->observacion = $observacion;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCantBandejasReales()
-    {
-        return $this->cantBandejasReales;
-    }
-
-    /**
-     * @param mixed $cantBandejasReales
-     */
-    public function setCantBandejasReales($cantBandejasReales): void
-    {
-        $this->cantBandejasReales = $cantBandejasReales;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getHoraSiembra()
-    {
-        return $this->horaSiembra;
-    }
-
-    /**
-     * @param mixed $horaSiembra
-     */
-    public function setHoraSiembra($horaSiembra): void
-    {
-        if ($horaSiembra != null) {
-            $fecha = $this->getFechaSiembra();
-            $hora = intval(substr($horaSiembra, 0, 2));
-            $minutos = intval(substr($horaSiembra, 3, 2));
-            $fecha->setTime($hora, $minutos);
-            $this->horaSiembra = $fecha;
-        }else{
-            $this->horaSiembra = new \DateTime();
-        }
     }
 
     /**
@@ -539,82 +534,6 @@ class PedidoProducto {
         $this->numeroOrden = $numeroOrden;
     }
 
-    public function getTipoProducto(){
-        return $this->getTipoVariedad()->getTipoSubProducto()->getTipoProducto();
-    }
-
-    public function getNumeroOrdenCompleto(){
-        return ($this->numeroOrden . ' ' . strtoupper(substr($this->getTipoProducto(), 0, 3)));
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFechaIngresoCamara()
-    {
-        return $this->fechaIngresoCamara;
-    }
-
-    /**
-     * @param mixed $fechaIngresoCamara
-     */
-    public function setFechaIngresoCamara($fechaIngresoCamara): void
-    {
-        $this->fechaIngresoCamara = $fechaIngresoCamara;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFechaSalidaCamara()
-    {
-        return $this->fechaSalidaCamara;
-    }
-
-    /**
-     * @param mixed $fechaSalidaCamara
-     */
-    public function setFechaSalidaCamara($fechaSalidaCamara): void
-    {
-        $this->fechaSalidaCamara = $fechaSalidaCamara;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFechaSalidaCamaraEstimada()
-    {
-        return $this->fechaSalidaCamaraEstimada;
-    }
-
-    /**
-     * @param mixed $fechaSalidaCamaraEstimada
-     */
-    public function setFechaSalidaCamaraEstimada($fechaSalidaCamaraEstimada): void
-    {
-        $this->fechaSalidaCamaraEstimada = $fechaSalidaCamaraEstimada;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFechaSalidaCamaraReal()
-    {
-        return $this->fechaSalidaCamaraReal;
-    }
-
-    /**
-     * @param mixed $fechaSalidaCamaraReal
-     */
-    public function setFechaSalidaCamaraReal($fechaSalidaCamaraReal): void
-    {
-        $this->fechaSalidaCamaraReal = $fechaSalidaCamaraReal;
-    }
-
-    public function getDiasEnCamara(){
-        return '+' . $this->getTipoVariedad()->getTipoSubProducto()->getTipoProducto()->getCantDiasCamara() . ' day';
-    }
-
     /**
      * @return mixed
      */
@@ -629,6 +548,62 @@ class PedidoProducto {
     public function setMesadas($mesadas): void
     {
         $this->mesadas = $mesadas;
+    }
+
+    public function getNombreCompleto(){
+        return $this->getTipoVariedad()->getNombreCompleto();
+    }
+
+    public function addHistoricoEstado(EstadoPedidoProductoHistorico $historicoEstado): self {
+        if (!$this->historicoEstados->contains($historicoEstado)) {
+            $this->historicoEstados[] = $historicoEstado;
+            $historicoEstado->setPedidoProducto($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHistoricoEstado(EstadoPedidoProductoHistorico $historicoEstado): self {
+        if ($this->historicoEstados->removeElement($historicoEstado)) {
+            // set the owning side to null (unless already changed)
+            if ($historicoEstado->getPedidoProducto() === $this) {
+                $historicoEstado->setPedidoProducto(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getHoraSiembra(){
+        return $this->horaSiembra;
+    }
+
+    /**
+     * @param mixed $horaSiembra
+     */
+    public function setHoraSiembra($horaSiembra): void
+    {
+        if ($horaSiembra != null) {
+            $fecha = $this->getFechaSiembraReal();
+            $hora = intval(substr($horaSiembra, 0, 2));
+            $minutos = intval(substr($horaSiembra, 3, 2));
+            $fecha->setTime($hora, $minutos);
+            $this->horaSiembra = $fecha;
+        }else{
+            $this->horaSiembra = new \DateTime();
+        }
+    }
+
+    public function getTipoProducto(){
+        return $this->getTipoVariedad()->getTipoSubProducto()->getTipoProducto();
+    }
+
+    public function getNumeroOrdenCompleto(){
+        return ($this->numeroOrden . ' ' . strtoupper(substr($this->getTipoProducto(), 0, 3)));
+    }
+
+    public function getDiasEnCamara(){
+        return '+' . $this->getTipoVariedad()->getTipoSubProducto()->getTipoProducto()->getCantDiasCamara() . ' day';
     }
 
     /**
@@ -648,22 +623,6 @@ class PedidoProducto {
         return ($this->cantBandejas.' (x'.$this->getTipoBandeja()->getNombre().') ');
     }
 
-    /**
-     * @return mixed
-     */
-    public function getFechaEntregaReal()
-    {
-        return $this->fechaEntregaReal;
-    }
-
-    /**
-     * @param mixed $fechaEntregaReal
-     */
-    public function setFechaEntregaReal($fechaEntregaReal): void
-    {
-        $this->fechaEntregaReal = $fechaEntregaReal;
-    }
-
     public function getCantidadDiasEnInvernaculo (){
         $fechaEntradaInvernaculo = $this->fechaSalidaCamaraReal;
 
@@ -672,6 +631,6 @@ class PedidoProducto {
         }else{
             $hasta = $this->getFechaEntregaPedido();
         }
-        return($hasta->diff($fechaEntradaInvernaculo)->format("%a") + 1);
+        return($hasta->diff($fechaEntradaInvernaculo)->format("%a"));
     }
 }

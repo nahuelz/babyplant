@@ -11,6 +11,7 @@ use App\Entity\EstadoPedidoProductoHistorico;
 use App\Entity\Pedido;
 use App\Entity\PedidoProducto;
 use DateTime;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -57,13 +58,13 @@ class EntradaCamaraController extends BaseController
         $rsm->addScalarResult('nombreCorto', 'nombreCorto');
         $rsm->addScalarResult('title', 'title');
         $rsm->addScalarResult('cantidadTipoBandejabandeja', 'cantidadTipoBandejabandeja');
-        $rsm->addScalarResult('cantidadBandejas', 'cantidadBandejas');
+        $rsm->addScalarResult('cantidadBandejasReales', 'cantidadBandejasReales');
         $rsm->addScalarResult('tipoBandeja', 'tipoBandeja');
         $rsm->addScalarResult('cliente', 'cliente');
         $rsm->addScalarResult('estado', 'estado');
         $rsm->addScalarResult('colorEstado', 'colorEstado');
         $rsm->addScalarResult('colorIcono', 'colorIcono');
-        $rsm->addScalarResult('fechaSiembra', 'fechaSiembra');
+        $rsm->addScalarResult('fechaSiembraReal', 'fechaSiembraReal');
         $rsm->addScalarResult('descripcion', 'descripcion');
         $rsm->addScalarResult('codigoSobre', 'codigoSobre');
         $rsm->addScalarResult('className', 'className');
@@ -74,7 +75,7 @@ class EntradaCamaraController extends BaseController
 
     /**
      * @Route("/{id}/pedido_producto_entrada_camara", name="pedido_producto_entrada_camara", methods={"GET","POST"})
-     * @Template("entrada_camara/producto_show.html.twig")
+     * @Template("pedidoproducto/show/entrada_camara_show.html.twig")
      */
     public function showPedidoProductoEntradaCamaraAction($id) {
 
@@ -101,17 +102,19 @@ class EntradaCamaraController extends BaseController
     public function guardarEntradaCamara(Request $request){
 
         $idPedidoProducto = $request->get('idPedidoProducto');
-        $fechaIngresoCamara = $request->get('fechaIngresoCamara');
-        $dateTime = new DateTime($fechaIngresoCamara);
+        $fechaEntradaCamara = $request->get('fechaEntradaCamara');
+        $dateTime = new DateTime($fechaEntradaCamara);
         $em = $this->getDoctrine()->getManager();
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
-        $pedidoProducto->setFechaIngresoCamara($dateTime);
+        $pedidoProducto->setFechaEntradaCamara($dateTime);
         if ($pedidoProducto->getEstado()->getCodigoInterno() != ConstanteEstadoPedidoProducto::EN_CAMARA) {
             $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::EN_CAMARA);
             $this->cambiarEstado($em, $pedidoProducto, $estado);
-            $cantDiasEnCamara = new DateTime($fechaIngresoCamara);
-            $pedidoProducto->setFechaSalidaCamaraEstimada($cantDiasEnCamara->modify($pedidoProducto->getDiasEnCamara()));
+            $cantDiasEnCamara = new DateTime($fechaEntradaCamara);
+            $fechaSalidaCamara= $cantDiasEnCamara->modify($pedidoProducto->getDiasEnCamara());
+            $pedidoProducto->setFechaSalidaCamara($fechaSalidaCamara);
+            $pedidoProducto->setFechaSalidaCamaraReal($fechaSalidaCamara);
         }
         $em->flush();
 
@@ -127,11 +130,11 @@ class EntradaCamaraController extends BaseController
 
     /**
      *
-     * @param type $em
+     * @param \Doctrine\Persistence\ObjectManager $em
      * @param PedidoProducto $pedidoProducto
      * @param EstadoPedidoProducto $estadoProducto
      */
-    private function cambiarEstado($em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto) {
+    private function cambiarEstado(\Doctrine\Persistence\ObjectManager $em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto) {
 
         $pedidoProducto->setEstado($estadoProducto);
         $estadoPedidoProductoHistorico = new EstadoPedidoProductoHistorico();

@@ -13,8 +13,8 @@
         },
         "{{ entity.cliente|default('-') }}",
         "{{ entity.cantidadBandejas|default('-') }}",
-        "{{ entity.fechaSiembra is not null ? entity.fechaSiembra|date('d/m/Y') : '-' }}",
-        "{{ entity.fechaEntrega is not null ? entity.fechaEntrega|date('d/m/Y') : '-' }}",
+        "{{ entity.fechaSiembraPedido is not null ? entity.fechaSiembraPedido|date('d/m/Y') : '-' }}",
+        "{{ entity.fechaEntregaPedido is not null ? entity.fechaEntregaPedido|date('d/m/Y') : '-' }}",
         {
         "estado" : "{{ entity.estado|default('Sin estado') }}",
         "colorEstado" : "{{ entity.colorEstado|default('default') }}"

@@ -254,7 +254,7 @@ function showDialog(options) {
             },
             success: {
                 label: options.labelSuccess ? options.labelSuccess : "Guardar",
-                className: "btn-sm btn-submit submit-button btn-light-primary font-weight-bold success " + (options.color ? options.color : '') + (options.class ? options.class : ''),
+                className: "btn-sm btn-submit submit-button btn-light-success font-weight-bold success " + (options.color ? options.color : '') + (options.class ? options.class : ''),
                 callback: function () {
                     var result = options.callbackSuccess();
                     return result;

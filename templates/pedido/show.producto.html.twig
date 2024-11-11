@@ -5,8 +5,8 @@
             {% for producto in entity.pedidosProductos %}
                 {{ macro_show._show_detail('Producto ID', producto.id|default('-'), 'col-md-2') }}
                 {{ macro_show._show_detail('Fecha Pedido', producto.fechaCreacion is not null ? producto.fechaCreacion|date("d/m/Y") : '-', 'col-md-2') }}
-                {{ macro_show._show_detail('Fecha de Siembra', producto.fechaSiembra is not null ? producto.fechaSiembra|date("d/m/Y") : '-', 'col-md-2') }}
-                {{ macro_show._show_detail('Fecha de Entrega', producto.fechaEntrega is not null ? producto.fechaEntrega|date("d/m/Y") : '-', 'col-md-3') }}
+                {{ macro_show._show_detail('Fecha de Siembra', producto.fechaSiembraReal is not null ? producto.fechaSiembraReal|date("d/m/Y") : '-', 'col-md-2') }}
+                {{ macro_show._show_detail('Fecha de Entrega', producto.fechaEntregaReal is not null ? producto.fechaEntregaReal|date("d/m/Y") : '-', 'col-md-3') }}
                 {{ macro_show._show_detail('Estado', producto.estado|default('-'), 'col-md-3') }}
             {% endfor %}
         </div>

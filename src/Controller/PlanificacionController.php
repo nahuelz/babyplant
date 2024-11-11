@@ -59,7 +59,7 @@ class PlanificacionController extends BaseController
         $rsm->addScalarResult('estado', 'estado');
         $rsm->addScalarResult('colorEstado', 'colorEstado');
         $rsm->addScalarResult('colorIcono', 'colorIcono');
-        $rsm->addScalarResult('fechaSiembra', 'fechaSiembra');
+        $rsm->addScalarResult('fechaSiembraReal', 'fechaSiembraReal');
         $rsm->addScalarResult('descripcion', 'descripcion');
         $rsm->addScalarResult('codigoSobre', 'codigoSobre');
         $rsm->addScalarResult('className', 'className');
@@ -99,7 +99,7 @@ class PlanificacionController extends BaseController
      * @Route("/cambiar_fecha_planificacion/", name="cambiar_fecha_planificacion", methods={"POST"})
      * @IsGranted("ROLE_PEDIDO")
      */
-    public function setChangeData(Request $request){
+    public function cambiarFechaPlanificacion(Request $request){
 
         $nuevaFechaSiembraParam = $request->get('nuevaFechaSiembra');
         $idPedidoProducto = $request->get('idPedidoProducto');
@@ -109,8 +109,8 @@ class PlanificacionController extends BaseController
         $em = $this->getDoctrine()->getManager();
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
-        $fechaSiembraOriginal = $pedidoProducto->getFechaSiembra();
-        $pedidoProducto->setFechaSiembra($nuevaFechaSiembra);
+        $fechaSiembraOriginal = $pedidoProducto->getFechaSiembraReal();
+        $pedidoProducto->setFechaSiembraReal($nuevaFechaSiembra);
         $em->flush();
 
         $message = 'Se modifico correctamente la fecha de siembra del producto '.$pedidoProducto->getNombreCompleto().' del dia: '.$fechaSiembraOriginal->format('d/m/Y').' al dia: '.$nuevaFechaSiembra->format('d/m/Y');
@@ -128,16 +128,18 @@ class PlanificacionController extends BaseController
      * @Route("/guardar_orden_siembra/", name="guardar_orden_siembra", methods={"POST"})
      * @IsGranted("ROLE_PEDIDO")
      */
-    public function setOrdenSiembra(Request $request){
+    public function guardarOrdenSiembra(Request $request){
 
         $codSobre = $request->get('codSobre');
+        $observacion = $request->get('observacion');
         $idPedidoProducto = $request->get('idPedidoProducto');
 
         $em = $this->getDoctrine()->getManager();
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
-        $pedidoProducto->setCodigoSobre($codSobre);
-        if ($pedidoProducto->getEstado()->getCodigoInterno() != ConstanteEstadoPedidoProducto::PLANIFICADO) {
+        $pedidoProducto->setObservacion($observacion);
+        if (($pedidoProducto->getEstado()->getCodigoInterno() != ConstanteEstadoPedidoProducto::PLANIFICADO) && ($codSobre != '')) {
+            $pedidoProducto->setCodigoSobre($codSobre);
             $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::PLANIFICADO);
             $this->cambiarEstado($em, $pedidoProducto, $estado);
             $pedidoProducto->setNumeroOrden($this->getDoctrine()->getRepository(PedidoProducto::class)->getSiguienteNumeroOrden($pedidoProducto->getTipoProducto()));
@@ -175,7 +177,7 @@ class PlanificacionController extends BaseController
 
     /**
      * @Route("/{id}/producto_show", name="planificacion_producto_show", methods={"GET","POST"})
-     * @Template("planificacion/producto_show.html.twig")
+     * @Template("pedidoproducto/show/planificacion_show.html.twig")
      */
     public function showPedidoProductoAction($id) {
 
@@ -191,6 +193,18 @@ class PlanificacionController extends BaseController
         return array(
             'entity' => $pedidoProducto,
             'page_title' => 'Pedido Producto'
+        );
+    }
+    /**
+     * @Route("/pedidos-atrasados/", name="pedidos_atrasados", methods={"GET","POST"})
+     * @Template("planificacion/pedidos_atrasados.html.twig")
+     */
+    public function pedidosAtrasados(){
+        /* @var $pedidoProducto PedidoProducto */
+        $pedidosProductos = $this->getDoctrine()->getRepository(PedidoProducto::class)->getPedidosAtrasados();
+
+        return array(
+            'pedidosProductos' => $pedidosProductos
         );
     }
 }

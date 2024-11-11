@@ -113,7 +113,7 @@ class PedidoProductoType extends AbstractType {
                         'readonly' => 'true',
                         'tabindex' => '5'))
             )
-            ->add('cantBandejas', TextType::class, array(
+            ->add('cantBandejasPedidas', TextType::class, array(
                     'attr' => array(
                         'placeholder' => 'Escriba la cantidad de bandejas',
                         'class' => 'form-control'))
@@ -139,7 +139,7 @@ class PedidoProductoType extends AbstractType {
                     },
                 )
             )
-            ->add('fechaSiembra', DateType::class, array(
+            ->add('fechaSiembraPedido', DateType::class, array(
                     'widget' => 'single_text',
                     'html5' => false,
                     'format' => 'dd/MM/yyyy',
@@ -156,7 +156,7 @@ class PedidoProductoType extends AbstractType {
                         'tabindex' => '5'
                     ))
             )
-            ->add('fechaEntrega', DateType::class, array(
+            ->add('fechaEntregaPedido', DateType::class, array(
                     'widget' => 'single_text',
                     'html5' => false,
                     'format' => 'dd/MM/yyyy',

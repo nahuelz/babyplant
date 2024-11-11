@@ -74,7 +74,7 @@ var KTCalendarListView = function() {
                                     type: 'post',
                                     dataType: 'json',
                                     data: {
-                                        fechaIngresoCamara: $('#fecha-ingreso-camara').val(),
+                                        fechaEntradaCamara: $('#fecha-entrada-camara').val(),
                                         idPedidoProducto: info.event.id
                                     },
                                     url: __HOMEPAGE_PATH__ + "entrada_camara/guardar/",
@@ -95,8 +95,8 @@ var KTCalendarListView = function() {
                         $('.modal-dialog').css('width', '80%');
                         $('.modal-dialog').addClass('modal-xl');
                         $('.modal-dialog').addClass('modal-fullscreen-xl-down');
-                        $('.fecha-ingreso').click(function(){
-                            $('.fecha-ingreso-camara-edit').toggle();
+                        $('.fecha-entrada').click(function(){
+                            $('.fecha-entrada-camara-edit').toggle();
                         });
                         let date = new Date();
                         let hour = date.getHours();
@@ -104,15 +104,15 @@ var KTCalendarListView = function() {
                         hour = (hour < 10 ? "0" : "") + hour;
                         min = (min < 10 ? "0" : "") + min;
                         let hora = hour + ":" + min;
-                        $('.fecha-ingreso-camara').text($('.fecha-ingreso-camara').text() + ' ' +  hora);
-                        $('.fecha-ingreso-camara-hidden').text($('.fecha-ingreso-camara-hidden').text() + ' ' +  hora);
-                        let fechaCompleta = $('.fecha-ingreso-camara-hidden').text();
+                        //$('.fecha-entrada-camara').text($('.fecha-entrada-camara').text() + ' ' +  hora);
+                        //$('.fecha-entrada-camara-hidden').text($('.fecha-entrada-camara-hidden').text() + ' ' +  hora);
+                        let fechaCompleta = $('.fecha-entrada-camara-hidden').text();
                         fechaCompleta = fechaCompleta.replace(' ', 'T');
                         console.log(fechaCompleta);
-                        $('#fecha-ingreso-camara').val(fechaCompleta);
+                        $('#fecha-entrada-camara').val(fechaCompleta);
                         if ($('.estado').text() == 'EN CAMARA'){
                             $('.entrada-camara-submit').hide();
-                            $('.fecha-ingreso-camara-edit').remove();
+                            $('.fecha-entrada-camara-edit').remove();
                         }
                     });
                 },
@@ -145,11 +145,11 @@ function initPreValidation() {
     $(".entrada-camara-submit").off('click').on('click', function (e) {
         e.preventDefault();
 
-       if ($('#fecha-ingreso-camara').val() != ''){
+       if ($('#fecha-entrada-camara').val() != ''){
            return true;
        } else {
            Swal.fire({
-               title: 'Ingrese la fecha de ingreso a camara.',
+               title: 'Ingrese la fecha de entrada a camara.',
                icon: "error"
            });
        }

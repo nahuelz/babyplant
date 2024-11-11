@@ -77,6 +77,7 @@ var KTCalendarListView = function() {
                                     dataType: 'json',
                                     data: {
                                         codSobre: $('#codSobre').val(),
+                                        observacion: $('#observacion').val(),
                                         idPedidoProducto: info.event.id
                                     },
                                     url: __HOMEPAGE_PATH__ + "planificacion/guardar_orden_siembra/",
@@ -98,6 +99,7 @@ var KTCalendarListView = function() {
                         $('.modal-dialog').addClass('modal-xl');
                         $('.modal-dialog').addClass('modal-fullscreen-xl-down');
                         initSobreInput();
+                        initObservacionInput();
                     });
                 },
                 eventRender: function(info) {
@@ -255,6 +257,18 @@ var KTCalendarListView = function() {
 
 jQuery(document).ready(function() {
     KTCalendarListView.init();
+
+    $.ajax({
+        type: 'POST',
+        url: __HOMEPAGE_PATH__ + 'planificacion/pedidos-atrasados/',
+    }).done(function (html) {
+        Swal.fire({
+            title: "Hay ordenes de días anteriores que no fueron sembradas.",
+            html: html,
+            width: 1200,
+            padding: "3em"
+        });
+    });
 });
 
 function initSobreInput(){
@@ -265,24 +279,9 @@ function initSobreInput(){
         $('.sobre-input').toggle();
     });
 }
-/**
- *
- * @returns {undefined}
- */
-function initPreValidation() {
 
-    $(".codigo-sobre-submit").off('click').on('click', function (e) {
-        e.preventDefault();
-
-       if ($('#codSobre').val() != ''){
-           return true;
-       } else {
-           Swal.fire({
-               title: 'Ingrese el codigo del sobre.',
-               icon: "error"
-           });
-       }
-
-        e.stopPropagation();
+function initObservacionInput(){
+    $('.observacion').click(function(){
+        $('.observacion-input').toggle();
     });
 }

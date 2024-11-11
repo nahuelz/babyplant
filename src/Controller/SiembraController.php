@@ -63,42 +63,13 @@ class SiembraController extends BaseController
         $rsm->addScalarResult('estado', 'estado');
         $rsm->addScalarResult('colorEstado', 'colorEstado');
         $rsm->addScalarResult('colorIcono', 'colorIcono');
-        $rsm->addScalarResult('fechaSiembra', 'fechaSiembra');
+        $rsm->addScalarResult('fechaSiembraReal', 'fechaSiembraReal');
         $rsm->addScalarResult('descripcion', 'descripcion');
         $rsm->addScalarResult('codigoSobre', 'codigoSobre');
         $rsm->addScalarResult('className', 'className');
 
         $renderPage = "siembra/index_table.html.twig";
         return parent::baseIndexTableAction($request, [], $entityTable, ConstanteTipoConsulta::VIEW, $rsm, $renderPage);
-    }
-
-    /**
-     *
-     * @Route("/cambiar_fecha_siembra/", name="cambiar_fecha_siembra", methods={"POST"})
-     * @IsGranted("ROLE_PEDIDO")
-     */
-    public function setChangeData(Request $request){
-
-        $nuevaFechaSiembraParam = $request->get('nuevaFechaSiembra');
-        $idPedidoProducto = $request->get('idPedidoProducto');
-        $datetime = new DateTime();
-        $nuevaFechaSiembra = $datetime->createFromFormat('Y-m-d', $nuevaFechaSiembraParam);
-
-        $em = $this->getDoctrine()->getManager();
-        /* @var $pedidoProducto PedidoProducto */
-        $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
-        $fechaSiembraOriginal = $pedidoProducto->getFechaSiembra();
-        $pedidoProducto->setFechaSiembra($nuevaFechaSiembra);
-        $em->flush();
-
-        $message = 'Se modifico correctamente la fecha de siembra del producto '.$pedidoProducto->getNombreCompleto().' del dia: '.$fechaSiembraOriginal->format('d/m/Y').' al dia: '.$nuevaFechaSiembra->format('d/m/Y');
-        $result = array(
-            'status' => 'OK',
-            'message' => $message
-        );
-
-        return new JsonResponse($result);
-
     }
 
     /**
@@ -119,6 +90,7 @@ class SiembraController extends BaseController
         $pedidoProducto->setObservacion($observacion);
         $pedidoProducto->setCantBandejasReales($bandejas);
         $pedidoProducto->setHoraSiembra($horaSiembra);
+        $pedidoProducto->setFechaEntradaCamara($pedidoProducto->getFechaSiembraReal());
         if ($pedidoProducto->getEstado()->getCodigoInterno() != ConstanteEstadoPedidoProducto::SEMBRADO) {
             $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::SEMBRADO);
             $motivo = 'Producto sembrado.';
@@ -181,7 +153,7 @@ class SiembraController extends BaseController
 
     /**
      * @Route("/{id}/pedido_producto_siembra", name="pedido_producto_siembra", methods={"GET","POST"})
-     * @Template("siembra/producto_show.html.twig")
+     * @Template("pedidoproducto/show/siembra_show.html.twig")
      */
     public function showPedidoProductoAction($id) {
 

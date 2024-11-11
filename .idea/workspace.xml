@@ -4,9 +4,38 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="print, showpedido">
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Se agregaron varias mejoras en la vista mobile al ver el detalle de un pedido.&#10;Se agregó un sombreado en los formularios donde hay que seleccionar una opción&#10;En la vista de pedido ahora se muestra la cantidad de días que estuvo en invernáculo">
+      <change afterPath="$PROJECT_DIR$/templates/planificacion/pedidos_atrasados.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/planificacion/producto_show_old.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/entradacamara/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/entradacamara/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/pedido/new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/new.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/planificacion/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/planificacion/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/siembra/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/siembra/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/config/notificacion.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/config/notificacion.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/BaseController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/BaseController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/EntradaCamaraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntradaCamaraController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PedidoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PedidoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PlanificacionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PlanificacionController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SalidaCamaraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SalidaCamaraController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SiembraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SiembraController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/PedidoProductoType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/PedidoProductoType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/PedidoProductoRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/PedidoProductoRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrada_camara/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrada_camara/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrada_camara/producto_show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedidoproducto/show/entrada_camara_show.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedido/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedido/new.producto.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/new.producto.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedido/producto_show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/producto_show.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/pedido/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/show.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedido/show.producto.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/show.producto.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/planificacion/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/planificacion/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/planificacion/producto_show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedidoproducto/show/planificacion_show.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/salida_camara/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/salida_camara/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/salida_camara/producto_show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedidoproducto/show/salida_camara_show.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/siembra/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/siembra/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/siembra/producto_show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedidoproducto/show/siembra_show.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -209,7 +238,7 @@
     &quot;database.data.extractors.current.export.id&quot;: &quot;SQL Updates&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/xampp81/htdocs/babyplant/templates&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/xampp81/htdocs/babyplant/templates/pedidoproducto&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -226,13 +255,16 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp81\htdocs\babyplant\templates\pedidoproducto" />
       <recent name="C:\xampp81\htdocs\babyplant\templates" />
       <recent name="C:\xampp81\htdocs\babyplant\public\js\app\logauditoria" />
       <recent name="C:\xampp81\htdocs\babyplant\templates\log_auditoria" />
       <recent name="C:\xampp81\htdocs\babyplant\templates\tipo_mesada" />
-      <recent name="C:\xampp81\htdocs\babyplant\public\js\app\tipomesada" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp81\htdocs\babyplant\templates\pedidoproducto\show" />
+      <recent name="C:\xampp81\htdocs\babyplant\templates\pedidoproducto" />
+      <recent name="C:\xampp81\htdocs\babyplant\templates\planificacion" />
       <recent name="C:\xampp81\htdocs\babyplant\public\theme\css\custom" />
     </key>
   </component>
@@ -293,7 +325,8 @@
       <workItem from="1730214516024" duration="34638000" />
       <workItem from="1730679008654" duration="30000" />
       <workItem from="1730731579193" duration="13096000" />
-      <workItem from="1730913319883" duration="296000" />
+      <workItem from="1730913319883" duration="32386000" />
+      <workItem from="1731257754689" duration="9111000" />
     </task>
     <task id="LOCAL-00001" summary="config">
       <option name="closed" value="true" />
@@ -575,14 +608,37 @@
       <option name="project" value="LOCAL" />
       <updated>1730859506211</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="fix show pedido">
+      <option name="closed" value="true" />
+      <created>1730913657206</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1730913657206</updated>
+    </task>
+    <task id="LOCAL-00037" summary="fix colores planificacion">
+      <option name="closed" value="true" />
+      <created>1730919384451</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1730919384451</updated>
+    </task>
+    <task id="LOCAL-00038" summary="Se agregaron varias mejoras en la vista mobile al ver el detalle de un pedido.&#10;Se agregó un sombreado en los formularios donde hay que seleccionar una opción&#10;En la vista de pedido ahora se muestra la cantidad de días que estuvo en invernáculo">
+      <option name="closed" value="true" />
+      <created>1730997747500</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1730997747500</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="config" />
     <MESSAGE value="Baso proyecto&#10;Configuracion&#10;Alta pedido" />
     <MESSAGE value="Alta pedido validaciones" />
     <MESSAGE value="Usuario Form Razon Social" />
@@ -605,6 +661,9 @@
     <MESSAGE value="NumeroOrden" />
     <MESSAGE value="Pedido tiles, filtros, ultimas actividades" />
     <MESSAGE value="print, showpedido" />
-    <option name="LAST_COMMIT_MESSAGE" value="print, showpedido" />
+    <MESSAGE value="fix show pedido" />
+    <MESSAGE value="fix colores planificacion" />
+    <MESSAGE value="Se agregaron varias mejoras en la vista mobile al ver el detalle de un pedido.&#10;Se agregó un sombreado en los formularios donde hay que seleccionar una opción&#10;En la vista de pedido ahora se muestra la cantidad de días que estuvo en invernáculo" />
+    <option name="LAST_COMMIT_MESSAGE" value="Se agregaron varias mejoras en la vista mobile al ver el detalle de un pedido.&#10;Se agregó un sombreado en los formularios donde hay que seleccionar una opción&#10;En la vista de pedido ahora se muestra la cantidad de días que estuvo en invernáculo" />
   </component>
 </project>

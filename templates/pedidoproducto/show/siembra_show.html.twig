@@ -1,0 +1,104 @@
+{% if entity is defined %}
+    <div class="row">
+        <div class="modal-body" style="padding-top: 0px;padding-bottom: 0px;">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center mb-10">
+                        <div class="symbol symbol-40 symbol-light-primary mr-5">
+                        <span class="symbol-label">
+                            <span class="svg-icon svg-icon-xl svg-icon-primary">
+                                <i class="fas fa-leaf icon-2x text-dark"></i>
+                            </span>
+                        </span>
+                        </div>
+                        <div class="d-flex flex-column font-weight-bold">
+                            <span class="label label-inline {{ entity.tipoProducto.nombre}} font-weight-bold" style="padding: 20px">{{ entity.tipoVariedad }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center mb-10">
+                        <div class="symbol symbol-40 symbol-light-primary mr-5">
+                            <span class="symbol-label">
+                                <span class="svg-icon svg-icon-xl svg-icon-primary">
+                                    <i class="la la-file-alt icon-2x text-dark"></i>
+                                </span>
+                            </span>
+                        </div>
+                        <div class="d-flex flex-column font-weight-bold">
+                            <span class="label label-inline font-weight-bold {{ entity.estado.color }}" style="padding: 20px;">{{ entity.estado.nombre }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center mb-10 observacion">
+                        <div class="symbol symbol-40 symbol-light-primary mr-5">
+                        <span class="symbol-label">
+                            <span class="svg-icon svg-icon-xl svg-icon-primary">
+                                <i class="fas fa-comment icon-2x text-dark"></i>
+                            </span>
+                        </span>
+                        </div>
+                        <div class="d-flex flex-column font-weight-bold">
+                            <label class="text-dark text-hover-primary mb-1 font-size-lg">Observacion</label>
+                            <span class="text-muted">{{ entity.observacion|default('-') }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center mb-10 bandejas">
+                        <div class="symbol symbol-40 symbol-light-primary mr-5">
+                    <span class="symbol-label">
+                        <span class="svg-icon svg-icon-xl svg-icon-primary">
+                            <i class="fas fa-table icon-2x text-dark"></i>
+                        </span>
+                    </span>
+                        </div>
+                        <div class="d-flex flex-column font-weight-bold">
+                            <label class="text-dark text-hover-primary mb-1 font-size-lg">Bandejas Reales</label>
+                            <span class="text-muted">{{ entity.cantBandejasReales|default(entity.cantBandejasReales) }}(X{{ entity.tipoBandeja }})</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center mb-10 hora">
+                        <div class="symbol symbol-40 symbol-light-primary mr-5">
+                            <span class="symbol-label">
+                                <span class="svg-icon svg-icon-xl svg-icon-primary">
+                                    <i class="fas fa-calendar icon-2x text-dark"></i>
+                                </span>
+                            </span>
+                        </div>
+                        <div class="d-flex flex-column font-weight-bold">
+                            <label class="text-dark text-hover-primary mb-1 font-size-lg">Hora de siembra</label>
+                            <span class="text-muted hora-siembra">{{ entity.horaSiembra is not null ? entity.horaSiembra|date('d/m/Y H:i') : '-' }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group observacion-edit" style="display: none;">
+                        <label class="text-dark text-hover-primary mb-1 font-size-lg font-weight-bold">OBSERVACION:</label>
+                        <div class="input-group input-group-lg">
+                            <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-comment"></i></span></div>
+                            <input type="text" class="form-control" id="observacion" placeholder="Ingrese una observacion" value="{{ entity.observacion|default('') }}">
+                        </div>
+                    </div>
+                    <div class="form-group bandejas-edit" style="display: none;">
+                        <label class="text-dark text-hover-primary mb-1 font-size-lg font-weight-bold">CANTIDAD BANDEJAS REALES:</label>
+                        <div class="input-group input-group-lg">
+                            <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-table"></i></span></div>
+                            <input type="text" class="form-control" id="bandejas" placeholder="Ingrese la cantidad de bandejas" value="{{ entity.cantBandejasReales|default(entity.cantBandejasReales) }}">
+                        </div>
+                    </div>
+                    <div class="form-group hora-edit" style="display: none;">
+                        <label class="text-dark text-hover-primary mb-1 font-size-lg font-weight-bold">HORA DE SIEMBRA:</label>
+                        <div class="input-group input-group-lg">
+                            <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-calendar"></i></span></div>
+                            <input type="time" class="form-control" min="07:00" max="20:00" id="horaSiembra" placeholder="Ingrese una hora" value=">{{ entity.horaSiembra is not null ? entity.horaSiembra|date('H:i') : '-' }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif  %}

@@ -16,6 +16,7 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -64,6 +65,12 @@ class BaseController extends AbstractController {
 
     /**
      *
+     * @var ManagerRegistry
+     */
+    protected $doctrine;
+
+    /**
+     *
      * @var type
      */
     private $associationTypeArray = array(ClassMetadataInfo::ONE_TO_MANY, ClassMetadataInfo::MANY_TO_MANY);
@@ -77,7 +84,7 @@ class BaseController extends AbstractController {
      * @param AuthorizationCheckerInterface $authChecker
      * @return $this
      */
-    public function __construct(EntityManagementGuesser $emg, ContainerInterface $container, SelectService $selectService, ParameterBagInterface $parameterBag, AuthorizationCheckerInterface $authChecker) {
+    public function __construct(ManagerRegistry $doctrine, EntityManagementGuesser $emg, ContainerInterface $container, SelectService $selectService, ParameterBagInterface $parameterBag, AuthorizationCheckerInterface $authChecker) {
         $this->container = $container;
 
         $this->guesser = $emg;
@@ -88,6 +95,8 @@ class BaseController extends AbstractController {
         $this->parameterBag = $parameterBag;
 
         $this->authChecker = $authChecker;
+
+        $this->doctrine = $doctrine;
 
         return $this;
     }
