@@ -114,7 +114,7 @@ class TipoBandejaController extends BaseController
      * @Route("/{id}/habilitar_deshabilitar", name="app_tipo_bandeja_habilitar_deshabilitar", methods={"GET"})
      */
     public function tipoBandejaHabilitarDeshabilitar($id) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $bandeja = $em->getRepository(TipoBandeja::class)->findOneBy(array('id' => $id));
         $bandeja->setHabilitado(!$bandeja->getHabilitado());
         $message = ($bandeja->getHabilitado()) ? 'habilitó' : 'deshabilitó';

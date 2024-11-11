@@ -147,7 +147,7 @@ class BaseController extends AbstractController {
     public function baseIndexTableAction(Request $request, $columnDefinition = [], $entityTableParam = null, $queryTypeParam = null, $rsmParam = null, $renderPageParam = null, $extraParam = array(), $storedParameters = array(), $executeAditionalWhere = false): Response {
 
         /* @var $em EntityManager */
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         $queryType = $queryTypeParam == null ? ConstanteTipoConsulta::TABLE : $queryTypeParam;
 
@@ -710,7 +710,7 @@ class BaseController extends AbstractController {
         }
 
         // Por cada ArchivoAdjunto original
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         foreach ($archivosAdjuntosOriginales as $archivoAdjunto) {
             // Si fue eliminado
             if (false === $entity->getArchivosAdjuntos()->contains($archivoAdjunto)) {
@@ -822,7 +822,7 @@ class BaseController extends AbstractController {
      * @throws type
      */
     public function baseShowAction($id) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         $entityName = $this->getEntityFullName();
 
@@ -993,7 +993,7 @@ class BaseController extends AbstractController {
 
             if ($isValid) {
 
-                $em = $this->getDoctrine()->getManager();
+                $em = $this->doctrine->getManager();
 
                 if ($this->checkPersistEntityInCreateAction()) {
                     $em->persist($entity);
@@ -1159,7 +1159,7 @@ class BaseController extends AbstractController {
      */
     public function baseEditAction($id): Array {
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         $entity = $em->getRepository($this->getBaseEntityName())->find($id);
 
@@ -1301,7 +1301,7 @@ class BaseController extends AbstractController {
      */
     public function baseUpdateAction(Request $request, $id, $isAjaxCall = false) {
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         $entityClassName = $this->getBaseEntityName($request);
 
@@ -1469,7 +1469,7 @@ class BaseController extends AbstractController {
      */
     public function baseDeleteAction($id, $indexParams = array(), $isAjaxCall = false) {
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $entity = $em->getRepository($this->getBaseEntityName())->find($id);
         if (!$entity) {
             $entityShortName = $this->guesser->guessEntityShortName();
@@ -1556,7 +1556,7 @@ class BaseController extends AbstractController {
 
     protected function downloadAction(Request $request, $id) {
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         $roleHabilitado = $this->getRoleHabilitadoDownloadAction($request, $id);
 

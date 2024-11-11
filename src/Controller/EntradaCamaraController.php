@@ -79,7 +79,7 @@ class EntradaCamaraController extends BaseController
      */
     public function showPedidoProductoEntradaCamaraAction($id) {
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($id);
@@ -104,7 +104,7 @@ class EntradaCamaraController extends BaseController
         $idPedidoProducto = $request->get('idPedidoProducto');
         $fechaEntradaCamara = $request->get('fechaEntradaCamara');
         $dateTime = new DateTime($fechaEntradaCamara);
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
         $pedidoProducto->setFechaEntradaCamara($dateTime);

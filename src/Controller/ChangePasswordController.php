@@ -37,7 +37,7 @@ class ChangePasswordController extends AbstractController {
                 );
 
                 $user->setPassword($encodedPassword);
-                $this->getDoctrine()->getManager()->flush();
+                $this->doctrine->getManager()->flush();
                 $this->get('session')->getFlashBag()->add('success', "Se modificó correctamente su contraseña");
                 return $this->redirectToRoute('app_login');
             } else {

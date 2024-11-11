@@ -42,7 +42,7 @@ class RegistrationController extends AbstractController {
 
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->doctrine->getManager();
             $existeUsuario = $this->validarExisteUsuario($user, $entityManager);
             if ($existeUsuario) {
                 $this->get('session')->getFlashBag()->add('error', $existeUsuario);
@@ -94,7 +94,7 @@ class RegistrationController extends AbstractController {
     }
 
     private function validarExisteUsuario($user,$entityManager){
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->doctrine->getManager();
         $msg = false;
         if ($user->getTipoUsuario()->getCodigoInterno() == ConstanteTipoUsuario::CLIENTE) {
             $existeCuit = $entityManager->getRepository(Usuario::class)->findBy(array('cuit' => $user->getCuit()));

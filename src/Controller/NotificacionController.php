@@ -50,7 +50,7 @@ class NotificacionController extends AbstractController {
      */
     private function getNotificacionesByUsuario($showAll = false, $limit = null, $filterDate = true) {
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         $usuario = $this->getUser();
 
@@ -126,7 +126,7 @@ class NotificacionController extends AbstractController {
      * @Method("GET|POST")
      */
     public function marcarVistaAction(Request $request) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         // IDS DE LAS NOTIFICACIONES A MARCAR COMO VISTAS
         $ids = json_decode($request->request->get('ids'), '[]');

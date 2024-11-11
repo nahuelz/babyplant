@@ -84,7 +84,7 @@ class SiembraController extends BaseController
         $bandejas = $request->get('bandejas');
         $horaSiembra = $request->get('horaSiembra');
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
         $pedidoProducto->setObservacion($observacion);
@@ -117,7 +117,7 @@ class SiembraController extends BaseController
         $idPedidoProducto = $request->get('idPedidoProducto');
         $bandejas = $request->get('bandejas');
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
         $pedidoProducto->setObservacion($observacion);
@@ -157,7 +157,7 @@ class SiembraController extends BaseController
      */
     public function showPedidoProductoAction($id) {
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($id);

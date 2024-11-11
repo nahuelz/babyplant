@@ -111,7 +111,7 @@ class TipoMesadaController extends BaseController
      * @Route("/{id}/habilitar_deshabilitar", name="app_tipo_mesada_habilitar_deshabilitar", methods={"GET"})
      */
     public function tipoUsuarioHabilitarDeshabilitar($id) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $tipo = $em->getRepository(TipoMesada::class)->findOneBy(array('id' => $id));
         $tipo->setHabilitado(!$tipo->getHabilitado());
         $message = ($tipo->getHabilitado()) ? 'habilitó' : 'deshabilitó';

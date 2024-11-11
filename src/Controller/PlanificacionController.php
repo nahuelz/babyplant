@@ -75,7 +75,7 @@ class PlanificacionController extends BaseController
      * @IsGranted("ROLE_PEDIDO")
      */
     public function show($id): Array {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         $entity = $em->getRepository("App\Entity\Pedido")->find($id);
 
@@ -106,7 +106,7 @@ class PlanificacionController extends BaseController
         $datetime = new DateTime();
         $nuevaFechaSiembra = $datetime->createFromFormat('Y-m-d', $nuevaFechaSiembraParam);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
         $fechaSiembraOriginal = $pedidoProducto->getFechaSiembraReal();
@@ -134,7 +134,7 @@ class PlanificacionController extends BaseController
         $observacion = $request->get('observacion');
         $idPedidoProducto = $request->get('idPedidoProducto');
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
         $pedidoProducto->setObservacion($observacion);
@@ -181,7 +181,7 @@ class PlanificacionController extends BaseController
      */
     public function showPedidoProductoAction($id) {
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($id);

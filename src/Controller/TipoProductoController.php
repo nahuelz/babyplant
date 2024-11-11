@@ -112,7 +112,7 @@ class TipoProductoController extends BaseController
      * @Route("/{id}/habilitar_deshabilitar", name="app_tipo_producto_habilitar_deshabilitar", methods={"GET"})
      */
     public function tipoUsuarioHabilitarDeshabilitar($id) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $tipo = $em->getRepository(TipoProducto::class)->findOneBy(array('id' => $id));
         $tipo->setHabilitado(!$tipo->getHabilitado());
         $message = ($tipo->getHabilitado()) ? 'habilitó' : 'deshabilitó';

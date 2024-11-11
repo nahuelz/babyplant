@@ -38,7 +38,7 @@ class PedidoController extends BaseController {
      */
     public function saveColumns(Request $request) {
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         /* @var $columnas GlobalConfig */
         $columnas = $em->getRepository('App\Entity\GlobalConfig')->find(1);
@@ -72,7 +72,7 @@ class PedidoController extends BaseController {
         $clienteSelect = $this->getSelectService()->getClienteFilter();
         $estadoSelect = $this->getSelectService()->getEstadoSelect();
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $columnasOcultas = $em->getRepository('App\Entity\GlobalConfig')->find(1);
 
         return array(
@@ -93,7 +93,7 @@ class PedidoController extends BaseController {
      */
     public function indexTableAction(Request $request): Response {
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         $fechaDesde = $request->get('fechaDesde') ? DateTime::createFromFormat('d/m/Y H:i:s', $request->get('fechaDesde') . ' 00:00:00') : (new DateTime())->sub(new DateInterval('P7D'));
         $fechaHasta = $request->get('fechaHasta') ? DateTime::createFromFormat('d/m/Y H:i:s', $request->get('fechaHasta') . ' 23:59:59') : new DateTime();
@@ -136,7 +136,7 @@ class PedidoController extends BaseController {
      */
     private function getIndicadorEstadoData() {
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         $rsm = new ResultSetMapping();
 
@@ -194,7 +194,7 @@ class PedidoController extends BaseController {
      */
     private function getActividadRecienteData() {
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         $rsm = new ResultSetMapping();
 
@@ -278,7 +278,7 @@ class PedidoController extends BaseController {
 
     function execPrePersistAction($entity, $request): bool {
         /** @var Pedido $entity */
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $estadoPedido = $em->getRepository(EstadoPedido::class)->findOneByCodigoInterno(ConstanteEstadoPedido::NUEVO);
         $estadoProducto = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::PENDIENTE);
         $this->cambiarEstado($em, $entity, $estadoPedido, $estadoProducto);
@@ -342,7 +342,7 @@ class PedidoController extends BaseController {
      */
     public function showHistoricoEstadoAction($id) {
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($id);
@@ -410,7 +410,7 @@ class PedidoController extends BaseController {
      */
     public function showPedidoProductoAction($id) {
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($id);
@@ -432,7 +432,7 @@ class PedidoController extends BaseController {
      * @Route("/imprimir-pedido/{id}", name="imprimir_pedido", methods={"GET"})
      */
     public function imprimirPedidoAction($id) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         $pedido = $em->getRepository("App\Entity\Pedido")->find($id);
         /* @var $pedido Pedido */

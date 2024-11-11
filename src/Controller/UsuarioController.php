@@ -86,7 +86,7 @@ class UsuarioController extends BaseController {
      */
     protected function getExtraParametersShowAction($entity): Array {
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         $query = "SELECT
                     IF(s.sess_lifetime IS NULL || UNIX_TIMESTAMP() > MAX(s.sess_lifetime), false, true) AS logueado, 
@@ -149,7 +149,7 @@ class UsuarioController extends BaseController {
      * @Route("/{id}/habilitar_deshabilitar", name="usuario_habilitar_deshabilitar", methods={"GET"})
      */
     public function usuarioHabilitarDeshabilitar($id) {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $usuario = $em->getRepository(Usuario::class)->findOneBy(array('id' => $id));
         $usuario->setHabilitado(!$usuario->getHabilitado());
         $message = ($usuario->getHabilitado()) ? 'habilitó' : 'deshabilitó';
@@ -164,7 +164,7 @@ class UsuarioController extends BaseController {
      */
     public function closeSessions(Usuario $usuario) {
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         $query = "SELECT
                     IF(s.sess_lifetime IS NULL || UNIX_TIMESTAMP() > MAX(s.sess_lifetime), false, true) AS logueado, 
