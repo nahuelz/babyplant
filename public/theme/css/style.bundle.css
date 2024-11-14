@@ -79836,7 +79836,7 @@ code {
   border-color: #EBEDF3;
 }
 .fc-unthemed td.fc-today {
-  background: rgba(54, 153, 255, 0.025);
+    /*background: rgba(54, 153, 255, 0.025);*/
 }
 .fc-unthemed .fc-day-grid-event {
   margin: 0;

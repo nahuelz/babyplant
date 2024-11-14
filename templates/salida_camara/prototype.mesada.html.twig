@@ -5,10 +5,12 @@
     {% set mesada = pedidoProductoMesada.mesada %}
 
     <div class="row row-mesada">
-        {{ macro_form._new_field(mesada.nombre, 'col-md-3') }}
-        {{ macro_form._new_field(mesada.capacidad, 'col-md-8') }}
+        {{ macro_form._new_field(mesada.tipoProducto, 'col-md-4') }}
+        {{ macro_form._new_field(mesada.tipoMesada, 'col-md-4') }}
+        {{ macro_form._new_field(mesada.cantidadBandejas, 'col-md-3') }}
+        <input type="hidden" id="ultimaMesada" value="{{ entity.tipoProducto.ultimaMesada.id|default('') }}">
 
-        <div class="col-md-1 no-padding">
+        <div class="col-md-1 no-padding remove-mesada">
             <a href="#" class="btn btn-sm mt-9 delete-link-inline prototype-link-remove-mesada">
                 <i class="fa fa-trash text-danger"></i>
             </a>

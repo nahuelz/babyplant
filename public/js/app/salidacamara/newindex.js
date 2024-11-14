@@ -1,6 +1,3 @@
-var collectionHoldermesada;
-var idTipoProducto;
-var agrego = false;
 var KTCalendarListView = function() {
     return {
         //main function to initiate the module
@@ -53,7 +50,6 @@ var KTCalendarListView = function() {
                 eventClick: function(info) {
                     var element = $(info.el);
                     var idProducto = element.data('id');
-                    idTipoProducto = info.event.extendedProps.idProducto;
                     var actionUrl = element.data('href');
                     $.ajax({
                         type: 'POST',
@@ -99,13 +95,12 @@ var KTCalendarListView = function() {
                         $('.modal-dialog').css('width', '80%');
                         $('.modal-dialog').addClass('modal-xl');
                         $('.modal-dialog').addClass('modal-fullscreen-xl-down');
-                        initmesadaForm();
-                        $('#salida_camara_mesadas_0_mesada_tipoProducto').val(idTipoProducto).select2();
-                        $('#salida_camara_mesadas_0_mesada_tipoMesada').select2();
+                        $('.row-mesada-empty').hide();
+                        initMesadaHandler();
+                        $('#salida_camara_mesada_tipoMesada').val(info.event.extendedProps.idProducto).select2();
+                        $('#salida_camara_mesada_mesada').select2();
                         initMesadaChainedSelect();
                         initValidations();
-                        $('.remove-mesada').hide();
-                        initResetModalHandler();
                     });
                 },
                 eventRender: function(info) {
@@ -262,13 +257,12 @@ var KTCalendarListView = function() {
 }();
 
 function initValidations(){
-    $('#salida_camara_mesadas_0_mesada_cantidadBandejas').on('keyup', function(){
-        if ($(this).val() > parseInt($('#cantBandejasReales').val())){
+    $('#salida_camara_mesada_cantidadBandejas').on('keyup', function(){
+        if ($(this).val() > $('#cantBandejasReales').val()){
             $(this).val($('#cantBandejasReales').val());
         }
     });
 }
-
 jQuery(document).ready(function() {
     KTCalendarListView.init();
 });
@@ -300,135 +294,79 @@ function initPreValidation() {
     });
 }
 
-function initMesadaChainedSelect() {
-    if ($('#salida_camara_mesadas_0_mesada_tipoProducto').val() != '') {
-        initChainedSelect($('#salida_camara_mesadas_0_mesada_tipoProducto'), $('#salida_camara_mesadas_0_mesada_tipoMesada'), __HOMEPAGE_PATH__ + 'tipo/mesada/lista/mesada/producto', true);
-    }
-}
-
-function getExtraDataChainedSelect(){
-    return ($('#cantBandejasReales').val());
-}
-
-function customAfterChainedSelect() {
-    if ($('#ultimaMesada').val() != '') {
-        $('#salida_camara_mesadas_0_mesada_tipoMesada').val($('#ultimaMesada').val()).select2();
-    }
-}
-
-
 /**
  *
  * @returns {undefined}
  */
-function initmesadaForm() {
-    initCollectionHoldermesada();
-    addmesadaForm(collectionHoldermesada);
-    $('#salida_camara_mesadas_0_mesada_cantidadBandejas').val($('#cantBandejasReales').val())
-    $(document).on('click', '.prototype-link-add-mesada', function (e) {
+function initMesadaHandler() {
+
+    $('.tbody-mesada').data('index', $('.tr-mesada').length);
+
+    updateDeleteLinkMesada($(".link-delete-mesada"), '.tr-mesada');
+
+    // Save CaracteristicaProducto handler
+    $(document).off('click', '.link-save-mesada').on('click', '.link-save-mesada', function (e) {
+
         e.preventDefault();
-        if (!agrego) {
-            addmesadaForm(collectionHoldermesada);
-            agrego = true;
-            $('#salida_camara_mesadas_1_mesada_tipoProducto').val(idTipoProducto).select2();
-            $('#salida_camara_mesadas_1_mesada_tipoMesada').select2();
-            if ($('#salida_camara_mesadas_1_mesada_tipoProducto').val() != '') {
-                initChainedSelect($('#salida_camara_mesadas_1_mesada_tipoProducto'), $('#salida_camara_mesadas_1_mesada_tipoMesada'), __HOMEPAGE_PATH__ + 'tipo/mesada/lista/mesada/producto', true);
-            }
-            $('#salida_camara_mesadas_1_mesada_cantidadBandejas').on('keyup', function(){
-                if ($(this).val() > parseInt($('#cantBandejasReales').val())){
-                    $(this).val($('#cantBandejasReales').val());
-                }
+
+
+        var mesadaSelect = $('#salida_camara_mesada_mesada');
+        var mesada = mesadaSelect.val();
+        var cantBandejas = $('#salida_camara_mesada_cantidadBandejas').val();
+
+
+        if (mesada === '' || cantBandejas === '' ) {
+            Swal.fire({
+                title: "Debe completar todos los datos de la mesada.",
+                icon: "warning"
             });
-            $('.add-mesada').hide();
-        }else{
-            $('.row-mesada').show();
-            $('.add-mesada').hide();
+
+        } else {
+
+            var index = $('.tbody-mesada').data('index');
+
+            var removeLink = '\
+                        <a href="#" class="btn btn-sm delete-link-inline link-delete-mesada mesada-borrar tooltips" \n\
+                            data-placement="top" data-original-title="Eliminar">\n\
+                            <i class="fa fa-trash text-danger"></i>\n\
+                        </a>';
+
+            var item = '\
+                        <tr class="tr-mesada">\n\
+                            <td class="hidden"><input type="hidden" name="salida_camara[mesadas][' + index + '][mesada]" value="' + mesada + '"></td>\n\
+                            <td class="hidden"><input type="hidden" class="cantBandejas" name="salida_camara[mesadas][' + index + '][cantidadBandejas]" value="' + cantBandejas + '"></td>\n\
+                            <td class="text-center v-middle">' + mesadaSelect.find('option:selected').text()  + '</td>\n\
+                            <td class="text-center v-middle">' + cantBandejas + '</td>\n\
+                            <td class="text-center v-middle">' + removeLink + '</td>\n\
+                        </tr>';
+
+            $('.tbody-mesada').append(item);
+            $('.tbody-mesada').data('index', index + 1);
+
+            $('.tbody-mesada tr.tr-mesada:last').hide();
+            $('.tbody-mesada tr.tr-mesada').fadeIn("slow");
+
+            updateDeleteLinkMesada($(".link-delete-mesada"), '.tr-mesada');
+
+            $('.row-mesada-empty').hide('slow');
+            $('.row-mesada').show('slow');
+
+            //  Reset form
+            $('.row-agregar-mesada').show('slow');
+            clearMesadaForm();
         }
 
-        //initSelects();
+        e.stopPropagation();
     });
 }
 
 /**
  *
- * @param {type} $collectionHolder
- * @returns {addmesadaForm}
- */
-function addmesadaForm($collectionHolder) {
-    var prototype = $collectionHolder.data('prototype');
-    var index = $collectionHolder.data('index');
-    var form = prototype.replace(/__mesada__/g, index);
-
-    $collectionHolder.data('index', index + 1);
-    // Modificación para varios datos_contacto en la misma página
-    $collectionHolder.parent().find('.prototype-link-add-mesada').closest('.row').before(form);
-
-    var $deleteLink = $(".prototype-link-remove-mesada");
-
-    updateDeleteLinks($deleteLink);
-}
-
-/**
- *
  * @returns {undefined}
  */
-function initCollectionHoldermesada() {
-    collectionHoldermesada = $('div.prototype-mesada');
-    collectionHoldermesada.data('index', collectionHoldermesada.find(':input').length);
-}
-
-/**
- *
- * @param {type} $sourceSelect
- * @param {type} $targetSelect
- * @param {type} ajaxURL
- * @param {type} preserve_values
- * @returns {undefined}
- */
-function initChainedSelect($sourceSelect, $targetSelect, ajaxURL, preserve_values) {
-    var isEdit = $('[name=_method]').length > 0;
-    var targetArray = [];
-    var selectedElement = null;
-    if (isEdit || (typeof preserve_values !== "undefined" && (preserve_values === true || preserve_values === "true"))) {
-        selectedElement = $targetSelect.val();
-        $sourceSelect.each(function (index) {
-            targetArray[index] = $targetSelect.val();
-        });
-    }
-    $sourceSelect.on("change", function () {
-        var data = {
-            id_entity: $(this).val(),
-            extra_data: getExtraDataChainedSelect()
-        };
-        if (customChainedSelect($sourceSelect, $targetSelect, data)) {
-            resetSelect($targetSelect);
-            $.ajax({
-                type: 'post',
-                url: ajaxURL,
-                data: data,
-                success: function (data) {
-                    $targetSelect.attr('readonly', false);
-                    for (var i = 0, total = data.length; i < total; i++) {
-                        if (data[i].id != parseInt($('#salida_camara_mesadas_0_mesada_tipoMesada').val())) {
-                            $targetSelect.append('<option value="' + data[i].id + '">' + data[i].denominacion + '</option>');
-                        }
-                        if (data.length === 1){
-                            selectedElement = data[i].id;
-                        }
-                    }
-                    if (null !== selectedElement) {
-                        $targetSelect.val(selectedElement);
-                    } else {
-                        $targetSelect.val(null);
-                    }
-                    selectedElement = null;
-                    $targetSelect.select2();
-                    customAfterChainedSelect();
-                }
-            });
-        }
-    }).trigger('change');
+function clearMesadaForm() {
+    $('#salida_camara_mesada_mesada').val('').select2();
+    $('#salida_camara_mesada_cantidadBandejas').val('');
 }
 
 /**
@@ -437,24 +375,52 @@ function initChainedSelect($sourceSelect, $targetSelect, ajaxURL, preserve_value
  * @param {type} closestClassName
  * @returns {undefined}
  */
-function updateDeleteLinks(deleteLink, closestClassName) {
+function updateDeleteLinkMesada(deleteLink, closestClassName) {
     closestClassName = typeof closestClassName !== 'undefined' ? closestClassName : '.row';
     deleteLink.each(function () {
         $(this).tooltip();
         $(this).off("click").on('click', function (e) {
             e.preventDefault();
             var deletableRow = $(this).closest(closestClassName);
-            deletableRow.hide();
-            $('.add-mesada').show();
+            if (!checkFormIsEmpty(deletableRow)) {
+                show_confirm({
+                    title: 'Confirmar',
+                    type: 'warning',
+                    msg: '¿Confirma la eliminación?',
+                    callbackOK: function () {
+                        deletableRow.hide('slow', function () {
+                            customPreDeleteLinkOnCallbackOk(deletableRow);
+                            deletableRow.remove();
+                            if ($('.tr-mesada').length === 0) {
+                                $('.row-mesada-empty').show('slow');
+                                $('.row-mesada').hide('slow');
+                            }
+                            customDeleteLinkOnCallbackOk();
+                        });
+                    }
+                });
+            } else {
+                deletableRow.hide('slow', function () {
+                    customPreDeleteLinkOnCallbackOk(deletableRow);
+                    deletableRow.remove();
+                    if ($('.tr-mesada').length === 0) {
+                        $('.row-mesada-empty').show('slow');
+                        $('.row-mesada').hide('slow');
+                    }
+                    customDeleteLinkOnCallbackOk();
+                });
+            }
+            $('.bs-tooltip-top').hide();
             e.stopPropagation();
 
         });
     });
 }
 
-function initResetModalHandler(){
-    $('.cancel, .close').on('click', function (e) {
-        e.preventDefault();
-        agrego=false;
-    })
+function initMesadaChainedSelect() {
+    initChainedSelect($('#salida_camara_mesada_tipoMesada'), $('#salida_camara_mesada_mesada'), __HOMEPAGE_PATH__ + 'tipo/mesada/lista/mesada/producto', true);
+}
+
+function getExtraDataChainedSelect(){
+    return ($('#salida_camara_mesada_tipoMesada').select2('data')[0]['text']);
 }

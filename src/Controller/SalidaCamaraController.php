@@ -5,14 +5,9 @@ namespace App\Controller;
 use App\Controller\BaseController;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Constants\ConstanteTipoConsulta;
-use App\Entity\EstadoPedidoHistorico;
 use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
-use App\Entity\Pedido;
 use App\Entity\PedidoProducto;
-use App\Entity\PedidoProductoMesada;
-use App\Form\PedidoProductoMesadaType;
-use App\Form\RegistrationFormType;
 use App\Form\SalidaCamaraType;
 use DateTime;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -92,7 +87,6 @@ class SalidaCamaraController extends BaseController
         if (!$entity) {
             throw $this->createNotFoundException('No se puede encontrar la entidad.');
         }
-
         $form = $this->createMesadaForm($entity);
 
         $form->handleRequest($request);
@@ -105,6 +99,7 @@ class SalidaCamaraController extends BaseController
             }
             foreach ($entity->getMesadas() as $mesada){
                 $mesada->setPedidoProducto($entity);
+                $mesada->getMesada()->setTipoProducto($entity->getTipoProducto());
             }
             $em->flush();
             $message = 'Producto enviado a mesada correctamente.';

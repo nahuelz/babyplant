@@ -86,7 +86,7 @@ function setFechaEntrega() {
     var fecha = new Date();
     fecha.setDate(fecha.getDate() + parseInt(cant_dias));
     $('#pedido_pedidoProducto_fechaEntregaPedido').datepicker('setStartDate',fecha);
-    $("#pedido_pedidoProducto_fechaEntrega").datepicker('setDate',fecha);
+    $("#pedido_pedidoProducto_fechaEntregaPedido").datepicker('setDate',fecha);
 
 }
 

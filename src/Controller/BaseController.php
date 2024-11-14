@@ -77,6 +77,7 @@ class BaseController extends AbstractController {
 
     /**
      *
+     * @param ManagerRegistry $doctrine
      * @param EntityManagementGuesser $emg
      * @param ContainerInterface $container
      * @param SelectService $selectService

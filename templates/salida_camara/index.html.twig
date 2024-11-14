@@ -37,5 +37,6 @@
 {% block javascripts %}
 
     {{ parent() }}
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}"></script>
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/salidacamara/index.js') }}" ></script>
 {% endblock %}

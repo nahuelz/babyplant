@@ -34,15 +34,10 @@ class PedidoProductoMesada {
     private $pedidoProducto;
 
     /**
-     * @ORM\ManyToOne(targetEntity=TipoMesada::class, cascade={"all"})
+     * @ORM\ManyToOne(targetEntity=Mesada::class, cascade={"all"})
      * @ORM\JoinColumn(name="id_mesada", referencedColumnName="id")
      */
     private $mesada;
-
-    /**
-     * @ORM\Column(name="cantidad_bandejas", type="string", length=50, nullable=true)
-     */
-    private $cantidadBandejas;
 
     /**
      * @return int
@@ -90,22 +85,6 @@ class PedidoProductoMesada {
     public function setMesada($mesada): void
     {
         $this->mesada = $mesada;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCantidadBandejas()
-    {
-        return $this->cantidadBandejas;
-    }
-
-    /**
-     * @param mixed $cantidadBandejas
-     */
-    public function setCantidadBandejas($cantidadBandejas): void
-    {
-        $this->cantidadBandejas = $cantidadBandejas;
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -18,6 +19,18 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class NotificacionController extends AbstractController {
 
+    /**
+     *
+     * @var ManagerRegistry
+     */
+    protected ManagerRegistry $doctrine;
+
+
+    public function __construct(ManagerRegistry $doctrine){
+        $this->doctrine = $doctrine;
+
+        return $this;
+    }
     /**
      * Muestra las notificaciones del usuario en el menú.
      * 

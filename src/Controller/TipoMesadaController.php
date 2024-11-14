@@ -7,8 +7,8 @@ use App\Entity\TipoMesada;
 use App\Form\TipoMesadaType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class TipoMesadaController extends BaseController
 {
     #[Route('/', name: 'tipomesada_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(): Response
     {
         return $this->render('tipo_mesada/index.html.twig', [
             'select_boolean' => $this->selectService->getBooleanSelect(true)
@@ -107,10 +107,9 @@ class TipoMesadaController extends BaseController
         return $this->redirectToRoute('tipomesada_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    /**
-     * @Route("/{id}/habilitar_deshabilitar", name="app_tipo_mesada_habilitar_deshabilitar", methods={"GET"})
-     */
-    public function tipoUsuarioHabilitarDeshabilitar($id) {
+    #[Route('/{id}/habilitar_deshabilitar', name: 'app_tipo_mesada_habilitar_deshabilitar', methods: ['GET'])]
+    public function tipoUsuarioHabilitarDeshabilitar($id): RedirectResponse
+    {
         $em = $this->doctrine->getManager();
         $tipo = $em->getRepository(TipoMesada::class)->findOneBy(array('id' => $id));
         $tipo->setHabilitado(!$tipo->getHabilitado());
@@ -124,24 +123,26 @@ class TipoMesadaController extends BaseController
     /**
      * @Route("/lista/mesada/producto", name="lista_mesada_producto")
      */
-    public function listaMesadaProductoAction(Request $request) {
+    public function listaMesadaProductoAction(Request $request): JsonResponse
+    {
         $id_producto = $request->request->get('id_entity');
 
-        $repository = $this->getDoctrine()->getRepository(TipoMesada::class);
+        $repository = $this->doctrine->getRepository(TipoMesada::class);
 
         $query = $repository->createQueryBuilder('m')
             ->select("m.id, CONCAT('N°',' ',m.nombre,' ', tp.nombre, ' Disponible: ', m.disponible) AS denominacion")
-            ->leftJoin('m.tipoProducto', 'tp', )
+            ->leftJoin('m.tipoProducto', 'tp' )
             ->where('m.tipoProducto = :producto')
+            ->andWhere("m.capacidad > 0")
             ->andWhere('m.habilitado = 1')
             ->setParameter('producto', $id_producto)
             ->orderBy('m.nombre', 'ASC')
             ->getQuery();
 
-        if (sizeof($query->getResult()) == 0){
+        if (!$id_producto){
             $query = $repository->createQueryBuilder('m')
                 ->select("m.id, CONCAT('N°',' ',m.nombre,' ', tp.nombre, ' Disponible: ', m.disponible) AS denominacion")
-                ->leftJoin('m.tipoProducto', 'tp', )
+                ->leftJoin('m.tipoProducto', 'tp')
                 ->andWhere('m.habilitado = 1')
                 ->orderBy('m.nombre', 'ASC')
                 ->getQuery();

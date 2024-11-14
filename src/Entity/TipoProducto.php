@@ -22,6 +22,12 @@ class TipoProducto extends EntidadBasica {
      */
     private $cantDiasCamara;
 
+    /**
+     * @ORM\OneToOne(targetEntity=TipoMesada::class)
+     * @ORM\JoinColumn(name="id_ultima_mesada", referencedColumnName="id", nullable=true)
+     */
+    private TipoMesada|null $ultimaMesada = null;
+
     public function __construct() {
         $this->habilitado = true;
     }
@@ -62,6 +68,18 @@ class TipoProducto extends EntidadBasica {
     {
         $this->cantDiasCamara = $cantDiasCamara;
     }
+
+    public function getUltimaMesada(): ?TipoMesada
+    {
+        return $this->ultimaMesada;
+    }
+
+    public function setUltimaMesada(?TipoMesada $ultimaMesada): void
+    {
+        $this->ultimaMesada = $ultimaMesada;
+    }
+
+
 
 
 

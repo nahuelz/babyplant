@@ -14,17 +14,13 @@ class SalidaCamaraType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('mesada', PedidoProductoMesadaType::class, array(
-                'required' => false,
-                'mapped' => false,
-                'data_class' => 'App\Entity\PedidoProductoMesada',
-            ))
             ->add('mesadas', CollectionType::class, array(
                     'entry_type' => PedidoProductoMesadaType::class,
                     'allow_delete' => true,
                     'allow_add' => true,
-                    'label' => '',
-                    'prototype_name' => '__mesadas__',
+                    'label' => 'Mesada',
+                    'required' => true,
+                    'prototype_name' => '__mesada__',
                     'label_attr' => array('class' => 'hidden'),
                     'attr' => array('class' => 'hidden'))
             )
