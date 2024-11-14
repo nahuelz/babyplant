@@ -197,14 +197,23 @@ class PlanificacionController extends BaseController
     }
     /**
      * @Route("/pedidos-atrasados/", name="pedidos_atrasados", methods={"GET","POST"})
-     * @Template("planificacion/pedidos_atrasados.html.twig")
      */
     public function pedidosAtrasados(){
         /* @var $pedidoProducto PedidoProducto */
-        $pedidosProductos = $this->getDoctrine()->getRepository(PedidoProducto::class)->getPedidosAtrasados();
+       $pedidosProductos = $this->getDoctrine()->getRepository(PedidoProducto::class)->getPedidosAtrasados();
+        /*
+               return array(
+                   'pedidosProductos' => $pedidosProductos
+               );
+       */
 
-        return array(
-            'pedidosProductos' => $pedidosProductos
+        $html = $this->renderView('planificacion/pedidos_atrasados.html.twig', array('pedidosProductos' => $pedidosProductos));
+
+        $result = array(
+            'html' => $html,
+            'cantidad' => sizeof($pedidosProductos),
         );
+
+        return new JsonResponse($result);
     }
 }

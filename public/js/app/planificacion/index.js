@@ -257,17 +257,18 @@ var KTCalendarListView = function() {
 
 jQuery(document).ready(function() {
     KTCalendarListView.init();
-
     $.ajax({
         type: 'POST',
         url: __HOMEPAGE_PATH__ + 'planificacion/pedidos-atrasados/',
-    }).done(function (html) {
-        Swal.fire({
-            title: "Hay ordenes de días anteriores que no fueron sembradas.",
-            html: html,
-            width: 1200,
-            padding: "3em"
-        });
+    }).done(function (result) {
+        if (result.cantidad) {
+            Swal.fire({
+                title: "Hay pedidos de días anteriores que no fueron planificados.",
+                html: result.html,
+                width: 1200,
+                padding: "3em"
+            });
+        }
     });
 });
 
