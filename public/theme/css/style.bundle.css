@@ -79671,8 +79671,11 @@ code {
   border-radius: 50%;
   top: 0.5rem;
   left: 0.3rem;
+  border-color: black !important;
+  border-style: groove;
+    border-width: 1px;
 }
-.fc-unthemed .fc-event.fc-not-start.fc-end .fc-content,
+fc-unthemed .fc-event.fc-not-start.fc-end .fc-content,
 .fc-unthemed .fc-event-dot.fc-not-start.fc-end .fc-content {
   padding-left: 0.5rem;
 }
@@ -79877,9 +79880,6 @@ code {
 .fc-unthemed .fc-event.fc-event-primary.fc-start .fc-content:before,
 .fc-unthemed .fc-event-dot.fc-event-primary.fc-start .fc-content:before {
   background: #3699FF;
-  border-color: black !important;
-  border-style: groove;
-  border-width: 1px;
 }
 .fc-unthemed .fc-event.fc-event-solid-primary.fc-start, .fc-unthemed .fc-event.fc-event-solid-primary.fc-not-start.fc-not-end, .fc-unthemed .fc-event.fc-event-solid-primary.fc-not-start.fc-end,
 .fc-unthemed .fc-event-dot.fc-event-solid-primary.fc-start,
@@ -79964,9 +79964,6 @@ code {
 .fc-unthemed .fc-event.fc-event-info.fc-start .fc-content:before,
 .fc-unthemed .fc-event-dot.fc-event-info.fc-start .fc-content:before {
   background: #8950FC;
-  border-color: black !important;
-  border-style: groove;
-  border-width: 1px;
 }
 .fc-unthemed .fc-event.fc-event-solid-info.fc-start, .fc-unthemed .fc-event.fc-event-solid-info.fc-not-start.fc-not-end, .fc-unthemed .fc-event.fc-event-solid-info.fc-not-start.fc-end,
 .fc-unthemed .fc-event-dot.fc-event-solid-info.fc-start,

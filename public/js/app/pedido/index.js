@@ -288,14 +288,13 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'cliente',
-
+            width: '250px',
             className: 'dt-center',
             type: 'num'
         },
         {
             targets: index++,
             name: 'cantidadBandejas',
-
             className: 'dt-center',
             type: 'num'
         },
