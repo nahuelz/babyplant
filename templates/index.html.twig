@@ -39,12 +39,12 @@
             <div class="jumbotron">
                 <div class="row">
                     {# MODULO AGREGAR PEDIDO #}
-                    {% if is_granted("ROLE_USER") %}
+                    {% if is_granted("ROLE_PEDIDO") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-folder-plus icon-3x text-dark', 'nombreModulo': 'Agregar Pedido', 'action': path('pedido_new'), 'descripcionModulo': '' } %}
                     {% endif %}
 
                     {# MODULO PEDIDO #}
-                    {% if is_granted("ROLE_USER") %}
+                    {% if is_granted("ROLE_PEDIDO") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-shopping-bag icon-3x text-dark', 'nombreModulo': 'Ver Pedidos','action': path('pedido_index'), 'descripcionModulo': 'Aqui podras ver todos los pedidos' } %}
                     {% endif %}
 
@@ -55,7 +55,7 @@
 
                     {# PLANIFICACION DE SIEMBRA #}
                     {% if is_granted("ROLE_SIEMBRA") %}
-                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-leaf icon-3x text-dark', 'nombreModulo': 'Ver Siembra','action': path('planificacion_index'), 'descripcionModulo': 'Aqui podras ver la planificacion de siembra' } %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-leaf icon-3x text-dark', 'nombreModulo': 'Ver Siembra','action': path('siembra_index'), 'descripcionModulo': 'Aqui podras ver la planificacion de siembra' } %}
                     {% endif %}
 
                     {# ORDENES EN CAMARA #}

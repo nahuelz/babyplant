@@ -1,6 +1,9 @@
 
 jQuery(document).ready(function () {
-
+    if (__ID_PRODUCTO__ != '0') {
+        $('#tipo_variedad_tipoProducto').val(__ID_PRODUCTO__).select().change();
+    }
+    initProductos();
     FormValidation.formValidation(
         $("form[name=tipo_variedad]")[0],
         {
@@ -29,3 +32,7 @@ jQuery(document).ready(function () {
         }
     );
 });
+
+function initProductos() {
+    initChainedSelect($('#tipo_variedad_tipoProducto'), $('#tipo_variedad_tipoSubProducto'), __HOMEPAGE_PATH__ + 'tipo/sub/producto/lista/subproductos', true);
+}

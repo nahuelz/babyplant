@@ -1,7 +1,7 @@
 
 var init = false;
 
-var $table = $('#table-pago');
+var $table = $('#table-pedido');
 
 $(document).ready(function () {
     initTable();
@@ -276,14 +276,13 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
-            name: 'producto',
-
-            className: 'nowrap text-center align-middle',
+            name: 'nombreVariedad',
+            className: 'nowrap text-center margin-0 ',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<span class="label label-inline ' + data.nombreProducto + ' font-weight-bold p-4 ml-15 mr-15" style="width: 135px">' + data.producto + '</span>';
+                    return '<span class="label label-inline margin-0 ' + data.nombreProducto + ' font-weight-bold p-6 ml-15 mr-15" style="width: 220px">' + data.nombreProductoCompleto + '</span>';
                 }
-                return data.producto;
+                return data.nombreProductoCompleto;
             }
         },
         {

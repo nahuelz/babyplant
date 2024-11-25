@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Cuota;
+use App\Entity\RazonSocial;
 use App\Entity\Usuario;
 use App\Entity\Constants\ConstanteTipoUsuario;
+use App\Form\RazonSocialType;
 use App\Form\RegistrationFormType;
 use App\Repository\UsuarioRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,9 +42,22 @@ class RegistrationController extends AbstractController {
                 'attr' => array('class' => 'btn btn-light-primary font-weight-bold submit-button'))
         );
 
+        $razonSocial = new RazonSocial();
+
+        $formRazonSocial = $this->createForm(RazonSocialType::class, $razonSocial, array(
+            'action' => $this->generateUrl('app_razonsocial_create_ajax'),
+            'method' => 'POST'
+        ));
+
+        $formRazonSocial->add('submit', SubmitType::class, array(
+                'label' => 'Agregar',
+                'attr' => array('class' => 'btn btn-light-primary font-weight-bold submit-button'))
+        );
+
+
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
-            $entityManager = $this->doctrine->getManager();
+            $entityManager = $this->getDoctrine()->getManager();
             $existeUsuario = $this->validarExisteUsuario($user, $entityManager);
             if ($existeUsuario) {
                 $this->get('session')->getFlashBag()->add('error', $existeUsuario);
@@ -90,11 +105,12 @@ class RegistrationController extends AbstractController {
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
+            'razonSocialForm' => $formRazonSocial->createView()
         ]);
     }
 
     private function validarExisteUsuario($user,$entityManager){
-        $entityManager = $this->doctrine->getManager();
+        $entityManager = $this->getDoctrine()->getManager();
         $msg = false;
         if ($user->getTipoUsuario()->getCodigoInterno() == ConstanteTipoUsuario::CLIENTE) {
             $existeCuit = $entityManager->getRepository(Usuario::class)->findBy(array('cuit' => $user->getCuit()));

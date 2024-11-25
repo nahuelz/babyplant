@@ -1,0 +1,12 @@
+{% import 'app/_macro_form.html.twig' as macro_form %}
+{{ form_start(razonSocialForm, {'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
+{{ form_widget(razonSocialForm._token) }}
+<div class="row">
+    <div class="modal-body" style="padding-top: 0px;padding-bottom: 0px;">
+        <div class="row">
+            {{ macro_form._new_field(razonSocialForm.razonSocial, "col-md-4") }}
+            {{ macro_form._new_field(razonSocialForm.cuit, "col-md-4") }}
+        </div>
+    </div>
+</div>
+{{ form_end(razonSocialForm, {"render_rest": false}) }}

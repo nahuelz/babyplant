@@ -27,8 +27,10 @@
 
         <div class="card-body">
             <div class="row">
-                {{ macro_show._show_detail('Nombre', tipo_variedad.nombre, 'col-md-4') }}
-                {{ macro_show._show_detail('Habilitado', tipo_variedad.habilitado, 'col-md-4') }}
+                {{ macro_show._show_detail('Producto', tipo_variedad.tipoSubProducto.tipoProducto, 'col-md-3') }}
+                {{ macro_show._show_detail('Sub producto', tipo_variedad.tipoSubProducto, 'col-md-3') }}
+                {{ macro_show._show_detail('Variedad', tipo_variedad.nombre, 'col-md-3') }}
+                {{ macro_show._show_detail('Habilitado', tipo_variedad.habilitado, 'col-md-3') }}
             </div>
 
         </div>

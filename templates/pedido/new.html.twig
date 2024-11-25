@@ -21,16 +21,16 @@
                 {{ macro_form._new_field(form.cliente, 'col-md-9') }}
                 <div class="col-md-3">
                     <!-- Button trigger modal-->
-                    <button type="button" class="btn btn-success link-agregar-cliente" data-toggle="modal" data-target="#exampleModalLong" style="margin-top: 6%;">
+                    <button type="button" class="btn btn-success link-agregar-cliente" data-toggle="modal" data-target="#rigstrarUsuarioModal" style="margin-top: 6%;">
                         NUEVO CLIENTE
                     </button>
                 </div>
-                {{ macro_form._new_field(form.observacion, 'col-md-12') }}
             </div>
             <div class="row">
                 <div class="col-md-12">
                     {% include 'pedido/new.producto.html.twig' %}
                 </div>
+                {{ macro_form._new_field(form.observacion, 'col-md-12 observacion') }}
             </div>
         </div>
 
@@ -42,7 +42,7 @@
     {{ form_widget(form._token) }}
     {{ form_end(form, {"render_rest": false}) }}
 
-    <div class="modal fade" id="exampleModalLong" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+    <div class="modal fade modalCliente" id="rigstrarUsuarioModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-fullscreen-xl-down" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -74,6 +74,7 @@
 
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}" ></script>
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/pedido/new.js') }}" ></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/razonsocial/new.js') }}" ></script>
 
     <script>
         var preserve_values = {{ preserve_values is defined ? (preserve_values  ? 'true' : 'false'): 'false'}};

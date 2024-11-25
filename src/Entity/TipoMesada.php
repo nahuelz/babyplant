@@ -13,25 +13,25 @@ use Doctrine\ORM\Mapping as ORM;
 class TipoMesada extends EntidadBasica {
 
     /**
-     * @ORM\Column(name="disponible", type="string", length=50, nullable=true)
+     * @ORM\Column(name="capacidad", type="integer", length=50, nullable=true)
      */
-    private $disponible;
+    private int $capacidad;
 
     /**
-     * @ORM\Column(name="capacidad", type="string", length=50, nullable=true)
+     * @ORM\Column(name="ocupado", type="integer", length=50, nullable=true, options={"default": 0})
      */
-    private $capacidad;
-
-    /**
-     * @ORM\Column(name="ocupado", type="string", length=50, nullable=true)
-     */
-    private $ocupado;
+    private int $ocupado;
 
     /**
      * @ORM\ManyToOne(targetEntity=TipoProducto::class)
-     * @ORM\JoinColumn(name="id_tipo_producto", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="id_tipo_producto", referencedColumnName="id", nullable=true)
      */
-    private $tipoProducto;
+    private TipoProducto $tipoProducto;
+
+    public function __construct() {
+        parent::__construct();
+        $this->ocupado = 0;
+    }
 
     public function __toString(): string
     {
@@ -39,67 +39,64 @@ class TipoMesada extends EntidadBasica {
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getCapacidad()
+    public function getCapacidad(): int
     {
         return $this->capacidad;
     }
 
     /**
-     * @param mixed $capacidad
+     * @param int $capacidad
      */
-    public function setCapacidad($capacidad): void
+    public function setCapacidad(int $capacidad): void
     {
         $this->capacidad = $capacidad;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getOcupado()
+    public function getOcupado(): int
     {
         return $this->ocupado;
     }
 
     /**
-     * @param mixed $ocupado
+     * @param int $ocupado
      */
-    public function setOcupado($ocupado): void
+    public function setOcupado(int $ocupado): void
     {
         $this->ocupado = $ocupado;
     }
 
     /**
-     * @return mixed
+     * @return TipoProducto
      */
-    public function getTipoProducto()
+    public function getTipoProducto(): TipoProducto
     {
         return $this->tipoProducto;
     }
 
     /**
-     * @param mixed $tipoProducto
+     * @param TipoProducto $tipoProducto
      */
-    public function setTipoProducto($tipoProducto): void
+    public function setTipoProducto(TipoProducto $tipoProducto): void
     {
         $this->tipoProducto = $tipoProducto;
+        $tipoProducto->setUltimaMesada($this);
     }
 
     /**
      * @return mixed
      */
-    public function getDisponible()
+    public function getDisponible(): int
     {
-        return $this->disponible;
+        return ($this->capacidad - $this->ocupado);
     }
 
-    /**
-     * @param mixed $disponible
-     */
-    public function setDisponible($disponible): void
-    {
-        $this->disponible = $disponible;
+    public function sumarOcupado($cantidad): void{
+        $this->ocupado += $cantidad;
     }
 
 

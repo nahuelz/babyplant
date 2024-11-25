@@ -2,18 +2,24 @@
 
 namespace App\Controller;
 
-use App\Controller\BaseController;
+use App\Entity\RazonSocial;
+use App\Form\RazonSocialType;
+use App\Form\RegistrationFormType;
+use Doctrine\DBAL\Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Constants\ConstanteTipoConsulta;
 use App\Entity\Usuario;
 use App\Form\UsuarioType;
-use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Symfony\Component\Form\FormInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Validator\Constraints\Type;
 
 /**
  * @Route("/usuario")
@@ -25,7 +31,7 @@ class UsuarioController extends BaseController {
      * @Route("/", name="usuario_index", methods={"GET"})
      * @Template("usuario/index.html.twig")
      */
-    public function index(): Array {
+    public function index(): array {
         $extraParams = [
             'select_boolean' => $this->selectService->getBooleanSelect(true)
         ];
@@ -80,11 +86,8 @@ class UsuarioController extends BaseController {
         return parent::baseShowAction($id);
     }
 
-    /**
-     *
-     * @return type
-     */
-    protected function getExtraParametersShowAction($entity): Array {
+    protected function getExtraParametersShowAction($entity): array
+    {
 
         $em = $this->doctrine->getManager();
 
@@ -113,7 +116,7 @@ class UsuarioController extends BaseController {
      * @Route("/{id}/edit", name="usuario_edit", methods={"GET","POST"})
      * @Template("usuario/new.html.twig")
      */
-    public function edit($id): Array {
+    public function edit($id): array {
         return parent::baseEditAction($id);
     }
 
@@ -121,21 +124,23 @@ class UsuarioController extends BaseController {
      * @Route("/{id}/actualizar", name="usuario_update", methods={"PUT"})
      * @Template("usuario/new.html.twig")
      */
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id): RedirectResponse|type|Response
+    {
         return parent::baseUpdateAction($request, $id);
     }
 
     /**
      * @Route("/{id}/borrar", name="usuario_delete", methods={"GET"})
      */
-    public function delete($id) {
+    public function delete($id): RedirectResponse|JsonResponse|type
+    {
         return parent::baseDeleteAction($id);
     }
 
     /**
      *
-     * @param type $entityFormTypeClassName
-     * @param type $entity
+     * @param UsuarioType $entityFormTypeClassName
+     * @param Usuario $entity
      * @return FormInterface
      */
     protected function baseInitCreateEditForm($entityFormTypeClassName, $entity): FormInterface {
@@ -148,7 +153,8 @@ class UsuarioController extends BaseController {
     /**
      * @Route("/{id}/habilitar_deshabilitar", name="usuario_habilitar_deshabilitar", methods={"GET"})
      */
-    public function usuarioHabilitarDeshabilitar($id) {
+    public function usuarioHabilitarDeshabilitar($id): RedirectResponse
+    {
         $em = $this->doctrine->getManager();
         $usuario = $em->getRepository(Usuario::class)->findOneBy(array('id' => $id));
         $usuario->setHabilitado(!$usuario->getHabilitado());
@@ -162,17 +168,10 @@ class UsuarioController extends BaseController {
     /**
      * @Route("/{usuario}/closeSessions", name="usuario_closesessions", methods={"GET"})
      */
-    public function closeSessions(Usuario $usuario) {
+    public function closeSessions(Usuario $usuario): RedirectResponse
+    {
 
         $em = $this->doctrine->getManager();
-
-        $query = "SELECT
-                    IF(s.sess_lifetime IS NULL || UNIX_TIMESTAMP() > MAX(s.sess_lifetime), false, true) AS logueado, 
-                    GROUP_CONCAT(CONCAT(CONVERT(s.sess_id,char), '___', from_unixtime(s.sess_time, '%Y-%m-%d %H:%i:%s'), '___', from_unixtime(s.sess_lifetime, '%Y-%m-%d %H:%i'), '___', s.user_ip) ORDER BY s.sess_time DESC SEPARATOR '____') AS sesiones
-                FROM sessions s
-                WHERE s.user_id = ?
-                GROUP BY s.user_id";
-
         $connection = $em->getConnection();
         $connection->beginTransaction();
 
@@ -183,12 +182,54 @@ class UsuarioController extends BaseController {
             ]);
             $connection->commit();
             $this->get('session')->getFlashBag()->set('success', 'Se han cerrado todas las sesiones del usuario');
-        } catch (DBALException $e) {
+        } catch (Exception $e) {
             $connection->rollBack();
-            $this->get('session')->getFlashBag()->set('error', 'No se pudieron cerrar las sesiones del usuario');
+            $this->get('session')->getFlashBag()->set('error', 'No se pudieron cerrar las sesiones del usuario '.$e->getMessage());
         }
 
         return $this->redirectToRoute('usuario_index');
     }
 
+    protected function getExtraParametersNewAction($entity): array
+    {
+        return $this->getForms();
+    }
+
+    protected function getExtraParametersEditAction($entity): array
+    {
+        return $this->getForms();
+    }
+
+    private function getForms(): array
+    {
+        $user = new Usuario();
+
+        $form = $this->createForm(RegistrationFormType::class, $user, array(
+            'action' => $this->generateUrl('app_register_ajax'),
+            'method' => 'POST'
+        ));
+
+        $form->add('submit', SubmitType::class, array(
+                'label' => 'Agregar',
+                'attr' => array('class' => 'btn btn-light-primary font-weight-bold submit-button'))
+        );
+
+        $razonSocial = new RazonSocial();
+
+        $formRazonSocial = $this->createForm(RazonSocialType::class, $razonSocial, array(
+            'action' => $this->generateUrl('app_razonsocial_create_ajax'),
+            'method' => 'POST'
+        ));
+
+        $formRazonSocial->add('submit', SubmitType::class, array(
+                'label' => 'Agregar',
+                'attr' => array('class' => 'btn btn-light-primary font-weight-bold submit-button'))
+        );
+
+        return [
+            'preserve_values' => true,
+            'registrationForm' => $form->createView(),
+            'razonSocialForm' => $formRazonSocial->createView()
+        ];
+    }
 }

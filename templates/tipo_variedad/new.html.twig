@@ -12,7 +12,7 @@
 				<span class="card-icon">
 					<i class="flaticon-search text-primary"></i>
 				</span>
-                <h3 class="card-label">Editar Tipo variedad</h3>
+                <h3 class="card-label">Tipo variedad</h3>
             </div>
         </div>
         <div class="card-body">
@@ -34,6 +34,9 @@
     {{ parent() }}
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}"></script>
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/tipovariedad/new.js') }}"></script>
+    <script>
+        var __ID_PRODUCTO__ = {{ tipo_variedad.tipoSubProducto.tipoProducto.id|default('0') }}
+    </script>
 
 {% endblock %}
 

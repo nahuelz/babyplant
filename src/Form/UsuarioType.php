@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Grupo;
+use App\Entity\RazonSocial;
 use App\Entity\TipoUsuario;
 use App\Entity\Usuario;
 use Symfony\Component\Form\AbstractType;
@@ -50,7 +51,7 @@ class UsuarioType extends AbstractType
             )
             ->add('cuit', TextType::class, array(
                     'attr' => array('class' => 'form-control'),
-                    'required'=>false)
+                    'required'=>true)
             )
             ->add('domicilio', TextType::class, array(
                     'required' => false,
@@ -72,9 +73,16 @@ class UsuarioType extends AbstractType
                         'class' => 'form-control choice',
                         'tabindex' => '5'))
             )
-            ->add('razonSocial', RazonSocialType::class, array(
+            ->add('razonSocial', EntityType::class, array(
+                'class' => RazonSocial::class,
                 'required' => false,
-                'data_class' => 'App\Entity\RazonSocial',
+                'label' => 'Razon Social',
+                'placeholder' => '-- Elija --',
+                'attr' => array(
+                    'class' => 'form-control choice',
+                    'data-placeholder' => '-- Elija --',
+                    'tabindex' => '5'
+                ),
             ))
             ->add('grupos', EntityType::class,[
                 'class' => Grupo::class,

@@ -57,6 +57,10 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
+            name: 'ocupado',
+        },
+        {
+            targets: index++,
             name: 'tipoMesada',
         },
         {

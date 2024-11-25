@@ -110,6 +110,7 @@ jQuery(document).ready(function () {
         }
     );
 
-    $("#registration_form_cuit").inputmask("99-99999999-9");
-    $("#registration_form_razonSocial_cuit").inputmask("99-99999999-9");
+    $('.link-agregar-razonsocial').css('margin-top', '10%');
+    //$("#registration_form_cuit").inputmask("99-99999999-9");
+    //$("#registration_form_razonSocial_cuit").inputmask("99-99999999-9");
 });

@@ -15,11 +15,11 @@ class RazonSocialType extends AbstractType {
         $builder
             ->add('cuit', TextType::class, array(
                     'label' => 'Cuit Razon Social',
-                    'required' => false,
+                    'required' => true,
                     'attr' => array('class' => 'form-control'))
             )
             ->add('razonSocial', TextType::class, array(
-                    'required' => false,
+                    'required' => true,
                     'attr' => array('class' => 'form-control'))
             );
     }

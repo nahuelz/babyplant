@@ -120,7 +120,7 @@ class BaseController extends AbstractController {
      * @param type $extraParam
      * @return type
      */
-    public function baseIndexAction($extraParam = array()): Array {
+    public function baseIndexAction($extraParam = array()): array {
 
         $breadcrumbs = $this->getIndexBaseBreadcrumbs();
 
@@ -847,7 +847,7 @@ class BaseController extends AbstractController {
     /**
      * @param type $entity
      */
-    protected function getShowBaseBreadcrumbs($entity): Array {
+    protected function getShowBaseBreadcrumbs($entity): array {
 
         $breadcrumbs = $this->baseBreadcrumbs;
         $breadcrumbs[$this->getEntityShowName($entity)] = $this->generateUrl($this->getURLPrefix() . '_show', array('id' => $entity->getId()));
@@ -860,7 +860,7 @@ class BaseController extends AbstractController {
      *
      * @return type
      */
-    protected function getExtraParametersShowAction($entity): Array {
+    protected function getExtraParametersShowAction($entity): array {
         return [];
     }
 
@@ -876,7 +876,7 @@ class BaseController extends AbstractController {
      * @param type $entity
      * @return type
      */
-    public function baseNewAction($entity = null): Array {
+    public function baseNewAction($entity = null): array {
 
         if ($entity == null) {
 
@@ -909,17 +909,7 @@ class BaseController extends AbstractController {
      * @param type $entity
      */
     protected function baseInitPreCreateForm($entity) {
-        $user = new Usuario();
 
-        $form = $this->createForm(RegistrationFormType::class, $user, array(
-            'action' => $this->generateUrl('app_register'),
-            'method' => 'PUT'
-        ));
-
-        $form->add('submit', SubmitType::class, array(
-                'label' => 'Agregar',
-                'attr' => array('class' => 'btn btn-light-primary font-weight-bold submit-button'))
-        );
     }
 
     /**
@@ -967,7 +957,7 @@ class BaseController extends AbstractController {
      *
      * @return Array
      */
-    protected function getExtraParametersNewAction($entity): Array {
+    protected function getExtraParametersNewAction($entity): array {
         return [];
     }
 
@@ -1144,7 +1134,7 @@ class BaseController extends AbstractController {
      * @param type $entity
      * @return Array
      */
-    protected function getNewBaseBreadcrumbs($form, $entity): Array {
+    protected function getNewBaseBreadcrumbs($form, $entity): array {
 
         $breadcrumbs = $this->baseBreadcrumbs;
         $breadcrumbs['Agregar'] = null;
@@ -1158,7 +1148,7 @@ class BaseController extends AbstractController {
      * @return type
      * @throws type
      */
-    public function baseEditAction($id): Array {
+    public function baseEditAction($id): array {
 
         $em = $this->doctrine->getManager();
 
@@ -1266,7 +1256,7 @@ class BaseController extends AbstractController {
      * @param type $entity
      * @return Array
      */
-    protected function getEditBaseBreadcrumbs($form, $entity): Array {
+    protected function getEditBaseBreadcrumbs($form, $entity): array {
 
         $breadcrumbs = $this->baseBreadcrumbs;
         $breadcrumbs[$this->getEntityShowName($entity)] = $this->generateUrl($this->getURLPrefix() . '_show', array('id' => $entity->getId()));
@@ -1279,7 +1269,7 @@ class BaseController extends AbstractController {
      *
      * @return Array
      */
-    protected function getExtraParametersEditAction($entity): Array {
+    protected function getExtraParametersEditAction($entity): array {
         return [];
     }
 

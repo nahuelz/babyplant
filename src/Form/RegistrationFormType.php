@@ -51,7 +51,7 @@ class RegistrationFormType extends AbstractType {
             )
             ->add('cuit', TextType::class, array(
                 'label' => 'Cuit Persona',
-                'required' => false,
+                'required' => true,
                 'attr' => array('class' => 'form-control'))
             )
             ->add('domicilio', TextType::class, array(
@@ -74,9 +74,16 @@ class RegistrationFormType extends AbstractType {
                         'class' => 'form-control choice',
                         'tabindex' => '5'))
             )
-            ->add('razonSocial', RazonSocialType::class, array(
+            ->add('razonSocial', EntityType::class, array(
+                'class' => RazonSocial::class,
                 'required' => false,
-                'data_class' => 'App\Entity\RazonSocial',
+                'label' => 'Razon Social',
+                'placeholder' => '-- Elija --',
+                'attr' => array(
+                    'class' => 'form-control choice',
+                    'data-placeholder' => '-- Elija --',
+                    'tabindex' => '5'
+                ),
             ))
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,

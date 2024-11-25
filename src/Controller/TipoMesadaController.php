@@ -37,6 +37,7 @@ class TipoMesadaController extends BaseController
         $rsm->addScalarResult('id', 'id');
         $rsm->addScalarResult('nombre', 'nombre');
         $rsm->addScalarResult('capacidad', 'capacidad');
+        $rsm->addScalarResult('ocupado', 'ocupado');
         $rsm->addScalarResult('tipoMesada', 'tipoMesada');
         $rsm->addScalarResult('habilitado', 'habilitado');
 
@@ -130,7 +131,7 @@ class TipoMesadaController extends BaseController
         $repository = $this->doctrine->getRepository(TipoMesada::class);
 
         $query = $repository->createQueryBuilder('m')
-            ->select("m.id, CONCAT('N°',' ',m.nombre,' ', tp.nombre, ' Disponible: ', m.disponible) AS denominacion")
+            ->select("m.id, CONCAT('N°',' ',m.nombre,' ', tp.nombre, ' Ocupado: ', m.ocupado) AS denominacion")
             ->leftJoin('m.tipoProducto', 'tp' )
             ->where('m.tipoProducto = :producto')
             ->andWhere("m.capacidad > 0")
@@ -141,7 +142,7 @@ class TipoMesadaController extends BaseController
 
         if (!$id_producto){
             $query = $repository->createQueryBuilder('m')
-                ->select("m.id, CONCAT('N°',' ',m.nombre,' ', tp.nombre, ' Disponible: ', m.disponible) AS denominacion")
+                ->select("m.id, CONCAT('N°',' ',m.nombre,' ', tp.nombre, ' Ocupado: ', m.ocupado) AS denominacion")
                 ->leftJoin('m.tipoProducto', 'tp')
                 ->andWhere('m.habilitado = 1')
                 ->orderBy('m.nombre', 'ASC')

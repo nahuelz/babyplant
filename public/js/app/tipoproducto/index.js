@@ -56,6 +56,10 @@ function datatablesGetColDef() {
             name: 'cantidad_dias_camara',
         },
         {
+            targets: index++,
+            name: 'ultima_mesada',
+        },
+        {
             targets: -1,
             name: 'acciones',
             title: 'Acciones',

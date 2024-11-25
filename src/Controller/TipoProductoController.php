@@ -37,6 +37,7 @@ class TipoProductoController extends BaseController
         $rsm->addScalarResult('id', 'id');
         $rsm->addScalarResult('nombre', 'nombre');
         $rsm->addScalarResult('cantidad_dias_camara', 'cantidad_dias_camara');
+        $rsm->addScalarResult('ultima_mesada', 'ultima_mesada');
         $rsm->addScalarResult('habilitado', 'habilitado');
 
         $columnDefinition = [

@@ -1,6 +1,14 @@
+var fv;
 var collectionHoldermesada;
 var idTipoProducto;
 var agrego = false;
+const requiredField = {
+    validators: {
+        notEmpty: {
+            message: "Este campo es requerido"
+        }
+    }
+};
 var KTCalendarListView = function() {
     return {
         //main function to initiate the module
@@ -74,7 +82,6 @@ var KTCalendarListView = function() {
                                 return;
                             },
                             callbackSuccess: function () {
-
                                 $.ajax({
                                     type: 'post',
                                     dataType: 'json',
@@ -261,6 +268,33 @@ var KTCalendarListView = function() {
     };
 }();
 
+
+/**
+ *
+ * @returns {undefined}
+ */
+function initFormValidation() {
+
+    fv = FormValidation.formValidation($("form[name=salida_camara]")[0], {
+        fields: {
+            requiredFields: {
+                selector: '[required="required"]',
+                validators: {
+                    notEmpty: {
+                        message: 'Este campo es requerido'
+                    }
+                }
+            }
+        },
+        plugins: {
+            trigger: new FormValidation.plugins.Trigger(),
+            bootstrap: new FormValidation.plugins.Bootstrap(),
+            submitButton: new FormValidation.plugins.SubmitButton(),
+            //defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
+        }
+    });
+
+}
 function initValidations(){
     $('#salida_camara_mesadas_0_mesada_cantidadBandejas').on('keyup', function(){
         if ($(this).val() > parseInt($('#cantBandejasReales').val())){
@@ -271,6 +305,7 @@ function initValidations(){
 
 jQuery(document).ready(function() {
     KTCalendarListView.init();
+
 });
 
 /**
@@ -281,21 +316,32 @@ function initPreValidation() {
 
     $(".salida_camara_submit").off('click').on('click', function (e) {
         e.preventDefault();
+        $('.fv-plugins-message-container').remove();
+        initFormValidation();
+        fv.revalidateField('requiredFields');
 
-        let res = 0;
-        $('.cantBandejas').each(function() {
-            res += parseInt($(this).val());
+        fv.validate().then((status) => {
+            if (status === "Valid") {
+                let res = 0;
+                $('.cantBandejas').each(function () {
+                    if ($(this).val() != ''){
+                        res += parseInt($(this).val());
+                    }
+                });
+                if (res == $('#cantBandejasReales').val()) {
+                    if ($('#salida_camara_mesadas_1_mesada_cantidadBandejas').val() == ''){
+                        $('#salida_camara_mesadas_1_mesada_cantidadBandejas').closest('.row').remove();
+                    }
+                    $('form[name="salida_camara"]').submit();
+                } else {
+                    Swal.fire({
+                        title: 'La cantidad de bandejas debe coincidir con las bandejas reales.',
+                        icon: "error"
+                    });
+                    return false;
+                }
+            }
         });
-
-        if (res == $('#cantBandejasReales').val()){
-            $('form[name="salida_camara"]').submit();
-        }else {
-            Swal.fire({
-                title: 'La cantidad de bandejas debe coincidir con las bandejas reales.',
-                icon: "error"
-            });
-            return false;
-        }
         e.stopPropagation();
     });
 }
@@ -343,6 +389,8 @@ function initmesadaForm() {
             $('.add-mesada').hide();
         }else{
             $('.row-mesada').show();
+            $('#salida_camara_mesadas_1_mesada_cantidadBandejas').attr('required', true);
+            $('#salida_camara_mesadas_1_mesada_tipoMesada').attr('required', true);
             $('.add-mesada').hide();
         }
 
@@ -446,6 +494,8 @@ function updateDeleteLinks(deleteLink, closestClassName) {
             var deletableRow = $(this).closest(closestClassName);
             deletableRow.hide();
             $('.add-mesada').show();
+            $('#salida_camara_mesadas_1_mesada_cantidadBandejas').attr('required', false);
+            $('#salida_camara_mesadas_1_mesada_tipoMesada').attr('required', false);
             e.stopPropagation();
 
         });

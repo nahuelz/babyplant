@@ -13,7 +13,9 @@ use App\Entity\GlobalConfig;
 use App\Entity\MYPDF;
 use App\Entity\Pedido;
 use App\Entity\PedidoProducto;
+use App\Entity\RazonSocial;
 use App\Entity\Usuario;
+use App\Form\RazonSocialType;
 use App\Form\RegistrationFormType;
 use App\Service\LogAuditoriaService;
 use DateInterval;
@@ -105,8 +107,10 @@ class PedidoController extends BaseController {
         $rsm->addScalarResult('id', 'id');
         $rsm->addScalarResult('idProducto', 'idProducto');
         $rsm->addScalarResult('fechaCreacion', 'fechaCreacion');
-        $rsm->addScalarResult('producto', 'producto');
+        $rsm->addScalarResult('nombreVariedad', 'nombreVariedad');
         $rsm->addScalarResult('nombreProducto', 'nombreProducto');
+        $rsm->addScalarResult('nombreSubProducto', 'nombreSubProducto');
+        $rsm->addScalarResult('nombreProductoCompleto', 'nombreProductoCompleto');
         $rsm->addScalarResult('cliente', 'cliente');
         $rsm->addScalarResult('cantidadBandejas', 'cantidadBandejas');
         $rsm->addScalarResult('tipoBandeja', 'tipoBandeja');
@@ -362,7 +366,13 @@ class PedidoController extends BaseController {
      *
      * @return Array
      */
-    protected function getExtraParametersNewAction($entity): Array {
+    protected function getExtraParametersNewAction($entity): Array
+    {
+        return $this->getForms();
+    }
+
+    private function getForms(): Array
+    {
         $user = new Usuario();
 
         $form = $this->createForm(RegistrationFormType::class, $user, array(
@@ -375,9 +385,22 @@ class PedidoController extends BaseController {
                 'attr' => array('class' => 'btn btn-light-primary font-weight-bold submit-button'))
         );
 
+        $razonSocial = new RazonSocial();
+
+        $formRazonSocial = $this->createForm(RazonSocialType::class, $razonSocial, array(
+            'action' => $this->generateUrl('app_razonsocial_create_ajax'),
+            'method' => 'POST'
+        ));
+
+        $formRazonSocial->add('submit', SubmitType::class, array(
+                'label' => 'Agregar',
+                'attr' => array('class' => 'btn btn-light-primary font-weight-bold submit-button'))
+        );
+
         return [
             'preserve_values' => true,
-            'registrationForm' => $form->createView()
+            'registrationForm' => $form->createView(),
+            'razonSocialForm' => $formRazonSocial->createView()
         ];
     }
 

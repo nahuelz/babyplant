@@ -1,4 +1,3 @@
-
 var fv;
 var fvCliente;
 
@@ -14,11 +13,11 @@ jQuery(document).ready(function () {
     $('.row-pedido-producto-empty').hide();
     initAgregarClienteModal();
     initAgregarClienteHandler();
-    initRazonSocialHandler();
     $('#pedido_pedidoProducto_cantDiasProduccion').val('20');
     initFechaSiembra();
     initDiasProduccionSelectHandler();
-
+    initBaseSubmitButton();
+    $('.observacion').hide();
 });
 
 function initDiasProduccionSelectHandler(){
@@ -31,6 +30,7 @@ function initAgregarClienteHandler() {
     $('.link-agregar-cliente').on('click', function(){
         initTipoUsuario();
         initRazonSocial();
+
     });
 }
 
@@ -361,10 +361,9 @@ function initProductos() {
 
 /**
  *
- * @param {type} table
  * @returns {undefined}
  */
-function initAgregarClienteModal(table) {
+function initAgregarClienteModal() {
 
     $("#registration_form_submit").off('click').on('click', function (e) {
         e.preventDefault();
@@ -405,6 +404,5 @@ function initTipoUsuario(){
     $('.user-password').hide();
     $('.grupo').hide();
     $('.tipo-usuario').hide();
-    $("#registration_form_cuit").inputmask("99-99999999-9");
-    $("#registration_form_razonSocial_cuit").inputmask("99-99999999-9");
+    //$("#registration_form_cuit").inputmask("99-99999999-9");
 }

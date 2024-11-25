@@ -5,6 +5,7 @@
     "{{ entity.id }}",
     "{{ entity.nombre|default('-') }}",
     "{{ entity.cantidad_dias_camara|default('-') }}",
+    "{{ entity.ultima_mesada|default('-') }}",
     "{{ entity.habilitado|boolean_format }}",
     {
     {% if is_granted('ROLE_MENU_CONFIGURACION') %}

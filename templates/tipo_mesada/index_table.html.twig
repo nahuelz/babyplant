@@ -5,6 +5,7 @@
     "{{ entity.id }}",
     "{{ entity.nombre|default('-') }}",
     "{{ entity.capacidad|default('-') }}",
+    "{{ entity.ocupado|default('-') }}",
     "{{ entity.tipoMesada|default('-') }}",
     "{{ entity.habilitado|boolean_format }}",
     {

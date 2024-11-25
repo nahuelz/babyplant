@@ -38,6 +38,12 @@
 				{{ macro_form._new_field(form.tieneRazonSocial, "col-md-3 datos-personales") }}
 				{{ macro_form._new_field(form.razonSocial.razonSocial, "col-md-3 datos-personales razonSocial") }}
 				{{ macro_form._new_field(form.razonSocial.cuit, "col-md-3 datos-personales razonSocial") }}
+				<div class="col-md-3">
+					<!-- Button trigger modal-->
+					<button type="button" class="btn btn-success link-agregar-razonsocial" data-toggle="modal" data-target="#razonSocialModal" style="margin-top: 6%;">
+						NUEVO RAZON SOCIAL
+					</button>
+				</div>
 			</div>
 			<div class="row grupo">
 				{{ macro_form._new_field(form.grupos, "col-md-12") }}
@@ -50,6 +56,30 @@
 	</div>
 	{{ form_widget(form._token) }}
 	{{ form_end(form, {"render_rest": false}) }}
+
+	<div class="modal fade" id="razonSocialModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+		<div class="modal-dialog modal-xl modal-fullscreen-xl-down" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Nuevo Cliente</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<i aria-hidden="true" class="ki ki-close"></i>
+					</button>
+				</div>
+				<div class="modal-body">
+					{{ form_start(registrationForm, {'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
+					{% include 'registration/_form.html.twig' with {'modal' : true} %}
+					<input type="hidden" name="href" id="href" value="{{ path('app_register_ajax') }}">
+					{{ form_widget(registrationForm._token) }}
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Cerrar</button>
+					{{ form_widget(registrationForm.submit) }}
+				</div>
+				{{ form_end(registrationForm, {"render_rest": false}) }}
+			</div>
+		</div>
+	</div>
 
 {% endblock %}
 

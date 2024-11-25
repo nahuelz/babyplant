@@ -29,15 +29,6 @@ class Mesada
     private $id;
 
     /**
-     * @var TipoProducto
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\TipoProducto")
-     * @ORM\JoinColumn(name="id_tipo_producto", referencedColumnName="id", nullable=false)
-     *
-     */
-    protected $tipoProducto;
-
-    /**
      * @var TipoMesada
      *
      * @ORM\ManyToOne(targetEntity=TipoMesada::class, cascade={"all"})
@@ -109,24 +100,4 @@ class Mesada
     {
         $this->cantidadBandejas = $cantidadBandejas;
     }
-
-    /**
-     * @return TipoProducto
-     */
-    public function getTipoProducto()
-    {
-        return $this->tipoProducto;
-    }
-
-    /**
-     * @param TipoProducto $tipoProducto
-     */
-    public function setTipoProducto(TipoProducto $tipoProducto): void
-    {
-        $this->tipoProducto = $tipoProducto;
-    }
-
-
-
-
 }

@@ -171,14 +171,14 @@ class PedidoProductoType extends AbstractType {
                     ))
             )
             ->add('cantDiasProduccion', TextType::class, array(
-                    'label' => 'Cantidad de dias en produccion',
+                    'label' => 'Dias en produccion',
                     'required' => true,
                     'attr' => array(
                         'class' => 'form-control',
                         'tabindex' => '5'))
             )
             ->add('cantDiasProduccionSelect', ChoiceType::class, array(
-                    'label' => 'Cantidad de dias en produccion',
+                    'label' => 'Dias en produccion',
                     'required' => false,
                     'mapped' => false,
                     'attr' => array(

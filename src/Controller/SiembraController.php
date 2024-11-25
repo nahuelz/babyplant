@@ -28,7 +28,7 @@ class SiembraController extends BaseController
     /**
      * @Route("/", name="siembra_index", methods={"GET"})
      * @Template("siembra/index.html.twig")
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_SIEMBRA")
      */
     public function index(): array
     {
@@ -44,7 +44,7 @@ class SiembraController extends BaseController
     /**
      *
      * @Route("/index_table/", name="siembra_table", methods={"GET|POST"})
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_SIEMBRA")
      */
     public function indexTableAction(Request $request): Response {
 
@@ -75,7 +75,7 @@ class SiembraController extends BaseController
     /**
      *
      * @Route("/guardar_y_sembrar/", name="guardar_y_sembrar", methods={"POST"})
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_SIEMBRA")
      */
     public function guardarOrdenSiembra(Request $request){
 
@@ -109,7 +109,7 @@ class SiembraController extends BaseController
     /**
      *
      * @Route("/guardar/", name="guardar", methods={"POST"})
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_SIEMBRA")
      */
     public function guardarSiembra(Request $request){
 

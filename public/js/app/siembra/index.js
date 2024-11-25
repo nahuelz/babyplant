@@ -47,100 +47,108 @@ var KTCalendarListView = function() {
                     }
                 ],
                 eventClick: function(info) {
-                    var element = $(info.el);
-                    var idProducto = element.data('id');
-                    var actionUrl = element.data('href');
-                    $.ajax({
-                        type: 'POST',
-                        url: actionUrl,
-                        data: {
-                            id: idProducto
-                        }
-                    }).done(function (form) {
-                        showDialog({
-                            titulo: '<i class="fa fa-list-ul margin-right-10"></i> Orden de siembra pedido N° '+idProducto,
-                            contenido: form,
-                            className: 'modal-dialog-small',
-                            color: 'yellow ',
-                            labelCancel: 'Cerrar',
-                            labelSave: 'Guardar',
-                            labelSuccess: 'Guardar y Sembrar',
-                            closeButton: true,
-                            class: 'codigo-sobre-submit',
-                            callbackCancel: function () {
-                                return;
-                            },
-                            callbackSave: function () {
-                                $.ajax({
-                                    type: 'post',
-                                    dataType: 'json',
-                                    data: {
-                                        observacion: $('#observacion').val(),
-                                        bandejas: $('#bandejas').val(),
-                                        idPedidoProducto: info.event.id
-                                    },
-                                    url: __HOMEPAGE_PATH__ + "siembra/guardar/",
-                                    success: function (data) {
-                                        if (!jQuery.isEmptyObject(data)) {
-                                            $('.alert-success').hide();
-                                            showFlashMessage("success", data.message);
-                                            calendar.refetchEvents()
-                                        }
-                                    },
-                                    error: function () {
-                                        alert('ah ocurrido un error.');
-                                    }
-                                });
-                            },
-                            callbackSuccess: function () {
-                                $.ajax({
-                                    type: 'post',
-                                    dataType: 'json',
-                                    data: {
-                                        observacion: $('#observacion').val(),
-                                        bandejas: $('#bandejas').val(),
-                                        horaSiembra: $('#horaSiembra').val(),
-                                        idPedidoProducto: info.event.id
-                                    },
-                                    url: __HOMEPAGE_PATH__ + "siembra/guardar_y_sembrar/",
-                                    success: function (data) {
-                                        if (!jQuery.isEmptyObject(data)) {
-                                            $('.alert-success').hide();
-                                            showFlashMessage("success", data.message);
-                                            calendar.refetchEvents()
-                                        }
-                                    },
-                                    error: function () {
-                                        alert('ah ocurrido un error.');
-                                    }
-                                });
+                    if (__ES_ADMIN__) {
+                        var element = $(info.el);
+                        var idProducto = element.data('id');
+                        var actionUrl = element.data('href');
+                        $.ajax({
+                            type: 'POST',
+                            url: actionUrl,
+                            data: {
+                                id: idProducto
                             }
+                        }).done(function (form) {
+                            showDialog({
+                                titulo: '<i class="fa fa-list-ul margin-right-10"></i> Orden de siembra pedido N° ' + idProducto,
+                                contenido: form,
+                                className: 'modal-dialog-small',
+                                color: 'yellow ',
+                                labelCancel: 'Cerrar',
+                                labelSave: 'Guardar',
+                                labelSuccess: 'Guardar y Sembrar',
+                                closeButton: true,
+                                class: 'codigo-sobre-submit',
+                                callbackCancel: function () {
+                                    return;
+                                },
+                                callbackSave: function () {
+                                    $.ajax({
+                                        type: 'post',
+                                        dataType: 'json',
+                                        data: {
+                                            observacion: $('#observacion').val(),
+                                            bandejas: $('#bandejas').val(),
+                                            idPedidoProducto: info.event.id
+                                        },
+                                        url: __HOMEPAGE_PATH__ + "siembra/guardar/",
+                                        success: function (data) {
+                                            if (!jQuery.isEmptyObject(data)) {
+                                                $('.alert-success').hide();
+                                                showFlashMessage("success", data.message);
+                                                calendar.refetchEvents()
+                                            }
+                                        },
+                                        error: function () {
+                                            alert('ah ocurrido un error.');
+                                        }
+                                    });
+                                },
+                                callbackSuccess: function () {
+                                    $.ajax({
+                                        type: 'post',
+                                        dataType: 'json',
+                                        data: {
+                                            observacion: $('#observacion').val(),
+                                            bandejas: $('#bandejas').val(),
+                                            horaSiembra: $('#horaSiembra').val(),
+                                            idPedidoProducto: info.event.id
+                                        },
+                                        url: __HOMEPAGE_PATH__ + "siembra/guardar_y_sembrar/",
+                                        success: function (data) {
+                                            if (!jQuery.isEmptyObject(data)) {
+                                                $('.alert-success').hide();
+                                                showFlashMessage("success", data.message);
+                                                calendar.refetchEvents()
+                                            }
+                                        },
+                                        error: function () {
+                                            alert('ah ocurrido un error.');
+                                        }
+                                    });
+                                }
+                            });
+                            $('.bs-popover-top').hide();
+                            $('.modal-dialog').css('width', '80%');
+                            $('.modal-dialog').addClass('modal-xl');
+                            $('.modal-dialog').addClass('modal-fullscreen-xl-down');
+                            $('.observacion').click(function () {
+                                $('.observacion-edit').toggle();
+                            });
+                            $('.bandejas').click(function () {
+                                $('.bandejas-edit').toggle();
+                            });
+                            $('.hora').click(function () {
+                                $('.hora-edit').toggle();
+                            });
+                            let date = new Date();
+                            let hour = date.getHours(),
+                                min = date.getMinutes();
+                            hour = (hour < 10 ? "0" : "") + hour;
+                            min = (min < 10 ? "0" : "") + min;
+                            let displayTime = hour + ":" + min;
+                            $('#horaSiembra').val(displayTime);
+                            $('.hora-siembra').text(displayTime);
                         });
-                        $('.bs-popover-top').hide();
-                        $('.modal-dialog').css('width', '80%');
-                        $('.modal-dialog').addClass('modal-xl');
-                        $('.modal-dialog').addClass('modal-fullscreen-xl-down');
-                        $('.observacion').click(function(){
-                            $('.observacion-edit').toggle();
+                    }else{
+                        Swal.fire({
+                            title: 'Ingrese la fecha de entrada a camara.',
+                            icon: "error"
                         });
-                        $('.bandejas').click(function(){
-                            $('.bandejas-edit').toggle();
-                        });
-                        $('.hora').click(function(){
-                            $('.hora-edit').toggle();
-                        });
-                        let date = new Date();
-                        let hour = date.getHours(),
-                            min = date.getMinutes();
-                        hour = (hour < 10 ? "0" : "") + hour;
-                        min = (min < 10 ? "0" : "") + min;
-                        let displayTime = hour + ":" + min;
-                        $('#horaSiembra').val(displayTime);
-                        $('.hora-siembra').text(displayTime);
-                    });
+                    }
                 },
                 eventRender: function(info) {
                     var element = $(info.el);
+                    element.find('.fc-title').html(info.event.title);
                     element.attr('data-id', info.event.id);
                     element.attr('data-toggle', 'modal');
                     element.attr('data-target', '#productoModal');

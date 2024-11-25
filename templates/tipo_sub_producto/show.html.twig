@@ -10,7 +10,7 @@
 				<span class="card-icon">
 					<i class="flaticon-search text-primary"></i>
 				</span>
-                <h3 class="card-label">Detalles del tipo sub_producto
+                <h3 class="card-label">Detalles del sub producto
                     {{ tipo_sub_producto }}</h3>
             </div>
             {% if is_granted('ROLE_BANDEJA_EDIT') %}
@@ -27,7 +27,8 @@
 
         <div class="card-body">
             <div class="row">
-                {{ macro_show._show_detail('Nombre', tipo_sub_producto.nombre, 'col-md-4') }}
+                {{ macro_show._show_detail('Producto', tipo_sub_producto.tipoProducto, 'col-md-4') }}
+                {{ macro_show._show_detail('Sub Producto', tipo_sub_producto.nombre, 'col-md-4') }}
                 {{ macro_show._show_detail('Habilitado', tipo_sub_producto.habilitado, 'col-md-4') }}
             </div>
 

@@ -20,7 +20,8 @@ class MesadaType extends AbstractType {
             ->add('tipoProducto', EntityType::class, array(
                     'label' => 'Tipo Mesada',
                     'class' => TipoProducto::class,
-                    'required' => true,
+                    'required' => false,
+                    'mapped' => false,
                     'attr' => array(
                         'class' => 'form-control choice',
                         'tabindex' => '5'
@@ -60,6 +61,7 @@ class MesadaType extends AbstractType {
                     'label' => 'Cantidad Bandejas',
                     'attr' => array(
                         'class' => 'form-control cantBandejas',
+                        'min' => 1,
                         'tabindex' => '5'))
             )
 

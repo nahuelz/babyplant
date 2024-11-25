@@ -8,7 +8,7 @@
         "{{ entity.idProducto }}",
         "{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}",
         {
-        "producto" : "{{ entity.producto|default('Sin estado') }}",
+        "nombreProductoCompleto" : "{{ entity.nombreProductoCompleto|default('default') }}",
         "nombreProducto" : "{{ entity.nombreProducto|default('default') }}"
         },
         "{{ entity.cliente|default('-') }}",

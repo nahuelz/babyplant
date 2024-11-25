@@ -7,7 +7,10 @@ use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Constants\ConstanteTipoConsulta;
 use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
+use App\Entity\Mesada;
 use App\Entity\PedidoProducto;
+use App\Entity\PedidoProductoMesada;
+use App\Entity\TipoMesada;
 use App\Form\SalidaCamaraType;
 use DateTime;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -97,9 +100,17 @@ class SalidaCamaraController extends BaseController
                 $this->cambiarEstado($em, $entity, $estado);
                 $entity->setFechaSalidaCamaraReal(new \DateTime());
             }
-            foreach ($entity->getMesadas() as $mesada){
-                $mesada->setPedidoProducto($entity);
-                $mesada->getMesada()->setTipoProducto($entity->getTipoProducto());
+            /* @var $pedidoProductoMesada PedidoProductoMesada */
+            foreach ($entity->getMesadas() as $pedidoProductoMesada){
+                /* @var $mesada Mesada */
+                $mesada = $pedidoProductoMesada->getMesada();
+                $pedidoProductoMesada->setPedidoProducto($entity);
+
+                // ACTUALIZO ESPACIO OCUPADO
+                $mesada->getTipoMesada()->sumarOcupado($mesada->getCantidadBandejas());
+
+                // ACTUALIZO TIPO PRODUCTO DE LA MESADA Y EN TIPO PRODUCTO GUARDO LA ULTIMA MESADA
+                $mesada->getTipoMesada()->setTipoProducto($entity->getTipoProducto());
             }
             $em->flush();
             $message = 'Producto enviado a mesada correctamente.';
