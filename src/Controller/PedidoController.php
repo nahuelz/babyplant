@@ -485,6 +485,8 @@ class PedidoController extends BaseController {
             'module_height' => 1 // height of a single module in points
         );
         $url = $this->generateUrl('pedido_show', array('id' => $pedido->getId()));
+        $projectRoot = 'http://localhost';
+        $url = $projectRoot.$url;
         $pdfService->Text(82, 180, 'Seguimiento del pedido');
         $pdfService->write2DBarcode($url, 'QRCODE,L', 80, 180, 50, 50, $style, 'N');
 
