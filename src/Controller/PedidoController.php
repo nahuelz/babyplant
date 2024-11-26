@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Controller\BaseController;
+use App\Entity\Constants\ConstanteAPI;
 use App\Entity\Constants\ConstanteEstadoPedido;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
+use App\Entity\Constants\ConstanteIP;
 use App\Entity\EstadoPedido;
 use App\Entity\EstadoPedidoHistorico;
 use App\Entity\EstadoPedidoProducto;
@@ -485,8 +487,7 @@ class PedidoController extends BaseController {
             'module_height' => 1 // height of a single module in points
         );
         $url = $this->generateUrl('pedido_show', array('id' => $pedido->getId()));
-        $projectRoot = 'http://192.168.0.48';
-        $url = $projectRoot.$url;
+        $url = ConstanteIP::LOCAL_IP.$url;
         $pdfService->Text(82, 180, 'Seguimiento del pedido');
         $pdfService->write2DBarcode($url, 'QRCODE,L', 80, 180, 50, 50, $style, 'N');
 
