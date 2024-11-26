@@ -2,7 +2,25 @@
 {% if is_granted("ROLE_PEDIDO") %}
     {% include 'menu/menu_pedido.html.twig' %}
 {% endif %}
-
+{% if is_granted("ROLE_SIEMBRA") %}
+<li class="menu-item " aria-haspopup="true">
+    <a href="{{ path('siembra_index') }}" class="menu-link ">
+        <span class="menu-text">SIEMBRA</span>
+    </a>
+</li>
+{% endif %}
+{% if is_granted("ROLE_CAMARA") %}
+    <li class="menu-item " aria-haspopup="true">
+        <a href="{{ path('entradacamara_index') }}" class="menu-link ">
+            <span class="menu-text">ENTRADA CAMARA</span>
+        </a>
+    </li>
+    <li class="menu-item " aria-haspopup="true">
+        <a href="{{ path('salidacamara_index') }}" class="menu-link ">
+            <span class="menu-text">SALIDA CAMARA</span>
+        </a>
+    </li>
+{% endif %}
 {% if is_granted("ROLE_MENU_CONFIGURACION") %}
     {% include 'menu/menu_configuracion.html.twig' %}
 {% endif %}

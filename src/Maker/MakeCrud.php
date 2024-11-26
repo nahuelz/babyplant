@@ -327,7 +327,7 @@ final class MakeCrud extends AbstractMaker
      * @param array $entity_fields
      * @param array $entity_association_mappings
      */
-    public function renderType(ClassNameDetails $formClassDetails, array $formFields, ClassNameDetails $boundClassDetails = null, array $constraintClasses = [], array $extraUseClasses = [], array $entity_fields = [], array $entity_association_mappings = [], $generator) {        
+    public function renderType(ClassNameDetails $formClassDetails, array $formFields, $generator, ClassNameDetails $boundClassDetails = null, array $constraintClasses = [], array $extraUseClasses = [], array $entity_fields = [], array $entity_association_mappings = []) {
         $fieldTypeUseStatements = [];
         $fields = [];
         foreach ($formFields as $name => $fieldTypeOptions) {
