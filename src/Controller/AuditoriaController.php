@@ -90,13 +90,14 @@ class AuditoriaController extends BaseController {
                 }
 
                 // 500
+                /*
                 if (file_exists($filename500)) {
                     $jsonString = file_get_contents($filename500);
                     $daysErrors = [];
                     $daysErrors['timeStamp'] = $filterDate->getTimestamp();
                     $daysErrors['data'] = empty(json_decode($jsonString, true)['error_500']) ? json_decode($jsonString, true)['error500'] : json_decode($jsonString, true)['error_500'];
                     $entities[] = $daysErrors;
-                }
+                }*/
             }
 
             $draw = $request->get('draw') + 1;
