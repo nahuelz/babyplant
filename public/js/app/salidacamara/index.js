@@ -106,13 +106,16 @@ var KTCalendarListView = function() {
                         $('.modal-dialog').css('width', '80%');
                         $('.modal-dialog').addClass('modal-xl');
                         $('.modal-dialog').addClass('modal-fullscreen-xl-down');
-                        initmesadaForm();
-                        $('#salida_camara_mesadas_0_mesada_tipoProducto').val(idTipoProducto).select2();
-                        $('#salida_camara_mesadas_0_mesada_tipoMesada').select2();
-                        initMesadaChainedSelect();
-                        initValidations();
-                        $('.remove-mesada').hide();
-                        initResetModalHandler();
+                        if (__ID_ESTADO__ != 5) {
+                            initmesadaForm();
+                            $('#salida_camara_mesadas_0_mesada_tipoProducto').val(idTipoProducto).select2();
+                            $('#salida_camara_mesadas_0_mesada_tipoMesada').select2();
+                            initMesadaChainedSelect();
+                            $('#salida_camara_mesadas_0_mesada_tipoProducto').val('').select2().change();
+                            initValidations();
+                            $('.remove-mesada').hide();
+                            initResetModalHandler();
+                        }
                     });
                 },
                 eventRender: function(info) {

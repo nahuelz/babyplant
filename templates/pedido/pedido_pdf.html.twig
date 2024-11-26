@@ -49,7 +49,7 @@
                 <tr>
                     <td align="center">{{ producto.id }}</td>
                     <td align="center">{{ producto.nombreCompleto }}</td>
-                    <td align="center">{{ producto.bandejas }}</td>
+                    <td align="center">{{ producto.cantBandejasReales|default(producto.cantBandejasPedidas) }}</td>
                     <td align="center">{{ producto.fechaEntregaPedido is not null ? producto.fechaEntregaPedido|date('d/m/Y') : '-' }}</td>
                 </tr>
             {% endfor %}

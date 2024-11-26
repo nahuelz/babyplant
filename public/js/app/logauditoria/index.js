@@ -1,7 +1,7 @@
 var usuario_table = null
 
 jQuery(document).ready(function () {
-    usuario_table = $('#table-auditoria')
+    usuario_table = $('#table-logauditoria')
     dataTablesInit(usuario_table, {
         ajax: __HOMEPAGE_PATH__ + 'logouditoria/index_table/',
         columnDefs: datatablesGetColDef()
