@@ -37,7 +37,7 @@ class TipoMesada extends EntidadBasica {
     public function __construct() {
         parent::__construct();
         $this->ocupado = 0;
-        $this->capacidad = 1000;
+        $this->capacidad = 500;
         $this->habilitado = true;
     }
 
