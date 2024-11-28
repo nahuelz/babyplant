@@ -19,7 +19,7 @@
             <div class="card-toolbar">
                 {% if is_granted('ROLE_MENU_CONFIGURACION') %}
                     <!--begin::Button-->
-                    <a href="{{ path('app_tipo_mesada_new') }}" class="btn btn-primary font-weight-bolder">
+                    <a href="{{ path('app_tipo_mesada_create') }}" class="btn btn-primary font-weight-bolder">
                         <i class="la la-plus"></i>
                         Agregar
                     </a>
@@ -27,8 +27,7 @@
                 {% endif %}
             </div>
         </div>
-        <div
-                class="card-body">
+        <div class="card-body">
             <!--begin: Datatable-->
             <table class="table table-bordered table-hover table-checkable" id="table-mesada">
                 <thead>
@@ -37,7 +36,7 @@
                     <th data-type="string">Numero</th>
                     <th data-type="string">Capacidad</th>
                     <th data-type="string">Ocupado</th>
-                    <th data-type="string">Ultimo producto</th>
+                    <th data-type="string">Ultimo Producto</th>
                     <th class="text-center" data-type="select" data-select="{{ select_boolean }}">Habilitado</th>
                     <th data-type="search">Acciones</th>
                 </tr>
@@ -54,7 +53,6 @@
     {{ parent() }}
 
     <script type="text/javascript" src="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.js') }}"></script>
-
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-datatables.js') }}"></script>
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/tipomesada/index.js') }}"></script>
 

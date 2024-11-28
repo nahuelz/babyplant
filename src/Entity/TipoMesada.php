@@ -2,13 +2,14 @@
 
 namespace App\Entity;
 
+use App\Repository\TipoMesadaRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * TipoProducto
  *
  * @ORM\Table(name="tipo_mesada")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass=TipoMesadaRepository::class)
  */
 class TipoMesada extends EntidadBasica {
 
@@ -23,19 +24,26 @@ class TipoMesada extends EntidadBasica {
     private int $ocupado;
 
     /**
+     * @ORM\Column(name="numero", type="integer", nullable=false)
+     */
+    private int $numero;
+
+    /**
      * @ORM\ManyToOne(targetEntity=TipoProducto::class)
      * @ORM\JoinColumn(name="id_tipo_producto", referencedColumnName="id", nullable=true)
      */
-    private TipoProducto $tipoProducto;
+    private $tipoProducto;
 
     public function __construct() {
         parent::__construct();
         $this->ocupado = 0;
+        $this->capacidad = 1000;
+        $this->habilitado = true;
     }
 
     public function __toString(): string
     {
-        return 'N°'.$this->getNombre().' '.$this->getTipoProducto().' Disponible: '.$this->getDisponible();
+        return 'N°'.$this->getNumero().' '.$this->getTipoProducto().' Ocupado: '.$this->getOcupado();
     }
 
     /**
@@ -70,10 +78,7 @@ class TipoMesada extends EntidadBasica {
         $this->ocupado = $ocupado;
     }
 
-    /**
-     * @return TipoProducto
-     */
-    public function getTipoProducto(): TipoProducto
+    public function getTipoProducto()
     {
         return $this->tipoProducto;
     }
@@ -98,6 +103,25 @@ class TipoMesada extends EntidadBasica {
     public function sumarOcupado($cantidad): void{
         $this->ocupado += $cantidad;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getNumero()
+    {
+        return $this->numero;
+    }
+
+    /**
+     * @param mixed $numero
+     */
+    public function setNumero(int $numero): void
+    {
+        $this->numero = $numero;
+        $this->setNombre($numero);
+    }
+
+
 
 
 

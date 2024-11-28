@@ -1,6 +1,6 @@
 
 jQuery(document).ready(function () {
-
+    $('#tipo_mesada_nombre').attr('readonly', true);
     FormValidation.formValidation(
         $("form[name=tipo_mesada]")[0],
         {

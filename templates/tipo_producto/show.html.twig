@@ -28,7 +28,7 @@
         <div class="card-body">
             <div class="row">
                 {{ macro_show._show_detail('Nombre', tipo_producto.nombre, 'col-md-4') }}
-                {{ macro_show._show_detail('Habilitado', tipo_producto.habilitado, 'col-md-4') }}
+                {{ macro_show._show_detail('Habilitado', tipo_producto.habilitado == 1 ? 'Si' : 'No', 'col-md-4') }}
             </div>
 
         </div>

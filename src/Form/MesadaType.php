@@ -49,7 +49,7 @@ class MesadaType extends AbstractType {
                     'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('x')
                             ->where('x.habilitado = 1')
-                            ->orderBy('x.nombre', 'ASC');
+                            ->orderBy('x.numero', 'ASC');
                     },
                     'label_attr' => array('class' => 'control-label'),
                     'placeholder' => '-- Elija la mesada --',

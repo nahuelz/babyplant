@@ -30,7 +30,7 @@
                 {{ macro_show._show_detail('Numero', tipo_mesada.nombre, 'col-md-3') }}
                 {{ macro_show._show_detail('Capacidad', tipo_mesada.capacidad, 'col-md-3') }}
                 {{ macro_show._show_detail('Tipo Mesada', tipo_mesada.tipoProducto, 'col-md-3') }}
-                {{ macro_show._show_detail('Habilitado', tipo_mesada.habilitado, 'col-md-3') }}
+                {{ macro_show._show_detail('Habilitado', tipo_mesada.habilitado == 1 ? 'Si' : 'No', 'col-md-3') }}
             </div>
 
         </div>

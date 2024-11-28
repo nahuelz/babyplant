@@ -43,6 +43,10 @@ class TipoMesadaController extends BaseController
 
         $columnDefinition = [
             ['field' => 'id', 'type' => '', 'searchable' => false, 'sortable' => false],
+            ['field' => 'nombre', 'type' => 'string', 'searchable' => true, 'sortable' => true],
+            ['field' => 'capacidad', 'type' => 'string', 'searchable' => true, 'sortable' => true],
+            ['field' => 'ocupado', 'type' => 'string', 'searchable' => true, 'sortable' => true],
+            ['field' => 'tipoMesada', 'type' => 'string', 'searchable' => true, 'sortable' => true],
             ['field' => 'habilitado', 'type' => 'select', 'searchable' => true, 'sortable' => true],
             ['field' => 'acciones', 'type' => '', 'searchable' => false, 'sortable' => false]
         ];
@@ -69,6 +73,18 @@ class TipoMesadaController extends BaseController
             'tipo_mesada' => $tipoMesada,
             'form' => $form,
         ]);
+    }
+
+    #[Route('/create', name: 'app_tipo_mesada_create', methods: ['GET', 'POST'])]
+    public function create(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $tipoMesada = new TipoMesada();
+        $tipoMesada->setNumero($this->doctrine->getRepository(TipoMesada::class)->getSiguienteNumeroMesada());
+        $entityManager->persist($tipoMesada);
+        $entityManager->flush();
+        $this->get('session')->getFlashBag()->add('success', 'Le mesada fue agregada.');
+        return $this->redirectToRoute('tipomesada_index', [], Response::HTTP_SEE_OTHER);
+
     }
 
     #[Route('/{id}', name: 'app_tipo_mesada_show', methods: ['GET'])]
@@ -131,21 +147,21 @@ class TipoMesadaController extends BaseController
         $repository = $this->doctrine->getRepository(TipoMesada::class);
 
         $query = $repository->createQueryBuilder('m')
-            ->select("m.id, CONCAT('N°',' ',m.nombre,' ', tp.nombre, ' Ocupado: ', m.ocupado) AS denominacion")
+            ->select("m.id, CONCAT('N°',' ',m.numero,' ', if (tp.nombre is null, ' ', tp.nombre), ' Ocupado: ', m.ocupado) AS denominacion")
             ->leftJoin('m.tipoProducto', 'tp' )
             ->where('m.tipoProducto = :producto')
             ->andWhere("m.capacidad > 0")
             ->andWhere('m.habilitado = 1')
             ->setParameter('producto', $id_producto)
-            ->orderBy('m.nombre', 'ASC')
+            ->orderBy('m.numero', 'ASC')
             ->getQuery();
 
         if (!$id_producto){
             $query = $repository->createQueryBuilder('m')
-                ->select("m.id, CONCAT('N°',' ',m.nombre,' ', tp.nombre, ' Ocupado: ', m.ocupado) AS denominacion")
+                ->select("m.id, CONCAT('N°',' ',m.numero,' ', if (tp.nombre is null, ' ', tp.nombre), ' Ocupado: ', m.ocupado) AS denominacion")
                 ->leftJoin('m.tipoProducto', 'tp')
                 ->andWhere('m.habilitado = 1')
-                ->orderBy('m.nombre', 'ASC')
+                ->orderBy('m.numero', 'ASC')
                 ->getQuery();
         }
         return new JsonResponse($query->getResult());

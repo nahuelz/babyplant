@@ -28,7 +28,7 @@
         <div class="card-body">
             <div class="row">
                 {{ macro_show._show_detail('Nombre', tipo_origen_semilla.nombre, 'col-md-4') }}
-                {{ macro_show._show_detail('Habilitado', tipo_origen_semilla.habilitado, 'col-md-4') }}
+                {{ macro_show._show_detail('Habilitado', tipo_origen_semilla.habilitado == 1 ? 'Si' : 'No', 'col-md-4') }}
             </div>
 
         </div>

@@ -30,7 +30,7 @@
                 {{ macro_show._show_detail('Producto', tipo_variedad.tipoSubProducto.tipoProducto, 'col-md-3') }}
                 {{ macro_show._show_detail('Sub producto', tipo_variedad.tipoSubProducto, 'col-md-3') }}
                 {{ macro_show._show_detail('Variedad', tipo_variedad.nombre, 'col-md-3') }}
-                {{ macro_show._show_detail('Habilitado', tipo_variedad.habilitado, 'col-md-3') }}
+                {{ macro_show._show_detail('Habilitado', tipo_variedad.habilitado == 1 ? 'Si' : 'No', 'col-md-4') }}
             </div>
 
         </div>

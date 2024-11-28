@@ -27,8 +27,7 @@
                 {% endif %}
             </div>
         </div>
-        <div
-                class="card-body">
+        <div class="card-body">
             <!--begin: Datatable-->
             <table class="table table-bordered table-hover table-checkable" id="table-origen_semilla">
                 <thead>
@@ -51,7 +50,6 @@
     {{ parent() }}
 
     <script type="text/javascript" src="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.js') }}"></script>
-
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-datatables.js') }}"></script>
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/tipoorigensemilla/index.js') }}"></script>
 
