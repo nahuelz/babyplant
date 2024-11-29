@@ -43,7 +43,7 @@ class PedidoProductoRepository extends ServiceEntityRepository {
         return $siguienteNumero + 1;
     }
 
-    public function getPedidosAtrasados() {
+    public function getPedidosAtrasados($idEstado) {
 
         $hoy = date('Ymd');
         $query = $this->createQueryBuilder('p')
@@ -52,8 +52,9 @@ class PedidoProductoRepository extends ServiceEntityRepository {
             ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')
             ->leftJoin('App:TipoProducto', 'tp', Join::WITH, 'sb.tipoProducto = tp')
             ->leftJoin('App:Pedido', 'pe', Join::WITH, 'p.pedido = pe')
-            ->andWhere('p.estado = 1')
+            ->andWhere('p.estado = :idEstado')
             ->andWhere('p.fechaSiembraReal < :hoy')
+            ->setParameter('idEstado', $idEstado)
             ->setParameter('hoy', $hoy)
             ->getQuery();
 

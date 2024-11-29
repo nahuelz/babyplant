@@ -134,6 +134,19 @@ var KTCalendarListView = function() {
 
 jQuery(document).ready(function() {
     KTCalendarListView.init();
+    $.ajax({
+        type: 'POST',
+        url: __HOMEPAGE_PATH__ + 'entrada_camara/pedidos-atrasados/',
+    }).done(function (result) {
+        if (result.cantidad) {
+            Swal.fire({
+                title: "Hay pedidos de días anteriores que no fueron ingresados a camara.",
+                html: result.html,
+                width: 1200,
+                padding: "3em"
+            });
+        }
+    });
 });
 
 /**

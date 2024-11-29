@@ -76,6 +76,11 @@ class PedidoProducto {
     private $fechaSiembraPedido;
 
     /**
+     * @ORM\Column(name="fecha_siembra_planificacion", type="datetime", nullable=true)
+     */
+    private $fechaSiembraPlanificacion;
+
+    /**
      * @ORM\Column(name="fecha_siembra_real", type="datetime", nullable=true)
      */
     private $fechaSiembraReal;
@@ -633,4 +638,22 @@ class PedidoProducto {
         }
         return($hasta->diff($fechaEntradaInvernaculo)->format("%a"));
     }
+
+    /**
+     * @return mixed
+     */
+    public function getFechaSiembraPlanificacion()
+    {
+        return $this->fechaSiembraPlanificacion;
+    }
+
+    /**
+     * @param mixed $fechaSiembraPlanificacion
+     */
+    public function setFechaSiembraPlanificacion($fechaSiembraPlanificacion): void
+    {
+        $this->fechaSiembraPlanificacion = $fechaSiembraPlanificacion;
+    }
+
+
 }

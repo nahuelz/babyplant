@@ -146,4 +146,21 @@ class EntradaCamaraController extends BaseController
 
         $em->persist($estadoPedidoProductoHistorico);
     }
+
+    /**
+     * @Route("/pedidos-atrasados/", name="entrada_camara_pedidos_atrasados", methods={"GET","POST"})
+     */
+    public function pedidosAtrasados(): JsonResponse
+    {
+        /* @var $pedidoProducto PedidoProducto */
+        $pedidosProductos = $this->getDoctrine()->getRepository(PedidoProducto::class)->getPedidosAtrasados(ConstanteEstadoPedidoProducto::SEMBRADO);
+        $html = $this->renderView('planificacion/pedidos_atrasados.html.twig', array('pedidosProductos' => $pedidosProductos));
+
+        $result = array(
+            'html' => $html,
+            'cantidad' => sizeof($pedidosProductos),
+        );
+
+        return new JsonResponse($result);
+    }
 }

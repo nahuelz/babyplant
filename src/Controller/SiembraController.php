@@ -83,12 +83,14 @@ class SiembraController extends BaseController
         $idPedidoProducto = $request->get('idPedidoProducto');
         $bandejas = $request->get('bandejas');
         $horaSiembra = $request->get('horaSiembra');
+        $fechaSiembra = $request->get('fechaSiembra');
 
         $em = $this->doctrine->getManager();
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
         $pedidoProducto->setObservacion($observacion);
         $pedidoProducto->setCantBandejasReales($bandejas);
+        $pedidoProducto->setFechaSiembraReal(new DateTime($fechaSiembra));
         $pedidoProducto->setHoraSiembra($horaSiembra);
         $pedidoProducto->setFechaEntradaCamara($pedidoProducto->getFechaSiembraReal());
         if ($pedidoProducto->getEstado()->getCodigoInterno() != ConstanteEstadoPedidoProducto::SEMBRADO) {
@@ -173,15 +175,19 @@ class SiembraController extends BaseController
     }
 
     /**
-     * @Route("/test_hora", name="test_hora", methods={"GET","POST"})
+     * @Route("/pedidos-atrasados/", name="siembra_pedidos_atrasados", methods={"GET","POST"})
      */
-    public function testHoraAction() {
-        $fecha = new DateTime();
-        $horaMinutos= '12:30';
-        $hora =  intval(substr($horaMinutos,0,2));
-        $minutos = intval(substr($horaMinutos,3,2));
-        $fecha->setTime($hora,$minutos);
-        var_dump($fecha);
-        die();
+    public function pedidosAtrasados(): JsonResponse
+    {
+        /* @var $pedidoProducto PedidoProducto */
+        $pedidosProductos = $this->getDoctrine()->getRepository(PedidoProducto::class)->getPedidosAtrasados(ConstanteEstadoPedidoProducto::PLANIFICADO);
+        $html = $this->renderView('planificacion/pedidos_atrasados.html.twig', array('pedidosProductos' => $pedidosProductos));
+
+        $result = array(
+            'html' => $html,
+            'cantidad' => sizeof($pedidosProductos),
+        );
+
+        return new JsonResponse($result);
     }
 }

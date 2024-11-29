@@ -65,9 +65,8 @@ var KTCalendarListView = function() {
                                 color: 'yellow ',
                                 labelCancel: 'Cerrar',
                                 labelSave: 'Guardar',
-                                labelSuccess: 'Guardar y Sembrar',
+                                labelSuccess: 'SEMBRAR',
                                 closeButton: true,
-                                class: 'codigo-sobre-submit',
                                 callbackCancel: function () {
                                     return;
                                 },
@@ -100,7 +99,8 @@ var KTCalendarListView = function() {
                                         data: {
                                             observacion: $('#observacion').val(),
                                             bandejas: $('#bandejas').val(),
-                                            horaSiembra: $('#horaSiembra').val(),
+                                            horaSiembra: $('#hora-siembra').val(),
+                                            fechaSiembra: $('#fecha-siembra').val(),
                                             idPedidoProducto: info.event.id
                                         },
                                         url: __HOMEPAGE_PATH__ + "siembra/guardar_y_sembrar/",
@@ -117,27 +117,18 @@ var KTCalendarListView = function() {
                                     });
                                 }
                             });
-                            $('.bs-popover-top').hide();
                             $('.modal-dialog').css('width', '80%');
                             $('.modal-dialog').addClass('modal-xl');
                             $('.modal-dialog').addClass('modal-fullscreen-xl-down');
-                            $('.observacion').click(function () {
-                                $('.observacion-edit').toggle();
-                            });
-                            $('.bandejas').click(function () {
-                                $('.bandejas-edit').toggle();
-                            });
-                            $('.hora').click(function () {
-                                $('.hora-edit').toggle();
-                            });
-                            let date = new Date();
-                            let hour = date.getHours(),
-                                min = date.getMinutes();
-                            hour = (hour < 10 ? "0" : "") + hour;
-                            min = (min < 10 ? "0" : "") + min;
-                            let displayTime = hour + ":" + min;
-                            $('#horaSiembra').val(displayTime);
-                            $('.hora-siembra').text(displayTime);
+                            $('.yellow').attr('font-size', '17px');
+                            initToggleOptions();
+                            initDateInput();
+                            if ($('.estado').text() == 'SEMBRADO'){
+                                $('.success').hide();
+                            }
+                            if (__ES_ADMIN__){
+                                $('.save').hide();
+                            }
                         });
                     }else{
                         Swal.fire({
@@ -176,7 +167,52 @@ var KTCalendarListView = function() {
 
 jQuery(document).ready(function() {
     KTCalendarListView.init();
+
+    $.ajax({
+        type: 'POST',
+        url: __HOMEPAGE_PATH__ + 'siembra/pedidos-atrasados/',
+    }).done(function (result) {
+        if (result.cantidad) {
+            Swal.fire({
+                title: "Hay pedidos de días anteriores que no fueron sembrados.",
+                html: result.html,
+                width: 1200,
+                padding: "3em"
+            });
+        }
+    });
 });
+
+function initDateInput(){
+    let date = new Date();
+    let hour = date.getHours(),
+        min = date.getMinutes();
+    hour = (hour < 10 ? "0" : "") + hour;
+    min = (min < 10 ? "0" : "") + min;
+    let displayTime = hour + ":" + min;
+    $('#hora-siembra').val(displayTime);
+    $('.hora-siembra').text(displayTime);
+
+    let fechaCompletaHidden = $('.fecha-siembra-hidden').text();
+    $('.fecha-siembra').text($('.fecha-siembra').text().replace('00:00', displayTime));
+    fechaCompletaHidden = fechaCompletaHidden.replace('00:00', displayTime);
+    fechaCompletaHidden = fechaCompletaHidden.replace(' ', 'T');
+    $('#fecha-siembra').val(fechaCompletaHidden);
+}
+function initToggleOptions(){
+    $('.observacion').click(function () {
+        $('.observacion-edit').toggle();
+    });
+    $('.bandejas').click(function () {
+        $('.bandejas-edit').toggle();
+    });
+    $('.hora').click(function () {
+        $('.hora-edit').toggle();
+    });
+    $('.fecha').click(function () {
+        $('.fecha-siembra-edit').toggle();
+    });
+}
 
 function showDialog(options) {
 
@@ -193,7 +229,7 @@ function showDialog(options) {
             },
             danger: {
                 label: options.labelSave ? options.labelSave : "Guardar",
-                className: "btn-sm btn-submit submit-button btn-light-primary font-weight-bold success",
+                className: "btn-sm btn-submit submit-button btn-light-primary font-weight-bold save",
                 callback: function () {
                     var result = options.callbackSave();
                     return result;

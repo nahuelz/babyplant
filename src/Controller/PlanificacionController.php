@@ -110,7 +110,7 @@ class PlanificacionController extends BaseController
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
         $fechaSiembraOriginal = $pedidoProducto->getFechaSiembraReal();
-        $pedidoProducto->setFechaSiembraReal($nuevaFechaSiembra);
+        $pedidoProducto->setFechaSiembraPlanificacion($nuevaFechaSiembra);
         $em->flush();
 
         $message = 'Se modifico correctamente la fecha de siembra del producto '.$pedidoProducto->getNombreCompleto().' del dia: '.$fechaSiembraOriginal->format('d/m/Y').' al dia: '.$nuevaFechaSiembra->format('d/m/Y');
@@ -196,17 +196,11 @@ class PlanificacionController extends BaseController
         );
     }
     /**
-     * @Route("/pedidos-atrasados/", name="pedidos_atrasados", methods={"GET","POST"})
+     * @Route("/pedidos-atrasados/", name="planificacion_pedidos_atrasados", methods={"GET","POST"})
      */
     public function pedidosAtrasados(){
         /* @var $pedidoProducto PedidoProducto */
-       $pedidosProductos = $this->getDoctrine()->getRepository(PedidoProducto::class)->getPedidosAtrasados();
-        /*
-               return array(
-                   'pedidosProductos' => $pedidosProductos
-               );
-       */
-
+       $pedidosProductos = $this->getDoctrine()->getRepository(PedidoProducto::class)->getPedidosAtrasados(ConstanteEstadoPedidoProducto::PENDIENTE);
         $html = $this->renderView('planificacion/pedidos_atrasados.html.twig', array('pedidosProductos' => $pedidosProductos));
 
         $result = array(

@@ -1,12 +1,15 @@
 var mesada_table = null
+var init = false;
+var $table = $('#table-mesada');
+//var mesada_table = $('#table-mesada');
 
 jQuery(document).ready(function () {
-    mesada_table = $('#table-mesada')
-    dataTablesInit(mesada_table, {
+    initDataTable();
+    /*dataTablesInit(mesada_table, {
         ajax: __HOMEPAGE_PATH__ + 'tipo/mesada/index_table/',
         columnDefs: datatablesGetColDef(),
         order: [[1, 'asc']],
-    })
+    })*/
 
     $(document).on('click', '.accion-habilitar', function (e) {
         e.preventDefault();
@@ -24,6 +27,35 @@ jQuery(document).ready(function () {
     });
 
 })
+
+/**
+ *
+ * @returns {undefined}
+ */
+function initDataTable() {
+
+    $table.show();
+
+    dataTablesInit($table, {
+        "sAjaxSource": __HOMEPAGE_PATH__ + 'tipo/mesada/index_table/',
+        "fnServerData": function (sSource, aoData, fnCallback, oSettings) {
+            oSettings.jqXHR = $.ajax({
+                "dataType": 'json',
+                "type": "POST",
+                "url": sSource,
+                "success": fnCallback
+            });
+        },
+        lengthMenu: [5, 10, 25, 50, 100, 500, 1000],
+        pageLength: 10,
+        destroy: true,
+        columnDefs: datatablesGetColDef(),
+        order: [[1, 'desc']],
+        serverSide: false,
+    });
+
+    init = true;
+}
 
 /**
  *
@@ -50,6 +82,7 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'nombre',
+            type: 'num',
         },
         {
             targets: index++,

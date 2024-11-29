@@ -301,7 +301,6 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'fechaSiembra',
-
             className: 'dt-center',
             render: function (data, type, full, meta) {
                 if (type === 'sort') {
@@ -313,7 +312,6 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'fechaEntrega',
-
             className: 'dt-center',
             render: function (data, type, full, meta) {
                 if (type === 'sort') {

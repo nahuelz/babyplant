@@ -20,7 +20,7 @@ class TipoMesadaController extends BaseController
     public function index(): Response
     {
         return $this->render('tipo_mesada/index.html.twig', [
-            'select_boolean' => $this->selectService->getBooleanSelect(true)
+            'select_boolean' => $this->selectService->getBooleanSelect(false)
         ]);
     }
 

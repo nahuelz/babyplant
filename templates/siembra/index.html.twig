@@ -43,6 +43,6 @@
     {{ parent() }}
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/siembra/index.js') }}" ></script>
     <script>
-        var __ES_ADMIN__ = {{ is_granted('ROLE_ADMIN') }}
+        var __ES_ADMIN__ = {{ is_granted('ROLE_SIEMBRA') }}
     </script>
 {% endblock %}
