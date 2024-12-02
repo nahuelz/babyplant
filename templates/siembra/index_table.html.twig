@@ -4,12 +4,12 @@
         {
         "id": "{{ entity.id }}",
         "title": "{{ entity.title|html_format|raw|default('-') }}",
-        "start": "{{ entity.fechaSiembraReal is not null ? entity.fechaSiembraReal|date('Y-m-d') : '-' }}",
+        "start": "{{ entity.fechaSiembraPlanificacion is not null ? entity.fechaSiembraPlanificacion|date('Y-m-d') : '-' }}",
         "description": "{{ entity.descripcion|default('-') }}",
         "cliente": "{{ entity.cliente|default('-') }}",
         "producto": "{{ entity.nombreCompleto|default('-') }}",
         "cantidadTipoBandejabandeja": "{{ entity.cantidadTipoBandejabandeja|default('-') }}",
-        "fechaSiembraReal": "{{ entity.fechaSiembraReal is not null ? entity.fechaSiembraReal|date('Y-m-d') : '-' }}",
+        "fechaSiembraPlanificacion": "{{ entity.fechaSiembraPlanificacion is not null ? entity.fechaSiembraPlanificacion|date('Y-m-d') : '-' }}",
         "href":  "{{ path( "pedido_producto_siembra", { 'id': entity.id }) }}",
         "codigoSobre": "{{ entity.codigoSobre|default('-') }}",
         "className": "{{ entity.className|default('fc-event-danger fc-event-solid-danger') }}"

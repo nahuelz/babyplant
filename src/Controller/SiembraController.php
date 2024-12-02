@@ -63,7 +63,7 @@ class SiembraController extends BaseController
         $rsm->addScalarResult('estado', 'estado');
         $rsm->addScalarResult('colorEstado', 'colorEstado');
         $rsm->addScalarResult('colorIcono', 'colorIcono');
-        $rsm->addScalarResult('fechaSiembraReal', 'fechaSiembraReal');
+        $rsm->addScalarResult('fechaSiembraPlanificacion', 'fechaSiembraPlanificacion');
         $rsm->addScalarResult('descripcion', 'descripcion');
         $rsm->addScalarResult('codigoSobre', 'codigoSobre');
         $rsm->addScalarResult('className', 'className');
