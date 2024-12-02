@@ -59,7 +59,7 @@ class PlanificacionController extends BaseController
         $rsm->addScalarResult('estado', 'estado');
         $rsm->addScalarResult('colorEstado', 'colorEstado');
         $rsm->addScalarResult('colorIcono', 'colorIcono');
-        $rsm->addScalarResult('fechaSiembraReal', 'fechaSiembraReal');
+        $rsm->addScalarResult('fechaSiembraPlanificacion', 'fechaSiembraPlanificacion');
         $rsm->addScalarResult('descripcion', 'descripcion');
         $rsm->addScalarResult('codigoSobre', 'codigoSobre');
         $rsm->addScalarResult('className', 'className');
@@ -109,7 +109,7 @@ class PlanificacionController extends BaseController
         $em = $this->doctrine->getManager();
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
-        $fechaSiembraOriginal = $pedidoProducto->getFechaSiembraReal();
+        $fechaSiembraOriginal = $pedidoProducto->getFechaSiembraPlanificacion();
         $pedidoProducto->setFechaSiembraPlanificacion($nuevaFechaSiembra);
         $em->flush();
 

@@ -2,6 +2,7 @@ var fv;
 var collectionHoldermesada;
 var idTipoProducto;
 var agrego = false;
+var EN_INVERNACULO = 5;
 const requiredField = {
     validators: {
         notEmpty: {
@@ -106,7 +107,7 @@ var KTCalendarListView = function() {
                         $('.modal-dialog').css('width', '80%');
                         $('.modal-dialog').addClass('modal-xl');
                         $('.modal-dialog').addClass('modal-fullscreen-xl-down');
-                        if (__ID_ESTADO__ != 5) {
+                        if (__ID_ESTADO__ !== EN_INVERNACULO) {
                             initmesadaForm();
                             $('#salida_camara_mesadas_0_mesada_tipoProducto').val(idTipoProducto).select2();
                             $('#salida_camara_mesadas_0_mesada_tipoMesada').select2();
@@ -115,6 +116,8 @@ var KTCalendarListView = function() {
                             initValidations();
                             $('.remove-mesada').hide();
                             initResetModalHandler();
+                        }else{
+                            $('.salida_camara_submit').hide();
                         }
                     });
                 },

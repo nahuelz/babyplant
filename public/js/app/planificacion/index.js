@@ -134,7 +134,7 @@ var KTCalendarListView = function() {
                                     </div>\n\
                                     <div class="d-flex flex-column font-weight-bold">\n\
                                         <label class="text-dark text-hover-primary mb-1 font-size-lg"><strong>Nueva fecha de siembra</strong></label>\n\
-                                        <span class="text-muted">'+info.event.extendedProps.fechaSiembraReal+ '<i class="fas fa-arrow-right" style="padding: 0px 10px;"></i>' +info.event.start.toISOString().substring(0, 10)+'</span>\n\
+                                        <span class="text-muted">'+info.event.extendedProps.fechaSiembraPlanificacion+ '<i class="fas fa-arrow-right" style="padding: 0px 10px;"></i>' +info.event.start.toISOString().substring(0, 10)+'</span>\n\
                                     </div>\n\
                                 </div>\n\
                             </div>\n\

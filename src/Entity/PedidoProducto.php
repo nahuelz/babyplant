@@ -313,6 +313,7 @@ class PedidoProducto {
     public function setFechaSiembraPedido($fechaSiembraPedido): void
     {
         $this->fechaSiembraPedido = $fechaSiembraPedido;
+        $this->setFechaSiembraPlanificacion($fechaSiembraPedido);
     }
 
     /**

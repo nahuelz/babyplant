@@ -12,7 +12,7 @@
         <tr>
             <td class="padding-0">{{ producto.id }}</td>
             <td class="padding-0">{{ producto.nombreProducto }} {{ producto.nombreSubProducto }} {{ producto.nombreVariedad }}</td>
-            <td class="padding-0">{{ producto.fechaSiembraReal is not null ? producto.fechaSiembraReal|date('Y-m-d') : '-' }} </td>
+            <td class="padding-0">{{ producto.fechaSiembraPlanificacion is not null ? producto.fechaSiembraPlanificacion|date('Y-m-d') : '-' }} </td>
             <td class="padding-0">
                 <a href="{{ path( "pedido_show", { "id": producto.idPedido }) }}" target="_blank">
                 <button type="button" class="btn btn-sm btn-primary" style="margin-top: 5px"><i class="fa fa-search" style="padding: 0px;"></i></button>
