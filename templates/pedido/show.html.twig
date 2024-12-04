@@ -32,7 +32,7 @@
     </div>
     <div class="card-body">
         {% for producto in entity.pedidosProductos %}
-            <div class="card card-detail">
+            <div class="card card-detail" id="{{ producto.id }}">
                 <div class="card-header">
                     <div class="row">
                         <div class="col-md-5"><h4>Producto N° {{producto.id }}</h4></div>
@@ -60,7 +60,7 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        {{ macro_show._show_detail('Producto ID', producto.id|default('-'), 'col-md-4') }}
+                        {{ macro_show._show_detail('Numero Orden', producto.numeroOrdenCompleto|default('-'), 'col-md-4') }}
                         {{ macro_show._show_detail('Nombre producto', producto.nombreCompleto|default('-'), 'col-md-4') }}
                         {{ macro_show._show_detail('Fecha pedido', producto.fechaCreacion is not null ? producto.fechaCreacion|date("d/m/Y") : '-', 'col-md-4') }}
                         {{ macro_show._show_detail('Fecha de siembra pedido', producto.fechaSiembraPedido is not null ? producto.fechaSiembraPedido|date("d/m/Y") : '-', 'col-md-4') }}
@@ -80,8 +80,9 @@
                         <div class="col-md-2">
                             <span class="label label-inline label-light-primary font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-list-ul padding-right-5"></span> EN CAMARA</span>
                         </div>
-                        {{ macro_show._show_detail('Fecha de entrada a camara', producto.fechaEntradaCamara is not null ? producto.fechaEntradaCamara|date("d/m/Y H:i") : '-', 'col-md-4') }}
-                        {{ macro_show._show_detail('Fecha de salida de camara', producto.fechaSalidaCamaraReal is not null ? producto.fechaSalidaCamaraReal|date("d/m/Y H:i") : '-', 'col-md-4') }}
+                        {{ macro_show._show_detail('Fecha de entrada a camara', producto.fechaEntradaCamaraReal is not null ? producto.fechaEntradaCamaraReal|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                        {{ macro_show._show_detail('Fecha de salida de camara', producto.fechaSalidaCamaraReal is not null ? producto.fechaSalidaCamaraReal|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                        {{ macro_show._show_detail('Dias en camara', producto.cantidadDiasEnCamara|default('-'), 'col-md-2') }}
                     </div>
                 {% endif %}
                 {% if producto.estado.id in [5,6] %}
@@ -90,7 +91,8 @@
                             <span class="label label-inline label-light-info font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-home padding-right-5"></span> EN INVERNACULO</span>
                         </div>
                         {{ macro_show._show_detail('Fecha de entrada a invernaculo', producto.fechaSalidaCamaraReal is not null ? producto.fechaSalidaCamaraReal|date("d/m/Y H:i") : '-', 'col-md-4') }}
-                        {{ macro_show._show_detail('Dias en invernaculo', producto.cantidadDiasEnInvernaculo|default('-'), 'col-md-4') }}
+                        {{ macro_show._show_detail('Mesada', producto.mesada|default('-'), 'col-md-2') }}
+                        {{ macro_show._show_detail('Dias en invernaculo', producto.cantidadDiasEnInvernaculo|default('-'), 'col-md-2') }}
                     </div>
                 {% endif %}
                 </div>

@@ -154,7 +154,7 @@ class EntradaCamaraController extends BaseController
     {
         /* @var $pedidoProducto PedidoProducto */
         $pedidosProductos = $this->getDoctrine()->getRepository(PedidoProducto::class)->getPedidosAtrasados(ConstanteEstadoPedidoProducto::SEMBRADO);
-        $html = $this->renderView('planificacion/pedidos_atrasados.html.twig', array('pedidosProductos' => $pedidosProductos));
+        $html = $this->renderView('salida_camara/pedidos_atrasados.html.twig', array('pedidosProductos' => $pedidosProductos));
 
         $result = array(
             'html' => $html,

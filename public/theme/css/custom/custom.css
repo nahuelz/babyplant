@@ -5,7 +5,7 @@
 .portlet.light.bordered {border: 1px solid #d4d7db !important;}
 .portlet {box-shadow: 0px 2px 3px 2px rgba(0, 0, 0, 0.03);}
 .text-td-reciente {
-    font-size: 12px;
+    font-size: 13px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;

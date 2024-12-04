@@ -68,7 +68,7 @@ class Pedido {
 
     public function __toString(): string
     {
-        return 'Pedido '.$this->getId();
+        return 'Pedido N° '.$this->getId();
     }
 
 

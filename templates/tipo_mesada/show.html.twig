@@ -27,12 +27,47 @@
 
         <div class="card-body">
             <div class="row">
-                {{ macro_show._show_detail('Numero', tipo_mesada.nombre, 'col-md-3') }}
-                {{ macro_show._show_detail('Capacidad', tipo_mesada.capacidad, 'col-md-3') }}
-                {{ macro_show._show_detail('Tipo Mesada', tipo_mesada.tipoProducto, 'col-md-3') }}
-                {{ macro_show._show_detail('Habilitado', tipo_mesada.habilitado == 1 ? 'Si' : 'No', 'col-md-3') }}
+                {{ macro_show._show_detail('Numero', tipo_mesada.nombre, 'col-md-2') }}
+                {{ macro_show._show_detail('Capacidad', tipo_mesada.capacidad, 'col-md-2') }}
+                {{ macro_show._show_detail('Ocupado', tipo_mesada.ocupado, 'col-md-2') }}
+                {{ macro_show._show_detail('Tipo Mesada', tipo_mesada.tipoProducto, 'col-md-2') }}
+                {{ macro_show._show_detail('Habilitado', tipo_mesada.habilitado == 1 ? 'Si' : 'No', 'col-md-2') }}
             </div>
 
+            <div class="row mt-10">
+                <div class="col">
+                    <div class="d-flex">
+                    <hr>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">ID Pedido Producto</th>
+                            <th scope="col">N° Orden</th>
+                            <th scope="col">Producto</th>
+                            <th scope="col">Bandejas</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% if productos != null %}
+                            {% for producto in productos %}
+                                <tr>
+                                    <th scope="row">{{loop.index}}</th>
+                                    <td>{{ producto.id }}</td>
+                                    <td>{{ producto.numeroOrden }}</td>
+                                    <td>{{ producto.producto }}</td>
+                                    <td>{{ producto.cantidadBandejas }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5">No hay productos en la mesada</td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
         <div class="card-footer d-flex justify-content-between">
             <a href="{{ path('tipomesada_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>

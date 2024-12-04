@@ -1,14 +1,14 @@
-<?php
+<?php /** @noinspection ALL */
 
 namespace App\Entity;
 
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Traits\Auditoria;
 use App\Repository\PedidoProductoRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Grupo
@@ -30,60 +30,60 @@ class PedidoProducto {
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    protected $id;
+    protected int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=Pedido::class, inversedBy="pedidosProductos")
      * @ORM\JoinColumn(name="id_pedido", referencedColumnName="id", nullable=true)
      */
-    private $pedido;
+    private mixed $pedido;
 
     /**
      * @ORM\ManyToOne(targetEntity=TipoVariedad::class)
      * @ORM\JoinColumn(name="id_tipo_variedad", referencedColumnName="id", nullable=true)
      */
-    private $tipoVariedad;
+    private mixed $tipoVariedad;
 
     /**
      * @ORM\ManyToOne(targetEntity=TipoBandeja::class)
      * @ORM\JoinColumn(name="id_tipo_bandeja", referencedColumnName="id", nullable=true)
      */
-    private $tipoBandeja;
+    private mixed $tipoBandeja;
 
     /**
      * @ORM\Column(name="cantidad_bandejas_pedidas", type="string", length=50, nullable=true)
      */
-    private $cantBandejasPedidas;
+    private mixed $cantBandejasPedidas;
 
     /**
      * @ORM\Column(name="cantidad_bandejas_reales", type="string", length=50, nullable=true)
      */
-    private $cantBandejasReales;
+    private mixed $cantBandejasReales;
 
     /**
      * @ORM\Column(name="cantidad_semillas", type="string", length=50, nullable=true)
      */
-    private $cantSemillas;
+    private mixed $cantSemillas;
 
     /**
      * @ORM\Column(name="fecha_pedido", type="datetime", nullable=true)
      */
-    private $fechaPedido;
+    private mixed $fechaPedido;
 
     /**
      * @ORM\Column(name="fecha_siembra_pedido", type="datetime", nullable=true)
      */
-    private $fechaSiembraPedido;
+    private mixed $fechaSiembraPedido;
 
     /**
      * @ORM\Column(name="fecha_siembra_planificacion", type="datetime", nullable=true)
      */
-    private $fechaSiembraPlanificacion;
+    private mixed $fechaSiembraPlanificacion;
 
     /**
      * @ORM\Column(name="fecha_siembra_real", type="datetime", nullable=true)
      */
-    private $fechaSiembraReal;
+    private mixed $fechaSiembraReal;
 
     /**
      * @ORM\Column(name="fecha_entrada_camara", type="datetime", length=255, nullable=true)
@@ -91,41 +91,47 @@ class PedidoProducto {
     private $fechaEntradaCamara;
 
     /**
+     * @ORM\Column(name="fecha_entrada_camara_real", type="datetime", length=255, nullable=true)
+     */
+    private $fechaEntradaCamaraReal;
+
+    /**
      * @ORM\Column(name="fecha_salida_camara", type="datetime", length=255, nullable=true)
      */
-    private $fechaSalidaCamara;
+    private DateTime $fechaSalidaCamara;
 
     /**
      * @ORM\Column(name="fecha_salida_camara_real", type="datetime", length=255, nullable=true)
      */
     private $fechaSalidaCamaraReal;
 
+
     /**
      * @ORM\Column(name="fecha_entrega_pedido", type="datetime", nullable=true)
      */
-    private $fechaEntregaPedido;
+    private DateTime $fechaEntregaPedido;
 
     /**
      * @ORM\Column(name="fecha_entrega", type="datetime", nullable=true)
      */
-    private $fechaEntregaReal;
+    private DateTime $fechaEntregaReal;
 
 
     /**
      * @ORM\Column(name="cantidad_dias_produccion", type="string", length=50, nullable=true)
      */
-    private $cantDiasProduccion;
+    private mixed $cantDiasProduccion;
 
     /**
      * @ORM\ManyToOne(targetEntity=TipoOrigenSemilla::class)
      * @ORM\JoinColumn(name="id_tipo_origen_semilla", referencedColumnName="id", nullable=true)
      */
-    private $tipoOrigenSemilla;
+    private mixed $tipoOrigenSemilla;
 
     /**
      * @ORM\Column(name="otro_origen_semilla", type="string", length=50, nullable=true)
      */
-    private $otroOrigenSemilla;
+    private mixed $otroOrigenSemilla;
 
     /**
      * @ORM\OneToMany(targetEntity=EstadoPedidoProductoHistorico::class, mappedBy="pedidoProducto", cascade={"all"})
@@ -137,17 +143,17 @@ class PedidoProducto {
      * @ORM\ManyToOne(targetEntity=EstadoPedidoProducto::class)
      * @ORM\JoinColumn(name="id_estado_pedido_producto", referencedColumnName="id", nullable=false)
      */
-    private $estado;
+    private mixed $estado;
 
     /**
      * @ORM\Column(name="codigo_sobre", type="string", length=50, nullable=true)
      */
-    private $codigoSobre;
+    private mixed $codigoSobre;
 
     /**
      * @ORM\Column(name="observacion", type="string", length=255, nullable=true)
      */
-    private $observacion;
+    private mixed $observacion;
 
     /**
      * @ORM\Column(name="hora_siembra", type="datetime", length=255, nullable=true)
@@ -157,13 +163,13 @@ class PedidoProducto {
     /**
      * @ORM\Column(name="numero_orden", type="integer", nullable=true)
      */
-    private $numeroOrden;
+    private mixed $numeroOrden;
 
     /**
      * @ORM\OneToMany(targetEntity=PedidoProductoMesada::class, mappedBy="pedidoProducto", cascade={"all"})
      * @ORM\OrderBy({"id" = "DESC"})
      */
-    private $mesadas;
+    private mixed $mesadas;
 
 
     public function __construct()
@@ -190,7 +196,7 @@ class PedidoProducto {
     /**
      * @return mixed
      */
-    public function getPedido()
+    public function getPedido(): mixed
     {
         return $this->pedido;
     }
@@ -198,7 +204,7 @@ class PedidoProducto {
     /**
      * @param mixed $pedido
      */
-    public function setPedido($pedido): void
+    public function setPedido(mixed $pedido): void
     {
         $this->pedido = $pedido;
     }
@@ -206,7 +212,7 @@ class PedidoProducto {
     /**
      * @return mixed
      */
-    public function getTipoVariedad()
+    public function getTipoVariedad(): mixed
     {
         return $this->tipoVariedad;
     }
@@ -214,7 +220,7 @@ class PedidoProducto {
     /**
      * @param mixed $tipoVariedad
      */
-    public function setTipoVariedad($tipoVariedad): void
+    public function setTipoVariedad(mixed $tipoVariedad): void
     {
         $this->tipoVariedad = $tipoVariedad;
     }
@@ -222,7 +228,7 @@ class PedidoProducto {
     /**
      * @return mixed
      */
-    public function getTipoBandeja()
+    public function getTipoBandeja(): mixed
     {
         return $this->tipoBandeja;
     }
@@ -230,7 +236,7 @@ class PedidoProducto {
     /**
      * @param mixed $tipoBandeja
      */
-    public function setTipoBandeja($tipoBandeja): void
+    public function setTipoBandeja(mixed $tipoBandeja): void
     {
         $this->tipoBandeja = $tipoBandeja;
     }
@@ -238,7 +244,7 @@ class PedidoProducto {
     /**
      * @return mixed
      */
-    public function getCantBandejasPedidas()
+    public function getCantBandejasPedidas(): mixed
     {
         return $this->cantBandejasPedidas;
     }
@@ -246,7 +252,7 @@ class PedidoProducto {
     /**
      * @param mixed $cantBandejasPedidas
      */
-    public function setCantBandejasPedidas($cantBandejasPedidas): void
+    public function setCantBandejasPedidas(mixed $cantBandejasPedidas): void
     {
         $this->cantBandejasPedidas = $cantBandejasPedidas;
     }
@@ -254,7 +260,7 @@ class PedidoProducto {
     /**
      * @return mixed
      */
-    public function getCantBandejasReales()
+    public function getCantBandejasReales(): mixed
     {
         return $this->cantBandejasReales;
     }
@@ -262,7 +268,7 @@ class PedidoProducto {
     /**
      * @param mixed $cantBandejasReales
      */
-    public function setCantBandejasReales($cantBandejasReales): void
+    public function setCantBandejasReales(mixed $cantBandejasReales): void
     {
         $this->cantBandejasReales = $cantBandejasReales;
     }
@@ -270,7 +276,7 @@ class PedidoProducto {
     /**
      * @return mixed
      */
-    public function getCantSemillas()
+    public function getCantSemillas(): mixed
     {
         return $this->cantSemillas;
     }
@@ -278,7 +284,7 @@ class PedidoProducto {
     /**
      * @param mixed $cantSemillas
      */
-    public function setCantSemillas($cantSemillas): void
+    public function setCantSemillas(mixed $cantSemillas): void
     {
         $this->cantSemillas = $cantSemillas;
     }
@@ -286,7 +292,7 @@ class PedidoProducto {
     /**
      * @return mixed
      */
-    public function getFechaPedido()
+    public function getFechaPedido(): mixed
     {
         return $this->fechaPedido;
     }
@@ -294,7 +300,7 @@ class PedidoProducto {
     /**
      * @param mixed $fechaPedido
      */
-    public function setFechaPedido($fechaPedido): void
+    public function setFechaPedido(mixed $fechaPedido): void
     {
         $this->fechaPedido = $fechaPedido;
     }
@@ -302,7 +308,7 @@ class PedidoProducto {
     /**
      * @return mixed
      */
-    public function getFechaSiembraPedido()
+    public function getFechaSiembraPedido(): mixed
     {
         return $this->fechaSiembraPedido;
     }
@@ -310,7 +316,7 @@ class PedidoProducto {
     /**
      * @param mixed $fechaSiembraPedido
      */
-    public function setFechaSiembraPedido($fechaSiembraPedido): void
+    public function setFechaSiembraPedido(mixed $fechaSiembraPedido): void
     {
         $this->fechaSiembraPedido = $fechaSiembraPedido;
         $this->setFechaSiembraPlanificacion($fechaSiembraPedido);
@@ -319,7 +325,7 @@ class PedidoProducto {
     /**
      * @return mixed
      */
-    public function getFechaSiembraReal()
+    public function getFechaSiembraReal(): mixed
     {
         return $this->fechaSiembraReal;
     }
@@ -327,14 +333,12 @@ class PedidoProducto {
     /**
      * @param mixed $fechaSiembraReal
      */
-    public function setFechaSiembraReal($fechaSiembraReal): void
+    public function setFechaSiembraReal(mixed $fechaSiembraReal): void
     {
         $this->fechaSiembraReal = $fechaSiembraReal;
     }
 
-    /**
-     * @return mixed
-     */
+
     public function getFechaEntradaCamara()
     {
         return $this->fechaEntradaCamara;
@@ -343,15 +347,15 @@ class PedidoProducto {
     /**
      * @param mixed $fechaEntradaCamara
      */
-    public function setFechaEntradaCamara($fechaEntradaCamara): void
+    public function setFechaEntradaCamara(mixed $fechaEntradaCamara): void
     {
         $this->fechaEntradaCamara = $fechaEntradaCamara;
     }
 
     /**
-     * @return mixed
+     * @return DateTime
      */
-    public function getFechaSalidaCamara()
+    public function getFechaSalidaCamara(): DateTime
     {
         return $this->fechaSalidaCamara;
     }
@@ -359,14 +363,11 @@ class PedidoProducto {
     /**
      * @param mixed $fechaSalidaCamara
      */
-    public function setFechaSalidaCamara($fechaSalidaCamara): void
+    public function setFechaSalidaCamara(mixed $fechaSalidaCamara): void
     {
         $this->fechaSalidaCamara = $fechaSalidaCamara;
     }
 
-    /**
-     * @return mixed
-     */
     public function getFechaSalidaCamaraReal()
     {
         return $this->fechaSalidaCamaraReal;
@@ -375,15 +376,15 @@ class PedidoProducto {
     /**
      * @param mixed $fechaSalidaCamaraReal
      */
-    public function setFechaSalidaCamaraReal($fechaSalidaCamaraReal): void
+    public function setFechaSalidaCamaraReal(mixed $fechaSalidaCamaraReal): void
     {
         $this->fechaSalidaCamaraReal = $fechaSalidaCamaraReal;
     }
 
     /**
-     * @return mixed
+     * @return DateTime
      */
-    public function getFechaEntregaPedido()
+    public function getFechaEntregaPedido(): DateTime
     {
         return $this->fechaEntregaPedido;
     }
@@ -391,15 +392,15 @@ class PedidoProducto {
     /**
      * @param mixed $fechaEntregaPedido
      */
-    public function setFechaEntregaPedido($fechaEntregaPedido): void
+    public function setFechaEntregaPedido(mixed $fechaEntregaPedido): void
     {
         $this->fechaEntregaPedido = $fechaEntregaPedido;
     }
 
     /**
-     * @return mixed
+     * @return DateTime
      */
-    public function getFechaEntregaReal()
+    public function getFechaEntregaReal(): DateTime
     {
         return $this->fechaEntregaReal;
     }
@@ -407,7 +408,7 @@ class PedidoProducto {
     /**
      * @param mixed $fechaEntregaReal
      */
-    public function setFechaEntregaReal($fechaEntregaReal): void
+    public function setFechaEntregaReal(mixed $fechaEntregaReal): void
     {
         $this->fechaEntregaReal = $fechaEntregaReal;
     }
@@ -415,7 +416,7 @@ class PedidoProducto {
     /**
      * @return mixed
      */
-    public function getCantDiasProduccion()
+    public function getCantDiasProduccion(): mixed
     {
         return $this->cantDiasProduccion;
     }
@@ -423,7 +424,7 @@ class PedidoProducto {
     /**
      * @param mixed $cantDiasProduccion
      */
-    public function setCantDiasProduccion($cantDiasProduccion): void
+    public function setCantDiasProduccion(mixed $cantDiasProduccion): void
     {
         $this->cantDiasProduccion = $cantDiasProduccion;
     }
@@ -431,7 +432,7 @@ class PedidoProducto {
     /**
      * @return mixed
      */
-    public function getTipoOrigenSemilla()
+    public function getTipoOrigenSemilla(): mixed
     {
         return $this->tipoOrigenSemilla;
     }
@@ -439,7 +440,7 @@ class PedidoProducto {
     /**
      * @param mixed $tipoOrigenSemilla
      */
-    public function setTipoOrigenSemilla($tipoOrigenSemilla): void
+    public function setTipoOrigenSemilla(mixed $tipoOrigenSemilla): void
     {
         $this->tipoOrigenSemilla = $tipoOrigenSemilla;
     }
@@ -447,7 +448,7 @@ class PedidoProducto {
     /**
      * @return mixed
      */
-    public function getOtroOrigenSemilla()
+    public function getOtroOrigenSemilla(): mixed
     {
         return $this->otroOrigenSemilla;
     }
@@ -455,14 +456,11 @@ class PedidoProducto {
     /**
      * @param mixed $otroOrigenSemilla
      */
-    public function setOtroOrigenSemilla($otroOrigenSemilla): void
+    public function setOtroOrigenSemilla(mixed $otroOrigenSemilla): void
     {
         $this->otroOrigenSemilla = $otroOrigenSemilla;
     }
 
-    /**
-     * @return ArrayCollection
-     */
     public function getHistoricoEstados()
     {
         return $this->historicoEstados;
@@ -479,7 +477,7 @@ class PedidoProducto {
     /**
      * @return mixed
      */
-    public function getEstado()
+    public function getEstado(): mixed
     {
         return $this->estado;
     }
@@ -487,7 +485,7 @@ class PedidoProducto {
     /**
      * @param mixed $estado
      */
-    public function setEstado($estado): void
+    public function setEstado(mixed $estado): void
     {
         $this->estado = $estado;
     }
@@ -495,7 +493,7 @@ class PedidoProducto {
     /**
      * @return mixed
      */
-    public function getCodigoSobre()
+    public function getCodigoSobre(): mixed
     {
         return $this->codigoSobre;
     }
@@ -503,7 +501,7 @@ class PedidoProducto {
     /**
      * @param mixed $codigoSobre
      */
-    public function setCodigoSobre($codigoSobre): void
+    public function setCodigoSobre(mixed $codigoSobre): void
     {
         $this->codigoSobre = $codigoSobre;
     }
@@ -511,7 +509,7 @@ class PedidoProducto {
     /**
      * @return mixed
      */
-    public function getObservacion()
+    public function getObservacion(): mixed
     {
         return $this->observacion;
     }
@@ -519,31 +517,32 @@ class PedidoProducto {
     /**
      * @param mixed $observacion
      */
-    public function setObservacion($observacion): void
+    public function setObservacion(mixed $observacion): void
     {
         $this->observacion = $observacion;
     }
 
     /**
-     * @return mixed
-     */
-    public function getNumeroOrden()
-    {
-        return $this->numeroOrden;
-    }
-
-    /**
      * @param mixed $numeroOrden
      */
-    public function setNumeroOrden($numeroOrden): void
+    public function setNumeroOrden(mixed $numeroOrden): void
     {
         $this->numeroOrden = $numeroOrden;
     }
 
+    public function getMesada()
+    {
+        $mesadas = '';
+        foreach ($this->mesadas as $mesada){
+            $mesadas .= $mesada->getMesada();
+        }
+        return $mesadas;
+    }
+
     /**
      * @return mixed
      */
-    public function getMesadas()
+    public function getMesadas(): mixed
     {
         return $this->mesadas;
     }
@@ -551,7 +550,7 @@ class PedidoProducto {
     /**
      * @param mixed $mesadas
      */
-    public function setMesadas($mesadas): void
+    public function setMesadas(mixed $mesadas): void
     {
         $this->mesadas = $mesadas;
     }
@@ -580,14 +579,15 @@ class PedidoProducto {
         return $this;
     }
 
-    public function getHoraSiembra(){
+    public function getHoraSiembra()
+    {
         return $this->horaSiembra;
     }
 
     /**
      * @param mixed $horaSiembra
      */
-    public function setHoraSiembra($horaSiembra): void
+    public function setHoraSiembra(mixed $horaSiembra): void
     {
         if ($horaSiembra != null) {
             $fecha = $this->getFechaSiembraReal();
@@ -596,7 +596,7 @@ class PedidoProducto {
             $fecha->setTime($hora, $minutos);
             $this->horaSiembra = $fecha;
         }else{
-            $this->horaSiembra = new \DateTime();
+            $this->horaSiembra = new DateTime();
         }
     }
 
@@ -604,46 +604,66 @@ class PedidoProducto {
         return $this->getTipoVariedad()->getTipoSubProducto()->getTipoProducto();
     }
 
-    public function getNumeroOrdenCompleto(){
-        return ($this->numeroOrden . ' ' . strtoupper(substr($this->getTipoProducto(), 0, 3)));
-    }
 
-    public function getDiasEnCamara(){
-        return '+' . $this->getTipoVariedad()->getTipoSubProducto()->getTipoProducto()->getCantDiasCamara() . ' day';
+    public function getNumeroOrdenCompleto()
+    {
+        return $this->numeroOrden . ' '.strtoupper(substr($this->getTipoProducto(), 0, 3));
     }
 
     /**
      * @return mixed
      */
-    public function addMesadas($mesada)
+    public function getNumeroOrden(): mixed
+    {
+        return $this->numeroOrden;
+    }
+
+    public function getDiasEnCamara(): string
+    {
+        return '+' . $this->getTipoVariedad()->getTipoSubProducto()->getTipoProducto()->getCantDiasCamara() . ' day';
+    }
+
+    public function addMesadas($mesada): void
     {
         if (!$this->mesadas->contains($mesada)) {
             $this->mesadas[] = $mesada;
             $mesada->setPedidoProducto($this);
         }
-
-        return $this;
     }
 
-    public function getBandejas(){
-        return ($this->cantBandejas.' (x'.$this->getTipoBandeja()->getNombre().') ');
+    public function getBandejas(): string
+    {
+        return ($this->cantBandejasReales.' (x'.$this->getTipoBandeja()->getNombre().') ');
     }
 
-    public function getCantidadDiasEnInvernaculo (){
+    public function getCantidadDiasEnInvernaculo (): string
+    {
         $fechaEntradaInvernaculo = $this->fechaSalidaCamaraReal;
 
         if ($this->getEstado()->getCodigoInterno() == ConstanteEstadoPedidoProducto::EN_INVERNACULO) {
-            $hasta = new \DateTime();
+            $hasta = new DateTime();
         }else{
             $hasta = $this->getFechaEntregaPedido();
         }
         return($hasta->diff($fechaEntradaInvernaculo)->format("%a"));
     }
 
+    public function getCantidadDiasEnCamara (): string
+    {
+        $fechaSalidaCamara = $this->fechaSalidaCamaraReal != null ? $this->fechaSalidaCamaraReal : new DateTime();
+
+
+         if ($this->fechaEntradaCamaraReal != null) {
+            return ($this->fechaEntradaCamaraReal->diff($fechaSalidaCamara)->format("%a")) ;
+        } else {
+            return '0';
+        }
+    }
+
     /**
      * @return mixed
      */
-    public function getFechaSiembraPlanificacion()
+    public function getFechaSiembraPlanificacion(): mixed
     {
         return $this->fechaSiembraPlanificacion;
     }
@@ -651,10 +671,28 @@ class PedidoProducto {
     /**
      * @param mixed $fechaSiembraPlanificacion
      */
-    public function setFechaSiembraPlanificacion($fechaSiembraPlanificacion): void
+    public function setFechaSiembraPlanificacion(mixed $fechaSiembraPlanificacion): void
     {
         $this->fechaSiembraPlanificacion = $fechaSiembraPlanificacion;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getFechaEntradaCamaraReal()
+    {
+        return $this->fechaEntradaCamaraReal;
+    }
+
+    /**
+     * @param mixed $fechaEntradaCamaraReal
+     */
+    public function setFechaEntradaCamaraReal($fechaEntradaCamaraReal): void
+    {
+        $this->fechaEntradaCamaraReal = $fechaEntradaCamaraReal;
+    }
+
+
 
 
 }

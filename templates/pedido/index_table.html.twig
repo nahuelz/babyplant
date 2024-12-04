@@ -1,3 +1,5 @@
+{% set EstadoPedidoProducto = 'App\\Entity\\Constants\\ConstanteEstadoPedidoProducto' %}
+{% set EN_INVERNACULO = constant(EstadoPedidoProducto ~ '::EN_INVERNACULO') %}
 {% autoescape false %}
     {
     "data": [
@@ -27,6 +29,9 @@
         "show" : " {{ path( "pedido_show", { "id": entity.id }) }}",
         "historico_estado": "{{ path( "pedido_historico_estado", { 'id': entity.idProducto }) }}",
         "print" : " {{ path( "imprimir_pedido", { "id": entity.id }) }}"
+        {% if entity.idEstado ==  EN_INVERNACULO%}
+            ,"remito" : " {{ path( "imprimir_pedido", { "id": entity.id }) }}"
+        {% endif %}
         }]{{ (loop.last ? '' : ',') }}
     {% endfor %}
     ]

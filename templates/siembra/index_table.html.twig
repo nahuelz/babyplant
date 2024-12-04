@@ -3,6 +3,7 @@
     {% for entity in entities %}
         {
         "id": "{{ entity.id }}",
+        "idPedido": "{{ entity.idPedido }}",
         "title": "{{ entity.title|html_format|raw|default('-') }}",
         "start": "{{ entity.fechaSiembraPlanificacion is not null ? entity.fechaSiembraPlanificacion|date('Y-m-d') : '-' }}",
         "description": "{{ entity.descripcion|default('-') }}",

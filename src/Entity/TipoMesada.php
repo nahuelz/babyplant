@@ -34,6 +34,8 @@ class TipoMesada extends EntidadBasica {
      */
     private $tipoProducto;
 
+
+
     public function __construct() {
         parent::__construct();
         $this->ocupado = 0;

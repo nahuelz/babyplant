@@ -119,6 +119,7 @@ class PedidoController extends BaseController {
         $rsm->addScalarResult('fechaSiembraPedido', 'fechaSiembraPedido');
         $rsm->addScalarResult('fechaEntregaPedido', 'fechaEntregaPedido');
         $rsm->addScalarResult('estado', 'estado');
+        $rsm->addScalarResult('idEstado', 'idEstado');
         $rsm->addScalarResult('colorEstado', 'colorEstado');
         $rsm->addScalarResult('ordenSiembra', 'ordenSiembra');
         $rsm->addScalarResult('mesada', 'mesada');

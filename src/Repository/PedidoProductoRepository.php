@@ -4,9 +4,11 @@ namespace App\Repository;
 
 use App\Entity\PedidoProducto;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Validator\Constraints\Type;
 
 /**
  *
@@ -47,7 +49,7 @@ class PedidoProductoRepository extends ServiceEntityRepository {
 
         $hoy = date('Ymd');
         $query = $this->createQueryBuilder('p')
-            ->select('pe.id as idPedido, p.id, tp.nombre as nombreProducto, sb.nombre as nombreSubProducto, v.nombre as nombreVariedad, p.fechaSiembraPlanificacion')
+            ->select('pe.id as idPedido, p.id, tp.nombre as nombreProducto, sb.nombre as nombreSubProducto, v.nombre as nombreVariedad, p.fechaSiembraPlanificacion, p.fechaSiembraReal, p.numeroOrden')
             ->leftJoin('App:TipoVariedad', 'v', Join::WITH, 'p.tipoVariedad = v')
             ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')
             ->leftJoin('App:TipoProducto', 'tp', Join::WITH, 'sb.tipoProducto = tp')
@@ -56,6 +58,22 @@ class PedidoProductoRepository extends ServiceEntityRepository {
             ->andWhere('p.fechaSiembraPlanificacion < :hoy')
             ->setParameter('idEstado', $idEstado)
             ->setParameter('hoy', $hoy)
+            ->getQuery();
+
+        return $query->getResult();
+    }
+    public function getProductosEnMesada($id)
+    {
+        $query = $this->createQueryBuilder('pp')
+            ->select("pp.id, tp.nombre as nombreProducto,pp.numeroOrden, concat(tp.nombre,' ', sb.nombre,' ',v.nombre) as producto, m.cantidadBandejas")
+            ->leftJoin('App:Pedido', 'p', Join::WITH, 'pp.pedido = p')
+            ->leftJoin('App:TipoVariedad', 'v', Join::WITH, 'pp.tipoVariedad = v')
+            ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')
+            ->leftJoin('App:TipoProducto', 'tp', Join::WITH, 'sb.tipoProducto = tp')
+            ->leftJoin('App:PedidoProductoMesada', 'ppm', Join::WITH, 'ppm.pedidoProducto = pp')
+            ->leftJoin('App:Mesada', 'm', Join::WITH, 'ppm.mesada = m')
+            ->andWhere('m.id = :id')
+            ->setParameter('id', $id)
             ->getQuery();
 
         return $query->getResult();

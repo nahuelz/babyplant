@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Constants\ConstanteTipoConsulta;
+use App\Entity\Mesada;
+use App\Entity\PedidoProducto;
 use App\Entity\TipoMesada;
 use App\Form\TipoMesadaType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -90,8 +92,11 @@ class TipoMesadaController extends BaseController
     #[Route('/{id}', name: 'app_tipo_mesada_show', methods: ['GET'])]
     public function show(TipoMesada $tipoMesada): Response
     {
+        $productos = $this->doctrine->getRepository(PedidoProducto::class)->getProductosEnMesada($tipoMesada->getId());
+
         return $this->render('tipo_mesada/show.html.twig', [
             'tipo_mesada' => $tipoMesada,
+            'productos' => $productos,
         ]);
     }
 

@@ -50,6 +50,7 @@ var KTCalendarListView = function() {
                     if (__ES_ADMIN__) {
                         var element = $(info.el);
                         var idProducto = element.data('id');
+                        var idPedido = element.data('idpedido');
                         var actionUrl = element.data('href');
                         $.ajax({
                             type: 'POST',
@@ -59,7 +60,7 @@ var KTCalendarListView = function() {
                             }
                         }).done(function (form) {
                             showDialog({
-                                titulo: '<i class="fa fa-list-ul margin-right-10"></i> Orden de siembra pedido N° ' + idProducto,
+                                titulo: '<i class="fa fa-list-ul margin-right-10"></i><a target="_blank" href="'+__HOMEPAGE_PATH__+'pedido/'+idPedido+'/#'+idProducto+'"> Orden de siembra pedido producto N° ' + idProducto+'</a>',
                                 contenido: form,
                                 className: 'modal-dialog-small',
                                 color: 'yellow ',
@@ -68,6 +69,7 @@ var KTCalendarListView = function() {
                                 labelSuccess: 'SEMBRAR',
                                 closeButton: true,
                                 callbackCancel: function () {
+                                    console.log(info.event.start > TODAY);
                                     return;
                                 },
                                 callbackSave: function () {
@@ -141,6 +143,7 @@ var KTCalendarListView = function() {
                     var element = $(info.el);
                     element.find('.fc-title').html(info.event.title);
                     element.attr('data-id', info.event.id);
+                    element.attr('data-idpedido', info.event.extendedProps.idPedido);
                     element.attr('data-toggle', 'modal');
                     element.attr('data-target', '#productoModal');
                     element.attr('data-href', info.event.extendedProps.href);

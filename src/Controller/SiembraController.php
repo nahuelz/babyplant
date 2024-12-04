@@ -53,6 +53,7 @@ class SiembraController extends BaseController
         $rsm = new ResultSetMapping();
 
         $rsm->addScalarResult('id', 'id');
+        $rsm->addScalarResult('idPedido', 'idPedido');
         $rsm->addScalarResult('nombreCompleto', 'nombreCompleto');
         $rsm->addScalarResult('nombreCorto', 'nombreCorto');
         $rsm->addScalarResult('title', 'title');

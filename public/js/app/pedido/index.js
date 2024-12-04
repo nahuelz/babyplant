@@ -400,6 +400,8 @@ function dataTablesActionFormatter(data, type, full, meta) {
             +
             (data.print !== undefined ? '<a class="dropdown-item" href="' + data.print + '"><i class="la la-edit" style="margin-right: 5px;"></i> Print</a>' : '')
             +
+            (data.remito !== undefined ? '<a class="dropdown-item" href="' + data.remito + '"><i class="la la-edit" style="margin-right: 5px;"></i> Remito</a>' : '')
+            +
             (data.delete !== undefined ? '<a class="dropdown-item accion-borrar" href="' + data.delete + '"><i class="la la-remove" style="margin-right: 5px;"></i> Borrar</a>' : '')
         ;
 
