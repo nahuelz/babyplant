@@ -340,6 +340,16 @@ class AppFixtures extends Fixture
         $statement = $connection->prepare("create definer = root@localhost view view_tipo_variedad as
                                             select `t`.`id` AS `id`, `t`.`nombre` AS `nombre`, `t`.`habilitado` AS `habilitado`
                                             from `babyplant2`.`tipo_variedad` `t`;");
+        $statement->execute();        $connection = $manager->getConnection();
+        $statement = $connection->prepare("CREATE TABLE `sessions` (
+                                            `sess_id` varbinary(128) NOT NULL,
+                                              `sess_data` blob NOT NULL,
+                                              `sess_lifetime` int(10) unsigned NOT NULL,
+                                              `sess_time` int(10) unsigned NOT NULL,
+                                              `user_id` int(11) DEFAULT NULL,
+                                              `user_ip` varchar(255) COLLATE utf8_spanish_ci DEFAULT NULL,
+                                              PRIMARY KEY (`sess_id`) USING BTREE
+                                            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci ROW_FORMAT=DYNAMIC;");
         $statement->execute();
 
         $connection = $manager->getConnection();
