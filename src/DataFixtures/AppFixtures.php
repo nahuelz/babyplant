@@ -289,19 +289,6 @@ class AppFixtures extends Fixture
         $statement->execute();
 
         $connection = $manager->getConnection();
-        $statement = $connection->prepare("create definer = root@localhost view view_tipo_mesada as
-                                            select `tm`.`id`         AS `id`,
-                                                   `tm`.`numero`     AS `nombre`,
-                                                   `tm`.`capacidad`  AS `capacidad`,
-                                                   `tm`.`ocupado`    AS `ocupado`,
-                                                   `tp`.`nombre`     AS `tipoMesada`,
-                                                   `tm`.`habilitado` AS `habilitado`
-                                            from (`babyplant2`.`tipo_mesada` `tm` left join `babyplant2`.`tipo_producto` `tp`
-                                                  on (`tp`.`id` = `tm`.`id_tipo_producto`))
-                                            order by `tm`.`numero`;");
-        $statement->execute();
-
-        $connection = $manager->getConnection();
         $statement = $connection->prepare("create definer = root@localhost view view_tipo_origen_semilla as
                                             select `t`.`id` AS `id`, `t`.`nombre` AS `nombre`, `t`.`habilitado` AS `habilitado`
                                             from `babyplant2`.`tipo_origen_semilla` `t`;");
@@ -340,7 +327,35 @@ class AppFixtures extends Fixture
         $statement = $connection->prepare("create definer = root@localhost view view_tipo_variedad as
                                             select `t`.`id` AS `id`, `t`.`nombre` AS `nombre`, `t`.`habilitado` AS `habilitado`
                                             from `babyplant2`.`tipo_variedad` `t`;");
-        $statement->execute();        $connection = $manager->getConnection();
+        $statement->execute();
+
+        $connection = $manager->getConnection();
+        $statement = $connection->prepare("create definer = root@localhost function compareDestinatarios(_roles varchar(5000), _destinatarios varchar(5000)) returns tinyint(1)
+BEGIN
+    DECLARE v_destinatario VARCHAR(5000);
+    DECLARE i INT DEFAULT 1;
+    DECLARE result TINYINT DEFAULT 0;
+
+    SET v_destinatario = REPLACE(SUBSTRING(SUBSTRING_INDEX(_destinatarios, ',', i), LENGTH(SUBSTRING_INDEX(_destinatarios, ',', i -1)) + 1), ',', '');
+
+    WHILE(v_destinatario <> '') DO
+            -- SET v_chip = SUBSTRING(v_chip, 1, 15);
+
+            IF( _roles LIKE CONCAT('%', v_destinatario, '%')) THEN
+                SET result = 1;
+            END IF;
+
+            SET i = i + 1;
+
+            SET v_destinatario = REPLACE(SUBSTRING(SUBSTRING_INDEX(_destinatarios, ',', i), LENGTH(SUBSTRING_INDEX(_destinatarios, ',', i -1)) + 1), ',', '');
+
+        END WHILE;
+
+    RETURN result;
+END;");
+        $statement->execute();
+
+        $connection = $manager->getConnection();
         $statement = $connection->prepare("CREATE TABLE `sessions` (
                                             `sess_id` varbinary(128) NOT NULL,
                                               `sess_data` blob NOT NULL,

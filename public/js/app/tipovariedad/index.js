@@ -52,6 +52,14 @@ function datatablesGetColDef() {
             name: 'nombre',
         },
         {
+            targets: index++,
+            name: 'nombre_sub_producto',
+        },
+        {
+            targets: index++,
+            name: 'nombre_producto',
+        },
+        {
             targets: -1,
             name: 'acciones',
             title: 'Acciones',

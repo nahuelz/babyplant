@@ -4,6 +4,8 @@
     [
     "{{ entity.id }}",
     "{{ entity.nombre|default('-') }}",
+    "{{ entity.nombre_sub_producto|default('-') }}",
+    "{{ entity.nombre_producto|default('-') }}",
     "{{ entity.habilitado|boolean_format }}",
     {
     {% if is_granted('ROLE_MENU_CONFIGURACION') %}

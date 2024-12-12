@@ -38,11 +38,15 @@ class TipoVariedadController extends BaseController
 
         $rsm->addScalarResult('id', 'id');
         $rsm->addScalarResult('nombre', 'nombre');
+        $rsm->addScalarResult('nombre_sub_producto', 'nombre_sub_producto');
+        $rsm->addScalarResult('nombre_producto', 'nombre_producto');
         $rsm->addScalarResult('habilitado', 'habilitado');
 
         $columnDefinition = [
             ['field' => 'id', 'type' => '', 'searchable' => false, 'sortable' => false],
             ['field' => 'nombre', 'type' => 'string', 'searchable' => true, 'sortable' => true],
+            ['field' => 'nombre_sub_producto', 'type' => 'string', 'searchable' => true, 'sortable' => true],
+            ['field' => 'nombre_producto', 'type' => 'string', 'searchable' => true, 'sortable' => true],
             ['field' => 'habilitado', 'type' => 'select', 'searchable' => true, 'sortable' => true],
             ['field' => 'acciones', 'type' => '', 'searchable' => false, 'sortable' => false]
         ];
