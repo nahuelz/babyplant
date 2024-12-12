@@ -41,6 +41,7 @@ class RegistrationFormType extends AbstractType {
             )
             ->add('username', TextType::class, array(
                 'label' => 'Usuario',
+                'required' => false,
                 'attr' => array('class' => 'form-control'))
             )
             ->add('nombre', TextType::class, array(
@@ -89,6 +90,7 @@ class RegistrationFormType extends AbstractType {
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
                 'mapped' => false,
+                'required' => false,
                 'label' => 'Contraseña',
                 'constraints' => [
                     new NotBlank([

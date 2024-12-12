@@ -289,10 +289,6 @@ class PedidoController extends BaseController {
 
         /** @var PedidoProducto $pedidoProducto */
         foreach ($entity->getPedidosProductos() as $pedidoProducto){
-            $pedidoProducto->setFechaEntregaReal($pedidoProducto->getFechaEntregaPedido());
-            $pedidoProducto->setFechaSiembraReal($pedidoProducto->getFechaSiembraPedido());
-            $pedidoProducto->setFechaEntregaReal($pedidoProducto->getFechaEntregaPedido());
-            $pedidoProducto->setCantBandejasReales($pedidoProducto->getCantBandejasPedidas());
             $pedidoProducto->setPedido($entity);
         }
         return true;
