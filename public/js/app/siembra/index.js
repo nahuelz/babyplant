@@ -69,8 +69,7 @@ var KTCalendarListView = function() {
                                 labelSuccess: 'SEMBRAR',
                                 closeButton: true,
                                 callbackCancel: function () {
-                                    console.log(info.event.start > TODAY);
-                                    return;
+
                                 },
                                 callbackSave: function () {
                                     $.ajax({
@@ -95,6 +94,13 @@ var KTCalendarListView = function() {
                                     });
                                 },
                                 callbackSuccess: function () {
+                                    if (info.event.start.toISOString() > todayDate.toISOString()){
+                                        Swal.fire({
+                                            title: "ERROR",
+                                            html: "No se puede cambiar el estado un producto planificado posterior al día de hoy!",
+                                        });
+                                        return false;
+                                    }
                                     $.ajax({
                                         type: 'post',
                                         dataType: 'json',

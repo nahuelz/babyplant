@@ -93,19 +93,20 @@
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-history icon-3x text-dark', 'nombreModulo': 'Historial de Entregas','action': '#', 'descripcionModulo': 'Aqui podras ver el historial de entrega' } %}
                     {% endif %}#}
 
-                    {# REMITOS
-                    {% if is_granted("ROLE_REMITOS") %}
-                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-receipt icon-3x text-dark', 'nombreModulo': 'Remitos','action': '#', 'descripcionModulo': 'Aqui podra ver los remitos' } %}
-                    {% endif %}#}
 
                     {# ESTADISTICAS
                     {% if is_granted("ROLE_ESTADISTICAS") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-poll icon-3x text-dark', 'nombreModulo': 'Estadisticas','action': '#', 'descripcionModulo': 'Aqui podra ver las estadisticas' } %}
                     {% endif %}#}
 
-                    {# MESADAS #}
+                    {# MESADAS
                     {% if is_granted("ROLE_MESADAS") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-table icon-3x text-dark', 'nombreModulo': 'Ver Mesadas','action': '#', 'descripcionModulo': 'Aqui podra ver las mesadas' } %}
+                    {% endif %} #}
+
+                    {# REMITOS #}
+                    {% if is_granted("ROLE_REMITO") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-receipt icon-3x text-dark', 'nombreModulo': 'Remitos','action': path('remito_index'), 'descripcionModulo': 'Aqui podra ver los remitos' } %}
                     {% endif %}
 
                     {# DATOS TECNICOS

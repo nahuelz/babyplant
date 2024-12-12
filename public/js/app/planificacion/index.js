@@ -72,6 +72,13 @@ var KTCalendarListView = function() {
                                 return;
                             },
                             callbackSuccess: function () {
+                                if (info.event.start.toISOString() < todayDate.toISOString()){
+                                    Swal.fire({
+                                        title: "ERROR",
+                                        html: "No se puede planificar un pedido de una fecha anterior a la de hoy!",
+                                    });
+                                    return false;
+                                }
                                 $.ajax({
                                     type: 'post',
                                     dataType: 'json',
@@ -108,6 +115,7 @@ var KTCalendarListView = function() {
                     element.attr('data-toggle', 'modal');
                     element.attr('data-target', '#productoModal');
                     element.attr('data-href', info.event.extendedProps.href);
+                    /*
                     if (info.event.extendedProps && info.event.extendedProps.description) {
                         if (element.hasClass('fc-day-grid-event')) {
                             element.data('content', info.event.extendedProps.description);
@@ -118,7 +126,7 @@ var KTCalendarListView = function() {
                         } else if (element.find('.fc-list-item-title').lenght !== 0) {
                             element.find('.fc-list-item-title').append('<div class="fc-description">' + info.event.extendedProps.description + '</div>');
                         }
-                    }
+                    }*/
                 },
                 eventDrop: function(info) {
                     dialogFinalizarForm = '\

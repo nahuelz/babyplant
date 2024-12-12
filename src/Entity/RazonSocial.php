@@ -42,7 +42,7 @@ class RazonSocial
     private $cuit;
 
     public function __toString(): string {
-        return ($this->razonSocial . ' - ' . $this->cuit);
+        return ($this->razonSocial . ' ' . $this->cuit);
     }
 
     /**

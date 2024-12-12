@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use App\Controller\BaseController;
-use App\Entity\Constants\ConstanteAPI;
 use App\Entity\Constants\ConstanteEstadoPedido;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Constants\ConstanteIP;
@@ -22,12 +20,11 @@ use App\Form\RegistrationFormType;
 use App\Service\LogAuditoriaService;
 use DateInterval;
 use DateTime;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Mpdf\Mpdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -463,6 +460,8 @@ class PedidoController extends BaseController {
         $pedido = $em->getRepository("App\Entity\Pedido")->find($id);
         /* @var $pedido Pedido */
 
+        //return new Response($this->renderView('pedido/pedido_pdf.html.twig', array('entity' => $pedido)));
+
         if (!$pedido) {
             throw $this->createNotFoundException("No se puede encontrar la entidad PEDIDO.");
         }
@@ -496,5 +495,14 @@ class PedidoController extends BaseController {
         $mpdfOutput = $pdfService->Output($filename, 'I');
 
         return new Response($mpdfOutput);
+    }
+
+    /**
+     *
+     * @return string
+     */
+    protected function getPrintOutputType() {
+// "I" = Inline , "D" = Download
+        return "I";
     }
 }

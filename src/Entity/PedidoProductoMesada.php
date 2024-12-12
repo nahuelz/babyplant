@@ -34,10 +34,11 @@ class PedidoProductoMesada {
     private $pedidoProducto;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Mesada::class, cascade={"all"})
+     * @ORM\ManyToOne(targetEntity=Mesada::class, inversedBy="pedidosProductosMesadas", cascade={"all"})
      * @ORM\JoinColumn(name="id_mesada", referencedColumnName="id")
      */
     private $mesada;
+
 
     /**
      * @return int
@@ -86,5 +87,7 @@ class PedidoProductoMesada {
     {
         $this->mesada = $mesada;
     }
+
+
 
 }

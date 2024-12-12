@@ -31,9 +31,8 @@ class Mesada
     /**
      * @var TipoMesada
      *
-     * @ORM\ManyToOne(targetEntity=TipoMesada::class, cascade={"all"})
+     * @ORM\ManyToOne(targetEntity=TipoMesada::class, inversedBy="mesadas", cascade={"all"})
      * @ORM\JoinColumn(name="id_tipo_mesada", referencedColumnName="id", nullable=false)
-     *
      */
     protected $tipoMesada;
 
@@ -41,6 +40,11 @@ class Mesada
      * @ORM\Column(name="cantidad_bandejas", type="string", length=50, nullable=true)
      */
     private $cantidadBandejas;
+
+    /**
+     * @ORM\OneToMany(targetEntity=PedidoProductoMesada::class, mappedBy="mesada", cascade={"all"})
+     */
+    private $pedidosProductosMesadas;
 
     /**
      * Campo a mostrar
@@ -100,4 +104,22 @@ class Mesada
     {
         $this->cantidadBandejas = $cantidadBandejas;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getPedidosProductosMesadas()
+    {
+        return $this->pedidosProductosMesadas;
+    }
+
+    /**
+     * @param mixed $pedidosProductosMesadas
+     */
+    public function setPedidosProductosMesadas($pedidosProductosMesadas): void
+    {
+        $this->pedidosProductosMesadas = $pedidosProductosMesadas;
+    }
+
+
 }

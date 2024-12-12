@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+        .remito{
+            background: url({{ 'http://192.168.0.182' ~ asset('images/logo/plantilla-remito2.png') }});
+            background-repeat: no-repeat;
+            width: 190mm;
+            height: 300mm;
+            background-image-resize: 0;
+            font-size: 15px;
+            font-family: monospace;
+        }
+        .logo-empresa{
+            background: url({{ 'http://192.168.0.182' ~ asset('images/logo/favicon.png') }});
+            float:left;
+            background-repeat: no-repeat;
+            width: 30mm;
+            height: 60mm;
+            background-image-resize: 0;
+            overflow: hidden;
+            margin-left: 20px;
+            margin-top: 35px;
+        }
+        .datos-empresa{
+            margin-left: 290px;
+            margin-top: -40px;
+            line-height: 7.1mm;
+            width: 200px;
+        }
+        .datos-remito{
+            margin-left: 580px;
+            margin-top: -225px;
+            line-height: 13mm;
+        }
+        .datos-cliente-left{
+            margin-top: 80px;
+            line-height: 8mm;
+            margin-left: 130px;
+        }
+        .datos-cliente-right{
+            margin-top: -60px;
+            margin-left: 450px;
+            line-height: 8mm;
+        }
+        .datos-productos{
+            margin-top: 130px;
+        }
+        .producto-codigo{
+            margin-left: 25px;
+            margin-top: -20px;
+        }
+        .producto-nombre{
+            margin-top: -20px;
+            margin-left: 140px;
+        }
+        .producto-cantidad{
+            margin-top: -16px;
+            margin-left: 490px;
+        }
+    </style>
+</head>
+<body>
+<div class="remito">
+    <br>
+    <div class="logo-empresa"></div>
+    <div class="datos-empresa">
+        <div>Baby Plant srl</div>
+        <div>33-71230651-9</div>
+        <div>www.babyplant.com.ar</div>
+        <div> 44 4303 </div>
+        <div> Lis. Olmos la Plata </div>
+        <div>  0221 15-669-0199 </div>
+    </div>
+    <div class="datos-remito">
+        <div>00000001</div>
+        <div>07/12/2024</div>
+    </div>
+    <div class="datos-cliente-left">
+        <div>Nahuel Zanelli</div>
+        <div>20-38297192-3</div>
+    </div>
+    <div class="datos-cliente-right">
+        <div>2284-521373</div>
+        <div>Berutti 701, Olavarria</div>
+    </div>
+    <div class="datos-productos">
+        <div class="producto-codigo">
+            00001-00001
+        </div>
+        <div class="producto-nombre">
+            TOMATE CAMPO RIO GRANDE (x200)
+        </div>
+        <div class="producto-cantidad">
+            20
+        </div>
+    </div>
+</div>
+</body>
+</html>

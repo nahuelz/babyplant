@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+        .remito{
+            background: url({{ 'http://192.168.0.182' ~ asset('images/logo/plantilla-remito.png') }});
+            background-repeat: no-repeat;
+            background-image-resize: 1;
+            font-size: 12px;
+            font-family: monospace;
+        }
+        .logo-empresa{
+            background: url({{ 'http://192.168.0.182' ~ asset('images/logo/favicon.png') }});
+            float:left;
+            background-repeat: no-repeat;
+            width: 20.6mm;
+            height: 50.98mm;
+            background-image-resize: 3;
+            overflow: hidden;
+            margin-left: 20px;
+            margin-top: 30px;
+        }
+        .datos-empresa{
+            margin-left: 220px;
+            margin-top: -26px;
+            line-height: 4.9mm;
+            width: 200px;
+        }
+        .datos-empresa-table{
+            maring-left: -100px
+        }
+        .datos-remito{
+            margin-left: 540px;
+            margin-top: -193px;
+            line-height: 9mm;
+            width: 100px;
+        }
+        .datos-cliente-left{
+            margin-top: 56px;
+            line-height: 5.2mm;
+            margin-left: 150px;
+        }
+        .datos-cliente-right{
+            margin-top: -39px;
+            margin-left: 415px;
+            line-height: 5.2mm;
+        }
+        .datos-productos{
+            margin-top: 79px;
+            height: 300px;
+        }
+        .datos-productos-texto{
+            margin-left: -80px;
+            display: inline;
+        }
+        .datos-productos-table{
+            margin-left: -112px;
+            line-height: 7.5mm;
+            margin-top: -10px;
+        }
+        td{
+            font-size: 12px;
+            margin-bottom: 50px;
+        }
+        .total{
+            height: 100px;
+            margin-left: 490px;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="remito">
+    <br>
+    <div class="logo-empresa" ></div>
+    <div class="datos-empresa">
+        <div>Baby Plant srl</div>
+        <div>33-71230651-9</div>
+        <div>www.babyplant.com.ar</div>
+        <div> 44 4303 </div>
+        <div> Lis. Olmos la Plata </div>
+        <div>  0221 15-669-0199 </div>
+    </div>
+
+    <div class="datos-remito">
+        <div>{{ entity.codigo }}</div>
+        <div>{{ entity.fechaCreacion|date('d/m/Y') }}</div>
+    </div>
+    <div class="datos-cliente-left">
+        <div>{{ entity.cliente.nombreCompleto|default('-') }}</div>
+        <div>{{ entity.cliente.cuit|default('-') }}</div>
+    </div>
+    <div class="datos-cliente-right">
+        <div>{{ entity.cliente.telefono|default('-') }}</div>
+        <div>{{ entity.cliente.domicilio|default('-') }}</div>
+    </div>
+    <div class="datos-productos">
+        <table class="datos-productos-table" border="0" cellpadding="0" cellspacing="0" align="center" style="overflow: wrap" autosize="1">
+            {% for remitoProducto in entity.remitosProductos %}
+                <tr>
+                    <td width="100" align="center">{{ remitoProducto.codigo }}</td>
+                    <td width="280" align="center">{{ remitoProducto.pedidoProducto.productoBandeja }}</td>
+                    <td width="85" align="center">{{ remitoProducto.cantBandejas }}</td>
+                    <td width="85" align="center">{{ remitoProducto.precioUnitario|money_format }}</td>
+                    <td width="100" align="center">{{ remitoProducto.precioSubTotal|money_format }}</td>
+                </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+    <div class="total" style="font-size: 16px">
+        {{ entity.total|money_format }}
+    </div>
+</div>
+</body>
+</html>

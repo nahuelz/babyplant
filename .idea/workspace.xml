@@ -4,23 +4,44 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="tipo mesada">
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment=".">
+      <change afterPath="$PROJECT_DIR$/public/js/app/remito/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app/remito/new.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Controller/RemitoController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/Remito.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/RemitoProducto.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Form/RemitoProductoType.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Form/RemitoType.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/PDF/default.css.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/PDF/main.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/pedido/remito_pdf.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/pedido/remito_pdf2.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/remito/index.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/remito/index_table.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/remito/new.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/remito/new.producto.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/babyplant.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/babyplant.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/entradacamara/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/entradacamara/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/pedido/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/roles.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/roles.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/favicon.ico" beforeDir="false" afterPath="$PROJECT_DIR$/public/favicon.ico" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/favicon1.ico" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/logo/logo - copia.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/pedido/new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/new.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/planificacion/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/planificacion/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/app/siembra/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/siembra/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/tipomesada/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/tipomesada/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/theme/css/custom/custom.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/css/custom/custom.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/EntradaCamaraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntradaCamaraController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/PlanificacionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PlanificacionController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/SiembraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SiembraController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/TipoMesadaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/TipoMesadaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PedidoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PedidoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Mesada.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Mesada.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/PedidoProductoRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/PedidoProductoRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/PedidoProductoMesada.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/PedidoProductoMesada.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/RazonSocial.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/RazonSocial.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/TipoMesada.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/TipoMesada.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedido/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/index_table.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/pedidoproducto/show/planificacion_show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedidoproducto/show/planificacion_show.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pedidoproducto/show/siembra_show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedidoproducto/show/siembra_show.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/siembra/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/siembra/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_mesada/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_mesada/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/tipo_mesada/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_mesada/show.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,6 +79,7 @@
     <setting file="file://$PROJECT_DIR$/public/theme/css/style.bundle.css" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/public/theme/plugins/custom/fullcalendar/fullcalendar.bundle.js" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Controller/PedidoController.php" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/templates/pedido/remito_pdf.html.twig" root0="SKIP_HIGHLIGHTING" root1="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -219,7 +241,11 @@
       <path value="$PROJECT_DIR$/vendor/sasedev/mpdf-bundle" />
       <path value="$PROJECT_DIR$/vendor/paragonie/random_compat" />
       <path value="$PROJECT_DIR$/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/vendor/mpdf/qrcode" />
     </include_path>
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
@@ -400,39 +426,16 @@
       <workItem from="1732667782903" duration="11298000" />
       <workItem from="1732813048337" duration="14319000" />
       <workItem from="1732846542078" duration="6073000" />
-      <workItem from="1732892603100" duration="4787000" />
-    </task>
-    <task id="LOCAL-00005" summary="Usuario Form Razon Social">
-      <option name="closed" value="true" />
-      <created>1726153423701</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1726153423701</updated>
-    </task>
-    <task id="LOCAL-00006" summary="Usuario Form Razon Social">
-      <option name="closed" value="true" />
-      <created>1726228203383</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1726228203383</updated>
-    </task>
-    <task id="LOCAL-00007" summary="Usuario Form Razon Social">
-      <option name="closed" value="true" />
-      <created>1726229830964</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1726229830964</updated>
-    </task>
-    <task id="LOCAL-00008" summary="Usuario Form Razon Social">
-      <option name="closed" value="true" />
-      <created>1726229930916</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1726229930916</updated>
+      <workItem from="1732892603100" duration="8241000" />
+      <workItem from="1732984784169" duration="631000" />
+      <workItem from="1733156087008" duration="19281000" />
+      <workItem from="1733264035156" duration="988000" />
+      <workItem from="1733277954468" duration="23444000" />
+      <workItem from="1733412701620" duration="1031000" />
+      <workItem from="1733441908932" duration="45334000" />
+      <workItem from="1733872968653" duration="14584000" />
+      <workItem from="1733929610784" duration="7722000" />
+      <workItem from="1734012706041" duration="618000" />
     </task>
     <task id="LOCAL-00009" summary="Fixtures">
       <option name="closed" value="true" />
@@ -794,15 +797,45 @@
       <option name="project" value="LOCAL" />
       <updated>1732817962727</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="salida camara fechas">
+      <option name="closed" value="true" />
+      <created>1732905552153</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1732905552153</updated>
+    </task>
+    <task id="LOCAL-00055" summary="siembra fecha planificacion">
+      <option name="closed" value="true" />
+      <created>1733160517610</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1733160517611</updated>
+    </task>
+    <task id="LOCAL-00056" summary="siembra fecha planificacion">
+      <option name="closed" value="true" />
+      <created>1733164982973</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1733164982973</updated>
+    </task>
+    <task id="LOCAL-00057" summary=".">
+      <option name="closed" value="true" />
+      <created>1733341555071</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1733341555072</updated>
+    </task>
+    <option name="localTasksCounter" value="58" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Siembra fix" />
-    <MESSAGE value="camara" />
     <MESSAGE value="tiene razon social" />
     <MESSAGE value="Habilitar/Deshabilitar producto" />
     <MESSAGE value="Fix" />
@@ -824,8 +857,10 @@
     <MESSAGE value="salidacamara" />
     <MESSAGE value="pedidos atrasados planificacion" />
     <MESSAGE value="colres siembra y entrada/salida camara" />
-    <MESSAGE value="." />
     <MESSAGE value="tipo mesada" />
-    <option name="LAST_COMMIT_MESSAGE" value="tipo mesada" />
+    <MESSAGE value="salida camara fechas" />
+    <MESSAGE value="siembra fecha planificacion" />
+    <MESSAGE value="." />
+    <option name="LAST_COMMIT_MESSAGE" value="." />
   </component>
 </project>

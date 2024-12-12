@@ -37,35 +37,43 @@
             <div class="row mt-10">
                 <div class="col">
                     <div class="d-flex">
-                    <hr>
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">ID Pedido Producto</th>
-                            <th scope="col">N° Orden</th>
-                            <th scope="col">Producto</th>
-                            <th scope="col">Bandejas</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% if productos != null %}
-                            {% for producto in productos %}
+                        <hr>
+                        <table class="table">
+                            <thead>
                                 <tr>
-                                    <th scope="row">{{loop.index}}</th>
-                                    <td>{{ producto.id }}</td>
-                                    <td>{{ producto.numeroOrden }}</td>
-                                    <td>{{ producto.producto }}</td>
-                                    <td>{{ producto.cantidadBandejas }}</td>
+                                    <th class="text-center v-middle" scope="col">ID Pedido Producto</th>
+                                    <th class="text-center v-middle" scope="col">N° Orden</th>
+                                    <th class="text-center v-middle" scope="col">Producto</th>
+                                    <th class="text-center v-middle" scope="col">Bandejas</th>
+                                    <th class="text-center v-middle" scope="col">Acciones</th>
                                 </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="5">No hay productos en la mesada</td>
-                            </tr>
-                        {% endif %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            {% if tipo_mesada.mesadas != null %}
+                                {% for mesada in tipo_mesada.mesadas %}
+                                    {% for pedidoProductoMesada in mesada.pedidosProductosMesadas %}
+                                        {% set pedidoProducto = pedidoProductoMesada.pedidoProducto %}
+                                        <tr>
+                                            <td class="text-center v-middle">{{ pedidoProducto.id }}</td>
+                                            <td class="text-center v-middle">{{ pedidoProducto.numeroOrdenCompleto }}</td>
+                                            <td class="text-center v-middle">{{ pedidoProducto }}</td>
+                                            <td class="text-center v-middle">{{ mesada.cantidadBandejas }}</td>
+                                            <td class="text-center v-middle">
+                                                <a href="{{ path( "pedido_show", { "id": pedidoProducto.pedido.id }) }}/#{{ pedidoProducto.id}}" target="_blank">
+                                                    <button type="button" class="btn btn-sm btn-primary" style="padding: 5px"><i class="fa fa-search" style="padding: 0;"></i></button>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="5">No hay productos en la mesada</td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

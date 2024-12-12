@@ -34,7 +34,10 @@ class TipoMesada extends EntidadBasica {
      */
     private $tipoProducto;
 
-
+    /**
+     * @ORM\OneToMany(targetEntity=Mesada::class, mappedBy="tipoMesada", cascade={"all"})
+     */
+    private $mesadas;
 
     public function __construct() {
         parent::__construct();
@@ -122,6 +125,24 @@ class TipoMesada extends EntidadBasica {
         $this->numero = $numero;
         $this->setNombre($numero);
     }
+
+    /**
+     * @return mixed
+     */
+    public function getMesadas()
+    {
+        return $this->mesadas;
+    }
+
+    /**
+     * @param mixed $mesadas
+     */
+    public function setMesadas($mesadas): void
+    {
+        $this->mesadas = $mesadas;
+    }
+
+
 
 
 

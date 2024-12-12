@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include 'PDF/default.css.twig' %}
+
+    {% block stylesheets %}
+    {% endblock %}
+</head>
+<body>
+
+{% block header %}
+    <htmlpageheader name="default_header">
+        <table class="w-100 margin-bottom-15" border="0" style="padding: 0px;">
+            <tbody>
+            <tr>
+                <td class="w-100 t-right">
+                    {% set imagePath = app.request.getSchemeAndHttpHost() ~ '/images/template/logo/logo_gba_inline.jpg' %}
+                    {# {% set imagePath = asset('images/template/logo/logo_gba_inline.png') %} #}
+                    {# {% set imagePath = app.request.getSchemeAndHttpHost() ~ app.request.getBaseURL() ~ '/../images/template/logo/logo_gba_inline.png' %} #}
+                    <img src="{{ imagePath }}" width="370"/>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </htmlpageheader>
+
+    <sethtmlpageheader name="default_header" value="1" show-this-page="1"/>
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+{% block footer %}
+    <htmlpagefooter name="default_footer">
+        <table class="w-100" border="0">
+            <tr>
+                <td class="t-right f-10 bold">{PAGENO}/{nbpg}</td>
+            </tr>
+        </table>
+    </htmlpagefooter>
+
+    <sethtmlpagefooter name="default_footer" value="on" />
+{% endblock %}
+</body>
+</html>

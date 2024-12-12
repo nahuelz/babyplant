@@ -1,0 +1,26 @@
+{% autoescape false %}
+    {
+    "data": [
+    {% for entity in entities %}
+        [
+        "{{ entity.idRemito }}",
+        "{{ entity.idRemito }}",
+        "{{ entity.idPedidoProducto }}",
+        "{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}",
+        "{{ entity.cliente|default('-') }}",
+        {
+        "nombreProductoCompleto" : "{{ entity.nombreProductoCompleto|default('default') }}",
+        "nombreProducto" : "{{ entity.nombreProducto|default('default') }}"
+        },
+        "{{ entity.cantidadBandejas|default('-') }}",
+        "{{ entity.precioUnitario|money_format|default('-') }}",
+        "{{ entity.precioSubTotal|money_format|default('-') }}",
+        "{{ entity.precioTotal|money_format|default('-') }}",
+        {
+        "remito" : " {{ path( "imprimir_remito", { "id": entity.idRemito }) }}"
+        }
+        ]{{ (loop.last ? '' : ',') }}
+    {% endfor %}
+    ]
+    }
+{% endautoescape %}

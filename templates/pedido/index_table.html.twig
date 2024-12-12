@@ -30,7 +30,7 @@
         "historico_estado": "{{ path( "pedido_historico_estado", { 'id': entity.idProducto }) }}",
         "print" : " {{ path( "imprimir_pedido", { "id": entity.id }) }}"
         {% if entity.idEstado ==  EN_INVERNACULO%}
-            ,"remito" : " {{ path( "imprimir_pedido", { "id": entity.id }) }}"
+            ,"remito" : " {{ path( "imprimir_remito", { "id": entity.id }) }}"
         {% endif %}
         }]{{ (loop.last ? '' : ',') }}
     {% endfor %}

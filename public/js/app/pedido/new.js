@@ -35,7 +35,14 @@ function initAgregarClienteHandler() {
 }
 
 function initFechaSiembra(){
-    $( "#pedido_pedidoProducto_fechaSiembraPedido" ).datepicker( "setDate", "today" );
+
+    $('#pedido_pedidoProducto_fechaSiembraPedido').datepicker({
+    });
+    var a = new Date();
+    var timeZoneOffset = -3*60 //Set specific timezone according to our need. i.e. GMT+5
+    a.setMinutes(a.getMinutes() + a.getTimezoneOffset() + timeZoneOffset );
+    $("#pedido_pedidoProducto_fechaSiembraPedido").datepicker("setDate","today",a);
+
     var fechaEntregaPedido = $('#pedido_pedidoProducto_fechaSiembraPedido').datepicker('getDate');
     fechaEntregaPedido.setDate(fechaEntregaPedido.getDate()+20);
     $('#pedido_pedidoProducto_fechaEntregaPedido').datepicker('setStartDate', fechaEntregaPedido);

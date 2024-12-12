@@ -171,10 +171,21 @@ class PedidoProducto {
      */
     private mixed $mesadas;
 
+    /**
+     * @ORM\OneToMany(targetEntity=RemitoProducto::class, mappedBy="pedidoProducto", cascade={"all"})
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $remitosProductos;
+
 
     public function __construct()
     {
         $this->historicoEstados = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return 'Pedido Producto N° '.$this->getId(). ' Orden Siembra: '.$this->getNumeroOrdenCompleto(). ' Producto: '.$this->getNombreCompleto(). ' Bandejas: '.$this->getCantBandejasReales().' (x'.$this->getTipoBandeja().')';
     }
 
     /**
@@ -534,9 +545,9 @@ class PedidoProducto {
     {
         $mesadas = '';
         foreach ($this->mesadas as $mesada){
-            $mesadas .= $mesada->getMesada();
+            $mesadas .= $mesada->getMesada().', ';
         }
-        return $mesadas;
+        return rtrim($mesadas, ", ");
     }
 
     /**
@@ -604,10 +615,14 @@ class PedidoProducto {
         return $this->getTipoVariedad()->getTipoSubProducto()->getTipoProducto();
     }
 
+    public function getProductoBandeja(){
+        return $this->getTipoVariedad()->getTipoSubProducto()->getTipoProducto() .' '. $this->getTipoVariedad().' (x'.$this->getTipoBandeja().')';
+    }
+
 
     public function getNumeroOrdenCompleto()
     {
-        return $this->numeroOrden . ' '.strtoupper(substr($this->getTipoProducto(), 0, 3));
+        return $this->numeroOrden ? $this->numeroOrden . ' '.strtoupper(substr($this->getTipoProducto(), 0, 3)) : '-';
     }
 
     /**
@@ -691,6 +706,24 @@ class PedidoProducto {
     {
         $this->fechaEntradaCamaraReal = $fechaEntradaCamaraReal;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getRemitosProductos()
+    {
+        return $this->remitosProductos;
+    }
+
+    /**
+     * @param mixed $remitosProductos
+     */
+    public function setRemitosProductos($remitosProductos): void
+    {
+        $this->remitosProductos = $remitosProductos;
+    }
+
+
 
 
 
