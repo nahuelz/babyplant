@@ -233,7 +233,7 @@ class RemitoController extends BaseController {
 
         $mpdfService = new Mpdf([
             'mode' => 'utf-8',
-            'format' => [105, 148],
+            'format' => 'A6',
             'default_font_size' => 0,
             'default_font' => '',
             'margin_left' => 0,
@@ -277,7 +277,7 @@ class RemitoController extends BaseController {
 
         $mpdfService = new Mpdf([
             'mode' => 'utf-8',
-            'format' => [105, 148],
+            'format' => 'A6',
             'default_font_size' => 0,
             'default_font' => '',
             'margin_left' => 0,

@@ -50,9 +50,9 @@
             height: 300px;
         }
         .datos-productos-table{
-            margin-left: 2px;
-            margin-right: 9px;
-            margin-top: -5px;
+            margin-left: 3px;
+            margin-right: 5px;
+            margin-top: -9px;
         }
         td{
             font-size: 10px;
@@ -95,14 +95,14 @@
     </div>
 
     <div class="datos-productos">
-        <table class="datos-productos-table" border="0" cellpadding="0" cellspacing="0" align="center" >
+        <table class="datos-productos-table" border="1" cellpadding="0" cellspacing="0" align="center" >
             {% for remitoProducto in entity.remitosProductos %}
                 <tr>
-                    <td width="60" align="center">{{ remitoProducto.pedidoProducto.numeroOrdenCompleto }}</td>
-                    <td width="195" align="center">{{ remitoProducto.pedidoProducto.productoBandeja }}</td>
-                    <td width="55" align="center">{{ remitoProducto.cantBandejas }}</td>
-                    <td width="60" align="center">{{ remitoProducto.precioUnitario|money_format }}</td>
-                    <td width="75" align="center">{{ remitoProducto.precioSubTotal|money_format }}</td>
+                    <td width="77" align="center">{{ remitoProducto.pedidoProducto.numeroOrdenCompleto }}</td>
+                    <td width="260" align="center">{{ remitoProducto.pedidoProducto.productoBandeja }}</td>
+                    <td width="70" align="center">{{ remitoProducto.cantBandejas }}</td>
+                    <td width="80" align="center">{{ remitoProducto.precioUnitario|money_format }}</td>
+                    <td width="100" align="center">{{ remitoProducto.precioSubTotal|money_format }}</td>
                 </tr>
             {% endfor %}
 
