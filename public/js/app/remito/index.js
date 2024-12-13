@@ -111,8 +111,16 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
+            name: 'ordenSiembra',
+            width: '30px',
+            className: 'dt-center',
+            type: 'num'
+        },
+        {
+            targets: index++,
             name: 'fechaCreacion',
-            className: 'dt-center'
+            className: 'dt-center',
+            type: 'date'
         },
         {
             targets: index++,
@@ -135,6 +143,7 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'cantidadBandejas',
             className: 'dt-center',
+            width: '30px',
             type: 'num'
         },
         {

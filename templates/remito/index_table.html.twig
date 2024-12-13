@@ -6,6 +6,7 @@
         "{{ entity.idRemito }}",
         "{{ entity.idRemito }}",
         "{{ entity.idPedidoProducto }}",
+        "{{ entity.ordenSiembra }}",
         "{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}",
         "{{ entity.cliente|default('-') }}",
         {

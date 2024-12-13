@@ -60,6 +60,7 @@ class RemitoController extends BaseController {
 
         $rsm->addScalarResult('idRemito', 'idRemito');
         $rsm->addScalarResult('idPedidoProducto', 'idPedidoProducto');
+        $rsm->addScalarResult('ordenSiembra', 'ordenSiembra');
         $rsm->addScalarResult('fechaCreacion', 'fechaCreacion');
         $rsm->addScalarResult('cliente', 'cliente');
         $rsm->addScalarResult('nombreProductoCompleto', 'nombreProductoCompleto');
