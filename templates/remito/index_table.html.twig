@@ -17,7 +17,9 @@
         "{{ entity.precioSubTotal|money_format|default('-') }}",
         "{{ entity.precioTotal|money_format|default('-') }}",
         {
-        "remito" : " {{ path( "imprimir_remito", { "id": entity.idRemito }) }}"
+        "remito" : " {{ path( "imprimir_remito", { "id": entity.idRemito }) }}",
+        "remitoa6" : " {{ path( "imprimir_remito_a6", { "id": entity.idRemito }) }}",
+        "remitoa6l" : " {{ path( "imprimir_remito_a6L", { "id": entity.idRemito }) }}"
         }
         ]{{ (loop.last ? '' : ',') }}
     {% endfor %}

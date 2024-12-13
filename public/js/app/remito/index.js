@@ -175,7 +175,11 @@ function dataTablesActionFormatter(data, type, full, meta) {
     } else {
 
         actions +=
-            (data.remito !== undefined ? '<a class="dropdown-item" href="' + data.remito + '"><i class="la la-edit" style="margin-right: 5px;"></i> Remito</a>' : '');
+            (data.remito !== undefined ? '<a class="dropdown-item" href="' + data.remito + '"><i class="la la-edit" style="margin-right: 5px;"></i> Remito A4</a>' : '')
+            +
+            (data.remitoa6 !== undefined ? '<a class="dropdown-item" href="' + data.remitoa6 + '"><i class="la la-edit" style="margin-right: 5px;"></i> Remito A6</a>' : '')
+            +
+            (data.remitoa6l !== undefined ? '<a class="dropdown-item" href="' + data.remitoa6l + '"><i class="la la-edit" style="margin-right: 5px;"></i> Remito A6L</a>' : '');
 
         actions = ' <div class="dropdown dropdown-inline">\
                         <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\

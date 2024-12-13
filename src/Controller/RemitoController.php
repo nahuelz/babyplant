@@ -167,7 +167,7 @@ class RemitoController extends BaseController {
     /**
      * Print a Remito Entity.
      *
-     * @Route("/imprimir-remito/{id}", name="imprimir_remito", methods={"GET"})
+     * @Route("/imprimir-remito-a4/{id}", name="imprimir_remito", methods={"GET"})
      */
     public function imprimirRemitoAction($id) {
         $em = $this->doctrine->getManager();
@@ -183,7 +183,111 @@ class RemitoController extends BaseController {
 
         $filename = 'remito.pdf';
 
-        $mpdfService = new mPDF(array('A4-L', 0, '', 10, 10, 30, 16, 10, 10));
+        //$mpdfService = new mPDF(array('A4-L', 0, '', 10, 5, 5, 5, 5, 5));
+
+        $mpdfService = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'default_font_size' => 0,
+            'default_font' => '',
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'margin_top' => 0,
+            'margin_bottom' => 0,
+            'margin_header' => 0,
+            'margin_footer' => 0,
+            'orientation' => 'P',
+        ]);
+
+        $mpdfService->shrink_tables_to_fit = 1;
+
+        $mpdfService->SetTitle($filename);
+
+        $mpdfService->WriteHTML($html);
+
+        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
+
+        return new Response($mpdfOutput);
+    }
+
+    /**
+     * Print a Remito Entity.
+     *
+     * @Route("/imprimir-remito-a6/{id}", name="imprimir_remito_a6", methods={"GET"})
+     */
+    public function imprimirRemitoA6Action($id) {
+        $em = $this->doctrine->getManager();
+
+        /* @var $remito Remito */
+        $remito = $em->getRepository("App\Entity\Remito")->find($id);
+
+        if (!$remito) {
+            throw $this->createNotFoundException("No se puede encontrar la entidad.");
+        }
+
+        $html = $this->renderView('remito/remitoA6_pdf.html.twig', array('entity' => $remito, 'website' => "http://192.168.0.182/babyplant/public/"));
+
+        $filename = 'remito.pdf';
+
+        //$mpdfService = new mPDF(array('A4-L', 0, '', 10, 5, 5, 5, 5, 5));
+
+        $mpdfService = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => [105, 148],
+            'default_font_size' => 0,
+            'default_font' => '',
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'margin_top' => 0,
+            'margin_bottom' => 0,
+            'margin_header' => 0,
+            'margin_footer' => 0,
+            'orientation' => 'P',
+        ]);
+
+        $mpdfService->shrink_tables_to_fit = 1;
+
+        $mpdfService->SetTitle($filename);
+
+        $mpdfService->WriteHTML($html);
+
+        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
+
+        return new Response($mpdfOutput);
+    }
+
+    /**
+     * Print a Remito Entity.
+     *
+     * @Route("/imprimir-remito-a6L/{id}", name="imprimir_remito_a6L", methods={"GET"})
+     */
+    public function imprimirRemitoA6LAction($id) {
+        $em = $this->doctrine->getManager();
+
+        /* @var $remito Remito */
+        $remito = $em->getRepository("App\Entity\Remito")->find($id);
+
+        if (!$remito) {
+            throw $this->createNotFoundException("No se puede encontrar la entidad.");
+        }
+
+        $html = $this->renderView('remito/remitoA6L_pdf.html.twig', array('entity' => $remito, 'website' => "http://192.168.0.182/babyplant/public/"));
+
+        $filename = 'remito.pdf';
+
+        $mpdfService = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => [105, 148],
+            'default_font_size' => 0,
+            'default_font' => '',
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'margin_top' => 0,
+            'margin_bottom' => 0,
+            'margin_header' => 0,
+            'margin_footer' => 0,
+            'orientation' => 'L',
+        ]);
 
         $mpdfService->shrink_tables_to_fit = 1;
 
