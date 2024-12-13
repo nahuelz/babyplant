@@ -96,7 +96,7 @@
             {% for remitoProducto in entity.remitosProductos %}
                 <tr>
                     <td width="72" align="center">{{ remitoProducto.pedidoProducto.numeroOrdenCompleto }}</td>
-                    <td width="243" align="center">{{ remitoProducto.pedidoProducto.productoBandeja }}</td>
+                    <td width="243" align="center" style="font-size: 12px">{{ remitoProducto.pedidoProducto.productoBandeja }}</td>
                     <td width="66" align="center">{{ remitoProducto.cantBandejas }}</td>
                     <td width="75" align="center">{{ remitoProducto.precioUnitario|money_format }}</td>
                     <td width="93" align="center">{{ remitoProducto.precioSubTotal|money_format }}</td>
