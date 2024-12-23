@@ -154,7 +154,7 @@ class RemitoController extends BaseController {
             if ($pedidoProducto->getCantBandejasFaltantes() == 0){
                 $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::ENTREGADO_COMPLETO);
             }else{
-                $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::ENTREGADO_PARCIAL);
+                $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::ENTREGA_PARCIAL);
             }
 
             $this->cambiarEstado($em, $pedidoProducto, $estado, 'Entrega de bandejas');
@@ -202,7 +202,7 @@ class RemitoController extends BaseController {
             ->where('p.cliente = :cliente')
             ->andWhere('pp.estado IN (:estados)')
             ->setParameter('cliente', $idCliente)
-            ->setParameter('estados', [ConstanteEstadoPedidoProducto::EN_INVERNACULO, ConstanteEstadoPedidoProducto::ENTREGADO_PARCIAL])
+            ->setParameter('estados', [ConstanteEstadoPedidoProducto::EN_INVERNACULO, ConstanteEstadoPedidoProducto::ENTREGA_PARCIAL])
             ->orderBy('pp.id', 'ASC')
             ->getQuery();
 

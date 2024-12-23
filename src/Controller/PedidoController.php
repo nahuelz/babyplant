@@ -157,8 +157,8 @@ class PedidoController extends BaseController {
             ConstanteEstadoPedidoProducto::SEMBRADO,
             ConstanteEstadoPedidoProducto::EN_CAMARA,
             ConstanteEstadoPedidoProducto::EN_INVERNACULO,
+            ConstanteEstadoPedidoProducto::ENTREGA_PARCIAL,
             ConstanteEstadoPedidoProducto::ENTREGADO_COMPLETO,
-            ConstanteEstadoPedidoProducto::ENTREGADO_PARCIAL,
             ConstanteEstadoPedidoProducto::CANCELADO
         ];
 
