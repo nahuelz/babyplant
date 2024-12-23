@@ -95,17 +95,25 @@
                         {{ macro_show._show_detail('Dias en invernaculo', producto.cantidadDiasEnInvernaculo|default('-'), 'col-md-2') }}
                     </div>
                 {% endif %}
-                    {% if producto.estado.id in [6,7] %}
-                            {% for historicoEstados in producto.historicoEstados %}
-                                {% if historicoEstados.estado.id == 6 %}
-                                    <div class="row">
-                                        <div class="col-md-2">
-                                            <span class="label label-inline label-light-success font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-check padding-right-5"></span> ENTREGADO PARCIAL</span>
-                                        </div>
-                                        {{ macro_show._show_detail('Fecha', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                {% if producto.estado.id in [6,7] %}
+                        {% for historicoEstados in producto.historicoEstados %}
+                            {% if historicoEstados.estado.id == 6 %}
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <span class="label label-inline label-light-success font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-check padding-right-5"></span> ENTREGADO PARCIAL</span>
                                     </div>
-                                {% endif %}
-                            {% endfor %}
+                                    {{ macro_show._show_detail('Fecha', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                {% endif %}
+                    {% if producto.estado.id in [7] %}
+                        <div class="row">
+                            <div class="col-md-2">
+                                <span class="label label-inline label-light-success font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-check padding-right-5"></span> ENTREGADO </span>
+                            </div>
+                            {{ macro_show._show_detail('Fecha Entrega', producto.fechaEntregaPedidoReal is not null ? producto.fechaEntregaPedidoReal|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                        </div>
                     {% endif %}
                 </div>
             </div>

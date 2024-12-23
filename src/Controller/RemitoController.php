@@ -153,6 +153,7 @@ class RemitoController extends BaseController {
             $pedidoProducto = $remitoProducto->getPedidoProducto();
             if ($pedidoProducto->getCantBandejasFaltantes() == 0){
                 $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::ENTREGADO_COMPLETO);
+                $pedidoProducto->setFechaEntregaPedidoReal(new DateTime());
             }else{
                 $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::ENTREGA_PARCIAL);
             }
