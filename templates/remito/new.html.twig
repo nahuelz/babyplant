@@ -4,6 +4,23 @@
 
 {% import 'app/_macro_form.html.twig' as macro_form %}
 
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        .select2-container .select2-results__option.optInvisible {
+            display: none;
+        }
+        .select2-container--default .select2-results__option[aria-disabled=true] {
+            display: none;
+        }
+        .select2-results__options .select2-results__option[aria-disabled=true] {
+            display: none;
+        }
+    </style>
+
+{% endblock %}
+
 {% block body %}
     {{ form_start(form, {'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
     {% include ('app/_fields_errors.html.twig') %}
@@ -18,7 +35,7 @@
 
         <div class="card-body">
             <div class="row">
-                {{ macro_form._new_field(form.cliente, 'col-md-9') }}
+                {{ macro_form._new_field(form.cliente, 'col-md-12') }}
             </div>
             <div class="row">
                 <div class="col-md-12">

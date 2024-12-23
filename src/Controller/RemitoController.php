@@ -2,10 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Constants\ConstanteAPI;
+use App\Entity\Constants\ConstanteEstadoPedidoProducto;
+use App\Entity\EstadoPedidoProducto;
+use App\Entity\EstadoPedidoProductoHistorico;
 use App\Entity\Pedido;
 use App\Entity\PedidoProducto;
 use App\Entity\Remito;
 use App\Entity\RemitoProducto;
+use App\Form\RemitoType;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Mpdf\Mpdf;
@@ -90,7 +95,6 @@ class RemitoController extends BaseController {
         return parent::baseNewAction();
     }
 
-
     /**
      * @Route("/insertar", name="remito_create", methods={"GET","POST"})
      * @Template("remito/new.html.twig")
@@ -142,6 +146,41 @@ class RemitoController extends BaseController {
         return true;
     }
 
+    function execPostPersistAction($em, $entity, $request): void
+    {
+        /** @var RemitoProducto $remitoProducto */
+        foreach ($entity->getRemitosProductos() as $remitoProducto){
+            $pedidoProducto = $remitoProducto->getPedidoProducto();
+            if ($pedidoProducto->getCantBandejasFaltantes() == 0){
+                $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::ENTREGADO_COMPLETO);
+            }else{
+                $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::ENTREGADO_PARCIAL);
+            }
+
+            $this->cambiarEstado($em, $pedidoProducto, $estado, 'Entrega de bandejas');
+        }
+        $em->flush();
+    }
+
+    /**
+     *
+     * @param type $em
+     * @param PedidoProducto $pedidoProducto
+     * @param EstadoPedidoProducto $estadoProducto
+     */
+    private function cambiarEstado($em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto, $motivo) {
+
+        $pedidoProducto->setEstado($estadoProducto);
+        $estadoPedidoProductoHistorico = new EstadoPedidoProductoHistorico();
+        $estadoPedidoProductoHistorico->setPedidoProducto($pedidoProducto);
+        $estadoPedidoProductoHistorico->setFecha(new DateTime());
+        $estadoPedidoProductoHistorico->setEstado($estadoProducto);
+        $estadoPedidoProductoHistorico->setMotivo($motivo);
+        $pedidoProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
+
+        $em->persist($estadoPedidoProductoHistorico);
+    }
+
     /**
      * @Route("/lista/productos", name="lista_productos")
      */
@@ -151,14 +190,19 @@ class RemitoController extends BaseController {
         $repository = $this->getDoctrine()->getRepository(PedidoProducto::class);
 
         $query = $repository->createQueryBuilder('pp')
-            ->select("pp.id, concat ('Pedido N° ', p.id, ' Producto N° ',pp.id, ' N° Orden: ',pp.numeroOrden,' ', tp.nombre, ' Bandejas: ',pp.cantBandejasReales,' (x',tb.nombre,')') as denominacion")
+            ->select("pp.id, concat ('ORDEN N° ',pp.numeroOrden,' ', tp.nombre,' (x',tb.nombre,') BANDEJAS SEMBRADAS: ',pp.cantBandejasReales,' FALTAN ENTREGAR: ',pp.cantBandejasFaltantes, ' MESADA N° ', tm.nombre) as denominacion")
             ->leftJoin('pp.pedido', 'p' )
             ->leftJoin('App:TipoVariedad', 'v', Join::WITH, 'pp.tipoVariedad = v')
             ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')
             ->leftJoin('App:TipoProducto', 'tp', Join::WITH, 'sb.tipoProducto = tp')
             ->leftJoin('App:TipoBandeja', 'tb', Join::WITH, 'pp.tipoBandeja = tb')
+            ->leftJoin('App:PedidoProductoMesada', 'ppm', Join::WITH, 'ppm.pedidoProducto = pp')
+            ->leftJoin('App:Mesada', 'm', Join::WITH, 'ppm.mesada = m')
+            ->leftJoin('App:TipoMesada', 'tm', Join::WITH, 'm.tipoMesada = tm')
             ->where('p.cliente = :cliente')
+            ->andWhere('pp.estado IN (:estados)')
             ->setParameter('cliente', $idCliente)
+            ->setParameter('estados', [ConstanteEstadoPedidoProducto::EN_INVERNACULO, ConstanteEstadoPedidoProducto::ENTREGADO_PARCIAL])
             ->orderBy('pp.id', 'ASC')
             ->getQuery();
 
@@ -307,6 +351,43 @@ class RemitoController extends BaseController {
      */
     protected function getPrintOutputType() {
         return "I";
+    }
+
+    /**
+     * @Route("/confirmar-remito", name="confirmar_remito", methods={"GET","POST"})
+     * @Template("remito/remito_pdf.html.twig")
+     * @IsGranted("ROLE_REMITO")
+     */
+    public function confirmarRemito(Request $request) {
+
+        $entity = new Remito();
+        $form = $this->createForm(RemitoType::class, $entity);
+        $form->handleRequest($request);
+        $error = false;
+        $tipoError = '';
+        foreach ($entity->getRemitosProductos() as $remitoProducto) {
+            if ($remitoProducto->getPedidoProducto()->getCantBandejasFaltantes() < 0){
+                $error = true;
+                $tipoError = 'ERROR ORDEN N° '.$remitoProducto->getPedidoProducto()->getNumeroOrdenCompleto();
+            }
+        }
+
+        if ($error){
+            $result = array(
+                'html' => '',
+                'error' => true,
+                'tipo' => $tipoError
+            );
+        }else {
+            $html = $this->renderView('remito/confirmar_remito.html.twig', array('entity' => $entity));
+            $result = array(
+                'html' => $html,
+                'error' => false,
+                'tipo' => $tipoError
+            );
+
+        }
+        return new JsonResponse($result);
     }
 
 }

@@ -51,17 +51,27 @@ class PedidoProducto {
     private mixed $tipoBandeja;
 
     /**
-     * @ORM\Column(name="cantidad_bandejas_pedidas", type="string", length=50, nullable=true)
+     * @ORM\Column(name="cantidad_bandejas_pedidas", type="integer", nullable=false)
      */
     private mixed $cantBandejasPedidas;
 
     /**
-     * @ORM\Column(name="cantidad_bandejas_reales", type="string", length=50, nullable=true)
+     * @ORM\Column(name="cantidad_bandejas_reales", type="integer", nullable=true)
      */
     private mixed $cantBandejasReales;
 
     /**
-     * @ORM\Column(name="cantidad_semillas", type="string", length=50, nullable=true)
+     * @ORM\Column(name="cantidad_bandejas_entregadas", type="integer", nullable=true)
+     */
+    private mixed $cantBandejasEntregadas;
+
+    /**
+     * @ORM\Column(name="cantidad_bandejas_faltantes", type="integer", nullable=true)
+     */
+    private mixed $cantBandejasFaltantes;
+
+    /**
+     * @ORM\Column(name="cantidad_semillas", type="integer", nullable=false)
      */
     private mixed $cantSemillas;
 
@@ -98,7 +108,7 @@ class PedidoProducto {
     /**
      * @ORM\Column(name="fecha_salida_camara", type="datetime", length=255, nullable=true)
      */
-    private DateTime $fechaSalidaCamara;
+    private $fechaSalidaCamara;
 
     /**
      * @ORM\Column(name="fecha_salida_camara_real", type="datetime", length=255, nullable=true)
@@ -112,13 +122,13 @@ class PedidoProducto {
     private DateTime $fechaEntregaPedido;
 
     /**
-     * @ORM\Column(name="fecha_entrega", type="datetime", nullable=true)
+     * @ORM\Column(name="fecha_entrega_pedido_real", type="datetime", nullable=true)
      */
-    private DateTime $fechaEntregaReal;
+    private $fechaEntregaPedidoReal;
 
 
     /**
-     * @ORM\Column(name="cantidad_dias_produccion", type="string", length=50, nullable=true)
+     * @ORM\Column(name="cantidad_dias_produccion", type="integer", nullable=false)
      */
     private mixed $cantDiasProduccion;
 
@@ -181,6 +191,7 @@ class PedidoProducto {
     public function __construct()
     {
         $this->historicoEstados = new ArrayCollection();
+        $this->cantBandejasEntregadas = 0;
     }
 
     public function __toString()
@@ -266,6 +277,7 @@ class PedidoProducto {
     public function setCantBandejasPedidas(mixed $cantBandejasPedidas): void
     {
         $this->cantBandejasPedidas = $cantBandejasPedidas;
+        $this->cantBandejasFaltantes = $cantBandejasPedidas;
     }
 
     /**
@@ -282,6 +294,7 @@ class PedidoProducto {
     public function setCantBandejasReales(mixed $cantBandejasReales): void
     {
         $this->cantBandejasReales = $cantBandejasReales;
+        $this->cantBandejasFaltantes = $cantBandejasReales;
     }
 
     /**
@@ -363,10 +376,7 @@ class PedidoProducto {
         $this->fechaEntradaCamara = $fechaEntradaCamara;
     }
 
-    /**
-     * @return DateTime
-     */
-    public function getFechaSalidaCamara(): DateTime
+    public function getFechaSalidaCamara()
     {
         return $this->fechaSalidaCamara;
     }
@@ -409,19 +419,19 @@ class PedidoProducto {
     }
 
     /**
-     * @return DateTime
+     * @return mixed
      */
-    public function getFechaEntregaReal(): DateTime
+    public function getFechaEntregaPedidoReal()
     {
-        return $this->fechaEntregaReal;
+        return $this->fechaEntregaPedidoReal;
     }
 
     /**
-     * @param mixed $fechaEntregaReal
+     * @param mixed $fechaEntregaPedidoReal
      */
-    public function setFechaEntregaReal(mixed $fechaEntregaReal): void
+    public function setFechaEntregaPedidoReal($fechaEntregaPedidoReal): void
     {
-        $this->fechaEntregaReal = $fechaEntregaReal;
+        $this->fechaEntregaPedidoReal = $fechaEntregaPedidoReal;
     }
 
     /**
@@ -655,21 +665,20 @@ class PedidoProducto {
     {
         $fechaEntradaInvernaculo = $this->fechaSalidaCamaraReal;
 
-        if ($this->getEstado()->getCodigoInterno() == ConstanteEstadoPedidoProducto::EN_INVERNACULO) {
+        if ($this->getFechaEntregaPedidoReal() == null) {
             $hasta = new DateTime();
         }else{
-            $hasta = $this->getFechaEntregaPedido();
+            $hasta = $this->getFechaEntregaPedidoReal();
         }
-        return($hasta->diff($fechaEntradaInvernaculo)->format("%a"));
+        return($hasta->diff($fechaEntradaInvernaculo)->format("%d dias %h horas %i minutos"));
     }
 
     public function getCantidadDiasEnCamara (): string
     {
         $fechaSalidaCamara = $this->fechaSalidaCamaraReal != null ? $this->fechaSalidaCamaraReal : new DateTime();
 
-
          if ($this->fechaEntradaCamaraReal != null) {
-            return ($this->fechaEntradaCamaraReal->diff($fechaSalidaCamara)->format("%a")) ;
+            return ($this->fechaEntradaCamaraReal->diff($fechaSalidaCamara)->format("%d dias %h horas %i minutos")); ;
         } else {
             return '0';
         }
@@ -723,9 +732,23 @@ class PedidoProducto {
         $this->remitosProductos = $remitosProductos;
     }
 
+    public function getCantBandejasEntregadas(): mixed
+    {
+        return $this->cantBandejasEntregadas;
+    }
 
+    public function setCantBandejasEntregadas(mixed $cantBandejasEntregadas): void
+    {
+        $this->cantBandejasEntregadas = $cantBandejasEntregadas;
+    }
 
+    public function getCantBandejasFaltantes(): mixed
+    {
+        return $this->cantBandejasFaltantes;
+    }
 
-
-
+    public function setCantBandejasFaltantes(mixed $cantBandejasFaltantes): void
+    {
+        $this->cantBandejasFaltantes = $cantBandejasFaltantes;
+    }
 }

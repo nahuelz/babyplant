@@ -41,7 +41,22 @@ class Remito {
      */
     private $cliente;
 
-    
+    /**
+     * @ORM\Column(name="fecha_remito", type="datetime", nullable=true)
+     */
+    private $fechaRemito;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=TipoDescuento::class)
+     * @ORM\JoinColumn(name="id_tipo_descuento", referencedColumnName="id", nullable=true)
+     */
+    private $tipoDescuento;
+
+    /**
+     * @ORM\Column(name="cantidad_descuento", type="integer", nullable=true)
+     */
+    private $cantidadDescuento;
+
     public function __construct()
     {
         $this->remitosProductos = new ArrayCollection();
@@ -134,13 +149,104 @@ class Remito {
         return $this;
     }
 
-    public function getTotal(){
+    public function getTotalSinDescuento(){
         $total = 0;
         foreach ($this->remitosProductos as $remitoProducto){
             $total += $remitoProducto->getPrecioSubTotal();
         }
-        return $total;
+        return ($total);
     }
+
+    public function getTotalConDescuento(){
+        $total = $this->getTotalSinDescuento();
+        if ($this->getTipoDescuento() != null) {
+            switch ($this->getTipoDescuento()->getCodigoInterno()) {
+                case 1:
+                    $total -= $this->getCantidadDescuento();
+                    break;
+                case 2:
+                    $total -= (($total * $this->getCantidadDescuento()) / 100);
+                    break;
+            }
+        }
+        return ($total);
+    }
+
+    public function getMontoDescuento(){
+        $descuento = '';
+        if ($this->getTipoDescuento() != null) {
+            switch ($this->getTipoDescuento()->getCodigoInterno()) {
+                case 1:
+                    $descuento = $this->getCantidadDescuento();
+                    break;
+                case 2:
+                    $descuento = (($this->getTotalSinDescuento() * $this->getCantidadDescuento()) / 100);
+                    break;
+            }
+        }
+
+        return $descuento;
+    }
+
+    public function getTipoDescuentoString(){
+        $tipoDescuento = '';
+        if ($this->getTipoDescuento() != null) {
+            switch ($this->getTipoDescuento()->getCodigoInterno()) {
+                case 1:
+                    $tipoDescuento = '-';
+                    break;
+                case 2:
+                    $tipoDescuento = '('.$this->getCantidadDescuento().'%) -';
+                    break;
+            }
+        }
+
+        return $tipoDescuento;
+    }
+
+    public function getFechaRemito(): mixed
+    {
+        return $this->fechaRemito;
+    }
+
+    public function setFechaRemito(mixed $fechaRemito): void
+    {
+        $this->fechaRemito = $fechaRemito;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTipoDescuento()
+    {
+        return $this->tipoDescuento;
+    }
+
+    /**
+     * @param mixed $tipoDescuento
+     */
+    public function setTipoDescuento($tipoDescuento): void
+    {
+        $this->tipoDescuento = $tipoDescuento;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCantidadDescuento()
+    {
+        return $this->cantidadDescuento;
+    }
+
+    /**
+     * @param mixed $cantidadDescuento
+     */
+    public function setCantidadDescuento($cantidadDescuento): void
+    {
+        $this->cantidadDescuento = $cantidadDescuento;
+    }
+
+
 
 
 }

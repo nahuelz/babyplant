@@ -34,17 +34,17 @@
             font-size: 18px;
         }
         .datos-cliente-left{
-            margin-top: 32px;
+            margin-top: 36px;
             line-height: 6.3mm;
             margin-left: 170px;
         }
         .datos-cliente-right{
-            margin-top: -47px;
+            margin-top: -49px;
             margin-left: 480px;
             line-height: 6.3mm;
         }
         .datos-productos{
-            margin-top: 80px;
+            margin-top: 45px;
             height: 300px;
         }
         .datos-productos-table{
@@ -58,8 +58,8 @@
         }
         .total{
             height: 100px;
-            margin-left: 590px;
-            margin-top: -110px;
+            margin-left: 600px;
+            margin-top: -75px;
         }
     </style>
 </head>
@@ -90,7 +90,17 @@
         <div>{{ entity.cliente.domicilio|default('-') }}</div>
     </div>
     <div class="datos-productos">
-        <table class="datos-productos-table" border="1" cellpadding="0" cellspacing="0" align="center" style="overflow: wrap" autosize="1">
+        <table class="datos-productos-table" border="1" cellpadding="0" cellspacing="0" align="center">
+            <thead>
+                <tr>
+                    <th class="text-center">N° ORDEN</th>
+                    <th class="text-center">PRODUCTO</th>
+                    <th class="text-center">CANTIDAD</th>
+                    <th class="text-center">PRECIO U.</th>
+                    <th class="text-center">SUBTOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
             {% for remitoProducto in entity.remitosProductos %}
                 <tr>
                     <td width="103" align="center">{{ remitoProducto.pedidoProducto.numeroOrdenCompleto }}</td>
@@ -101,10 +111,27 @@
                 </tr>
             {% endfor %}
 
+                <tr>
+                    <th colspan="3" style="text-align: right; font-size: 16px; padding-right: 5px;">
+                        {% if entity.tipoDescuento != null %}
+                            Subtotal <br>
+                            Descuento <br>
+                        {% endif %}
+                            TOTAL
+                    </th>
+                    <td align="right" colspan="2" style="padding-right: 25px;">
+                        {% if entity.tipoDescuento != null %}
+                            {{ entity.totalSinDescuento|money_format }}<br>
+                            {{ entity.tipoDescuentoString }} {{ entity.montoDescuento|money_format }} <br>
+                        {% endif %}
+                            {{ entity.totalConDescuento|money_format }}
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+
+            </tfoot>
         </table>
-    </div>
-    <div class="total" style="font-size: 20px">
-        {{ entity.total|money_format }}
     </div>
 </div>
 </body>

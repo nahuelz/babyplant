@@ -34,14 +34,19 @@ class ConstanteEstadoPedidoProducto {
     const EN_INVERNACULO = 5;
 
     /**
-     * ENTREGADO
+     * ENTREGADO_COMPLETO
      */
-    const ENTREGADO = 6;
+    const ENTREGADO_COMPLETO = 6;
+
+    /**
+     * ENTREGADO_PARCIAL
+     */
+    const ENTREGADO_PARCIAL = 7;
 
 
     /**
      * CANCELADO
      */
-    const CANCELADO = 7;
+    const CANCELADO = 8;
 
 }

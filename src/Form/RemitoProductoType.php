@@ -14,6 +14,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -23,7 +24,7 @@ class RemitoProductoType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
             ->add('pedidoProducto', EntityType::class, array(
-                'label' => 'Producto',
+                'label' => 'PRODUCTOS DEL CLIENTE EN EL INVERNACULO',
                 'class' => pedidoProducto::class,
                 'required' => true,
                 'attr' => array(
@@ -40,15 +41,18 @@ class RemitoProductoType extends AbstractType {
                 'placeholder' => '-- Elija el pedido producto --',
                 'auto_initialize' => false)
             )
-            ->add('cantBandejas', TextType::class, array(
+            ->add('cantBandejas', IntegerType::class, array(
+                'required' => true,
+                'label' => 'CANTIDAD DE BANDEJAS A ENTREGAR',
                 'attr' => array(
                     'placeholder' => 'Escriba la cantidad de bandejas',
+                    'min' => 1,
                     'class' => 'form-control')
                 )
             )
             ->add('precioUnitario', null, array(
                     'required' => true,
-                    'label' => 'Precio unitario',
+                    'label' => 'PRECIO UNITARIO',
                     'attr' => array(
                         'class' => 'form-control',
                         'tabindex' => '5'))

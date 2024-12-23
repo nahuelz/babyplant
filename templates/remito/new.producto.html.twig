@@ -12,8 +12,8 @@
 
 <div class="row-form-remito-producto">
     <div class="row">
-        {{ macro_form._new_field(form.remitoProducto.pedidoProducto, 'col-md-4') }}
-        {{ macro_form._new_field(form.remitoProducto.cantBandejas, 'col-md-3') }}
+        {{ macro_form._new_field(form.remitoProducto.pedidoProducto, 'col-md-12') }}
+        {{ macro_form._new_field(form.remitoProducto.cantBandejas, 'col-md-4') }}
         {{ macro_form._new_field(form.remitoProducto.precioUnitario, 'col-md-3') }}
         <div class="col-md-3 pull-left">
             <div class="form-group">
@@ -32,12 +32,13 @@
         <div class="table-scrollable">
             <table class="table table-striped table-bordered table-advance table-hover">
                 <thead>
-                <tr>
-                    <th class="text-center">Pedido Producto</th>
-                    <th class="text-center">Cantidad Bandejas</th>
-                    <th class="text-center">Precio Unitario</th>
-                    <th class="nowrap text-center"></th>
-                </tr>
+                    <tr>
+                        <th class="text-center">PRODUCTO</th>
+                        <th class="text-center">CANTIDAD DE BANDEJAS A ENTREGAR</th>
+                        <th class="text-center">PRECIO UNITARIO</th>
+                        <th class="text-center">SUBTOTAL</th>
+                        <th class="nowrap text-center"></th>
+                    </tr>
                 </thead>
                 <tbody class="tbody-remito-producto">
 
@@ -66,6 +67,37 @@
                     </tr>
                 {% endfor %}
                 </tbody>
+                <tfoot style="background-color: aliceblue;">
+                <tr>
+                    <td style="border:none;">
+                        <div class="d-flex flex-row">
+                            <h6 style="padding-top: 10px;">APLICAR DESCUENTO:</h6>
+                            <div class="col-md-5">
+                                <div class="form-group margin-0">
+                                    <div class="form_field">
+                                        {{ form_widget(form.tipoDescuento) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {#
+                            <input type="text" style="font-size: 1.0em; max-width: 150px" onkeyup="calcularSubtotal(this)" onpaste="calcularSubtotal(this);" class="form-control ml-2 input-descuento font-weight-bold text-center">
+                            #}
+                            <div class="col-md-3">
+                                <div class="form-group margin-0">
+                                    <div class="form_field">
+                                        {{ form_widget(form.cantidadDescuento) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="border:none;"></td>
+                    <th style="float: right;font-weight: bold;font-size: 18px;border: none;">TOTAL</th>
+                    <td class="v-middle text-center total" style="font-weight: bold; font-size: 18px;border: none;"></td>
+                    <td style="border:none;"></td>
+                </tr>
+                </tfoot>
             </table>
         </div>
     </div>

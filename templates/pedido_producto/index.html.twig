@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PedidoProducto index{% endblock %}
+
+{% block body %}
+    <h1>PedidoProducto index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>CantBandejasPedidas</th>
+                <th>CantBandejasReales</th>
+                <th>CantBandejasEntregadas</th>
+                <th>CantSemillas</th>
+                <th>FechaPedido</th>
+                <th>FechaSiembraPedido</th>
+                <th>FechaSiembraPlanificacion</th>
+                <th>FechaSiembraReal</th>
+                <th>FechaEntradaCamara</th>
+                <th>FechaEntradaCamaraReal</th>
+                <th>FechaSalidaCamara</th>
+                <th>FechaSalidaCamaraReal</th>
+                <th>FechaEntregaPedido</th>
+                <th>FechaEntregaReal</th>
+                <th>CantDiasProduccion</th>
+                <th>OtroOrigenSemilla</th>
+                <th>CodigoSobre</th>
+                <th>Observacion</th>
+                <th>HoraSiembra</th>
+                <th>NumeroOrden</th>
+                <th>FechaCreacion</th>
+                <th>FechaUltimaModificacion</th>
+                <th>FechaBaja</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for pedido_producto in pedido_productos %}
+            <tr>
+                <td>{{ pedido_producto.id }}</td>
+                <td>{{ pedido_producto.cantBandejasPedidas }}</td>
+                <td>{{ pedido_producto.cantBandejasReales }}</td>
+                <td>{{ pedido_producto.cantBandejasEntregadas }}</td>
+                <td>{{ pedido_producto.cantSemillas }}</td>
+                <td>{{ pedido_producto.fechaPedido ? pedido_producto.fechaPedido|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ pedido_producto.fechaSiembraPedido ? pedido_producto.fechaSiembraPedido|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ pedido_producto.fechaSiembraPlanificacion ? pedido_producto.fechaSiembraPlanificacion|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ pedido_producto.fechaSiembraReal ? pedido_producto.fechaSiembraReal|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ pedido_producto.fechaEntradaCamara ? pedido_producto.fechaEntradaCamara|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ pedido_producto.fechaEntradaCamaraReal ? pedido_producto.fechaEntradaCamaraReal|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ pedido_producto.fechaSalidaCamara ? pedido_producto.fechaSalidaCamara|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ pedido_producto.fechaSalidaCamaraReal ? pedido_producto.fechaSalidaCamaraReal|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ pedido_producto.fechaEntregaPedido ? pedido_producto.fechaEntregaPedido|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ pedido_producto.fechaEntregaPedidoReal ? pedido_producto.fechaEntregaPedidoReal|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ pedido_producto.cantDiasProduccion }}</td>
+                <td>{{ pedido_producto.otroOrigenSemilla }}</td>
+                <td>{{ pedido_producto.codigoSobre }}</td>
+                <td>{{ pedido_producto.observacion }}</td>
+                <td>{{ pedido_producto.horaSiembra ? pedido_producto.horaSiembra|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ pedido_producto.numeroOrden }}</td>
+                <td>{{ pedido_producto.fechaCreacion ? pedido_producto.fechaCreacion|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ pedido_producto.fechaUltimaModificacion ? pedido_producto.fechaUltimaModificacion|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ pedido_producto.fechaBaja ? pedido_producto.fechaBaja|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_pedido_producto_show', {'id': pedido_producto.id}) }}">show</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="25">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_pedido_producto_new') }}">Create new</a>
+{% endblock %}

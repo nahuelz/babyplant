@@ -248,7 +248,7 @@ function initChainedSelect($sourceSelect, $targetSelect, ajaxURL, preserve_value
                             $targetSelect.attr('readonly', false);
 
                             for (var i = 0, total = data.length; i < total; i++) {
-                                $targetSelect.append('<option value="' + data[i].id + '">' + data[i].denominacion + '</option>');
+                                $targetSelect.append('<option id="' + data[i].id + '" value="' + data[i].id + '">' + data[i].denominacion + '</option>');
                             }
 
                             if (null !== selectedElement) {

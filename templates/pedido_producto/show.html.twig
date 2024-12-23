@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+
+{% import 'app/_macro_show.html.twig' as macro_show %}
+
+{% block stylesheets %}
+
+    {{ parent() }}
+
+    <style type="text/css">
+        .card.card-detail .card-header {
+            padding: 15px;
+            background-color: #f5f5f5;
+        }
+
+        .card.card-detail {
+            margin-bottom: 20px;
+        }
+    </style>
+
+{% endblock %}
+
+{% block body %}
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ pedido_producto.id }}</td>
+            </tr>
+            <tr>
+                <th>CantBandejasPedidas</th>
+                <td>{{ pedido_producto.cantBandejasPedidas }}</td>
+            </tr>
+            <tr>
+                <th>CantBandejasReales</th>
+                <td>{{ pedido_producto.cantBandejasReales }}</td>
+            </tr>
+            <tr>
+                <th>CantBandejasEntregadas</th>
+                <td>{{ pedido_producto.cantBandejasEntregadas }}</td>
+            </tr>
+            <tr>
+                <th>CantSemillas</th>
+                <td>{{ pedido_producto.cantSemillas }}</td>
+            </tr>
+            <tr>
+                <th>FechaPedido</th>
+                <td>{{ pedido_producto.fechaPedido ? pedido_producto.fechaPedido|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaSiembraPedido</th>
+                <td>{{ pedido_producto.fechaSiembraPedido ? pedido_producto.fechaSiembraPedido|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaSiembraPlanificacion</th>
+                <td>{{ pedido_producto.fechaSiembraPlanificacion ? pedido_producto.fechaSiembraPlanificacion|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaSiembraReal</th>
+                <td>{{ pedido_producto.fechaSiembraReal ? pedido_producto.fechaSiembraReal|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaEntradaCamara</th>
+                <td>{{ pedido_producto.fechaEntradaCamara ? pedido_producto.fechaEntradaCamara|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaEntradaCamaraReal</th>
+                <td>{{ pedido_producto.fechaEntradaCamaraReal ? pedido_producto.fechaEntradaCamaraReal|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaSalidaCamara</th>
+                <td>{{ pedido_producto.fechaSalidaCamara ? pedido_producto.fechaSalidaCamara|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaSalidaCamaraReal</th>
+                <td>{{ pedido_producto.fechaSalidaCamaraReal ? pedido_producto.fechaSalidaCamaraReal|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaEntregaPedido</th>
+                <td>{{ pedido_producto.fechaEntregaPedido ? pedido_producto.fechaEntregaPedido|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaEntregaReal</th>
+                <td>{{ pedido_producto.fechaEntregaPedidoReal ? pedido_producto.fechaEntregaPedidoReal|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>CantDiasProduccion</th>
+                <td>{{ pedido_producto.cantDiasProduccion }}</td>
+            </tr>
+            <tr>
+                <th>OtroOrigenSemilla</th>
+                <td>{{ pedido_producto.otroOrigenSemilla }}</td>
+            </tr>
+            <tr>
+                <th>CodigoSobre</th>
+                <td>{{ pedido_producto.codigoSobre }}</td>
+            </tr>
+            <tr>
+                <th>Observacion</th>
+                <td>{{ pedido_producto.observacion }}</td>
+            </tr>
+            <tr>
+                <th>HoraSiembra</th>
+                <td>{{ pedido_producto.horaSiembra ? pedido_producto.horaSiembra|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>NumeroOrden</th>
+                <td>{{ pedido_producto.numeroOrden }}</td>
+            </tr>
+            <tr>
+                <th>FechaCreacion</th>
+                <td>{{ pedido_producto.fechaCreacion ? pedido_producto.fechaCreacion|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaUltimaModificacion</th>
+                <td>{{ pedido_producto.fechaUltimaModificacion ? pedido_producto.fechaUltimaModificacion|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>FechaBaja</th>
+                <td>{{ pedido_producto.fechaBaja ? pedido_producto.fechaBaja|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('pedido_index') }}">back to list</a>
+{% endblock %}

@@ -167,7 +167,7 @@ class SalidaCamaraController extends BaseController
      * @IsGranted("ROLE_PEDIDO")
      */
     public function cambiarFechaSalidaCamara(Request $request){
-
+        /*
         $nuevaFechaSalidaCamaraParam = $request->get('nuevaFechaSalidaCamara');
         $idPedidoProducto = $request->get('idPedidoProducto');
         $datetime = new DateTime();
@@ -175,6 +175,7 @@ class SalidaCamaraController extends BaseController
 
         $em = $this->doctrine->getManager();
         /* @var $pedidoProducto PedidoProducto */
+        /*
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
         $fechaSalidaCamaraOriginal = $pedidoProducto->getFechaSalidaCamaraReal();
         $pedidoProducto->setFechaSalidaCamaraReal($nuevaFechaSalidaCamara);
@@ -187,6 +188,7 @@ class SalidaCamaraController extends BaseController
         );
 
         return new JsonResponse($result);
+        */
 
     }
 }

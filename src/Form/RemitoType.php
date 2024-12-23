@@ -4,6 +4,8 @@ namespace App\Form;
 
 
 use App\Entity\Remito;
+use App\Entity\TipoBandeja;
+use App\Entity\TipoDescuento;
 use App\Entity\Usuario;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -33,7 +35,7 @@ class RemitoType extends AbstractType {
             ->add('cliente', EntityType::class, array(
                 'class' => Usuario::class,
                 'required' => true,
-                'label' => 'Cliente',
+                'label' => 'CLIENTE',
                 'placeholder' => '-- Elija --',
                 'attr' => array(
                     'class' => 'form-control choice',
@@ -59,6 +61,31 @@ class RemitoType extends AbstractType {
                     'prototype_name' => '__remitos_productos__',
                     'label_attr' => array('class' => 'hidden'),
                     'attr' => array('class' => 'hidden'))
+            )
+            ->add(
+                'tipoDescuento',
+                EntityType::class,
+                array(
+                    'class' => TipoDescuento::class,
+                    'required' => false,
+                    'placeholder' => 'SIN DESCUENTO',
+                    'attr' => array(
+                        'class' => 'form-control choice',
+                        'tabindex' => '5'
+                    ),
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('x')
+                            ->where('x.habilitado = 1')
+                            ->orderBy('x.nombre', 'ASC');
+                    },
+                )
+            )
+            ->add('cantidadDescuento', TextType::class, array(
+                    'required' => false,
+                    'attr' => array(
+                        'placeholder' => 'Cantidad',
+                        'class' => 'form-control',
+                        'tabindex' => '5'))
             )
         ;
     }

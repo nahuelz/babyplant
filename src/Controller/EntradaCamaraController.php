@@ -110,11 +110,12 @@ class EntradaCamaraController extends BaseController
         $pedidoProducto->setFechaEntradaCamara($dateTime);
         if ($pedidoProducto->getEstado()->getCodigoInterno() != ConstanteEstadoPedidoProducto::EN_CAMARA) {
             $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::EN_CAMARA);
+            $pedidoProducto->setFechaEntradaCamaraReal(new DateTime());
             $this->cambiarEstado($em, $pedidoProducto, $estado);
             $cantDiasEnCamara = new DateTime($fechaEntradaCamara);
             $fechaSalidaCamara= $cantDiasEnCamara->modify($pedidoProducto->getDiasEnCamara());
             $pedidoProducto->setFechaSalidaCamara($fechaSalidaCamara);
-            $pedidoProducto->setFechaSalidaCamaraReal($fechaSalidaCamara);
+            //$pedidoProducto->setFechaSalidaCamaraReal($fechaSalidaCamara);
         }
         $em->flush();
 

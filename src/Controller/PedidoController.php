@@ -157,7 +157,8 @@ class PedidoController extends BaseController {
             ConstanteEstadoPedidoProducto::SEMBRADO,
             ConstanteEstadoPedidoProducto::EN_CAMARA,
             ConstanteEstadoPedidoProducto::EN_INVERNACULO,
-            ConstanteEstadoPedidoProducto::ENTREGADO,
+            ConstanteEstadoPedidoProducto::ENTREGADO_COMPLETO,
+            ConstanteEstadoPedidoProducto::ENTREGADO_PARCIAL,
             ConstanteEstadoPedidoProducto::CANCELADO
         ];
 
@@ -175,7 +176,8 @@ class PedidoController extends BaseController {
                     WHEN est.id = 4 THEN "fa-list-ul"
                     WHEN est.id = 5 THEN "fa-home"
                     WHEN est.id = 6 THEN "fa-check"
-                    WHEN est.id = 7 THEN "fa-exclamation-triangle"
+                    WHEN est.id = 7 THEN "fa-check"
+                    WHEN est.id = 8 THEN "fa-exclamation-triangle"
                     ELSE "fa-check"
                     END AS iconClass,
                 est.id
@@ -290,6 +292,7 @@ class PedidoController extends BaseController {
         /** @var PedidoProducto $pedidoProducto */
         foreach ($entity->getPedidosProductos() as $pedidoProducto){
             $pedidoProducto->setPedido($entity);
+            $pedidoProducto->setFechaPedido(new DateTime());
         }
         return true;
     }

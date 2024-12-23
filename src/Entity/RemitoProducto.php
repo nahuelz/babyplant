@@ -50,11 +50,6 @@ class RemitoProducto {
     private mixed $cantBandejas;
 
     /**
-     * @ORM\Column(name="fecha_remito", type="datetime", nullable=true)
-     */
-    private mixed $fechaRemito;
-
-    /**
      * @ORM\Column(name="precio_unitario", type="decimal", precision=10, scale=2, nullable=false)
      */
     private $precioUnitario;
@@ -87,16 +82,10 @@ class RemitoProducto {
     public function setCantBandejas(mixed $cantBandejas): void
     {
         $this->cantBandejas = $cantBandejas;
-    }
+        $pedidoProducto = $this->getPedidoProducto();
 
-    public function getFechaRemito(): mixed
-    {
-        return $this->fechaRemito;
-    }
-
-    public function setFechaRemito(mixed $fechaRemito): void
-    {
-        $this->fechaRemito = $fechaRemito;
+        $pedidoProducto->setCantBandejasEntregadas( ($pedidoProducto->getCantBandejasEntregadas() + $cantBandejas) );
+        $pedidoProducto->setCantBandejasFaltantes( ($pedidoProducto->getCantBandejasReales() - $pedidoProducto->getCantBandejasEntregadas()) );
     }
 
     public function getPedidoProducto()
