@@ -97,7 +97,7 @@
                 {% endif %}
                     {% if producto.estado.id in [6,7] %}
                             {% for historicoEstados in producto.historicoEstados %}
-                                {% if historicoEstados.estado.id == 7 %}
+                                {% if historicoEstados.estado.id == 6 %}
                                     <div class="row">
                                         <div class="col-md-2">
                                             <span class="label label-inline label-light-success font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-check padding-right-5"></span> ENTREGADO PARCIAL</span>
