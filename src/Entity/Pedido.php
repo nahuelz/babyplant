@@ -38,7 +38,7 @@ class Pedido {
     private $pedidosProductos;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Usuario::class)
+     * @ORM\ManyToOne(targetEntity=Usuario::class, inversedBy="pedidos")
      * @ORM\JoinColumn(name="id_cliente", referencedColumnName="id")
      */
     private $cliente;
@@ -227,5 +227,12 @@ class Pedido {
         return $this;
     }
 
+    public function getPendiente(){
+        $pendiente = 0;
+        foreach ($this->pedidosProductos as $pedidoProducto){
+            $pendiente+= $pedidoProducto->getPendiente();
+        }
+        return $pendiente;
+    }
 
 }

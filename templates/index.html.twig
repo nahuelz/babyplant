@@ -114,17 +114,11 @@
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-cogs icon-3x text-dark', 'nombreModulo': 'Datos Tecnicos','action': '#', 'descripcionModulo': 'Aqui podra ver las mesadas' } %}
                     {% endif %} #}
 
-                    {# SITUACION CLIENTE
-                    {% if is_granted("ROLE_SITUACION") %}
-                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-users icon-3x text-dark', 'nombreModulo': 'Situacion Cliente','action': '#', 'descripcionModulo': 'Aqui podra ver la situacion de los clientes' } %}
-                    {% endif %}#}
+                    {% if is_granted("ROLE_REMITO") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-users icon-3x text-dark', 'nombreModulo': 'Situacion Cliente','action': path('situacioncliente_index'), 'descripcionModulo': 'Aqui podra ver la situacion de los clientes' } %}
+                    {% endif %}
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-
         </div>
     </div>
 {% endblock %}

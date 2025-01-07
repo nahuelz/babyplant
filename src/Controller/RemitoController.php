@@ -4,8 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Constants\ConstanteAPI;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
+use App\Entity\Constants\ConstanteEstadoRemito;
 use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
+use App\Entity\EstadoRemito;
+use App\Entity\EstadoRemitoHistorico;
 use App\Entity\Pedido;
 use App\Entity\PedidoProducto;
 use App\Entity\Remito;
@@ -143,9 +146,17 @@ class RemitoController extends BaseController {
         foreach ($entity->getRemitosProductos() as $remitoProducto){
             $remitoProducto->setRemito($entity);
         }
+        $em = $this->doctrine->getManager();
+        $estado = $em->getRepository(EstadoRemito::class)->findOneByCodigoInterno(ConstanteEstadoRemito::PENDIENTE);
+        $this->cambiarEstadoRemito($em, $entity, $estado, 'Creacion de remito');
         return true;
     }
 
+    /**
+     *
+     * @param type $em
+     * @param Remito $entity
+     */
     function execPostPersistAction($em, $entity, $request): void
     {
         /** @var RemitoProducto $remitoProducto */
@@ -157,8 +168,7 @@ class RemitoController extends BaseController {
             }else{
                 $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::ENTREGA_PARCIAL);
             }
-
-            $this->cambiarEstado($em, $pedidoProducto, $estado, 'Entrega de bandejas');
+            $this->cambiarEstadoPedido($em, $pedidoProducto, $estado, 'Entrega de bandejas');
         }
         $em->flush();
     }
@@ -169,7 +179,7 @@ class RemitoController extends BaseController {
      * @param PedidoProducto $pedidoProducto
      * @param EstadoPedidoProducto $estadoProducto
      */
-    private function cambiarEstado($em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto, $motivo) {
+    private function cambiarEstadoPedido($em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto, $motivo) {
 
         $pedidoProducto->setEstado($estadoProducto);
         $estadoPedidoProductoHistorico = new EstadoPedidoProductoHistorico();
@@ -180,6 +190,25 @@ class RemitoController extends BaseController {
         $pedidoProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
 
         $em->persist($estadoPedidoProductoHistorico);
+    }
+
+    /**
+     *
+     * @param type $em
+     * @param Remito $remito
+     * @param EstadoPedidoProducto $estadoProducto
+     */
+    private function cambiarEstadoRemito($em, Remito $remito, EstadoRemito $estadoRemito, $motivo) {
+
+        $remito->setEstado($estadoRemito);
+        $estadoRemitoHistorico = new EstadoRemitoHistorico();
+        $estadoRemitoHistorico->setRemito($remito);
+        $estadoRemitoHistorico->setFecha(new DateTime());
+        $estadoRemitoHistorico->setEstado($estadoRemito);
+        $estadoRemitoHistorico->setMotivo($motivo);
+        $remito->addHistoricoEstado($estadoRemitoHistorico);
+
+        $em->persist($estadoRemitoHistorico);
     }
 
     /**
@@ -390,5 +419,28 @@ class RemitoController extends BaseController {
         }
         return new JsonResponse($result);
     }
+
+    /**
+     * @Route("/{id}/historico_estados", name="remito_historico_estado", methods={"POST"})
+     * @Template("remito/historico_estados.html.twig")
+     */
+    public function showHistoricoEstadoAction($id) {
+
+        $em = $this->doctrine->getManager();
+
+        /* @var $remito Remito */
+        $remito = $em->getRepository('App\Entity\Remito')->find($id);
+
+        if (!$remito) {
+            throw $this->createNotFoundException('No se puede encontrar el Remito .');
+        }
+
+        return array(
+            'entity' => $remito,
+            'historicoEstados' => $remito->getHistoricoEstados(),
+            'page_title' => 'Histórico de estados'
+        );
+    }
+
 
 }

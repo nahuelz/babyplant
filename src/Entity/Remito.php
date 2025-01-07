@@ -36,7 +36,7 @@ class Remito {
     private $remitosProductos;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Usuario::class)
+     * @ORM\ManyToOne(targetEntity=Usuario::class, inversedBy="remitos")
      * @ORM\JoinColumn(name="id_cliente", referencedColumnName="id")
      */
     private $cliente;
@@ -57,9 +57,22 @@ class Remito {
      */
     private $cantidadDescuento;
 
+    /**
+     * @ORM\OneToMany(targetEntity=EstadoRemitoHistorico::class, mappedBy="remito", cascade={"all"})
+     * @ORM\OrderBy({"fecha" = "DESC", "id" = "DESC"})
+     */
+    private $historicoEstados;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=EstadoRemito::class)
+     * @ORM\JoinColumn(name="id_estado_remito", referencedColumnName="id", nullable=false)
+     */
+    private mixed $estado;
+
     public function __construct()
     {
         $this->remitosProductos = new ArrayCollection();
+        $this->historicoEstados = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -244,6 +257,52 @@ class Remito {
     public function setCantidadDescuento($cantidadDescuento): void
     {
         $this->cantidadDescuento = $cantidadDescuento;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHistoricoEstados()
+    {
+        return $this->historicoEstados;
+    }
+
+    /**
+     * @param mixed $historicoEstados
+     */
+    public function setHistoricoEstados($historicoEstados): void
+    {
+        $this->historicoEstados = $historicoEstados;
+    }
+
+    public function getEstado(): mixed
+    {
+        return $this->estado;
+    }
+
+    public function setEstado(mixed $estado): void
+    {
+        $this->estado = $estado;
+    }
+
+    public function addHistoricoEstado(EstadoRemitoHistorico $historicoEstado): self {
+        if (!$this->historicoEstados->contains($historicoEstado)) {
+            $this->historicoEstados[] = $historicoEstado;
+            $historicoEstado->setRemito($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHistoricoEstado(EstadoRemitoHistorico $historicoEstado): self {
+        if ($this->historicoEstados->removeElement($historicoEstado)) {
+            // set the owning side to null (unless already changed)
+            if ($historicoEstado->getRemito() === $this) {
+                $historicoEstado->setRemito(null);
+            }
+        }
+
+        return $this;
     }
 
 

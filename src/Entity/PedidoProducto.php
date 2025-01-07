@@ -751,4 +751,15 @@ class PedidoProducto {
     {
         $this->cantBandejasFaltantes = $cantBandejasFaltantes;
     }
+
+    public function getPendiente(){
+        $pendiente = 0;
+        $descuento = 0;
+        foreach ($this->getRemitosProductos() as $remitoProducto){
+            $pendiente += $remitoProducto->getPrecioSubTotal();
+            $descuento = $remitoProducto->getRemito()->getMontoDescuento();
+        }
+        $pendiente -= intval($descuento);
+        return $pendiente;
+    }
 }

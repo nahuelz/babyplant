@@ -44,6 +44,7 @@
         <link href="{{ asset(plugins_path ~ 'custom/fullcalendar/fullcalendar.bundle.css') }}" rel="stylesheet" type="text/css"/>
         <link href="{{ asset(css_path ~ 'style.bundle.css') }}" rel="stylesheet" type="text/css"/>
         <link href="{{ asset(css_path ~ 'colores.css') }}" rel="stylesheet" type="text/css"/>
+        <link href="{{ asset(css_path ~ 'spinner.css') }}" rel="stylesheet" type="text/css"/>
         <!--end::Global Theme Styles-->
 
 
@@ -64,6 +65,7 @@
 
         {# Busy Load #}
         <link href="{{ asset('plugins/busy-load/app.min.css') }}" rel="stylesheet">
+
 
         <style>
             .disabled.day {
@@ -108,7 +110,7 @@
     </div>
     <!--end::Toolbar-->
 </div>
-<body id="kt_body"  class="header-fixed header-mobile-fixed subheader-enabled subheader-fixed page-loading"  >
+<body id="kt_body"  class="header-fixed header-mobile-fixed subheader-enabled subheader-fixed page-loading page-content">
 
 <!-- begin:: Page -->
 <div class="d-flex flex-column flex-root">
@@ -198,7 +200,7 @@
                 </div>
             </div>
 
-            <div class="content d-flex flex-column flex-column-fluid"
+            <div class="content d-flex flex-column flex-column-fluid page-content"
                  id="kt_content" style="padding-top: 0px">
                 {#
                 {% if breadcrumbs is defined %}
@@ -437,6 +439,8 @@
     <!--begin::Script menu-->
     <script type="text/javascript" src="{{ asset('js/config/menu.js') }}"></script>
     <!--end::Script menu-->
+
+    <script type="text/javascript" src="{{ asset('js/config/config-spinner.js') }}"></script>
 
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
 

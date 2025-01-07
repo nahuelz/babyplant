@@ -129,10 +129,31 @@ class Usuario implements UserInterface {
      */
     private $tieneRazonSocial;
 
+    /**
+     * @ORM\OneToOne(targetEntity=CuentaCorriente::class, mappedBy="cliente", cascade={"persist"})
+     * @ORM\JoinColumn(name="id_cuenta_corriente", referencedColumnName="id")
+     */
+    private $cuentaCorriente;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Pedido::class, mappedBy="cliente", cascade={"all"})
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $pedidos;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Remito::class, mappedBy="cliente", cascade={"all"})
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $remitos;
+
     public function __construct() {
         $this->grupos = new \Doctrine\Common\Collections\ArrayCollection();
         $this->habilitado = true;
         $this->tieneRazonSocial = false;
+        $this->cuentaCorriente = new CuentaCorriente();
+        $this->pedidos = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->remitos = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
 
@@ -466,6 +487,58 @@ class Usuario implements UserInterface {
     {
         $this->tieneRazonSocial = $tieneRazonSocial;
     }
+
+    public function getCuentaCorriente(): CuentaCorriente|null
+    {
+        return $this->cuentaCorriente;
+    }
+
+    public function setCuentaCorriente(CuentaCorriente $cuentaCorriente): void
+    {
+        $this->cuentaCorriente = $cuentaCorriente;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPedidos()
+    {
+        return $this->pedidos;
+    }
+
+    /**
+     * @param mixed $pedidos
+     */
+    public function setPedidos($pedidos): void
+    {
+        $this->pedidos = $pedidos;
+    }
+
+    public function getPendiente(){
+        $pendiente = 0;
+        foreach ($this->getPedidos() as $pedido){
+            $pendiente+=$pedido->getPendiente();
+        }
+        return $pendiente;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRemitos()
+    {
+        return $this->remitos;
+    }
+
+    /**
+     * @param mixed $remitos
+     */
+    public function setRemitos($remitos): void
+    {
+        $this->remitos = $remitos;
+    }
+
+
 
 
 
