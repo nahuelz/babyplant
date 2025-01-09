@@ -28,7 +28,8 @@
         {
         "show_pedido" : " {{ path( "pedido_show", { "id": entity.id }) }}",
         "historico_estado": "{{ path( "pedido_historico_estado", { 'id': entity.idProducto }) }}",
-        "print" : " {{ path( "imprimir_pedido", { "id": entity.id }) }}"
+        "print" : "{{ path( "imprimir_pedido", { "id": entity.id }) }}",
+        "situacion_cliente" : "{{ path( "situacioncliente_show", { "id": entity.idCliente }) }}"
         {% if entity.idEstado ==  EN_INVERNACULO%}
             ,"remito" : " {{ path( "imprimir_remito", { "id": entity.id }) }}"
         {% endif %}

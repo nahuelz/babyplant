@@ -73,16 +73,10 @@ class UsuarioType extends AbstractType
                         'class' => 'form-control choice',
                         'tabindex' => '5'))
             )
-            ->add('razonSocial', EntityType::class, array(
-                'class' => RazonSocial::class,
-                'required' => false,
-                'label' => 'Razon Social',
-                'placeholder' => '-- Elija --',
-                'attr' => array(
-                    'class' => 'form-control choice',
-                    'data-placeholder' => '-- Elija --',
-                    'tabindex' => '5'
-                ),
+            ->add('razonSocial', RazonSocialType::class, array(
+                'required' => true,
+                'mapped' => true,
+                'data_class' => 'App\Entity\RazonSocial',
             ))
             ->add('grupos', EntityType::class,[
                 'class' => Grupo::class,

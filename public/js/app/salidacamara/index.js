@@ -109,10 +109,12 @@ var KTCalendarListView = function() {
                         $('.modal-dialog').addClass('modal-fullscreen-xl-down');
                         if (__ID_ESTADO__ !== EN_INVERNACULO) {
                             initmesadaForm();
-                            $('#salida_camara_mesadas_0_mesada_tipoProducto').val(idTipoProducto).select2();
                             $('#salida_camara_mesadas_0_mesada_tipoMesada').select2();
-                            initMesadaChainedSelect();
+                            //initMesadaChainedSelect();
                             $('#salida_camara_mesadas_0_mesada_tipoProducto').val('').select2().change();
+                            if ($('#ultimaMesada').val() != '') {
+                                $('#salida_camara_mesadas_0_mesada_tipoMesada').val($('#ultimaMesada').val()).select2();
+                            }
                             initValidations();
                             $('.remove-mesada').hide();
                             initResetModalHandler();
@@ -330,12 +332,12 @@ function initPreValidation() {
             if (status === "Valid") {
                 let res = 0;
                 $('.cantBandejas').each(function () {
-                    if ($(this).val() != ''){
+                    if ($(this).val() != '') {
                         res += parseInt($(this).val());
                     }
                 });
                 if (res == $('#cantBandejasReales').val()) {
-                    if ($('#salida_camara_mesadas_1_mesada_cantidadBandejas').val() == ''){
+                    if ($('#salida_camara_mesadas_1_mesada_cantidadBandejas').val() == '') {
                         $('#salida_camara_mesadas_1_mesada_cantidadBandejas').closest('.row').remove();
                     }
                     $('form[name="salida_camara"]').submit();
@@ -352,23 +354,6 @@ function initPreValidation() {
     });
 }
 
-function initMesadaChainedSelect() {
-    if ($('#salida_camara_mesadas_0_mesada_tipoProducto').val() != '') {
-        initChainedSelect($('#salida_camara_mesadas_0_mesada_tipoProducto'), $('#salida_camara_mesadas_0_mesada_tipoMesada'), __HOMEPAGE_PATH__ + 'tipo/mesada/lista/mesada/producto', true);
-    }
-}
-
-function getExtraDataChainedSelect(){
-    return ($('#cantBandejasReales').val());
-}
-
-function customAfterChainedSelect() {
-    if ($('#ultimaMesada').val() != '') {
-        $('#salida_camara_mesadas_0_mesada_tipoMesada').val($('#ultimaMesada').val()).select2();
-    }
-}
-
-
 /**
  *
  * @returns {undefined}
@@ -379,19 +364,17 @@ function initmesadaForm() {
     $('#salida_camara_mesadas_0_mesada_cantidadBandejas').val($('#cantBandejasReales').val())
     $(document).on('click', '.prototype-link-add-mesada', function (e) {
         e.preventDefault();
+        disableMesadaDosOptionHandler();
         if (!agrego) {
             addmesadaForm(collectionHoldermesada);
             agrego = true;
-            $('#salida_camara_mesadas_1_mesada_tipoProducto').val(idTipoProducto).select2();
             $('#salida_camara_mesadas_1_mesada_tipoMesada').select2();
-            if ($('#salida_camara_mesadas_1_mesada_tipoProducto').val() != '') {
-                initChainedSelect($('#salida_camara_mesadas_1_mesada_tipoProducto'), $('#salida_camara_mesadas_1_mesada_tipoMesada'), __HOMEPAGE_PATH__ + 'tipo/mesada/lista/mesada/producto', true);
-            }
             $('#salida_camara_mesadas_1_mesada_cantidadBandejas').on('keyup', function(){
                 if ($(this).val() > parseInt($('#cantBandejasReales').val())){
                     $(this).val($('#cantBandejasReales').val());
                 }
             });
+            $("#salida_camara_mesadas_1_mesada_tipoMesada>option[value="+$('#salida_camara_mesadas_0_mesada_tipoMesada').val()+"]").attr('disabled','disabled');
             $('.add-mesada').hide();
         }else{
             $('.row-mesada').show();
@@ -402,6 +385,14 @@ function initmesadaForm() {
 
         //initSelects();
     });
+}
+
+function disableMesadaDosOptionHandler(){
+    $('#salida_camara_mesadas_0_mesada_tipoMesada').on('change', function(){
+        $('#salida_camara_mesadas_1_mesada_tipoMesada').val('').select2();
+        $("#salida_camara_mesadas_1_mesada_tipoMesada>option").removeAttr('disabled');
+        $("#salida_camara_mesadas_1_mesada_tipoMesada>option[value="+$('#salida_camara_mesadas_0_mesada_tipoMesada').val()+"]").attr('disabled','disabled');
+    })
 }
 
 /**
@@ -425,68 +416,6 @@ function addmesadaForm($collectionHolder) {
 
 /**
  *
- * @returns {undefined}
- */
-function initCollectionHoldermesada() {
-    collectionHoldermesada = $('div.prototype-mesada');
-    collectionHoldermesada.data('index', collectionHoldermesada.find(':input').length);
-}
-
-/**
- *
- * @param {type} $sourceSelect
- * @param {type} $targetSelect
- * @param {type} ajaxURL
- * @param {type} preserve_values
- * @returns {undefined}
- */
-function initChainedSelect($sourceSelect, $targetSelect, ajaxURL, preserve_values) {
-    var isEdit = $('[name=_method]').length > 0;
-    var targetArray = [];
-    var selectedElement = null;
-    if (isEdit || (typeof preserve_values !== "undefined" && (preserve_values === true || preserve_values === "true"))) {
-        selectedElement = $targetSelect.val();
-        $sourceSelect.each(function (index) {
-            targetArray[index] = $targetSelect.val();
-        });
-    }
-    $sourceSelect.on("change", function () {
-        var data = {
-            id_entity: $(this).val(),
-            extra_data: getExtraDataChainedSelect()
-        };
-        if (customChainedSelect($sourceSelect, $targetSelect, data)) {
-            resetSelect($targetSelect);
-            $.ajax({
-                type: 'post',
-                url: ajaxURL,
-                data: data,
-                success: function (data) {
-                    $targetSelect.attr('readonly', false);
-                    for (var i = 0, total = data.length; i < total; i++) {
-                        if (data[i].id != parseInt($('#salida_camara_mesadas_0_mesada_tipoMesada').val())) {
-                            $targetSelect.append('<option value="' + data[i].id + '">' + data[i].denominacion + '</option>');
-                        }
-                        if (data.length === 1){
-                            selectedElement = data[i].id;
-                        }
-                    }
-                    if (null !== selectedElement) {
-                        $targetSelect.val(selectedElement);
-                    } else {
-                        $targetSelect.val(null);
-                    }
-                    selectedElement = null;
-                    $targetSelect.select2();
-                    customAfterChainedSelect();
-                }
-            });
-        }
-    }).trigger('change');
-}
-
-/**
- *
  * @param {type} deleteLink
  * @param {type} closestClassName
  * @returns {undefined}
@@ -506,6 +435,15 @@ function updateDeleteLinks(deleteLink, closestClassName) {
 
         });
     });
+}
+
+/**
+ *
+ * @returns {undefined}
+ */
+function initCollectionHoldermesada() {
+    collectionHoldermesada = $('div.prototype-mesada');
+    collectionHoldermesada.data('index', collectionHoldermesada.find(':input').length);
 }
 
 function initResetModalHandler(){

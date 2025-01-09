@@ -9,8 +9,10 @@ use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
 use App\Entity\EstadoRemito;
 use App\Entity\EstadoRemitoHistorico;
+use App\Entity\Mesada;
 use App\Entity\Pedido;
 use App\Entity\PedidoProducto;
+use App\Entity\PedidoProductoMesada;
 use App\Entity\Remito;
 use App\Entity\RemitoProducto;
 use App\Form\RemitoType;
@@ -161,7 +163,11 @@ class RemitoController extends BaseController {
     {
         /** @var RemitoProducto $remitoProducto */
         foreach ($entity->getRemitosProductos() as $remitoProducto){
+
+            /* @var $pedidoProducto PedidoProducto */
             $pedidoProducto = $remitoProducto->getPedidoProducto();
+
+            // SI ENTREGO TODAS LAS BANDEJAS DEL PEDIDO EL ESTADO PASA A ENTREGADO COMPLETO SINO A ENTREGADO PARCIAL
             if ($pedidoProducto->getCantBandejasFaltantes() == 0){
                 $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::ENTREGADO_COMPLETO);
                 $pedidoProducto->setFechaEntregaPedidoReal(new DateTime());
@@ -169,6 +175,9 @@ class RemitoController extends BaseController {
                 $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::ENTREGA_PARCIAL);
             }
             $this->cambiarEstadoPedido($em, $pedidoProducto, $estado, 'Entrega de bandejas');
+
+            // DESCONTAR BANDEJAS DE LA MESADA
+            $tipoMesada = $pedidoProducto->getTipoMesada();
         }
         $em->flush();
     }
@@ -221,6 +230,35 @@ class RemitoController extends BaseController {
 
         $query = $repository->createQueryBuilder('pp')
             ->select("pp.id, concat ('ORDEN N° ',pp.numeroOrden,' ', tp.nombre,' (x',tb.nombre,') BANDEJAS SEMBRADAS: ',pp.cantBandejasReales,' FALTAN ENTREGAR: ',pp.cantBandejasFaltantes, ' MESADA N° ', tm.nombre) as denominacion")
+            ->leftJoin('pp.pedido', 'p' )
+            ->leftJoin('App:TipoVariedad', 'v', Join::WITH, 'pp.tipoVariedad = v')
+            ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')
+            ->leftJoin('App:TipoProducto', 'tp', Join::WITH, 'sb.tipoProducto = tp')
+            ->leftJoin('App:TipoBandeja', 'tb', Join::WITH, 'pp.tipoBandeja = tb')
+            ->leftJoin('App:PedidoProductoMesada', 'ppm', Join::WITH, 'ppm.pedidoProducto = pp')
+            ->leftJoin('App:Mesada', 'm', Join::WITH, 'ppm.mesada = m')
+            ->leftJoin('App:TipoMesada', 'tm', Join::WITH, 'm.tipoMesada = tm')
+            ->where('p.cliente = :cliente')
+            ->andWhere('pp.estado IN (:estados)')
+            ->setParameter('cliente', $idCliente)
+            ->setParameter('estados', [ConstanteEstadoPedidoProducto::EN_INVERNACULO, ConstanteEstadoPedidoProducto::ENTREGA_PARCIAL])
+            ->orderBy('pp.id', 'ASC')
+            ->groupBy('pp.id')
+            ->getQuery();
+
+        return new JsonResponse($query->getResult());
+    }
+
+    /**
+     * @Route("/lista/productos/2", name="lista_productos_2")
+     */
+    public function listaProductos2Action(Request $request) {
+        $idCliente = $request->request->get('id_entity');
+
+        $repository = $this->getDoctrine()->getRepository(PedidoProducto::class);
+
+        $query = $repository->createQueryBuilder('pp')
+            ->select("m.id, concat ('ORDEN N° ',pp.numeroOrden,' ', tp.nombre,' (x',tb.nombre,') BANDEJAS SEMBRADAS: ',pp.cantBandejasReales,' FALTAN ENTREGAR: ',pp.cantBandejasFaltantes, ' MESADA N° ', tm.nombre) as denominacion")
             ->leftJoin('pp.pedido', 'p' )
             ->leftJoin('App:TipoVariedad', 'v', Join::WITH, 'pp.tipoVariedad = v')
             ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')

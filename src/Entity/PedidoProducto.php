@@ -187,6 +187,12 @@ class PedidoProducto {
      */
     private $remitosProductos;
 
+    /**
+     * @ORM\OneToMany(targetEntity=EntregaProducto::class, mappedBy="pedidoProducto", cascade={"all"})
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $entregasProductos;
+
 
     public function __construct()
     {

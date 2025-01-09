@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\TipoMesadaRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -44,6 +45,7 @@ class TipoMesada extends EntidadBasica {
         $this->ocupado = 0;
         $this->capacidad = 500;
         $this->habilitado = true;
+        $this->mesadas = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -72,7 +74,11 @@ class TipoMesada extends EntidadBasica {
      */
     public function getOcupado(): int
     {
-        return $this->ocupado;
+        $ocupado = 0;
+        foreach ($this->mesadas as $mesada) {
+            $ocupado +=$mesada->getCantidadBandejas();
+        }
+        return $ocupado;
     }
 
     /**
@@ -141,9 +147,6 @@ class TipoMesada extends EntidadBasica {
     {
         $this->mesadas = $mesadas;
     }
-
-
-
 
 
 

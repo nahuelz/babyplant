@@ -48,40 +48,6 @@ jQuery(document).ready(function () {
     initTipoUsuario();
     initRazonSocialHandler();
 
-    FormValidation.formValidation(
-        $("form[name=usuario_form]")[0], {
-            fields: {
-                'registration_form[email]': {
-                    validators: {
-                        notEmpty: {
-                            message: 'Este campo es requerido'
-                        }
-                    }
-                },
-                'registration_form[nombre]': {
-                    validators: {
-                        notEmpty: {
-                            message: 'Este campo es requerido'
-                        }
-                    }
-                },
-                'registration_form[apellido]': {
-                    validators: {
-                        notEmpty: {
-                            message: 'Este campo es requerido'
-                        }
-                    }
-                },
-            },
-            plugins: {
-                trigger: new FormValidation.plugins.Trigger(),
-                bootstrap: new FormValidation.plugins.Bootstrap(),
-                submitButton: new FormValidation.plugins.SubmitButton(),
-                defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
-            }
-        }
-    );
-
     $("#usuario_cuit").inputmask("99-99999999-9");
     $("#usuario_razonSocial_cuit").inputmask("99-99999999-9");
 });

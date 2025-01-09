@@ -39,10 +39,6 @@ function initVerHistoricoEstadoHandler() {
                     return;
                 }
             });
-            $('.bs-popover-top').hide();
-            $('.modal-dialog').css('width', '80%');
-            $('.modal-dialog').addClass('modal-xl');
-            $('.modal-dialog').addClass('modal-fullscreen-xl-down');
             $('.btn-submit').hide();
         });
     });

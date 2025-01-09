@@ -4,38 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="constanteestado">
-      <change afterPath="$PROJECT_DIR$/public/js/app/situacioncliente/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/config/config-spinner.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/theme/css/spinner.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/Constants/ConstanteEstadoRemito.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/CuentaCorriente.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/EstadoRemito.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/EstadoRemitoHistorico.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/Movimiento.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/situacion_cliente/filtros.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/situacion_cliente/index.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/situacion_cliente/index_table.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/situacion_cliente/new.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/situacion_cliente/show.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_pedidos.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_remitos.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_tiles.html.twig" afterDir="false" />
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="fix bug">
+      <change afterPath="$PROJECT_DIR$/src/Entity/EntregaProducto.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/EntregaPedido.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/theme/css/custom/custom.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/css/custom/custom.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/pedido/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/pedido/show.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/show.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/usuario/new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/usuario/new.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/PedidoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PedidoController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/RemitoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RemitoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Pedido.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Pedido.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Remito.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Remito.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/RemitoProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/RemitoProducto.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Usuario.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Usuario.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pedido/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pedido/index_panel.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/index_panel.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pedido/new.producto.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/new.producto.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/TipoMesada.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/TipoMesada.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/MesadaType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/MesadaType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/UsuarioType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/UsuarioType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedido/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/remito/new.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/new.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/salida_camara/prototype.mesada.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/salida_camara/prototype.mesada.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/usuario/new.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/usuario/new.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -451,31 +437,11 @@
       <workItem from="1736103318753" duration="6137000" />
       <workItem from="1736169580128" duration="19236000" />
       <workItem from="1736213896868" duration="7679000" />
-      <workItem from="1736265109973" duration="4667000" />
-    </task>
-    <task id="LOCAL-00031" summary="Salida de camara">
-      <option name="closed" value="true" />
-      <created>1729528125485</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1729528125485</updated>
-    </task>
-    <task id="LOCAL-00032" summary="Salida de camara">
-      <option name="closed" value="true" />
-      <created>1729529021532</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1729529021532</updated>
-    </task>
-    <task id="LOCAL-00033" summary="NumeroOrden">
-      <option name="closed" value="true" />
-      <created>1729531002462</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1729531002462</updated>
+      <workItem from="1736265109973" duration="6962000" />
+      <workItem from="1736277008012" duration="3146000" />
+      <workItem from="1736354960452" duration="6426000" />
+      <workItem from="1736388320698" duration="5657000" />
+      <workItem from="1736432197883" duration="2625000" />
     </task>
     <task id="LOCAL-00034" summary="Pedido tiles, filtros, ultimas actividades">
       <option name="closed" value="true" />
@@ -845,16 +811,48 @@
       <option name="project" value="LOCAL" />
       <updated>1734976272568</updated>
     </task>
-    <option name="localTasksCounter" value="80" />
+    <task id="LOCAL-00080" summary="cuentacorriente">
+      <option name="closed" value="true" />
+      <created>1736274405533</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1736274405534</updated>
+    </task>
+    <task id="LOCAL-00081" summary="pefil.png">
+      <option name="closed" value="true" />
+      <created>1736275440052</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1736275440052</updated>
+    </task>
+    <task id="LOCAL-00082" summary="fix bug">
+      <option name="closed" value="true" />
+      <created>1736281158961</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1736281158962</updated>
+    </task>
+    <option name="localTasksCounter" value="83" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Importar clientes" />
-    <MESSAGE value="Fix registrar usuario" />
-    <MESSAGE value="Planificacion show detalle producto" />
     <MESSAGE value="Fix varios vista detalle producto" />
     <MESSAGE value="Fix vista, hide breadcrumbs" />
     <MESSAGE value="Vista fullscreen" />
@@ -877,6 +875,9 @@
     <MESSAGE value="Entrega de pedido" />
     <MESSAGE value="remito" />
     <MESSAGE value="constanteestado" />
-    <option name="LAST_COMMIT_MESSAGE" value="constanteestado" />
+    <MESSAGE value="cuentacorriente" />
+    <MESSAGE value="pefil.png" />
+    <MESSAGE value="fix bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix bug" />
   </component>
 </project>
