@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Controller\BaseController;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Constants\ConstanteTipoConsulta;
-use App\Entity\EstadoPedidoHistorico;
 use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
 use App\Entity\Pedido;

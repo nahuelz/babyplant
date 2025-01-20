@@ -1,0 +1,35 @@
+{% import 'app/_macro_form.html.twig' as macro_form %}
+
+<div class="row row-mesada-empty margin-top-20">
+    <div class="col-md-12">
+        <div class="alert alert-danger alert-form-error" style="background-color: #fbe1e3;color: brown;">
+            Debe ingresar al menos una mesada.
+        </div>
+    </div>
+</div>
+{{ form_start(form, {'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
+{{ form_widget(form._token) }}
+<div class="row-form-mesada">
+    <div class="row">
+        {{ macro_form._new_field(form.mesadaUno.tipoMesada, 'col-md-5') }}
+        {{ macro_form._new_field(form.mesadaUno.cantidadBandejas, 'col-md-5') }}
+        {{ macro_form._new_field(form.mesadaDos.tipoMesada, 'col-md-5 mesada-dos') }}
+        {{ macro_form._new_field(form.mesadaDos.cantidadBandejas, 'col-md-5 mesada-dos') }}
+        <input type="hidden" id="ultimaMesada" value="{{ entity.tipoProducto.ultimaMesada.id|default('') }}">
+        <div class="col-md-1 pull-left">
+            <div class="form-group">
+                <a class="btn btn-light-danger font-weight-bold margin-top-25 mesada-dos remove-mesada">
+                    <i class="fas fa-trash padding-0"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-3 pull-left">
+            <div class="form-group">
+                <a class="btn btn-light-primary font-weight-bold margin-top-25 add-mesada">
+                    Agregar Mesada
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{{ form_end(form, {"render_rest": false}) }}

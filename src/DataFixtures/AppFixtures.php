@@ -2,7 +2,6 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\EstadoPedido;
 use App\Entity\EstadoPedidoProducto;
 use App\Entity\GlobalConfig;
 use App\Entity\Grupo;
@@ -85,12 +84,6 @@ class AppFixtures extends Fixture
         $estadoPedidoProducto->setIcono('fas fa-exclamation-triangle');
         $estadoPedidoProducto->setColorIcono('danger');
         $manager->persist($estadoPedidoProducto);
-        
-        $estadoPedido = new EstadoPedido();
-        $estadoPedido->setCodigoInterno(1);
-        $estadoPedido->setHabilitado(1);
-        $estadoPedido->setNombre('NUEVO');
-        $manager->persist($estadoPedido);
 
         $grupo = new Grupo();
         $grupo->setNombre("Administrador");

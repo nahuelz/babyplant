@@ -2,20 +2,20 @@
 
 namespace App\Entity;
 
-use App\Entity\EstadoPedido;
-use App\Entity\Pedido;
+use App\Entity\EstadoMesada;
+use App\Entity\Mesada;
 use App\Entity\Traits\Auditoria;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="estado_pedido_historico")
+ * @ORM\Table(name="estado_mesada_historico")
  * @ORM\Entity()
  *
  * @Gedmo\SoftDeleteable(fieldName="fechaBaja")
  */
-class EstadoPedidoHistorico {
+class EstadoMesadaHistorico {
 
     use Auditoria;
 
@@ -27,14 +27,14 @@ class EstadoPedidoHistorico {
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Pedido::class, inversedBy="historicoEstados")
-     * @ORM\JoinColumn(name="id_pedido", referencedColumnName="id", nullable=false)
+     * @ORM\ManyToOne(targetEntity=Mesada::class, inversedBy="historicoEstados")
+     * @ORM\JoinColumn(name="id_pedido_producto", referencedColumnName="id", nullable=false)
      */
-    protected $pedido;
+    protected $mesada;
 
     /**
-     * @ORM\ManyToOne(targetEntity=EstadoPedido::class)
-     * @ORM\JoinColumn(name="id_estado_pedido", referencedColumnName="id", nullable=false)
+     * @ORM\ManyToOne(targetEntity=EstadoMesada::class)
+     * @ORM\JoinColumn(name="id_estado_pedido_producto", referencedColumnName="id", nullable=false)
      */
     private $estado;
 
@@ -50,25 +50,35 @@ class EstadoPedidoHistorico {
      */
     private $motivo;
 
+    /**
+     * @ORM\Column(name="cantidad_bandejas", type="integer", nullable=false)
+     */
+    private mixed $cantBandejas;
+
+    public function __construct()
+    {
+        $this->cantBandejas = 0;
+    }
+
     public function getId(): ?int {
         return $this->id;
     }
 
-    public function getPedido(): ?Pedido {
-        return $this->pedido;
+    public function getMesada(): ?Mesada {
+        return $this->mesada;
     }
 
-    public function setPedido(?Pedido $pedido): self {
-        $this->pedido = $pedido;
+    public function setMesada(?Mesada $mesada): self {
+        $this->mesada = $mesada;
 
         return $this;
     }
 
-    public function getEstado(): ?EstadoPedido {
+    public function getEstado(): ?EstadoMesada {
         return $this->estado;
     }
 
-    public function setEstado(?EstadoPedido $estado): self {
+    public function setEstado(?EstadoMesada $estado): self {
         $this->estado = $estado;
 
         return $this;
@@ -94,4 +104,16 @@ class EstadoPedidoHistorico {
 
         return $this;
     }
+
+    public function getCantBandejas(): mixed
+    {
+        return $this->cantBandejas;
+    }
+
+    public function setCantBandejas(mixed $cantBandejas): void
+    {
+        $this->cantBandejas = $cantBandejas;
+    }
+
+
 }

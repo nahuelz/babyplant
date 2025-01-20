@@ -3,8 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Constants\ConstanteAPI;
+use App\Entity\Constants\ConstanteEstadoMesada;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Constants\ConstanteEstadoRemito;
+use App\Entity\EntregaProducto;
+use App\Entity\EstadoMesada;
+use App\Entity\EstadoMesadaHistorico;
 use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
 use App\Entity\EstadoRemito;
@@ -18,6 +22,7 @@ use App\Entity\RemitoProducto;
 use App\Form\RemitoType;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\Persistence\ObjectManager;
 use Mpdf\Mpdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -164,22 +169,80 @@ class RemitoController extends BaseController {
         /** @var RemitoProducto $remitoProducto */
         foreach ($entity->getRemitosProductos() as $remitoProducto){
 
+            $bandejasAEntregar = $remitoProducto->getCantBandejas();
+
             /* @var $pedidoProducto PedidoProducto */
             $pedidoProducto = $remitoProducto->getPedidoProducto();
+
+            $pedidoProducto->setCantBandejasEntregadas(($pedidoProducto->getCantBandejasEntregadas() + $bandejasAEntregar));
+            $pedidoProducto->setCantBandejasFaltantes(($pedidoProducto->getCantBandejasFaltantes() - $bandejasAEntregar));
 
             // SI ENTREGO TODAS LAS BANDEJAS DEL PEDIDO EL ESTADO PASA A ENTREGADO COMPLETO SINO A ENTREGADO PARCIAL
             if ($pedidoProducto->getCantBandejasFaltantes() == 0){
                 $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::ENTREGADO_COMPLETO);
+                $estadoMesada = $em->getRepository(EstadoMesada::class)->findOneByCodigoInterno(ConstanteEstadoMesada::ENTREGADO);
                 $pedidoProducto->setFechaEntregaPedidoReal(new DateTime());
             }else{
                 $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::ENTREGA_PARCIAL);
+                $estadoMesada = $em->getRepository(EstadoMesada::class)->findOneByCodigoInterno(ConstanteEstadoMesada::ENTREGADO_PARCIAL);
             }
-            $this->cambiarEstadoPedido($em, $pedidoProducto, $estado, 'Entrega de bandejas');
 
-            // DESCONTAR BANDEJAS DE LA MESADA
-            $tipoMesada = $pedidoProducto->getTipoMesada();
+            $entregaProducto = new EntregaProducto();
+            $entregaProducto->setPedidoProducto($pedidoProducto);
+            $entregaProducto->setRemito($remitoProducto->getRemito());
+            $entregaProducto->setCantBandejasEntregadas($bandejasAEntregar);
+            $entregaProducto->setCantBandejasPendientes($pedidoProducto->getCantBandejasFaltantes());
+            $entregaProducto->setMesadaUno($pedidoProducto->getMesadaUno());
+            $entregaProducto->setMesadaDos($pedidoProducto->getMesadaDos());
+            $this->entregarBandejas($em, $pedidoProducto, $estadoMesada, $bandejasAEntregar);
+
+            $em->persist($entregaProducto);
+
+            $this->cambiarEstadoPedido($em, $pedidoProducto, $estado, 'Entrega de bandejas');
         }
         $em->flush();
+    }
+
+    public function entregarBandejas($em, $pedidoProducto, $estadoMesada, $bandejasAEntregar){
+        $mesadaUno = $pedidoProducto->getMesadaUno();
+        $mesadaDos = $pedidoProducto->getMesadaDos();
+        $bandejasEnMesadaUno = $mesadaUno != null ? $mesadaUno->getCantidadBandejas() : null;
+        $bandejasEnMesadaDos = $mesadaDos != null ? $mesadaDos->getCantidadBandejas() : null;
+
+        if($bandejasEnMesadaUno >= $bandejasAEntregar){
+            $mesadaUno->entregarBandejas($bandejasAEntregar);
+            $this->cambiarEstadoMesada($em, $mesadaUno, $estadoMesada,$pedidoProducto);
+        }else{
+            $badejasRestantes = $bandejasAEntregar - $bandejasEnMesadaUno;
+            $mesadaUno->entregarBandejas($bandejasEnMesadaUno);
+            $this->cambiarEstadoMesada($em, $mesadaUno, $estadoMesada);
+            // SI QUEDAN MAS BANDEJAS POR ENTREGAR QUE LAS QUE HAY EN LA MESADA HUBO ERROR, SE DESCUENTAN SOLO LAS QUE HAY
+            if ($badejasRestantes > $bandejasEnMesadaDos){
+                $badejasRestantes = $bandejasEnMesadaDos;
+            }
+            $mesadaDos->entregarBandejas($badejasRestantes);
+            $this->cambiarEstadoMesada($em, $mesadaDos, $estadoMesada);
+        }
+    }
+
+    /**
+     *
+     * @param ObjectManager $em
+     * @param Mesada $mesada
+     * @param EstadoMesada $estadoMesada
+     */
+    private function cambiarEstadoMesada(ObjectManager $em, Mesada $mesada, EstadoMesada $estadoMesada) {
+
+        $mesada->setEstado($estadoMesada);
+        $estadoMesadaHistorico = new EstadoMesadaHistorico();
+        $estadoMesadaHistorico->setMesada($mesada);
+        $estadoMesadaHistorico->setFecha(new DateTime());
+        $estadoMesadaHistorico->setEstado($estadoMesada);
+        $estadoMesadaHistorico->setCantBandejas($mesada->getCantidadBandejas());
+        $estadoMesadaHistorico->setMotivo('Entrega de producto.');
+        $mesada->addHistoricoEstado($estadoMesadaHistorico);
+
+        $em->persist($estadoMesadaHistorico);
     }
 
     /**
@@ -235,8 +298,7 @@ class RemitoController extends BaseController {
             ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')
             ->leftJoin('App:TipoProducto', 'tp', Join::WITH, 'sb.tipoProducto = tp')
             ->leftJoin('App:TipoBandeja', 'tb', Join::WITH, 'pp.tipoBandeja = tb')
-            ->leftJoin('App:PedidoProductoMesada', 'ppm', Join::WITH, 'ppm.pedidoProducto = pp')
-            ->leftJoin('App:Mesada', 'm', Join::WITH, 'ppm.mesada = m')
+            ->leftJoin('App:Mesada', 'm', Join::WITH, 'm.pedidoProducto = pp')
             ->leftJoin('App:TipoMesada', 'tm', Join::WITH, 'm.tipoMesada = tm')
             ->where('p.cliente = :cliente')
             ->andWhere('pp.estado IN (:estados)')
@@ -244,34 +306,6 @@ class RemitoController extends BaseController {
             ->setParameter('estados', [ConstanteEstadoPedidoProducto::EN_INVERNACULO, ConstanteEstadoPedidoProducto::ENTREGA_PARCIAL])
             ->orderBy('pp.id', 'ASC')
             ->groupBy('pp.id')
-            ->getQuery();
-
-        return new JsonResponse($query->getResult());
-    }
-
-    /**
-     * @Route("/lista/productos/2", name="lista_productos_2")
-     */
-    public function listaProductos2Action(Request $request) {
-        $idCliente = $request->request->get('id_entity');
-
-        $repository = $this->getDoctrine()->getRepository(PedidoProducto::class);
-
-        $query = $repository->createQueryBuilder('pp')
-            ->select("m.id, concat ('ORDEN N° ',pp.numeroOrden,' ', tp.nombre,' (x',tb.nombre,') BANDEJAS SEMBRADAS: ',pp.cantBandejasReales,' FALTAN ENTREGAR: ',pp.cantBandejasFaltantes, ' MESADA N° ', tm.nombre) as denominacion")
-            ->leftJoin('pp.pedido', 'p' )
-            ->leftJoin('App:TipoVariedad', 'v', Join::WITH, 'pp.tipoVariedad = v')
-            ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')
-            ->leftJoin('App:TipoProducto', 'tp', Join::WITH, 'sb.tipoProducto = tp')
-            ->leftJoin('App:TipoBandeja', 'tb', Join::WITH, 'pp.tipoBandeja = tb')
-            ->leftJoin('App:PedidoProductoMesada', 'ppm', Join::WITH, 'ppm.pedidoProducto = pp')
-            ->leftJoin('App:Mesada', 'm', Join::WITH, 'ppm.mesada = m')
-            ->leftJoin('App:TipoMesada', 'tm', Join::WITH, 'm.tipoMesada = tm')
-            ->where('p.cliente = :cliente')
-            ->andWhere('pp.estado IN (:estados)')
-            ->setParameter('cliente', $idCliente)
-            ->setParameter('estados', [ConstanteEstadoPedidoProducto::EN_INVERNACULO, ConstanteEstadoPedidoProducto::ENTREGA_PARCIAL])
-            ->orderBy('pp.id', 'ASC')
             ->getQuery();
 
         return new JsonResponse($query->getResult());
@@ -434,7 +468,7 @@ class RemitoController extends BaseController {
         $error = false;
         $tipoError = '';
         foreach ($entity->getRemitosProductos() as $remitoProducto) {
-            if ($remitoProducto->getPedidoProducto()->getCantBandejasFaltantes() < 0){
+            if ($remitoProducto->getCantBandejas() > $remitoProducto->getPedidoProducto()->getCantBandejasFaltantes()) {
                 $error = true;
                 $tipoError = 'ERROR ORDEN N° '.$remitoProducto->getPedidoProducto()->getNumeroOrdenCompleto();
             }

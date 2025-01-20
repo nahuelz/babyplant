@@ -514,14 +514,6 @@ class Usuario implements UserInterface {
         $this->pedidos = $pedidos;
     }
 
-    public function getPendiente(){
-        $pendiente = 0;
-        foreach ($this->getPedidos() as $pedido){
-            $pendiente+=$pedido->getPendiente();
-        }
-        return $pendiente;
-    }
-
     /**
      * @return mixed
      */
@@ -536,6 +528,14 @@ class Usuario implements UserInterface {
     public function setRemitos($remitos): void
     {
         $this->remitos = $remitos;
+    }
+
+    public function getPendiente(){
+        $pendiente = 0;
+        foreach ($this->getRemitos() as $remito){
+            $pendiente+=$remito->getTotalConDescuento();
+        }
+        return $pendiente;
     }
 
 

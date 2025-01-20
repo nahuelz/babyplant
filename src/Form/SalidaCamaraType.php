@@ -3,9 +3,10 @@
 namespace App\Form;
 
 use App\Entity\PedidoProducto;
+use App\Entity\Mesada;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,16 +15,8 @@ class SalidaCamaraType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('mesadas', CollectionType::class, array(
-                    'entry_type' => PedidoProductoMesadaType::class,
-                    'allow_delete' => true,
-                    'allow_add' => true,
-                    'label' => 'Mesada',
-                    'required' => true,
-                    'prototype_name' => '__mesada__',
-                    'label_attr' => array('class' => 'hidden'),
-                    'attr' => array('class' => 'hidden'))
-            )
+            ->add('mesadaUno', MesadaType::class)
+            ->add('mesadaDos', MesadaType::class)
         ;
     }
 

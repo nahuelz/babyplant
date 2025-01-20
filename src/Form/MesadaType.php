@@ -2,9 +2,8 @@
 
 namespace App\Form;
 
-use App\Entity\Mesada;
 use App\Entity\TipoMesada;
-use App\Entity\TipoProducto;
+use App\Entity\Mesada;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -21,7 +20,7 @@ class MesadaType extends AbstractType {
                     'label' => 'Mesada',
                     'mapped' => true,
                     'class' => TipoMesada::class,
-                    'required' => true,
+                    'required' => false,
                     'attr' => array(
                         'placeholder' => '-- Elija la mesada --',
                         'class' => 'form-control choice',
@@ -38,7 +37,7 @@ class MesadaType extends AbstractType {
                     'auto_initialize' => true)
             )
             ->add('cantidadBandejas', IntegerType::class, array(
-                    'required' => true,
+                    'required' => false,
                     'mapped' => true,
                     'label' => 'Cantidad Bandejas',
                     'attr' => array(

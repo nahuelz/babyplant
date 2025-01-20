@@ -2,31 +2,38 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\Auditoria;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Symfony\Component\Validator\Constraints as Assert;
+use phpDocumentor\Reflection\Types\Integer;
 
 /**
- * Mesada
+ * EntregaPedido
  *
  * @ORM\Table(name="mesada")
- * @ORM\Entity
- *
- * @Gedmo\SoftDeleteable(fieldName="fechaBaja")
+ * @ORM\Entity()
  */
-class Mesada
-{
+class Mesada {
 
-    use Traits\Auditoria;
+    use Auditoria;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @ORM\Column(name="cantidad_bandejas", type="integer", nullable=false)
+     */
+    private $cantidadBandejas;
+
+    /**
+     * @ORM\Column(name="cantidad_bandejas_entregadas", type="integer", nullable=true, options={"default": 0})
+     */
+    private $cantidadBandejasEntregadas;
 
     /**
      * @var TipoMesada
@@ -37,88 +44,147 @@ class Mesada
     protected $tipoMesada;
 
     /**
-     * @ORM\Column(name="cantidad_bandejas", type="string", length=50, nullable=true)
+     * @ORM\OneToMany(targetEntity=EstadoMesadaHistorico::class, mappedBy="mesada", cascade={"all"})
+     * @ORM\OrderBy({"fecha" = "DESC", "id" = "DESC"})
      */
-    private $cantidadBandejas;
+    private $historicoEstados;
 
     /**
-     * @ORM\OneToMany(targetEntity=PedidoProductoMesada::class, mappedBy="mesada", cascade={"all"})
+     * @ORM\ManyToOne(targetEntity=EstadoMesada::class)
+     * @ORM\JoinColumn(name="id_estado_mesada", referencedColumnName="id", nullable=false)
      */
-    private $pedidosProductosMesadas;
+    private $estado;
 
     /**
-     * Campo a mostrar
-     *
-     * @return string
+     * @ORM\ManyToOne(targetEntity=PedidoProducto::class)
+     * @ORM\JoinColumn(name="id_producto", referencedColumnName="id")
      */
-    public function __toString()
+    private $pedidoProducto;
+
+
+    public function __construct()
     {
-        return $this->tipoMesada->getNombre();
-
+        $this->cantidadBandejasEntregadas = 0;
+        $this->cantidadBandejas = 0;
+        $this->historicoEstados = new ArrayCollection();
     }
 
     /**
-     * @return int
+     * @return mixed
      */
-    public function getId(): int
+    public function getId()
     {
         return $this->id;
     }
 
     /**
-     * @param int $id
+     * @param mixed $id
      */
-    public function setId(int $id): void
+    public function setId($id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return TipoMesada
-     */
+    public function getCantidadBandejas(): mixed
+    {
+        return $this->cantidadBandejas;
+    }
+
+    public function setCantidadBandejas(mixed $cantidadBandejas): void
+    {
+        $this->cantidadBandejas = $cantidadBandejas;
+    }
+
+    public function getCantidadBandejasEntregadas(): mixed
+    {
+        return $this->cantidadBandejasEntregadas;
+    }
+
+    public function setCantidadBandejasEntregadas(mixed $cantidadBandejasEntregadas): void
+    {
+        $this->cantidadBandejasEntregadas = $cantidadBandejasEntregadas;
+    }
+
     public function getTipoMesada()
     {
         return $this->tipoMesada;
     }
 
-    /**
-     * @param TipoMesada $tipoMesada
-     */
     public function setTipoMesada(TipoMesada $tipoMesada): void
     {
         $this->tipoMesada = $tipoMesada;
     }
 
+    public function getHistoricoEstados(): ArrayCollection
+    {
+        return $this->historicoEstados;
+    }
+
+    public function setHistoricoEstados(ArrayCollection $historicoEstados): void
+    {
+        $this->historicoEstados = $historicoEstados;
+    }
+
+    public function addHistoricoEstado(EstadoMesadaHistorico $historicoEstado): self {
+        if (!$this->historicoEstados->contains($historicoEstado)) {
+            $this->historicoEstados[] = $historicoEstado;
+            $historicoEstado->setMesada($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHistoricoEstado(EstadoMesadaHistorico $historicoEstado): self {
+        if ($this->historicoEstados->removeElement($historicoEstado)) {
+            // set the owning side to null (unless already changed)
+            if ($historicoEstado->getMesada() === $this) {
+                $historicoEstado->setMesada(null);
+            }
+        }
+
+        return $this;
+    }
+
     /**
      * @return mixed
      */
-    public function getCantidadBandejas()
+    public function getEstado()
     {
-        return $this->cantidadBandejas;
+        return $this->estado;
     }
 
     /**
-     * @param mixed $cantidadBandejas
+     * @param mixed $estado
      */
-    public function setCantidadBandejas($cantidadBandejas): void
+    public function setEstado($estado): void
     {
-        $this->cantidadBandejas = $cantidadBandejas;
+        $this->estado = $estado;
     }
 
     /**
      * @return mixed
      */
-    public function getPedidosProductosMesadas()
+    public function getPedidoProducto()
     {
-        return $this->pedidosProductosMesadas;
+        return $this->pedidoProducto;
     }
 
     /**
-     * @param mixed $pedidosProductosMesadas
+     * @param mixed $pedidoProducto
      */
-    public function setPedidosProductosMesadas($pedidosProductosMesadas): void
+    public function setPedidoProducto($pedidoProducto): void
     {
-        $this->pedidosProductosMesadas = $pedidosProductosMesadas;
+        $this->pedidoProducto = $pedidoProducto;
+    }
+
+    public function getCantidadBandejasTotal(){
+        return $this->cantidadBandejas + $this->cantidadBandejasEntregadas;
+    }
+
+    public function entregarBandejas($cantidad){
+        $this->cantidadBandejasEntregadas += $cantidad;
+        $this->cantidadBandejas -= $cantidad;
+        $this->getTipoMesada()->actualizarOcupado();
     }
 
 

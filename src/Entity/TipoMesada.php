@@ -111,10 +111,6 @@ class TipoMesada extends EntidadBasica {
         return ($this->capacidad - $this->ocupado);
     }
 
-    public function sumarOcupado($cantidad): void{
-        $this->ocupado += $cantidad;
-    }
-
     /**
      * @return mixed
      */
@@ -148,7 +144,10 @@ class TipoMesada extends EntidadBasica {
         $this->mesadas = $mesadas;
     }
 
-
+    public function actualizarOcupado(): void
+    {
+        $this->ocupado = $this->getOcupado();
+    }
 
 
 }

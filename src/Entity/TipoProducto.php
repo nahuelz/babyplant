@@ -23,7 +23,7 @@ class TipoProducto extends EntidadBasica {
     private $cantDiasCamara;
 
     /**
-     * @ORM\OneToOne(targetEntity=TipoMesada::class)
+     * @ORM\ManyToOne(targetEntity=TipoMesada::class)
      * @ORM\JoinColumn(name="id_ultima_mesada", referencedColumnName="id", nullable=true)
      */
     private TipoMesada|null $ultimaMesada = null;

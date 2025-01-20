@@ -82,10 +82,6 @@ class RemitoProducto {
     public function setCantBandejas(mixed $cantBandejas): void
     {
         $this->cantBandejas = $cantBandejas;
-        $pedidoProducto = $this->getPedidoProducto();
-
-        $pedidoProducto->setCantBandejasEntregadas( ($pedidoProducto->getCantBandejasEntregadas() + $cantBandejas) );
-        $pedidoProducto->setCantBandejasFaltantes( ($pedidoProducto->getCantBandejasReales() - $pedidoProducto->getCantBandejasEntregadas()) );
     }
 
     public function getPedidoProducto()

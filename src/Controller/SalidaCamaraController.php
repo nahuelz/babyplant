@@ -3,13 +3,16 @@
 namespace App\Controller;
 
 use App\Controller\BaseController;
+use App\Entity\Constants\ConstanteEstadoMesada;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Constants\ConstanteTipoConsulta;
+use App\Entity\EstadoMesada;
+use App\Entity\EstadoMesadaHistorico;
 use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
-use App\Entity\Mesada;
+use App\Entity\Pedido;
 use App\Entity\PedidoProducto;
-use App\Entity\PedidoProductoMesada;
+use App\Entity\Mesada;
 use App\Entity\TipoMesada;
 use App\Form\SalidaCamaraType;
 use DateTime;
@@ -96,23 +99,21 @@ class SalidaCamaraController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
+
             if ($entity->getEstado()->getCodigoInterno() != ConstanteEstadoPedidoProducto::EN_INVERNACULO) {
                 $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::EN_INVERNACULO);
                 $this->cambiarEstado($em, $entity, $estado);
                 $entity->setFechaSalidaCamaraReal(new \DateTime());
             }
-            /* @var $pedidoProductoMesada PedidoProductoMesada */
-            foreach ($entity->getMesadas() as $pedidoProductoMesada){
-                /* @var $mesada Mesada */
-                $mesada = $pedidoProductoMesada->getMesada();
-                $pedidoProductoMesada->setPedidoProducto($entity);
-
-                // ACTUALIZO ESPACIO OCUPADO
-                $mesada->getTipoMesada()->sumarOcupado($mesada->getCantidadBandejas());
-
-                // ACTUALIZO TIPO PRODUCTO DE LA MESADA Y EN TIPO PRODUCTO GUARDO LA ULTIMA MESADA
-                $mesada->getTipoMesada()->setTipoProducto($entity->getTipoProducto());
+            $estadoMesada = $em->getRepository(EstadoMesada::class)->findOneByCodigoInterno(ConstanteEstadoMesada::PENDIENTE);
+            $this->cambiarEstadoMesada($em, $entity->getMesadaUno(), $estadoMesada);
+            if ($entity->getMesadaDos()->getCantidadBandejas() != null) {
+                $this->cambiarEstadoMesada($em, $entity->getMesadaDos(), $estadoMesada);
+            } else {
+                $entity->setMesadaDos(null);
             }
+            $em->flush();
+            $this->actualizarMesadas($entity);
             $em->flush();
             $message = 'Producto enviado a mesada correctamente.';
             $this->get('session')->getFlashBag()->set('success', $message);
@@ -120,7 +121,6 @@ class SalidaCamaraController extends BaseController
         }
         return $this->render('pedidoproducto/show/salida_camara_show.html.twig', [
             'form' => $form->createView(),
-            'pedidoProducto' => $entity,
             'entity' => $entity
         ]);
     }
@@ -163,32 +163,41 @@ class SalidaCamaraController extends BaseController
 
     /**
      *
-     * @Route("/cambiar_fecha_salida_camara/", name="cambiar_fecha_salida_camara", methods={"POST"})
-     * @IsGranted("ROLE_PEDIDO")
+     * @param ObjectManager $em
+     * @param Mesada $mesada
+     * @param EstadoMesada $estadoMesada
      */
-    public function cambiarFechaSalidaCamara(Request $request){
-        /*
-        $nuevaFechaSalidaCamaraParam = $request->get('nuevaFechaSalidaCamara');
-        $idPedidoProducto = $request->get('idPedidoProducto');
-        $datetime = new DateTime();
-        $nuevaFechaSalidaCamara = $datetime->createFromFormat('Y-m-d', $nuevaFechaSalidaCamaraParam);
+    private function cambiarEstadoMesada(ObjectManager $em, Mesada $mesada, EstadoMesada $estadoMesada) {
 
-        $em = $this->doctrine->getManager();
-        /* @var $pedidoProducto PedidoProducto */
-        /*
-        $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
-        $fechaSalidaCamaraOriginal = $pedidoProducto->getFechaSalidaCamaraReal();
-        $pedidoProducto->setFechaSalidaCamaraReal($nuevaFechaSalidaCamara);
-        $em->flush();
+        $mesada->setEstado($estadoMesada);
+        $estadoMesadaHistorico = new EstadoMesadaHistorico();
+        $estadoMesadaHistorico->setMesada($mesada);
+        $estadoMesadaHistorico->setFecha(new DateTime());
+        $estadoMesadaHistorico->setEstado($estadoMesada);
+        $estadoMesadaHistorico->setCantBandejas($mesada->getCantidadBandejas());
+        $estadoMesadaHistorico->setMotivo('Producto enviado a invernaculo.');
+        $mesada->addHistoricoEstado($estadoMesadaHistorico);
 
-        $message = 'Se modifico correctamente la fecha de salida a camara del producto '.$pedidoProducto->getNombreCompleto().' del dia: '.$fechaSalidaCamaraOriginal->format('d/m/Y').' al dia: '.$nuevaFechaSalidaCamara->format('d/m/Y');
-        $result = array(
-            'status' => 'OK',
-            'message' => $message
-        );
+        $em->persist($estadoMesadaHistorico);
+    }
 
-        return new JsonResponse($result);
-        */
+    private function actualizarMesadas(PedidoProducto $entity) {
+        if ($entity->getMesadaUno() != null) {
+            $this->actualizarMesada($entity->getMesadaUno(), $entity);
+        }
 
+        if ($entity->getMesadaDos() != null) {
+            $this->actualizarMesada($entity->getMesadaDos(), $entity);
+        }
+    }
+
+    private function actualizarMesada(Mesada $mesada, PedidoProducto $entity)
+    {
+        // SETEO EL PRODUCTO A LA MESADA
+        $mesada->setPedidoProducto($entity);
+        // ACTUALIZO TIPO PRODUCTO DE LA MESADA Y EN TIPO PRODUCTO GUARDO LA ULTIMA MESADA
+        $mesada->getTipoMesada()->setTipoProducto($entity->getTipoProducto());
+        // ACTUALIZO ESPACIO OCUPADO
+        $mesada->getTipoMesada()->actualizarOcupado();
     }
 }

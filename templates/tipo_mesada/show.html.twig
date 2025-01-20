@@ -3,7 +3,6 @@
 {% import 'app/_macro_show.html.twig' as macro_show %}
 
 {% block body %}
-
     <div class="card card-custom">
         <div class="card-header">
             <div class="card-title">
@@ -30,7 +29,7 @@
                 {{ macro_show._show_detail('Numero', tipo_mesada.nombre, 'col-md-2') }}
                 {{ macro_show._show_detail('Capacidad', tipo_mesada.capacidad, 'col-md-2') }}
                 {{ macro_show._show_detail('Ocupado', tipo_mesada.ocupado, 'col-md-2') }}
-                {{ macro_show._show_detail('Tipo Mesada', tipo_mesada.tipoProducto, 'col-md-2') }}
+                {{ macro_show._show_detail('Tipo Mesada', tipo_mesada.tipoProducto|default('-'), 'col-md-2') }}
                 {{ macro_show._show_detail('Habilitado', tipo_mesada.habilitado == 1 ? 'Si' : 'No', 'col-md-2') }}
             </div>
 
@@ -51,20 +50,21 @@
                             <tbody>
                             {% if tipo_mesada.mesadas != null %}
                                 {% for mesada in tipo_mesada.mesadas %}
-                                    {% for pedidoProductoMesada in mesada.pedidosProductosMesadas %}
-                                        {% set pedidoProducto = pedidoProductoMesada.pedidoProducto %}
-                                        <tr>
-                                            <td class="text-center v-middle">{{ pedidoProducto.id }}</td>
-                                            <td class="text-center v-middle">{{ pedidoProducto.numeroOrdenCompleto }}</td>
-                                            <td class="text-center v-middle">{{ pedidoProducto }}</td>
-                                            <td class="text-center v-middle">{{ mesada.cantidadBandejas }}</td>
-                                            <td class="text-center v-middle">
-                                                <a href="{{ path( "pedido_show", { "id": pedidoProducto.pedido.id }) }}/#{{ pedidoProducto.id}}" target="_blank">
-                                                    <button type="button" class="btn btn-sm btn-primary" style="padding: 5px"><i class="fa fa-search" style="padding: 0;"></i></button>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
+                                    {% if mesada.estado.codigoInterno != 3 %}
+                                        {% if mesada.pedidoProducto != null %}
+                                            <tr>
+                                                <td class="text-center v-middle">{{ mesada.pedidoProducto.id }}</td>
+                                                <td class="text-center v-middle">{{ mesada.pedidoProducto.numeroOrdenCompleto }}</td>
+                                                <td class="text-center v-middle">{{ mesada.pedidoProducto }}</td>
+                                                <td class="text-center v-middle">{{ mesada.cantidadBandejas }}</td>
+                                                <td class="text-center v-middle">
+                                                    <a href="{{ path( "pedido_show", { "id": mesada.pedidoProducto.pedido.id }) }}/#{{ mesada.pedidoProducto.id}}" target="_blank">
+                                                        <button type="button" class="btn btn-sm btn-primary" style="padding: 5px"><i class="fa fa-search" style="padding: 0;"></i></button>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endif %}
                                 {% endfor %}
                             {% else %}
                                 <tr>

@@ -83,24 +83,7 @@ var KTCalendarListView = function() {
                                 return;
                             },
                             callbackSuccess: function () {
-                                $.ajax({
-                                    type: 'post',
-                                    dataType: 'json',
-                                    data: {
-                                        form: $('form[name="salida_camara"]').serialize()
-                                    },
-                                    url: __HOMEPAGE_PATH__ + "salida_camara/"+idProducto,
-                                    success: function (data) {
-                                        if (!jQuery.isEmptyObject(data)) {
-                                            $('.alert-success').hide();
-                                            showFlashMessage("success", data.message);
-                                            calendar.refetchEvents()
-                                        }
-                                    },
-                                    error: function () {
-                                        alert('ah ocurrido un error.');
-                                    }
-                                });
+                                $('form[name="salida_camara"]').submit();
                             }
                         });
                         $('.bs-popover-top').hide();
@@ -109,15 +92,14 @@ var KTCalendarListView = function() {
                         $('.modal-dialog').addClass('modal-fullscreen-xl-down');
                         if (__ID_ESTADO__ !== EN_INVERNACULO) {
                             initmesadaForm();
-                            $('#salida_camara_mesadas_0_mesada_tipoMesada').select2();
+                            $('#salida_camara_mesadaUno_tipoMesada').select2();
                             //initMesadaChainedSelect();
-                            $('#salida_camara_mesadas_0_mesada_tipoProducto').val('').select2().change();
+                            $('#salida_camara_mesadaUno_tipoProducto').val('').select2().change();
                             if ($('#ultimaMesada').val() != '') {
-                                $('#salida_camara_mesadas_0_mesada_tipoMesada').val($('#ultimaMesada').val()).select2();
+                                $('#salida_camara_mesadaUno_tipoMesada').val($('#ultimaMesada').val()).select2();
                             }
                             initValidations();
                             $('.remove-mesada').hide();
-                            initResetModalHandler();
                         }else{
                             $('.salida_camara_submit').hide();
                         }
@@ -304,7 +286,7 @@ function initFormValidation() {
 
 }
 function initValidations(){
-    $('#salida_camara_mesadas_0_mesada_cantidadBandejas').on('keyup', function(){
+    $('#salida_camara_mesadaUno_cantidadBandejas').on('keyup', function(){
         if ($(this).val() > parseInt($('#cantBandejasReales').val())){
             $(this).val($('#cantBandejasReales').val());
         }
@@ -316,6 +298,15 @@ jQuery(document).ready(function() {
 
 });
 
+function cantidadDeBandejasValida(){
+    let cantidadBandejasMesadaUno = $('#salida_camara_mesadaUno_cantidadBandejas').val() ? parseInt($('#salida_camara_mesadaUno_cantidadBandejas').val()) : 0;
+    let cantidadBandejasMesadaDos = $('#salida_camara_mesadaDos_cantidadBandejas').val() ? parseInt($('#salida_camara_mesadaDos_cantidadBandejas').val()) : 0;
+    let cantidadBandejasReales = parseInt($('#cantBandejasReales').val());
+    let cantidadTotalBandejas = cantidadBandejasMesadaUno + cantidadBandejasMesadaDos;
+
+    return (cantidadTotalBandejas === cantidadBandejasReales);
+}
+
 /**
  *
  * @returns {undefined}
@@ -324,32 +315,27 @@ function initPreValidation() {
 
     $(".salida_camara_submit").off('click').on('click', function (e) {
         e.preventDefault();
-        $('.fv-plugins-message-container').remove();
-        initFormValidation();
-        fv.revalidateField('requiredFields');
-
-        fv.validate().then((status) => {
-            if (status === "Valid") {
-                let res = 0;
-                $('.cantBandejas').each(function () {
-                    if ($(this).val() != '') {
-                        res += parseInt($(this).val());
-                    }
-                });
-                if (res == $('#cantBandejasReales').val()) {
-                    if ($('#salida_camara_mesadas_1_mesada_cantidadBandejas').val() == '') {
-                        $('#salida_camara_mesadas_1_mesada_cantidadBandejas').closest('.row').remove();
-                    }
-                    $('form[name="salida_camara"]').submit();
-                } else {
-                    Swal.fire({
-                        title: 'La cantidad de bandejas debe coincidir con las bandejas reales.',
-                        icon: "error"
-                    });
-                    return false;
+        if (cantidadDeBandejasValida()) {
+            if ($('#salida_camara_mesadaUno_tipoMesada').val() != '') {
+                if ($('#salida_camara_mesadaDos_cantidadBandejas').val() < 1) {
+                    $("#salida_camara_mesadaDos_cantidadBandejas").attr('disabled', 'disabled');
+                    $("#salida_camara_mesadaDos_tipoMesada").attr('disabled', 'disabled');
                 }
+                $('form[name="salida_camara"]').submit();
+            } else {
+                Swal.fire({
+                    title: 'Debe compeltar todos los datos.',
+                    icon: "error"
+                });
+                return false;
             }
-        });
+        } else {
+            Swal.fire({
+                title: 'La cantidad de bandejas debe coincidir con las bandejas reales.',
+                icon: "error"
+            });
+            return false;
+        }
         e.stopPropagation();
     });
 }
@@ -359,96 +345,39 @@ function initPreValidation() {
  * @returns {undefined}
  */
 function initmesadaForm() {
-    initCollectionHoldermesada();
-    addmesadaForm(collectionHoldermesada);
-    $('#salida_camara_mesadas_0_mesada_cantidadBandejas').val($('#cantBandejasReales').val())
-    $(document).on('click', '.prototype-link-add-mesada', function (e) {
+    $('#salida_camara_mesadaUno_tipoMesada').select2();
+    $('#salida_camara_mesadaDos_tipoMesada').select2();
+    $('.row-mesada-empty').hide();
+    $('.mesada-dos').hide();
+    $('#salida_camara_mesadaUno_cantidadBandejas').val($('#cantBandejasReales').val())
+    $(document).on('click', '.add-mesada', function (e) {
         e.preventDefault();
         disableMesadaDosOptionHandler();
-        if (!agrego) {
-            addmesadaForm(collectionHoldermesada);
-            agrego = true;
-            $('#salida_camara_mesadas_1_mesada_tipoMesada').select2();
-            $('#salida_camara_mesadas_1_mesada_cantidadBandejas').on('keyup', function(){
-                if ($(this).val() > parseInt($('#cantBandejasReales').val())){
-                    $(this).val($('#cantBandejasReales').val());
-                }
-            });
-            $("#salida_camara_mesadas_1_mesada_tipoMesada>option[value="+$('#salida_camara_mesadas_0_mesada_tipoMesada').val()+"]").attr('disabled','disabled');
-            $('.add-mesada').hide();
-        }else{
-            $('.row-mesada').show();
-            $('#salida_camara_mesadas_1_mesada_cantidadBandejas').attr('required', true);
-            $('#salida_camara_mesadas_1_mesada_tipoMesada').attr('required', true);
-            $('.add-mesada').hide();
-        }
-
-        //initSelects();
+        removeMesadaHandler();
+        $('#salida_camara_mesadaDos_cantidadBandejas').on('keyup', function(){
+            if ($(this).val() > parseInt($('#cantBandejasReales').val())){
+                $(this).val($('#cantBandejasReales').val());
+            }
+        });
+        $('.add-mesada').hide();
+        $('.mesada-dos').show();
+        $("#salida_camara_mesadaDos_tipoMesada>option[value="+$('#salida_camara_mesadaUno_tipoMesada').val()+"]").attr('disabled','disabled');
     });
 }
 
 function disableMesadaDosOptionHandler(){
-    $('#salida_camara_mesadas_0_mesada_tipoMesada').on('change', function(){
-        $('#salida_camara_mesadas_1_mesada_tipoMesada').val('').select2();
-        $("#salida_camara_mesadas_1_mesada_tipoMesada>option").removeAttr('disabled');
-        $("#salida_camara_mesadas_1_mesada_tipoMesada>option[value="+$('#salida_camara_mesadas_0_mesada_tipoMesada').val()+"]").attr('disabled','disabled');
+    $('#salida_camara_mesadaUno_tipoMesada').on('change', function(){
+        $('#salida_camara_mesadaDos_tipoMesada').val('').select2();
+        $("#salida_camara_mesadaDos_tipoMesada>option").removeAttr('disabled');
+        $("#salida_camara_mesadaDos_tipoMesada>option[value="+$('#salida_camara_mesadaUno_tipoMesada').val()+"]").attr('disabled','disabled');
     })
 }
 
-/**
- *
- * @param {type} $collectionHolder
- * @returns {addmesadaForm}
- */
-function addmesadaForm($collectionHolder) {
-    var prototype = $collectionHolder.data('prototype');
-    var index = $collectionHolder.data('index');
-    var form = prototype.replace(/__mesada__/g, index);
-
-    $collectionHolder.data('index', index + 1);
-    // Modificación para varios datos_contacto en la misma página
-    $collectionHolder.parent().find('.prototype-link-add-mesada').closest('.row').before(form);
-
-    var $deleteLink = $(".prototype-link-remove-mesada");
-
-    updateDeleteLinks($deleteLink);
-}
-
-/**
- *
- * @param {type} deleteLink
- * @param {type} closestClassName
- * @returns {undefined}
- */
-function updateDeleteLinks(deleteLink, closestClassName) {
-    closestClassName = typeof closestClassName !== 'undefined' ? closestClassName : '.row';
-    deleteLink.each(function () {
-        $(this).tooltip();
-        $(this).off("click").on('click', function (e) {
-            e.preventDefault();
-            var deletableRow = $(this).closest(closestClassName);
-            deletableRow.hide();
-            $('.add-mesada').show();
-            $('#salida_camara_mesadas_1_mesada_cantidadBandejas').attr('required', false);
-            $('#salida_camara_mesadas_1_mesada_tipoMesada').attr('required', false);
-            e.stopPropagation();
-
-        });
-    });
-}
-
-/**
- *
- * @returns {undefined}
- */
-function initCollectionHoldermesada() {
-    collectionHoldermesada = $('div.prototype-mesada');
-    collectionHoldermesada.data('index', collectionHoldermesada.find(':input').length);
-}
-
-function initResetModalHandler(){
-    $('.cancel, .close').on('click', function (e) {
-        e.preventDefault();
-        agrego=false;
+function removeMesadaHandler(){
+    $('.remove-mesada').on('click', function(){
+        $('.mesada-dos').hide();
+        $('#salida_camara_mesadaDos_tipoMesada').val('').select2();
+        $('#salida_camara_mesadaDos_cantidadBandejas').val('');
+        $('.add-mesada').show();
     })
 }

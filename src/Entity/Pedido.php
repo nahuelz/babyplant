@@ -44,18 +44,6 @@ class Pedido {
     private $cliente;
 
     /**
-     * @ORM\OneToMany(targetEntity=EstadoPedidoHistorico::class, mappedBy="pedido", cascade={"all"})
-     * @ORM\OrderBy({"fecha" = "DESC", "id" = "DESC"})
-     */
-    private $historicoEstados;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=EstadoPedido::class)
-     * @ORM\JoinColumn(name="id_estado_pedido", referencedColumnName="id", nullable=false)
-     */
-    private $estado;
-
-    /**
      * @ORM\Column(name="observacion", type="string", length=255, nullable=true)
      */
     private $observacion;
@@ -169,25 +157,7 @@ class Pedido {
         $this->estado = $estado;
     }
 
-    public function addHistoricoEstado(EstadoPedidoHistorico $historicoEstado): self {
-        if (!$this->historicoEstados->contains($historicoEstado)) {
-            $this->historicoEstados[] = $historicoEstado;
-            $historicoEstado->setPedido($this);
-        }
 
-        return $this;
-    }
-
-    public function removeHistoricoEstado(EstadoPedidoHistorico $historicoEstado): self {
-        if ($this->historicoEstados->removeElement($historicoEstado)) {
-            // set the owning side to null (unless already changed)
-            if ($historicoEstado->getPedido() === $this) {
-                $historicoEstado->setPedido(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return mixed
@@ -225,14 +195,6 @@ class Pedido {
         }
 
         return $this;
-    }
-
-    public function getPendiente(){
-        $pendiente = 0;
-        foreach ($this->pedidosProductos as $pedidoProducto){
-            $pendiente+= $pedidoProducto->getPendiente();
-        }
-        return $pendiente;
     }
 
 }

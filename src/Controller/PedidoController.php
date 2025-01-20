@@ -2,11 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Constants\ConstanteEstadoPedido;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Constants\ConstanteIP;
-use App\Entity\EstadoPedido;
-use App\Entity\EstadoPedidoHistorico;
 use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
 use App\Entity\GlobalConfig;
@@ -286,9 +283,8 @@ class PedidoController extends BaseController {
     function execPrePersistAction($entity, $request): bool {
         /** @var Pedido $entity */
         $em = $this->doctrine->getManager();
-        $estadoPedido = $em->getRepository(EstadoPedido::class)->findOneByCodigoInterno(ConstanteEstadoPedido::NUEVO);
         $estadoProducto = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::PENDIENTE);
-        $this->cambiarEstado($em, $entity, $estadoPedido, $estadoProducto);
+        $this->cambiarEstado($em, $entity, $estadoProducto);
 
         /** @var PedidoProducto $pedidoProducto */
         foreach ($entity->getPedidosProductos() as $pedidoProducto){
@@ -312,19 +308,7 @@ class PedidoController extends BaseController {
      * @param type $estado
      * @param type $motivo
      */
-    private function cambiarEstado($em, Pedido $pedido, $estadoPedido, $estadoProducto) {
-
-
-        $pedido->setEstado($estadoPedido);
-        /* SETEO EL ESTADO DEL PEDIDO */
-        $estadoPedidoHistorico = new EstadoPedidoHistorico();
-        $estadoPedidoHistorico->setPedido($pedido);
-        $estadoPedidoHistorico->setFecha(new DateTime());
-        $estadoPedidoHistorico->setEstado($estadoPedido);
-        $estadoPedidoHistorico->setMotivo('Creacion del pedido.');
-        $pedido->addHistoricoEstado($estadoPedidoHistorico);
-
-        $em->persist($estadoPedidoHistorico);
+    private function cambiarEstado($em, Pedido $pedido, $estadoProducto) {
 
         /* SETEO EL ESTADO DE CADA UNO DE LOS PRODUCTOS */
         foreach ($pedido->getPedidosProductos() as $pedidosProducto) {

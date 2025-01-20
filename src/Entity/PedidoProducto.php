@@ -115,7 +115,6 @@ class PedidoProducto {
      */
     private $fechaSalidaCamaraReal;
 
-
     /**
      * @ORM\Column(name="fecha_entrega_pedido", type="datetime", nullable=true)
      */
@@ -137,11 +136,6 @@ class PedidoProducto {
      * @ORM\JoinColumn(name="id_tipo_origen_semilla", referencedColumnName="id", nullable=true)
      */
     private mixed $tipoOrigenSemilla;
-
-    /**
-     * @ORM\Column(name="otro_origen_semilla", type="string", length=50, nullable=true)
-     */
-    private mixed $otroOrigenSemilla;
 
     /**
      * @ORM\OneToMany(targetEntity=EstadoPedidoProductoHistorico::class, mappedBy="pedidoProducto", cascade={"all"})
@@ -176,10 +170,16 @@ class PedidoProducto {
     private mixed $numeroOrden;
 
     /**
-     * @ORM\OneToMany(targetEntity=PedidoProductoMesada::class, mappedBy="pedidoProducto", cascade={"all"})
-     * @ORM\OrderBy({"id" = "DESC"})
+     * @ORM\OneToOne(targetEntity=Mesada::class, cascade={"all"})
+     * @ORM\JoinColumn(name="id_mesada_uno", referencedColumnName="id", nullable=true)
      */
-    private mixed $mesadas;
+    private mixed $mesadaUno;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Mesada::class, cascade={"all"})
+     * @ORM\JoinColumn(name="id_mesada_dos", referencedColumnName="id", nullable=true)
+     */
+    private mixed $mesadaDos;
 
     /**
      * @ORM\OneToMany(targetEntity=RemitoProducto::class, mappedBy="pedidoProducto", cascade={"all"})
@@ -196,8 +196,9 @@ class PedidoProducto {
 
     public function __construct()
     {
+        $this->entregasProductos = new ArrayCollection();
         $this->historicoEstados = new ArrayCollection();
-        $this->cantBandejasEntregadas = 0;
+        $this->cantidad_bandejas_entregadas = 0;
     }
 
     public function __toString()
@@ -472,22 +473,6 @@ class PedidoProducto {
         $this->tipoOrigenSemilla = $tipoOrigenSemilla;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getOtroOrigenSemilla(): mixed
-    {
-        return $this->otroOrigenSemilla;
-    }
-
-    /**
-     * @param mixed $otroOrigenSemilla
-     */
-    public function setOtroOrigenSemilla(mixed $otroOrigenSemilla): void
-    {
-        $this->otroOrigenSemilla = $otroOrigenSemilla;
-    }
-
     public function getHistoricoEstados()
     {
         return $this->historicoEstados;
@@ -559,27 +544,12 @@ class PedidoProducto {
 
     public function getMesada()
     {
-        $mesadas = '';
-        foreach ($this->mesadas as $mesada){
-            $mesadas .= $mesada->getMesada().', ';
+        $mesadas = 'MESADA N° ' . $this->getMesadaUno()->getTipoMesada()->getNumero().' BANDEJAS: '.$this->getMesadaUno()->getCantidadBandejas();
+        if ($this->getMesadaDos() != null){
+            $mesadas .= '</br>';
+            $mesadas .= 'MESADA N° ' . $this->getMesadaDos()->getTipoMesada()->getNumero().' BANDEJAS: '.$this->getMesadaDos()->getCantidadBandejas();
         }
-        return rtrim($mesadas, ", ");
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMesadas(): mixed
-    {
-        return $this->mesadas;
-    }
-
-    /**
-     * @param mixed $mesadas
-     */
-    public function setMesadas(mixed $mesadas): void
-    {
-        $this->mesadas = $mesadas;
+        return $mesadas;
     }
 
     public function getNombreCompleto(){
@@ -758,14 +728,34 @@ class PedidoProducto {
         $this->cantBandejasFaltantes = $cantBandejasFaltantes;
     }
 
-    public function getPendiente(){
-        $pendiente = 0;
-        $descuento = 0;
-        foreach ($this->getRemitosProductos() as $remitoProducto){
-            $pendiente += $remitoProducto->getPrecioSubTotal();
-            $descuento = $remitoProducto->getRemito()->getMontoDescuento();
-        }
-        $pendiente -= intval($descuento);
-        return $pendiente;
+    public function getEntregasProductos(): ArrayCollection
+    {
+        return $this->entregasProductos;
     }
+
+    public function setEntregasProductos(ArrayCollection $entregasProductos): void
+    {
+        $this->entregasProductos = $entregasProductos;
+    }
+
+    public function getMesadaUno(): mixed
+    {
+        return $this->mesadaUno;
+    }
+
+    public function setMesadaUno(mixed $mesadaUno): void
+    {
+        $this->mesadaUno = $mesadaUno;
+    }
+
+    public function getMesadaDos()
+    {
+        return $this->mesadaDos;
+    }
+
+    public function setMesadaDos(mixed $mesadaDos): void
+    {
+        $this->mesadaDos = $mesadaDos;
+    }
+
 }

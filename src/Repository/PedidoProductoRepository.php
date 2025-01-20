@@ -62,20 +62,22 @@ class PedidoProductoRepository extends ServiceEntityRepository {
 
         return $query->getResult();
     }
+
+    /*
     public function getProductosEnMesada($id)
     {
         $query = $this->createQueryBuilder('pp')
-            ->select("pp.id, tp.nombre as nombreProducto,pp.numeroOrden, concat(tp.nombre,' ', sb.nombre,' ',v.nombre) as producto, m.cantidadBandejas")
+            ->select("pp.id, tp.nombre as nombreProducto,pp.numeroOrden, concat(tp.nombre,' ', sb.nombre,' ',v.nombre) as producto, ppm.cantidadBandejas")
             ->leftJoin('App:Pedido', 'p', Join::WITH, 'pp.pedido = p')
             ->leftJoin('App:TipoVariedad', 'v', Join::WITH, 'pp.tipoVariedad = v')
             ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')
             ->leftJoin('App:TipoProducto', 'tp', Join::WITH, 'sb.tipoProducto = tp')
             ->leftJoin('App:PedidoProductoMesada', 'ppm', Join::WITH, 'ppm.pedidoProducto = pp')
-            ->leftJoin('App:Mesada', 'm', Join::WITH, 'ppm.mesada = m')
-            ->andWhere('m.id = :id')
+            ->andWhere('ppm.tipoMesada = :id')
             ->setParameter('id', $id)
             ->getQuery();
 
         return $query->getResult();
     }
+    */
 }

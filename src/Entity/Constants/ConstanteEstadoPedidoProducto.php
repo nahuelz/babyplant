@@ -3,7 +3,7 @@
 namespace App\Entity\Constants;
 
 /**
- * Description of ConstanteEstadoPedido
+ * Description of ConstanteEstadoPedidoProducto
  *
  */
 class ConstanteEstadoPedidoProducto {
