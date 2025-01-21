@@ -4,43 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment=".">
-      <change afterPath="$PROJECT_DIR$/src/Entity/Constants/ConstanteEstadoMesada.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/EstadoMesada.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/EstadoMesadaHistorico.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/salida_camara/new.html.twig" afterDir="false" />
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Mesadas">
+      <change afterPath="$PROJECT_DIR$/public/js/app/situacioncliente/show.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/ModoPago.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Form/SituacionClienteType.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/situacion_cliente/movimiento_form.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_movimientos.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/salidacamara/new.mesada.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/EntradaCamaraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntradaCamaraController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/PedidoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PedidoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/RemitoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RemitoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/SalidaCamaraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SalidaCamaraController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/SiembraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SiembraController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/TipoMesadaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/TipoMesadaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/config/config-spinner.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/config/config-spinner.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Constants/ConstanteEstadoPedido.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Constants/ConstanteEstadoPedidoProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Constants/ConstanteEstadoPedidoProducto.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/EntregaProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/EntregaProducto.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/EstadoPedido.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/EstadoPedidoHistorico.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Mesada.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Mesada.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Pedido.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Pedido.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/PedidoProductoMesada.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/RemitoProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/RemitoProducto.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/TipoMesada.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/TipoMesada.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/TipoProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/TipoProducto.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Usuario.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Usuario.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/MesadaType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/MesadaType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/PedidoProductoMesadaType.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/SalidaCamaraType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/SalidaCamaraType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/PedidoProductoRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/PedidoProductoRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pedidoproducto/show/salida_camara_show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedidoproducto/show/salida_camara_show.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/salida_camara/new.mesada.html.twig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/salida_camara/new.tab_mesada.html.twig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/salida_camara/prototype.mesada.html.twig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_mesada/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_mesada/show.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/CuentaCorriente.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/CuentaCorriente.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Movimiento.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Movimiento.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show_tiles.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_tiles.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -254,30 +231,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;database.data.extractors.current.export.id&quot;: &quot;SQL Updates&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/xampp81/htdocs/babyplant/templates/pedidoproducto&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;php.override.implement.member.chooser.php.doc&quot;: &quot;NONE&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "database.data.extractors.current.export.id": "SQL Inserts",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/xampp81/htdocs/babyplant/templates/pedidoproducto",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "php.override.implement.member.chooser.php.doc": "NONE",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\xampp81\htdocs\babyplant\templates\pedidoproducto" />
@@ -466,15 +443,9 @@
       <workItem from="1736874889367" duration="616000" />
       <workItem from="1736975047068" duration="142000" />
       <workItem from="1737339295011" duration="8119000" />
-      <workItem from="1737386531148" duration="8607000" />
-    </task>
-    <task id="LOCAL-00035" summary="print, showpedido">
-      <option name="closed" value="true" />
-      <created>1730859506211</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1730859506211</updated>
+      <workItem from="1737386531148" duration="21893000" />
+      <workItem from="1737421977853" duration="4027000" />
+      <workItem from="1737478852009" duration="3617000" />
     </task>
     <task id="LOCAL-00036" summary="fix show pedido">
       <option name="closed" value="true" />
@@ -860,7 +831,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736434886276</updated>
     </task>
-    <option name="localTasksCounter" value="84" />
+    <task id="LOCAL-00084" summary="Mesadas">
+      <option name="closed" value="true" />
+      <created>1737403826952</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1737403826952</updated>
+    </task>
+    <option name="localTasksCounter" value="85" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -878,7 +857,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fix varios vista detalle producto" />
     <MESSAGE value="Fix vista, hide breadcrumbs" />
     <MESSAGE value="Vista fullscreen" />
     <MESSAGE value="Salida de camara" />
@@ -903,6 +881,7 @@
     <MESSAGE value="pefil.png" />
     <MESSAGE value="fix bug" />
     <MESSAGE value="." />
-    <option name="LAST_COMMIT_MESSAGE" value="." />
+    <MESSAGE value="Mesadas" />
+    <option name="LAST_COMMIT_MESSAGE" value="Mesadas" />
   </component>
 </project>

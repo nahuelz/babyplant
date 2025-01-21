@@ -34,6 +34,17 @@ class Movimiento {
     private $cuentaCorriente;
 
     /**
+     * @ORM\ManyToOne(targetEntity=ModoPago::class)
+     * @ORM\JoinColumn(name="id_modo_pago", referencedColumnName="id")
+     */
+    private $modoPago;
+
+    /**
+     * @ORM\Column(name="monto", type="decimal", precision=10, scale=2, nullable=false)
+     */
+    private $monto;
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -75,5 +86,35 @@ class Movimiento {
         $this->descripcion = $descripcion;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getModoPago()
+    {
+        return $this->modoPago;
+    }
 
+    /**
+     * @param mixed $modoPago
+     */
+    public function setModoPago($modoPago): void
+    {
+        $this->modoPago = $modoPago;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMonto()
+    {
+        return $this->monto;
+    }
+
+    /**
+     * @param mixed $monto
+     */
+    public function setMonto($monto): void
+    {
+        $this->monto = $monto;
+    }
 }

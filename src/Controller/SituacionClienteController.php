@@ -3,9 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\CuentaCorriente;
+use App\Entity\ModoPago;
+use App\Entity\Movimiento;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -136,6 +139,64 @@ class SituacionClienteController extends BaseController {
      */
     public function delete($id) {
         return parent::baseDeleteAction($id);
+    }
+    /**
+     * @Route("/movimiento/new", name="movimiento_new", methods={"GET","POST"})
+     * @IsGranted("ROLE_PEDIDO")
+     */
+    public function movimientoNewAction(Request $request): Response
+    {
+        $entity = new Movimiento();
+        $form = $this->baseCreateCreateForm($entity);
+        return $this->render('situacion_cliente/movimiento_form.html.twig', [
+            'form' => $form->createView(),
+            'entity' => $entity,
+            'modal' => true
+        ]);
+    }
+
+
+    /**
+     * @Route("/movimiento/create", name="situacioncliente_create", methods={"GET","POST"})
+     * @IsGranted("ROLE_PEDIDO")
+     */
+    public function movimientoCreateAction(Request $request): Response
+    {
+        $em = $this->doctrine->getManager();
+
+        $id = $request->request->get('id');
+
+        /* @var $entity CuentaCorriente */
+        $entity = $em->getRepository("App\Entity\CuentaCorriente")->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('No se puede encontrar la entidad.');
+        }
+
+        $monto = $request->request->get('monto');
+        $modoPagoValue = $request->request->get('modoPago');
+        $descripcion = $request->request->get('descripcion');
+
+        if ((isset($modoPagoValue) and $modoPagoValue !== '') and (isset($monto) and $monto !== '')) {
+            $movimiento = new Movimiento();
+            $movimiento->setMonto($monto);
+            $modoPago = $em->getRepository(ModoPago::class)->findOneByCodigoInterno($modoPagoValue);
+            $movimiento->setModoPago($modoPago);
+            $movimiento->setDescripcion($descripcion);
+            $entity->addMovimiento($movimiento);
+            $em->persist($movimiento);
+            $em->flush();
+        }
+
+        $response = new Response();
+        $response->setContent(json_encode(array(
+            'message' => 'SALDO AGREGADO',
+            'statusCode' => 200,
+            'statusText' => 'OK'
+        )));
+
+        return $response;
+
     }
 
 }

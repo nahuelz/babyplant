@@ -226,3 +226,39 @@ function disableTarget(target, messageParam) {
 function unDisableTarget(target) {
     target.unblock();
 }
+
+/**
+ *
+ * @param {type} optionsIn
+ * @returns {unresolved}
+ */
+function showAlert(optionsIn) {
+
+    var options = $.extend({
+        backdrop: true,
+        className: null,
+        msg: 'Ha ocurrido un error.',
+        title: '<i class="fa fa-exclamation-triangle"></i> Error'
+    }, optionsIn);
+
+    var d = bootbox.dialog({
+        backdrop: options.backdrop,
+        buttons: {
+            success: {
+                label: "Aceptar",
+                className: options.color ? options.color : '',
+                callback: function () {
+                    return;
+                }
+            }
+        },
+        className: options.className,
+        message: options.msg,
+        onEscape: true,
+        title: options.title
+    });
+
+    $(d).find('.modal-header').addClass(options.color ? options.color : '');
+
+    return d;
+}

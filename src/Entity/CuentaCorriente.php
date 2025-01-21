@@ -68,7 +68,7 @@ class CuentaCorriente {
         $this->saldo = $saldo;
     }
 
-    public function getMovimientos(): ArrayCollection
+    public function getMovimientos()
     {
         return $this->movimientos;
     }
@@ -76,6 +76,20 @@ class CuentaCorriente {
     public function setMovimientos(ArrayCollection $movimientos): void
     {
         $this->movimientos = $movimientos;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function addMovimiento(Movimiento $movimiento)
+    {
+        if (!$this->movimientos->contains($movimiento)) {
+            $this->movimientos[] = $movimiento;
+            $movimiento->setCuentaCorriente($this);
+            $this->actualizarSaldo($movimiento->getMonto());
+        }
+
+        return $this;
     }
 
     /**
@@ -98,5 +112,8 @@ class CuentaCorriente {
         return $this->getCliente()->getPendiente();
     }
 
+    public function actualizarSaldo($monto){
+        $this->saldo += $monto;
+    }
     
 }

@@ -31,10 +31,13 @@
 
     <div class="row">
         <div class="col-md-6">
-            {% include 'situacion_cliente/show_pedidos.html.twig' %}
+            {% include 'situacion_cliente/show_movimientos.html.twig' %}
         </div>
         <div class="col-md-6">
             {% include 'situacion_cliente/show_remitos.html.twig' %}
+        </div>
+        <div class="col-md-12">
+            {% include 'situacion_cliente/show_pedidos.html.twig' %}
         </div>
     </div>
 
@@ -44,6 +47,17 @@
         <a href="{{ path('situacioncliente_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
     </div>
 
+{% endblock %}
 
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/situacioncliente/show.js') }}" ></script>
+
+    <script>
+        var __ID_CUENTA_CORRIENTE__ = {{ entity.cuentaCorriente.id }};
+        var __ID_USUARIO__ = {{ entity.id }};
+    </script>
 
 {% endblock %}
