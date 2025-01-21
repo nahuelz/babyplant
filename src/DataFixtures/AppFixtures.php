@@ -201,18 +201,18 @@ class AppFixtures extends Fixture
         $tipoOrigenSemilla->setHabilitado(1);
         $manager->persist($tipoOrigenSemilla);
 
-        $grupo = new Grupo();
-        $grupo->setNombre("Administrador");
-        $grupo->addRole("ROLE_USER");
-        $grupo->addRole("ROLE_ALL");
-        $grupo->setDescripcion("Grupo para administrador");
-        $manager->persist($grupo);
+        $grupoA = new Grupo();
+        $grupoA->setNombre("Administrador");
+        $grupoA->addRole("ROLE_USER");
+        $grupoA->addRole("ROLE_ALL");
+        $grupoA->setDescripcion("Grupo para administrador");
+        $manager->persist($grupoA);
 
-        $grupo = new Grupo();
-        $grupo->setNombre("Configuracion");
-        $grupo->addRole("ROLE_BANDEJA_CRUD");
-        $grupo->setDescripcion("Grupo configuracion");
-        $manager->persist($grupo);
+        $grupoC = new Grupo();
+        $grupoC->setNombre("Configuracion");
+        $grupoC->addRole("ROLE_BANDEJA_CRUD");
+        $grupoC->setDescripcion("Grupo configuracion");
+        $manager->persist($grupoC);
 
         $grupo = new Grupo();
         $grupo->setNombre("Cliente");
@@ -246,8 +246,11 @@ class AppFixtures extends Fixture
         $user->setApellido('admin');
         $user->setUsername('admin');
         $user->setEmail('admin@admin.com');
+        $user->setTipoUsuario($tipoUsuario2);
         $user->setTieneRazonSocial(0);
         $user->setCuentaCorriente($cuentaCorriente);
+        $user->addGrupo($grupoA);
+        $user->addGrupo($grupoC);
         $user->setPassword(
             $this->passwordEncoder->encodePassword(
                 $user,
