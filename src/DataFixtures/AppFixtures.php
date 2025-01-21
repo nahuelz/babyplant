@@ -93,81 +93,97 @@ class AppFixtures extends Fixture
         $estadoMesada = new EstadoMesada();
         $estadoMesada->setNombre('PENDIENTE');
         $estadoMesada->setCodigoInterno(1);
+        $estadoMesada->setHabilitado(1);
         $manager->persist($estadoMesada);
 
         $estadoMesada = new EstadoMesada();
         $estadoMesada->setNombre('ENTREGA PARCIAL');
         $estadoMesada->setCodigoInterno(2);
+        $estadoMesada->setHabilitado(1);
         $manager->persist($estadoMesada);
 
         $estadoMesada = new EstadoMesada();
         $estadoMesada->setNombre('ENTREGADO');
         $estadoMesada->setCodigoInterno(3);
+        $estadoMesada->setHabilitado(1);
         $manager->persist($estadoMesada);
 
         $estadoRemito = new EstadoMesada();
         $estadoRemito->setNombre('PENDIENTE');
         $estadoRemito->setCodigoInterno(1);
+        $estadoRemito->setHabilitado(1);
         $manager->persist($estadoRemito);
 
         $estadoRemito = new EstadoMesada();
         $estadoRemito->setNombre('PAGO PARCIAL');
         $estadoRemito->setCodigoInterno(2);
+        $estadoRemito->setHabilitado(1);
         $manager->persist($estadoRemito);
 
         $estadoRemito = new EstadoMesada();
         $estadoRemito->setNombre('PAGO');
         $estadoRemito->setCodigoInterno(3);
+        $estadoRemito->setHabilitado(1);
         $manager->persist($estadoRemito);
 
         $modoPago = new ModoPago();
         $modoPago->setNombre('EFECTIVO');
         $modoPago->setCodigoInterno(1);
+        $modoPago->setHabilitado(1);
         $manager->persist($modoPago);
 
         $modoPago = new ModoPago();
         $modoPago->setNombre('TRANSFERENCIA');
         $modoPago->setCodigoInterno(2);
+        $modoPago->setHabilitado(1);
         $manager->persist($modoPago);
 
         $modoPago = new ModoPago();
         $modoPago->setNombre('CHEQUE');
         $modoPago->setCodigoInterno(3);
+        $modoPago->setHabilitado(1);
         $manager->persist($modoPago);
 
         $modoPago = new ModoPago();
         $modoPago->setNombre('CORRIENTE');
         $modoPago->setCodigoInterno(4);
+        $modoPago->setHabilitado(1);
         $manager->persist($modoPago);
 
         $tipoBandeja = new TipoBandeja();
         $tipoBandeja->setNombre('200');
         $tipoBandeja->setCodigoInterno(1);
+        $tipoBandeja->setHabilitado(1);
         $manager->persist($tipoBandeja);
 
         $tipoDescuento = new TipoDescuento();
         $tipoDescuento->setNombre('DESCUENTO FIJO');
         $tipoDescuento->setCodigoInterno(1);
+        $tipoDescuento->setHabilitado(1);
         $manager->persist($tipoDescuento);
 
         $tipoDescuento = new TipoDescuento();
         $tipoDescuento->setNombre('DESCUENTO PORCENTAJE');
         $tipoDescuento->setCodigoInterno(2);
+        $tipoDescuento->setHabilitado(1);
         $manager->persist($tipoDescuento);
 
         $tipoOrigenSemilla = new TipoOrigenSemilla();
         $tipoOrigenSemilla->setNombre('VIVERO');
         $tipoOrigenSemilla->setCodigoInterno(1);
+        $tipoOrigenSemilla->setHabilitado(1);
         $manager->persist($tipoOrigenSemilla);
 
         $tipoOrigenSemilla = new TipoOrigenSemilla();
         $tipoOrigenSemilla->setNombre('NEGOCIO');
         $tipoOrigenSemilla->setCodigoInterno(2);
+        $tipoOrigenSemilla->setHabilitado(1);
         $manager->persist($tipoOrigenSemilla);
 
         $tipoOrigenSemilla = new TipoOrigenSemilla();
         $tipoOrigenSemilla->setNombre('CLIENTE');
         $tipoOrigenSemilla->setCodigoInterno(3);
+        $tipoOrigenSemilla->setHabilitado(1);
         $manager->persist($tipoOrigenSemilla);
 
         $grupo = new Grupo();
