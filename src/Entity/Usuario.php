@@ -131,7 +131,7 @@ class Usuario implements UserInterface {
 
     /**
      * @ORM\OneToOne(targetEntity=CuentaCorriente::class, mappedBy="cliente", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_cuenta_corriente", referencedColumnName="id")
+     * @ORM\JoinColumn(name="id_cuenta_corriente", referencedColumnName="id", nullable=true)
      */
     private $cuentaCorriente;
 
