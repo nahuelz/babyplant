@@ -638,31 +638,6 @@ END;");
             ");
         $statement->execute();
 
-        $statement = $connection->prepare("create definer = root@localhost view view_usuario as
-select `u`.`id`                                                                                    AS `id`,
-       `u`.`username`                                                                              AS `username`,
-       `u`.`email`                                                                                 AS `email`,
-       `u`.`nombre`                                                                                AS `nombre`,
-       `u`.`apellido`                                                                              AS `apellido`,
-       if(`u`.`celular` is not null, concat(`u`.`telefono`, ' / ', `u`.`celular`), `u`.`telefono`) AS `telefono`,
-       `ug`.`grupos`                                                                               AS `grupos`,
-       `u`.`last_seen`                                                                             AS `last_seen`,
-       if(`s`.`sess_lifetime` is null or unix_timestamp() > max(`s`.`sess_lifetime`), 0, 1)        AS `logueado`,
-       `u`.`habilitado`                                                                            AS `habilitado`,
-       group_concat(concat(cast(`s`.`sess_id` as char charset utf8mb4), '___',
-                           date_format(from_unixtime(`s`.`sess_time`), '%Y-%m-%d %H:%i:%s'), '___',
-                           date_format(from_unixtime(`s`.`sess_lifetime`), '%Y-%m-%d %H:%i'), '___', `s`.`user_ip`)
-                    order by `s`.`sess_time` DESC separator '____')                                AS `sesiones`
-from ((`babyplant2`.`usuario` `u` join (select `ug`.`usuario_id`                         AS `usuario_id`,
-                                               group_concat(`g`.`nombre` separator ', ') AS `grupos`
-                                        from (`babyplant2`.`usuario_grupo` `ug` join `babyplant2`.`grupo` `g`
-                                              on (`ug`.`grupo_id` = `g`.`id`))
-                                        group by `ug`.`usuario_id`) `ug`
-       on (`ug`.`usuario_id` = `u`.`id`)) left join `babyplant2`.`sessions` `s` on (`s`.`user_id` = `u`.`id`))
-where `u`.`fecha_baja` is null
-group by `u`.`id`;");
-        $statement->execute();
-
         $statement = $connection->prepare("
             INSERT INTO babyplant2.tipo_sub_producto (id, id_usuario_creacion, id_usuario_ultima_modificacion, id_usuario_deshabilito, nombre, descripcion, fecha_creacion, fecha_ultima_modificacion, fecha_baja, codigo_interno, habilitado, fecha_deshabilitado, id_tipo_producto) VALUES (1, 1, null, null, 'CHERRY', null, '2024-08-31 14:16:28', '2024-08-31 14:16:28', null, null, 1, null, 1);
             INSERT INTO babyplant2.tipo_sub_producto (id, id_usuario_creacion, id_usuario_ultima_modificacion, id_usuario_deshabilito, nombre, descripcion, fecha_creacion, fecha_ultima_modificacion, fecha_baja, codigo_interno, habilitado, fecha_deshabilitado, id_tipo_producto) VALUES (2, 1, null, null, 'REDONDO', null, '2024-08-31 14:16:28', '2024-08-31 14:16:28', null, null, 1, null, 1);
