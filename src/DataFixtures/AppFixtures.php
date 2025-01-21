@@ -154,6 +154,7 @@ class AppFixtures extends Fixture
         $tipoBandeja->setNombre('200');
         $tipoBandeja->setCodigoInterno(1);
         $tipoBandeja->setHabilitado(1);
+        $tipoBandeja->setEstandar(1);
         $manager->persist($tipoBandeja);
 
         $tipoDescuento = new TipoDescuento();
