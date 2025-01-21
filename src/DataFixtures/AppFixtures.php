@@ -28,6 +28,19 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
+
+        $connection = $manager->getConnection();
+        $statement = $connection->prepare("CREATE TABLE `sessions` (
+                                            `sess_id` varbinary(128) NOT NULL,
+                                              `sess_data` blob NOT NULL,
+                                              `sess_lifetime` int(10) unsigned NOT NULL,
+                                              `sess_time` int(10) unsigned NOT NULL,
+                                              `user_id` int(11) DEFAULT NULL,
+                                              `user_ip` varchar(255) COLLATE utf8_spanish_ci DEFAULT NULL,
+                                              PRIMARY KEY (`sess_id`) USING BTREE
+                                            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci ROW_FORMAT=DYNAMIC;");
+        $statement->execute();
+
         $estadoPedidoProducto = new EstadoPedidoProducto();
         $estadoPedidoProducto->setCodigoInterno(1);
         $estadoPedidoProducto->setHabilitado(1);
@@ -247,7 +260,6 @@ class AppFixtures extends Fixture
         $globalConfi = new GlobalConfig();
         $manager->persist($globalConfi);
 
-        $connection = $manager->getConnection();
         $statement = $connection->prepare("create definer = root@localhost view _view_remito_precio_total as
 select `r`.`id` AS `id_remito`, sum(`rp`.`precio_unitario` * `rp`.`cantidad_bandejas`) AS `total`
 from (`babyplant2`.`remito` `r` left join `babyplant2`.`remito_producto` `rp` on (`r`.`id` = `rp`.`id_remito`))
@@ -483,19 +495,6 @@ BEGIN
     RETURN result;
 END;");
         $statement->execute();
-
-        $statement = $connection->prepare("CREATE TABLE `sessions` (
-                                            `sess_id` varbinary(128) NOT NULL,
-                                              `sess_data` blob NOT NULL,
-                                              `sess_lifetime` int(10) unsigned NOT NULL,
-                                              `sess_time` int(10) unsigned NOT NULL,
-                                              `user_id` int(11) DEFAULT NULL,
-                                              `user_ip` varchar(255) COLLATE utf8_spanish_ci DEFAULT NULL,
-                                              PRIMARY KEY (`sess_id`) USING BTREE
-                                            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci ROW_FORMAT=DYNAMIC;");
-        $statement->execute();
-
-
 
         $statement = $connection->prepare("create
     definer = root@localhost procedure sp_index_pedido(IN _fechaDesde datetime, IN _fechaHasta datetime, IN _idCliente int)
