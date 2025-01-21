@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\CuentaCorriente;
 use App\Entity\EstadoMesada;
 use App\Entity\EstadoPedidoProducto;
 use App\Entity\GlobalConfig;
@@ -224,6 +225,8 @@ class AppFixtures extends Fixture
         $tipoUsuario2->setNombre('Tecnico');
         $manager->persist($tipoUsuario2);
 
+        $cuentaCorriente = new CuentaCorriente();
+
         $user = new Usuario();
         $user->setHabilitado(1);
         $user->setNombre('admin');
@@ -231,6 +234,7 @@ class AppFixtures extends Fixture
         $user->setUsername('admin');
         $user->setEmail('admin@admin.com');
         $user->setTieneRazonSocial(0);
+        $user->setCuentaCorriente($cuentaCorriente);
         $user->setPassword(
             $this->passwordEncoder->encodePassword(
                 $user,
