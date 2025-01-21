@@ -427,7 +427,7 @@ class Usuario implements UserInterface {
     /**
      * @return string
      */
-    public function getDomicilio(): string
+    public function getDomicilio()
     {
         return $this->domicilio;
     }
