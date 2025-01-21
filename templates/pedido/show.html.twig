@@ -82,7 +82,7 @@
                         </div>
                         {{ macro_show._show_detail('Fecha de entrada a camara', producto.fechaEntradaCamaraReal is not null ? producto.fechaEntradaCamaraReal|date("d/m/Y H:i") : '-', 'col-md-3') }}
                         {{ macro_show._show_detail('Fecha de salida de camara', producto.fechaSalidaCamaraReal is not null ? producto.fechaSalidaCamaraReal|date("d/m/Y H:i") : '-', 'col-md-3') }}
-                        {{ macro_show._show_detail('Tiempo en camara', producto.cantidadDiasEnCamara|default('-'), 'col-md-2') }}
+                        {{ macro_show._show_detail('Tiempo en camara', producto.cantidadDiasEnCamara|default('-'), 'col-md-3') }}
                     </div>
                 {% endif %}
                 {% if producto.estado.id in [5,6,7] %}
@@ -92,7 +92,7 @@
                         </div>
                         {{ macro_show._show_detail('Fecha de entrada a invernaculo', producto.fechaSalidaCamaraReal is not null ? producto.fechaSalidaCamaraReal|date("d/m/Y H:i") : '-', 'col-md-3') }}
                         {{ macro_show._show_detail('Mesada', producto.mesada|default('-'), 'col-md-3') }}
-                        {{ macro_show._show_detail('Dias en invernaculo', producto.cantidadDiasEnInvernaculo|default('-'), 'col-md-2') }}
+                        {{ macro_show._show_detail('Dias en invernaculo', producto.cantidadDiasEnInvernaculo|default('-'), 'col-md-3') }}
                     </div>
                 {% endif %}
                 {% if producto.estado.id in [6,7] %}
