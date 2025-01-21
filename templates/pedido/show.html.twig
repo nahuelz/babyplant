@@ -90,8 +90,8 @@
                         <div class="col-md-2">
                             <span class="label label-inline label-light-info font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-home padding-right-5"></span> EN INVERNACULO</span>
                         </div>
-                        {{ macro_show._show_detail('Fecha de entrada a invernaculo', producto.fechaSalidaCamaraReal is not null ? producto.fechaSalidaCamaraReal|date("d/m/Y H:i") : '-', 'col-md-4') }}
-                        {{ macro_show._show_detail('Mesada', producto.mesada|default('-'), 'col-md-2') }}
+                        {{ macro_show._show_detail('Fecha de entrada a invernaculo', producto.fechaSalidaCamaraReal is not null ? producto.fechaSalidaCamaraReal|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                        {{ macro_show._show_detail('Mesada', producto.mesada|default('-'), 'col-md-3') }}
                         {{ macro_show._show_detail('Dias en invernaculo', producto.cantidadDiasEnInvernaculo|default('-'), 'col-md-2') }}
                     </div>
                 {% endif %}
