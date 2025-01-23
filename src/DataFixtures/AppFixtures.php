@@ -47,6 +47,7 @@ class AppFixtures extends Fixture
         $estadoPedidoProducto->setNombre('PENDIENTE');
         $estadoPedidoProducto->setColor('label-light-dark');
         $estadoPedidoProducto->setIcono('fas fa-folder-plus');
+        $estadoPedidoProducto->setClassName('fc-event-danger fc-event-solid-danger');
         $estadoPedidoProducto->setColorIcono('dark');
         $manager->persist($estadoPedidoProducto);
 
@@ -56,6 +57,7 @@ class AppFixtures extends Fixture
         $estadoPedidoProducto->setNombre('PLANIFICADO');
         $estadoPedidoProducto->setColor('label-light-warning');
         $estadoPedidoProducto->setIcono('fas fa-list-ul');
+        $estadoPedidoProducto->setClassName('fc-event-warning fc-event-solid-warning');
         $estadoPedidoProducto->setColorIcono('warning');
         $manager->persist($estadoPedidoProducto);
 
@@ -65,6 +67,7 @@ class AppFixtures extends Fixture
         $estadoPedidoProducto->setNombre('SEMBRADO');
         $estadoPedidoProducto->setColor('label-light-success');
         $estadoPedidoProducto->setIcono('fas fa-leaf');
+        $estadoPedidoProducto->setClassName('fc-event-success fc-event-solid-success');
         $estadoPedidoProducto->setColorIcono('success');
         $manager->persist($estadoPedidoProducto);
 
@@ -74,6 +77,7 @@ class AppFixtures extends Fixture
         $estadoPedidoProducto->setNombre('EN CAMARA');
         $estadoPedidoProducto->setColor('label-light-primary');
         $estadoPedidoProducto->setIcono('fas fa-list-ul');
+        $estadoPedidoProducto->setClassName('fc-event-primary fc-event-solid-primary');
         $estadoPedidoProducto->setColorIcono('primary');
         $manager->persist($estadoPedidoProducto);
 
@@ -83,24 +87,57 @@ class AppFixtures extends Fixture
         $estadoPedidoProducto->setNombre('EN INVERNACULO');
         $estadoPedidoProducto->setColor('label-light-info');
         $estadoPedidoProducto->setIcono('fas fa-home');
+        $estadoPedidoProducto->setClassName('fc-event-info fc-event-solid-info');
         $estadoPedidoProducto->setColorIcono('info');
         $manager->persist($estadoPedidoProducto);
 
         $estadoPedidoProducto = new EstadoPedidoProducto();
         $estadoPedidoProducto->setCodigoInterno(6);
         $estadoPedidoProducto->setHabilitado(1);
-        $estadoPedidoProducto->setNombre('ENTREGADO');
-        $estadoPedidoProducto->setColor('label-light-success');
+        $estadoPedidoProducto->setNombre('ENTREGADO PSR');
+        $estadoPedidoProducto->setColor('label-light-warning');
         $estadoPedidoProducto->setIcono('fas fa-check');
+        $estadoPedidoProducto->setClassName('fc-event-success fc-event-solid-success');
         $estadoPedidoProducto->setColorIcono('success');
         $manager->persist($estadoPedidoProducto);
 
         $estadoPedidoProducto = new EstadoPedidoProducto();
         $estadoPedidoProducto->setCodigoInterno(7);
         $estadoPedidoProducto->setHabilitado(1);
+        $estadoPedidoProducto->setNombre('ENTREGADO SIN REMITO');
+        $estadoPedidoProducto->setColor('label-light-success');
+        $estadoPedidoProducto->setIcono('fas fa-check');
+        $estadoPedidoProducto->setClassName('fc-event-success fc-event-solid-success');
+        $estadoPedidoProducto->setColorIcono('success');
+        $manager->persist($estadoPedidoProducto);
+
+        $estadoPedidoProducto = new EstadoPedidoProducto();
+        $estadoPedidoProducto->setCodigoInterno(8);
+        $estadoPedidoProducto->setHabilitado(1);
+        $estadoPedidoProducto->setNombre('ENTREGADO CON REMITO PARCIAL');
+        $estadoPedidoProducto->setColor('label-light-success');
+        $estadoPedidoProducto->setIcono('fas fa-check');
+        $estadoPedidoProducto->setClassName('fc-event-success fc-event-solid-success');
+        $estadoPedidoProducto->setColorIcono('success');
+        $manager->persist($estadoPedidoProducto);
+
+        $estadoPedidoProducto = new EstadoPedidoProducto();
+        $estadoPedidoProducto->setCodigoInterno(9);
+        $estadoPedidoProducto->setHabilitado(1);
+        $estadoPedidoProducto->setNombre('ENTREGADO CON REMITO');
+        $estadoPedidoProducto->setColor('label-light-success');
+        $estadoPedidoProducto->setIcono('fas fa-check');
+        $estadoPedidoProducto->setColorIcono('success');
+        $estadoPedidoProducto->setClassName('fc-event-success fc-event-solid-success');
+        $manager->persist($estadoPedidoProducto);
+
+        $estadoPedidoProducto = new EstadoPedidoProducto();
+        $estadoPedidoProducto->setCodigoInterno(10);
+        $estadoPedidoProducto->setHabilitado(1);
         $estadoPedidoProducto->setNombre('CANCELADO');
         $estadoPedidoProducto->setColor('label-light-danger');
         $estadoPedidoProducto->setIcono('fas fa-exclamation-triangle');
+        $estadoPedidoProducto->setClassName('fc-event-danger fc-event-solid-danger');
         $estadoPedidoProducto->setColorIcono('danger');
         $manager->persist($estadoPedidoProducto);
 
@@ -239,6 +276,7 @@ class AppFixtures extends Fixture
         $manager->persist($tipoUsuario2);
 
         $cuentaCorriente = new CuentaCorriente();
+        $manager->persist($cuentaCorriente);
 
         $user = new Usuario();
         $user->setHabilitado(1);

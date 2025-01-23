@@ -256,28 +256,34 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'id',
-            width: '30px',
+            width: '15px',
             className: 'dt-center',
             type: 'num'
         },
         {
             targets: index++,
             name: 'id',
-            width: '30px',
+            width: '15px',
             className: 'dt-center',
             type: 'num'
         },
         {
             targets: index++,
             name: 'fechaCreacion',
-
             className: 'dt-center',
-            type: 'num'
+            width: '50px',
+            render: function (data, type, full, meta) {
+                if (type === 'sort') {
+                    return moment(data, 'DD/MM/YYYY').format('YYYYMMDD');
+                }
+                return data;
+            }
         },
         {
             targets: index++,
             name: 'nombreVariedad',
             className: 'nowrap text-center margin-0 ',
+            width: '150px',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
                     return '<span class="label label-inline margin-0 ' + data.nombreProducto + ' font-weight-bold p-6 ml-15 mr-15" style="width: 220px">' + data.nombreProductoCompleto + '</span>';
@@ -288,19 +294,19 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'cliente',
-            width: '250px',
+            width: '150px',
             className: 'dt-center',
-            type: 'num'
         },
         {
             targets: index++,
             name: 'cantidadBandejas',
             className: 'dt-center',
-            type: 'num'
+            width: '50px',
         },
         {
             targets: index++,
             name: 'fechaSiembra',
+            width: '50px',
             className: 'dt-center',
             render: function (data, type, full, meta) {
                 if (type === 'sort') {
@@ -312,6 +318,7 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'fechaEntrega',
+            width: '50px',
             className: 'dt-center',
             render: function (data, type, full, meta) {
                 if (type === 'sort') {
@@ -323,6 +330,7 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'estado',
+            width: '100px',
             className: 'nowrap text-center align-middle',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
@@ -336,6 +344,7 @@ function datatablesGetColDef() {
             name: 'diasEnCamara',
             className: 'dt-center',
             searchable: true,
+            width: '50px',
             type: 'num'
         },
         {
@@ -343,26 +352,29 @@ function datatablesGetColDef() {
             name: 'diasEnInvernaculo',
             className: 'dt-center',
             searchable: true,
+            width: '50px',
             type: 'num'
         },
         {
             targets: index++,
             name: 'ordenSiembra',
+            width: '50px',
             className: 'dt-center',
             searchable: true,
-            type: 'num'
         },
         {
             targets: index++,
             name: 'mesada',
             className: 'dt-center',
             searchable: true,
+            width: '50px',
             type: 'num'
         },
         {
             targets: -1,
             name: 'acciones',
             title: 'Acciones',
+            width: '50px',
             className: "text-center dt-acciones",
             orderable: false,
 
