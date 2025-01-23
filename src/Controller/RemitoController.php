@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Constants\ConstanteAPI;
 use App\Entity\Constants\ConstanteEstadoMesada;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Constants\ConstanteEstadoRemito;
@@ -14,9 +13,7 @@ use App\Entity\EstadoPedidoProductoHistorico;
 use App\Entity\EstadoRemito;
 use App\Entity\EstadoRemitoHistorico;
 use App\Entity\Mesada;
-use App\Entity\Pedido;
 use App\Entity\PedidoProducto;
-use App\Entity\PedidoProductoMesada;
 use App\Entity\Remito;
 use App\Entity\RemitoProducto;
 use App\Form\RemitoType;
@@ -177,13 +174,13 @@ class RemitoController extends BaseController {
             $pedidoProducto->setCantBandejasEntregadas(($pedidoProducto->getCantBandejasEntregadas() + $bandejasAEntregar));
             $pedidoProducto->setCantBandejasFaltantes(($pedidoProducto->getCantBandejasFaltantes() - $bandejasAEntregar));
 
-            // SI ENTREGO TODAS LAS BANDEJAS DEL PEDIDO EL ESTADO PASA A ENTREGADO COMPLETO SINO A ENTREGADO PARCIAL
+            // SI ENTREGO TODAS LAS BANDEJAS DEL PEDIDO EL ESTADO PASA A ENTREGADO COMPLETO SI NO A ENTREGADO PARCIAL
             if ($pedidoProducto->getCantBandejasFaltantes() == 0){
-                $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::ENTREGADO_COMPLETO);
+                $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::ENTREGADO);
                 $estadoMesada = $em->getRepository(EstadoMesada::class)->findOneByCodigoInterno(ConstanteEstadoMesada::ENTREGADO);
                 $pedidoProducto->setFechaEntregaPedidoReal(new DateTime());
             }else{
-                $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::ENTREGA_PARCIAL);
+                $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::ENTREGADO_P);
                 $estadoMesada = $em->getRepository(EstadoMesada::class)->findOneByCodigoInterno(ConstanteEstadoMesada::ENTREGADO_PARCIAL);
             }
 
@@ -203,7 +200,8 @@ class RemitoController extends BaseController {
         $em->flush();
     }
 
-    public function entregarBandejas($em, $pedidoProducto, $estadoMesada, $bandejasAEntregar){
+    public function entregarBandejas($em, $pedidoProducto, $estadoMesada, $bandejasAEntregar): void
+    {
         $mesadaUno = $pedidoProducto->getMesadaUno();
         $mesadaDos = $pedidoProducto->getMesadaDos();
         $bandejasEnMesadaUno = $mesadaUno != null ? $mesadaUno->getCantidadBandejas() : null;
@@ -303,7 +301,7 @@ class RemitoController extends BaseController {
             ->where('p.cliente = :cliente')
             ->andWhere('pp.estado IN (:estados)')
             ->setParameter('cliente', $idCliente)
-            ->setParameter('estados', [ConstanteEstadoPedidoProducto::EN_INVERNACULO, ConstanteEstadoPedidoProducto::ENTREGA_PARCIAL])
+            ->setParameter('estados', [ConstanteEstadoPedidoProducto::EN_INVERNACULO, ConstanteEstadoPedidoProducto::ENTREGADO_P, ConstanteEstadoPedidoProducto::ENTREGADO_PSR, ConstanteEstadoPedidoProducto::ENTREGADO_SR])
             ->orderBy('pp.id', 'ASC')
             ->groupBy('pp.id')
             ->getQuery();
@@ -496,7 +494,8 @@ class RemitoController extends BaseController {
      * @Route("/{id}/historico_estados", name="remito_historico_estado", methods={"POST"})
      * @Template("remito/historico_estados.html.twig")
      */
-    public function showHistoricoEstadoAction($id) {
+    public function showHistoricoEstadoAction($id): array
+    {
 
         $em = $this->doctrine->getManager();
 
