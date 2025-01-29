@@ -321,6 +321,12 @@ class AppFixtures extends Fixture
         $globalConfi = new GlobalConfig();
         $manager->persist($globalConfi);
 
+        $statement = $connection->prepare("create definer = root@localhost view _view_mesada_cantidad_bandejas as
+select `tm`.`id` AS `id`, sum(`m`.`cantidad_bandejas`) AS `cantidad_bandejas`
+from (`babyplant2`.`tipo_mesada` `tm` left join `babyplant2`.`mesada` `m` on (`tm`.`id` = `m`.`id_tipo_mesada`))
+group by `tm`.`id`;");
+        $statement->execute();
+
         $statement = $connection->prepare("create definer = root@localhost view _view_remito_precio_total as
 select `r`.`id` AS `id_remito`, sum(`rp`.`precio_unitario` * `rp`.`cantidad_bandejas`) AS `total`
 from (`babyplant2`.`remito` `r` left join `babyplant2`.`remito_producto` `rp` on (`r`.`id` = `rp`.`id_remito`))
@@ -457,14 +463,15 @@ where `pp`.`fecha_baja` is null
         $statement->execute();
 
         $statement = $connection->prepare("create definer = root@localhost view view_tipo_mesada as
-select `tm`.`id`         AS `id`,
-       `tm`.`numero`     AS `nombre`,
-       `tm`.`capacidad`  AS `capacidad`,
-       `tm`.`ocupado`    AS `ocupado`,
-       `tp`.`nombre`     AS `tipoMesada`,
-       `tm`.`habilitado` AS `habilitado`
-from (`babyplant2`.`tipo_mesada` `tm` left join `babyplant2`.`tipo_producto` `tp`
-      on (`tp`.`id` = `tm`.`id_tipo_producto`))
+select `tm`.`id`                AS `id`,
+       `tm`.`numero`            AS `nombre`,
+       `tm`.`capacidad`         AS `capacidad`,
+       `cb`.`cantidad_bandejas` AS `ocupado`,
+       `tp`.`nombre`            AS `tipoMesada`,
+       `tm`.`habilitado`        AS `habilitado`
+from ((`babyplant2`.`tipo_mesada` `tm` left join `babyplant2`.`tipo_producto` `tp`
+       on (`tp`.`id` = `tm`.`id_tipo_producto`)) left join `babyplant2`.`_view_mesada_cantidad_bandejas` `cb`
+      on (`tm`.`id` = `cb`.`id`))
 order by `tm`.`numero`;");
         $statement->execute();
 
