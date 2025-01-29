@@ -151,7 +151,6 @@ class Usuario implements UserInterface {
         $this->grupos = new \Doctrine\Common\Collections\ArrayCollection();
         $this->habilitado = true;
         $this->tieneRazonSocial = false;
-        $this->cuentaCorriente = new CuentaCorriente();
         $this->pedidos = new \Doctrine\Common\Collections\ArrayCollection();
         $this->remitos = new \Doctrine\Common\Collections\ArrayCollection();
     }
