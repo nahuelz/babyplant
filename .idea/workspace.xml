@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="fixtures">
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="fix crear CC">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/pedido/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/remito/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/remito/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -443,31 +443,7 @@
       <workItem from="1737998395796" duration="14747000" />
       <workItem from="1738075721481" duration="7952000" />
       <workItem from="1738087602819" duration="13802000" />
-      <workItem from="1738157010869" duration="16110000" />
-    </task>
-    <task id="LOCAL-00055" summary="siembra fecha planificacion">
-      <option name="closed" value="true" />
-      <created>1733160517610</created>
-      <option name="number" value="00055" />
-      <option name="presentableId" value="LOCAL-00055" />
-      <option name="project" value="LOCAL" />
-      <updated>1733160517611</updated>
-    </task>
-    <task id="LOCAL-00056" summary="siembra fecha planificacion">
-      <option name="closed" value="true" />
-      <created>1733164982973</created>
-      <option name="number" value="00056" />
-      <option name="presentableId" value="LOCAL-00056" />
-      <option name="project" value="LOCAL" />
-      <updated>1733164982973</updated>
-    </task>
-    <task id="LOCAL-00057" summary=".">
-      <option name="closed" value="true" />
-      <created>1733341555071</created>
-      <option name="number" value="00057" />
-      <option name="presentableId" value="LOCAL-00057" />
-      <option name="project" value="LOCAL" />
-      <updated>1733341555072</updated>
+      <workItem from="1738157010869" duration="17621000" />
     </task>
     <task id="LOCAL-00058" summary=".">
       <option name="closed" value="true" />
@@ -837,7 +813,31 @@
       <option name="project" value="LOCAL" />
       <updated>1738176738997</updated>
     </task>
-    <option name="localTasksCounter" value="104" />
+    <task id="LOCAL-00104" summary="fixtures">
+      <option name="closed" value="true" />
+      <created>1738178061039</created>
+      <option name="number" value="00104" />
+      <option name="presentableId" value="LOCAL-00104" />
+      <option name="project" value="LOCAL" />
+      <updated>1738178061039</updated>
+    </task>
+    <task id="LOCAL-00105" summary="fix crear CC">
+      <option name="closed" value="true" />
+      <created>1738178416936</created>
+      <option name="number" value="00105" />
+      <option name="presentableId" value="LOCAL-00105" />
+      <option name="project" value="LOCAL" />
+      <updated>1738178416936</updated>
+    </task>
+    <task id="LOCAL-00106" summary="fix crear CC">
+      <option name="closed" value="true" />
+      <created>1738179372763</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
+      <option name="project" value="LOCAL" />
+      <updated>1738179372763</updated>
+    </task>
+    <option name="localTasksCounter" value="107" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -855,7 +855,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix show pedido" />
     <MESSAGE value="fix colores planificacion" />
     <MESSAGE value="Se agregaron varias mejoras en la vista mobile al ver el detalle de un pedido.&#10;Se agregó un sombreado en los formularios donde hay que seleccionar una opción&#10;En la vista de pedido ahora se muestra la cantidad de días que estuvo en invernáculo" />
     <MESSAGE value="Refactoring del codigo, nuevo manejo de fechas.&#10;Planificación: Mensaje de alerta de pedidos atrasados" />
@@ -880,6 +879,7 @@
     <MESSAGE value="nuevos estados al generar remito" />
     <MESSAGE value="Cuenta corriente pagos de remitos" />
     <MESSAGE value="fixtures" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixtures" />
+    <MESSAGE value="fix crear CC" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix crear CC" />
   </component>
 </project>

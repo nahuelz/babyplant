@@ -286,7 +286,7 @@ function datatablesGetColDef() {
             width: '150px',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<span class="label label-inline margin-0 ' + data.nombreProducto + ' font-weight-bold p-6 ml-15 mr-15" style="width: 220px">' + data.nombreProductoCompleto + '</span>';
+                    return '<span class="label label-inline margin-0 ' + data.nombreProducto + ' font-weight-bold p-6" style="width: 220px">' + data.nombreProductoCompleto + '</span>';
                 }
                 return data.nombreProductoCompleto;
             }
@@ -330,11 +330,11 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'estado',
-            width: '100px',
+            width: '90',
             className: 'nowrap text-center align-middle',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<span class="label label-inline ' + data.colorEstado + ' font-weight-bold p-4 ml-15 mr-15" style="width: 85px">' + data.estado + '</span>';
+                    return '<span class="label label-inline ' + data.colorEstado + ' font-weight-bold p-4" style="width: 120px">' + data.estado + '</span>';
                 }
                 return data.estado;
             }
