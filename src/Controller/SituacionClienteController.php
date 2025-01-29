@@ -105,7 +105,7 @@ class SituacionClienteController extends BaseController {
             $cuentaCorriente = new CuentaCorriente();
             $cuentaCorriente->setCliente($entity);
             $entity->setCuentaCorriente($cuentaCorriente);
-            $em->persist($entity);
+            $em->persist($cuentaCorriente);
             $em->flush();
         }
 

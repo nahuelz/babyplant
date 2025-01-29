@@ -4,43 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="nuevos estados al generar remito">
-      <change afterPath="$PROJECT_DIR$/src/Controller/PagoController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/Constants/ConstanteModoPago.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/Pago.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/TipoMovimiento.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/TipoReferencia.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Form/PagoType.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/pago/index.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/pago/new.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/pago/pago_form.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/pago/show.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/remito/show.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_pagos.html.twig" afterDir="false" />
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="fixtures">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/situacioncliente/show.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/situacioncliente/show.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/theme/css/custom/custom.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/css/custom/custom.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/PedidoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PedidoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/RemitoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RemitoController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/CuentaCorriente.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/CuentaCorriente.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/EstadoPedidoProductoHistorico.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/EstadoPedidoProductoHistorico.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/EstadoRemito.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/EstadoRemito.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/EstadoRemitoHistorico.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/EstadoRemitoHistorico.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Movimiento.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Movimiento.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Remito.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Remito.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/TipoMesada.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/TipoMesada.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Usuario.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Usuario.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/SituacionClienteType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/SituacionClienteType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pedido/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/show.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/remito/historico_estados.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/historico_estados.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/movimiento_form.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/movimiento_form.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show_movimientos.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_movimientos.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show_pedidos.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_pedidos.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show_remitos.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_remitos.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -476,23 +443,7 @@
       <workItem from="1737998395796" duration="14747000" />
       <workItem from="1738075721481" duration="7952000" />
       <workItem from="1738087602819" duration="13802000" />
-      <workItem from="1738157010869" duration="14722000" />
-    </task>
-    <task id="LOCAL-00053" summary="tipo mesada">
-      <option name="closed" value="true" />
-      <created>1732817962727</created>
-      <option name="number" value="00053" />
-      <option name="presentableId" value="LOCAL-00053" />
-      <option name="project" value="LOCAL" />
-      <updated>1732817962727</updated>
-    </task>
-    <task id="LOCAL-00054" summary="salida camara fechas">
-      <option name="closed" value="true" />
-      <created>1732905552153</created>
-      <option name="number" value="00054" />
-      <option name="presentableId" value="LOCAL-00054" />
-      <option name="project" value="LOCAL" />
-      <updated>1732905552153</updated>
+      <workItem from="1738157010869" duration="16110000" />
     </task>
     <task id="LOCAL-00055" summary="siembra fecha planificacion">
       <option name="closed" value="true" />
@@ -870,7 +821,23 @@
       <option name="project" value="LOCAL" />
       <updated>1737666025368</updated>
     </task>
-    <option name="localTasksCounter" value="102" />
+    <task id="LOCAL-00102" summary="Cuenta corriente pagos de remitos">
+      <option name="closed" value="true" />
+      <created>1738176678998</created>
+      <option name="number" value="00102" />
+      <option name="presentableId" value="LOCAL-00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1738176679001</updated>
+    </task>
+    <task id="LOCAL-00103" summary="fixtures">
+      <option name="closed" value="true" />
+      <created>1738176738997</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1738176738997</updated>
+    </task>
+    <option name="localTasksCounter" value="104" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -888,8 +855,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Pedido tiles, filtros, ultimas actividades" />
-    <MESSAGE value="print, showpedido" />
     <MESSAGE value="fix show pedido" />
     <MESSAGE value="fix colores planificacion" />
     <MESSAGE value="Se agregaron varias mejoras en la vista mobile al ver el detalle de un pedido.&#10;Se agregó un sombreado en los formularios donde hay que seleccionar una opción&#10;En la vista de pedido ahora se muestra la cantidad de días que estuvo en invernáculo" />
@@ -913,6 +878,8 @@
     <MESSAGE value="&#10;fixtures;" />
     <MESSAGE value="fixtures;" />
     <MESSAGE value="nuevos estados al generar remito" />
-    <option name="LAST_COMMIT_MESSAGE" value="nuevos estados al generar remito" />
+    <MESSAGE value="Cuenta corriente pagos de remitos" />
+    <MESSAGE value="fixtures" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixtures" />
   </component>
 </project>

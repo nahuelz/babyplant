@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\CuentaCorriente;
 use App\Entity\EstadoMesada;
 use App\Entity\EstadoPedidoProducto;
+use App\Entity\EstadoRemito;
 use App\Entity\GlobalConfig;
 use App\Entity\Grupo;
 use App\Entity\ModoPago;
@@ -161,19 +162,25 @@ class AppFixtures extends Fixture
         $estadoMesada->setHabilitado(1);
         $manager->persist($estadoMesada);
 
-        $estadoRemito = new EstadoMesada();
+        $estadoRemito = new EstadoRemito();
         $estadoRemito->setNombre('PENDIENTE');
         $estadoRemito->setCodigoInterno(1);
         $estadoRemito->setHabilitado(1);
+        $estadoRemito->setColor('label-light-dark');
+        $estadoRemito->setIcono('fa fa-spinner');
+        $estadoRemito->setColorIcono('dark');
         $manager->persist($estadoRemito);
 
-        $estadoRemito = new EstadoMesada();
+        $estadoRemito = new EstadoRemito();
         $estadoRemito->setNombre('PAGO PARCIAL');
         $estadoRemito->setCodigoInterno(2);
         $estadoRemito->setHabilitado(1);
+        $estadoRemito->setColor('label-light-warning');
+        $estadoRemito->setIcono('fa fa-info-circle');
+        $estadoRemito->setColorIcono('warning');
         $manager->persist($estadoRemito);
 
-        $estadoRemito = new EstadoMesada();
+        $estadoRemito = new EstadoRemito();
         $estadoRemito->setNombre('PAGO');
         $estadoRemito->setCodigoInterno(3);
         $estadoRemito->setHabilitado(1);
