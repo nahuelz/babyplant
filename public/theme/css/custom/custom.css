@@ -2,7 +2,7 @@
     margin-right: auto !important;
 }
 .btn.blue:not(.btn-outline) {color: #FFFFFF;background-color: #3598dc;border-color: #3598dc;}
-
+.cursor-disable { cursor: not-allowed !important; }
 
 .portlet.light.bordered > .portlet-title {border-bottom: 1px solid #d9dce0;}
 .portlet.light.bordered {border: 1px solid #d4d7db !important;}

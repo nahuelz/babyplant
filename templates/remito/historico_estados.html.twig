@@ -21,9 +21,11 @@
 
                         <!--begin::Info-->
                         <div class="timeline-desc timeline-desc-light-{{ estadoHistorico.estado.colorIcono }}">
-                            <span class="font-weight-bolder text-{{ estadoHistorico.estado.colorIcono }}">{{ estadoHistorico.fecha|date('d/m/y H:i') }}</span>
+                            <span class="font-weight-bolder text-{{ estadoHistorico.estado.colorIcono }}">{{ estadoHistorico.fecha|date('d/m/y H:i') }} - {{ estadoHistorico.estado }}</span>
                             <p class="font-weight-normal text-dark-50 pb-2">
-                                {{ estadoHistorico.motivo|default('-') }} <br>
+                                {# {{ estadoHistorico.motivo|default('-') }} <br>#}
+                                Pago: {{ estadoHistorico.pago ? estadoHistorico.pago.monto|money_format|default('-') : ('-') }} <br>
+                                Modo Pago: {{ estadoHistorico.pago ? estadoHistorico.pago.modoPago|default('-') : ('-') }} <br>
                                 Usuario: {{ estadoHistorico.usuarioUltimaModificacion|default('-') }}
                             </p>
                         </div>

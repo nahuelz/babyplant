@@ -20,11 +20,6 @@ class TipoMesada extends EntidadBasica {
     private int $capacidad;
 
     /**
-     * @ORM\Column(name="ocupado", type="integer", length=50, nullable=true, options={"default": 0})
-     */
-    private int $ocupado;
-
-    /**
      * @ORM\Column(name="numero", type="integer", nullable=false)
      */
     private int $numero;
@@ -79,14 +74,6 @@ class TipoMesada extends EntidadBasica {
             $ocupado +=$mesada->getCantidadBandejas();
         }
         return $ocupado;
-    }
-
-    /**
-     * @param int $ocupado
-     */
-    public function setOcupado(int $ocupado): void
-    {
-        $this->ocupado = $ocupado;
     }
 
     public function getTipoProducto()

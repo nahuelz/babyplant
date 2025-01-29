@@ -5,16 +5,22 @@ namespace App\Controller;
 use App\Entity\CuentaCorriente;
 use App\Entity\ModoPago;
 use App\Entity\Movimiento;
+use App\Entity\PedidoProducto;
+use App\Entity\TipoMovimiento;
+use App\Entity\TipoReferencia;
+use App\Entity\Usuario;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/situacion_cliente")
+ * @IsGranted("ROLE_PEDIDO")
  */
 class SituacionClienteController extends BaseController {
 
@@ -34,7 +40,6 @@ class SituacionClienteController extends BaseController {
     }
 
     /**
-     * Tabla para app_pago.
      *
      * @Route("/index_table/", name="situacion_cliente_table", methods={"GET|POST"})
      * @IsGranted("ROLE_PEDIDO")
@@ -146,14 +151,37 @@ class SituacionClienteController extends BaseController {
      */
     public function movimientoNewAction(Request $request): Response
     {
-        $entity = new Movimiento();
-        $form = $this->baseCreateCreateForm($entity);
+        $movimiento = new Movimiento();
+        $id = $request->request->get('idCuentaCorriente');
+
+        $em = $this->doctrine->getManager();
+        /* @var $cuentaCorriente CuentaCorriente */
+        $cuentaCorriente = $em->getRepository("App\Entity\CuentaCorriente")->find($id);
+        $cuentaCorriente->addMovimiento($movimiento);
+        $form = $this->baseCreateCreateForm($movimiento);
+
         return $this->render('situacion_cliente/movimiento_form.html.twig', [
             'form' => $form->createView(),
-            'entity' => $entity,
+            'entity' => $movimiento,
             'modal' => true
         ]);
     }
+
+
+    /**
+     *
+     * @param string $entityFormTypeClassName
+     * @param type $entity
+     * @return type
+     */
+    protected function baseInitCreateCreateForm($entityFormTypeClassName, $entity): FormInterface {
+        return $this->createForm($entityFormTypeClassName, $entity, array(
+            'action' => $this->generateUrl($this->getURLPrefix() . '_create'),
+            'method' => 'POST',
+            'idCliente' => $entity->getCuentaCorriente()->getCliente()->getId(),
+        ));
+    }
+
 
 
     /**
@@ -164,26 +192,29 @@ class SituacionClienteController extends BaseController {
     {
         $em = $this->doctrine->getManager();
 
-        $id = $request->request->get('id');
-
-        /* @var $entity CuentaCorriente */
-        $entity = $em->getRepository("App\Entity\CuentaCorriente")->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('No se puede encontrar la entidad.');
-        }
-
         $monto = $request->request->get('monto');
         $modoPagoValue = $request->request->get('modoPago');
         $descripcion = $request->request->get('descripcion');
+        $id = $request->request->get('idCuentaCorriente');
+        $idPedidoProducto = $request->request->get('idPedidoProducto');
 
         if ((isset($modoPagoValue) and $modoPagoValue !== '') and (isset($monto) and $monto !== '')) {
+            $modoPago = $em->getRepository(ModoPago::class)->findOneByCodigoInterno($modoPagoValue);
+            $tipoMovimiento = $em->getRepository(TipoMovimiento::class)->findOneByCodigoInterno(1); // 1 = INGRESO CC
+            $tipoReferencia = $em->getRepository(TipoReferencia::class)->findOneByCodigoInterno(1); // 1 = ADELANTO
+            $pedidoProducto = $em->getRepository(PedidoProducto::class)->find($idPedidoProducto);
+
+            /* @var $cuentaCorriente CuentaCorriente */
+            $cuentaCorriente = $em->getRepository("App\Entity\CuentaCorriente")->find($id);
+
             $movimiento = new Movimiento();
             $movimiento->setMonto($monto);
-            $modoPago = $em->getRepository(ModoPago::class)->findOneByCodigoInterno($modoPagoValue);
             $movimiento->setModoPago($modoPago);
             $movimiento->setDescripcion($descripcion);
-            $entity->addMovimiento($movimiento);
+            $movimiento->setTipoMovimiento($tipoMovimiento);
+            $movimiento->setTipoReferencia($tipoReferencia);
+            $movimiento->setPedidoProducto($pedidoProducto);
+            $cuentaCorriente->addMovimiento($movimiento);
             $em->persist($movimiento);
             $em->flush();
         }

@@ -4,20 +4,43 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Mesadas">
-      <change afterPath="$PROJECT_DIR$/public/js/app/situacioncliente/show.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/ModoPago.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Form/SituacionClienteType.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/situacion_cliente/movimiento_form.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_movimientos.html.twig" afterDir="false" />
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="nuevos estados al generar remito">
+      <change afterPath="$PROJECT_DIR$/src/Controller/PagoController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/Constants/ConstanteModoPago.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/Pago.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/TipoMovimiento.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/TipoReferencia.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Form/PagoType.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/pago/index.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/pago/new.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/pago/pago_form.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/pago/show.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/remito/show.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_pagos.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/config/config-spinner.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/config/config-spinner.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/situacioncliente/show.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/situacioncliente/show.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/theme/css/custom/custom.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/css/custom/custom.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PedidoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PedidoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/RemitoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RemitoController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/CuentaCorriente.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/CuentaCorriente.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/EstadoPedidoProductoHistorico.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/EstadoPedidoProductoHistorico.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/EstadoRemito.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/EstadoRemito.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/EstadoRemitoHistorico.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/EstadoRemitoHistorico.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/Movimiento.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Movimiento.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Remito.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Remito.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/TipoMesada.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/TipoMesada.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Usuario.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Usuario.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/SituacionClienteType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/SituacionClienteType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedido/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/show.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/remito/historico_estados.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/historico_estados.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/movimiento_form.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/movimiento_form.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show_tiles.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_tiles.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show_movimientos.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_movimientos.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show_pedidos.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_pedidos.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show_remitos.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_remitos.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -221,7 +244,7 @@
     </include_path>
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
@@ -231,30 +254,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "database.data.extractors.current.export.id": "SQL Inserts",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/xampp81/htdocs/babyplant/templates/pedidoproducto",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "php.override.implement.member.chooser.php.doc": "NONE",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;database.data.extractors.current.export.id&quot;: &quot;SQL Inserts&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/xampp81/htdocs/babyplant/templates/pedidoproducto&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;php.override.implement.member.chooser.php.doc&quot;: &quot;NONE&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\xampp81\htdocs\babyplant\templates\pedidoproducto" />
@@ -280,61 +304,59 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PS-242.23726.107" />
-        <option value="bundled-php-predefined-a98d8de5180a-90914f2295cb-com.jetbrains.php.sharedIndexes-PS-242.23726.107" />
-        <option value="php-doctrine_collections-970fd879c5a4-a9531fa9" />
-        <option value="php-doctrine_common-970fd879c5a4-192b0725" />
-        <option value="php-doctrine_dbal-970fd879c5a4-a6852277" />
-        <option value="php-doctrine_doctrine_bundle-970fd879c5a4-38c12448" />
-        <option value="php-doctrine_doctrine_bundle-970fd879c5a4-3e2f5254" />
-        <option value="php-doctrine_inflector-970fd879c5a4-c6654e4d" />
-        <option value="php-doctrine_orm-970fd879c5a4-2dcce468" />
-        <option value="php-egulias_email_validator-970fd879c5a4-9eb4eccc" />
-        <option value="php-friendsofphp_proxy_manager_lts-970fd879c5a4-a42c75d5" />
-        <option value="php-monolog_monolog-970fd879c5a4-52a2a8c8" />
-        <option value="php-nikic_php_parser-970fd879c5a4-ea02b00c" />
-        <option value="php-paragonie_random_compat-970fd879c5a4-b58dbecb" />
-        <option value="php-phar_io_version-970fd879c5a4-df0e2d90" />
-        <option value="php-phpdocumentor_reflection_docblock-970fd879c5a4-65730a02" />
-        <option value="php-phpunit_php_code_coverage-970fd879c5a4-19659224" />
-        <option value="php-phpunit_phpunit-970fd879c5a4-35b87395" />
-        <option value="php-sebastian_comparator-970fd879c5a4-eb03be14" />
-        <option value="php-sensio_framework_extra_bundle-970fd879c5a4-17e17aef" />
-        <option value="php-symfony_cache-970fd879c5a4-6ff22d94" />
-        <option value="php-symfony_config-970fd879c5a4-ce6a6b43" />
-        <option value="php-symfony_console-970fd879c5a4-2e98c33a" />
-        <option value="php-symfony_dependency_injection-970fd879c5a4-09895027" />
-        <option value="php-symfony_dom_crawler-970fd879c5a4-608e55a8" />
-        <option value="php-symfony_error_handler-970fd879c5a4-2095614d" />
-        <option value="php-symfony_event_dispatcher-970fd879c5a4-1a5b5f9d" />
-        <option value="php-symfony_expression_language-970fd879c5a4-e1f28a6c" />
-        <option value="php-symfony_filesystem-970fd879c5a4-f7f4fba0" />
-        <option value="php-symfony_finder-970fd879c5a4-1c868a92" />
-        <option value="php-symfony_flex-970fd879c5a4-82166b49" />
-        <option value="php-symfony_framework_bundle-970fd879c5a4-6f6d240a" />
-        <option value="php-symfony_http_client-970fd879c5a4-4444d7be" />
-        <option value="php-symfony_http_foundation-970fd879c5a4-3cc58230" />
-        <option value="php-symfony_http_kernel-970fd879c5a4-c764a5bf" />
-        <option value="php-symfony_intl-970fd879c5a4-6b918842" />
-        <option value="php-symfony_mailer-970fd879c5a4-d9cebe5f" />
-        <option value="php-symfony_mime-970fd879c5a4-e84e2ead" />
-        <option value="php-symfony_monolog_bridge-970fd879c5a4-59cb8386" />
-        <option value="php-symfony_monolog_bundle-970fd879c5a4-583e9e0e" />
-        <option value="php-symfony_process-970fd879c5a4-f5bff2e9" />
-        <option value="php-symfony_property_access-970fd879c5a4-1231e66f" />
-        <option value="php-symfony_property_info-970fd879c5a4-5b492c72" />
-        <option value="php-symfony_routing-970fd879c5a4-61913002" />
-        <option value="php-symfony_security_core-970fd879c5a4-895fcc36" />
-        <option value="php-symfony_serializer-970fd879c5a4-34ef760b" />
-        <option value="php-symfony_string-970fd879c5a4-0463630a" />
-        <option value="php-symfony_translation-970fd879c5a4-afe9d6f5" />
-        <option value="php-symfony_twig_bridge-970fd879c5a4-be7771eb" />
-        <option value="php-symfony_twig_bundle-970fd879c5a4-90933cb7" />
-        <option value="php-symfony_validator-970fd879c5a4-da187ee5" />
-        <option value="php-symfony_var_dumper-970fd879c5a4-1e515d35" />
-        <option value="php-symfony_yaml-970fd879c5a4-a7f97337" />
-        <option value="php-twig_twig-970fd879c5a4-a6a627dd" />
-        <option value="php-twig_twig-970fd879c5a4-cf8a28f1" />
+        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-PS-243.23654.115" />
+        <option value="bundled-php-predefined-a98d8de5180a-4c3855d0ab16-com.jetbrains.php.sharedIndexes-PS-243.23654.115" />
+        <option value="php-doctrine_collections-5543a6ebd44f-f25708bb" />
+        <option value="php-doctrine_common-5543a6ebd44f-efb0421a" />
+        <option value="php-doctrine_dbal-5543a6ebd44f-3aaabdbf" />
+        <option value="php-doctrine_doctrine_bundle-5543a6ebd44f-2cea98e0" />
+        <option value="php-doctrine_inflector-5543a6ebd44f-c145f861" />
+        <option value="php-doctrine_orm-5543a6ebd44f-1244442d" />
+        <option value="php-egulias_email_validator-5543a6ebd44f-f8e7eb7f" />
+        <option value="php-friendsofphp_proxy_manager_lts-5543a6ebd44f-c3a938bb" />
+        <option value="php-monolog_monolog-5543a6ebd44f-60d6c1df" />
+        <option value="php-nikic_php_parser-5543a6ebd44f-b657ee4f" />
+        <option value="php-paragonie_random_compat-5543a6ebd44f-6c3ba42c" />
+        <option value="php-phar_io_version-5543a6ebd44f-bf2c7010" />
+        <option value="php-phpdocumentor_reflection_docblock-5543a6ebd44f-c02c5d02" />
+        <option value="php-phpunit_php_code_coverage-5543a6ebd44f-dd8f229f" />
+        <option value="php-phpunit_phpunit-5543a6ebd44f-2d939331" />
+        <option value="php-sebastian_comparator-5543a6ebd44f-2fefc3d7" />
+        <option value="php-sensio_framework_extra_bundle-5543a6ebd44f-c4917a93" />
+        <option value="php-symfony_cache-5543a6ebd44f-280837bb" />
+        <option value="php-symfony_config-5543a6ebd44f-9a6add26" />
+        <option value="php-symfony_console-5543a6ebd44f-5ce23daf" />
+        <option value="php-symfony_dependency_injection-5543a6ebd44f-7058bc3f" />
+        <option value="php-symfony_dom_crawler-5543a6ebd44f-6096c64c" />
+        <option value="php-symfony_error_handler-5543a6ebd44f-334d6960" />
+        <option value="php-symfony_event_dispatcher-5543a6ebd44f-b72d948a" />
+        <option value="php-symfony_expression_language-5543a6ebd44f-4e9f5cd7" />
+        <option value="php-symfony_filesystem-5543a6ebd44f-89ec7074" />
+        <option value="php-symfony_finder-5543a6ebd44f-7b1a1db5" />
+        <option value="php-symfony_flex-5543a6ebd44f-d9b3138a" />
+        <option value="php-symfony_framework_bundle-5543a6ebd44f-db35a086" />
+        <option value="php-symfony_http_client-5543a6ebd44f-2ccb54e1" />
+        <option value="php-symfony_http_foundation-5543a6ebd44f-870b7b9c" />
+        <option value="php-symfony_http_kernel-5543a6ebd44f-859a8986" />
+        <option value="php-symfony_intl-5543a6ebd44f-8e6a0a0c" />
+        <option value="php-symfony_mailer-5543a6ebd44f-7cbf9da3" />
+        <option value="php-symfony_mime-5543a6ebd44f-5356abc8" />
+        <option value="php-symfony_monolog_bridge-5543a6ebd44f-24663cc6" />
+        <option value="php-symfony_monolog_bundle-5543a6ebd44f-e25dade4" />
+        <option value="php-symfony_process-5543a6ebd44f-78ef7d72" />
+        <option value="php-symfony_property_access-5543a6ebd44f-db09ca3d" />
+        <option value="php-symfony_property_info-5543a6ebd44f-004596c6" />
+        <option value="php-symfony_routing-5543a6ebd44f-8b11e301" />
+        <option value="php-symfony_security_core-5543a6ebd44f-4886ea90" />
+        <option value="php-symfony_serializer-5543a6ebd44f-59b91aed" />
+        <option value="php-symfony_string-5543a6ebd44f-0bf900ec" />
+        <option value="php-symfony_translation-5543a6ebd44f-0ec7883a" />
+        <option value="php-symfony_twig_bridge-5543a6ebd44f-2aa937f4" />
+        <option value="php-symfony_twig_bundle-5543a6ebd44f-825a39ce" />
+        <option value="php-symfony_validator-5543a6ebd44f-d6e18b9c" />
+        <option value="php-symfony_var_dumper-5543a6ebd44f-083fc93e" />
+        <option value="php-symfony_yaml-5543a6ebd44f-16419819" />
+        <option value="php-twig_twig-5543a6ebd44f-429a3eaa" />
       </set>
     </attachedChunks>
   </component>
@@ -445,143 +467,16 @@
       <workItem from="1737339295011" duration="8119000" />
       <workItem from="1737386531148" duration="21893000" />
       <workItem from="1737421977853" duration="4027000" />
-      <workItem from="1737478852009" duration="3617000" />
-    </task>
-    <task id="LOCAL-00036" summary="fix show pedido">
-      <option name="closed" value="true" />
-      <created>1730913657206</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1730913657206</updated>
-    </task>
-    <task id="LOCAL-00037" summary="fix colores planificacion">
-      <option name="closed" value="true" />
-      <created>1730919384451</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1730919384451</updated>
-    </task>
-    <task id="LOCAL-00038" summary="Se agregaron varias mejoras en la vista mobile al ver el detalle de un pedido.&#10;Se agregó un sombreado en los formularios donde hay que seleccionar una opción&#10;En la vista de pedido ahora se muestra la cantidad de días que estuvo en invernáculo">
-      <option name="closed" value="true" />
-      <created>1730997747500</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1730997747500</updated>
-    </task>
-    <task id="LOCAL-00039" summary="Refactoring del codigo, nuevo manejo de fechas.&#10;Planificación: Mensaje de alerta de pedidos atrasados">
-      <option name="closed" value="true" />
-      <created>1731290805333</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1731290805334</updated>
-    </task>
-    <task id="LOCAL-00040" summary="actualizacion doctrine">
-      <option name="closed" value="true" />
-      <created>1731290871661</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1731290871661</updated>
-    </task>
-    <task id="LOCAL-00041" summary="salidacamara">
-      <option name="closed" value="true" />
-      <created>1731606040433</created>
-      <option name="number" value="00041" />
-      <option name="presentableId" value="LOCAL-00041" />
-      <option name="project" value="LOCAL" />
-      <updated>1731606040433</updated>
-    </task>
-    <task id="LOCAL-00042" summary="pedidos atrasados planificacion">
-      <option name="closed" value="true" />
-      <created>1731623578576</created>
-      <option name="number" value="00042" />
-      <option name="presentableId" value="LOCAL-00042" />
-      <option name="project" value="LOCAL" />
-      <updated>1731623578576</updated>
-    </task>
-    <task id="LOCAL-00043" summary=".">
-      <option name="closed" value="true" />
-      <created>1732557961763</created>
-      <option name="number" value="00043" />
-      <option name="presentableId" value="LOCAL-00043" />
-      <option name="project" value="LOCAL" />
-      <updated>1732557961763</updated>
-    </task>
-    <task id="LOCAL-00044" summary="colres siembra y entrada/salida camara">
-      <option name="closed" value="true" />
-      <created>1732569088133</created>
-      <option name="number" value="00044" />
-      <option name="presentableId" value="LOCAL-00044" />
-      <option name="project" value="LOCAL" />
-      <updated>1732569088133</updated>
-    </task>
-    <task id="LOCAL-00045" summary=".">
-      <option name="closed" value="true" />
-      <created>1732645271308</created>
-      <option name="number" value="00045" />
-      <option name="presentableId" value="LOCAL-00045" />
-      <option name="project" value="LOCAL" />
-      <updated>1732645271308</updated>
-    </task>
-    <task id="LOCAL-00046" summary=".">
-      <option name="closed" value="true" />
-      <created>1732647533134</created>
-      <option name="number" value="00046" />
-      <option name="presentableId" value="LOCAL-00046" />
-      <option name="project" value="LOCAL" />
-      <updated>1732647533134</updated>
-    </task>
-    <task id="LOCAL-00047" summary=".">
-      <option name="closed" value="true" />
-      <created>1732648125929</created>
-      <option name="number" value="00047" />
-      <option name="presentableId" value="LOCAL-00047" />
-      <option name="project" value="LOCAL" />
-      <updated>1732648125929</updated>
-    </task>
-    <task id="LOCAL-00048" summary=".">
-      <option name="closed" value="true" />
-      <created>1732659151603</created>
-      <option name="number" value="00048" />
-      <option name="presentableId" value="LOCAL-00048" />
-      <option name="project" value="LOCAL" />
-      <updated>1732659151603</updated>
-    </task>
-    <task id="LOCAL-00049" summary=".">
-      <option name="closed" value="true" />
-      <created>1732660568863</created>
-      <option name="number" value="00049" />
-      <option name="presentableId" value="LOCAL-00049" />
-      <option name="project" value="LOCAL" />
-      <updated>1732660568863</updated>
-    </task>
-    <task id="LOCAL-00050" summary=".">
-      <option name="closed" value="true" />
-      <created>1732660616812</created>
-      <option name="number" value="00050" />
-      <option name="presentableId" value="LOCAL-00050" />
-      <option name="project" value="LOCAL" />
-      <updated>1732660616812</updated>
-    </task>
-    <task id="LOCAL-00051" summary=".">
-      <option name="closed" value="true" />
-      <created>1732668802848</created>
-      <option name="number" value="00051" />
-      <option name="presentableId" value="LOCAL-00051" />
-      <option name="project" value="LOCAL" />
-      <updated>1732668802848</updated>
-    </task>
-    <task id="LOCAL-00052" summary="tipo mesada">
-      <option name="closed" value="true" />
-      <created>1732817404369</created>
-      <option name="number" value="00052" />
-      <option name="presentableId" value="LOCAL-00052" />
-      <option name="project" value="LOCAL" />
-      <updated>1732817404369</updated>
+      <workItem from="1737478852009" duration="8749000" />
+      <workItem from="1737565849611" duration="2986000" />
+      <workItem from="1737647112821" duration="9451000" />
+      <workItem from="1737664193136" duration="582000" />
+      <workItem from="1737664842286" duration="301000" />
+      <workItem from="1737665322298" duration="3623000" />
+      <workItem from="1737998395796" duration="14747000" />
+      <workItem from="1738075721481" duration="7952000" />
+      <workItem from="1738087602819" duration="13802000" />
+      <workItem from="1738157010869" duration="14722000" />
     </task>
     <task id="LOCAL-00053" summary="tipo mesada">
       <option name="closed" value="true" />
@@ -839,7 +734,143 @@
       <option name="project" value="LOCAL" />
       <updated>1737403826952</updated>
     </task>
-    <option name="localTasksCounter" value="85" />
+    <task id="LOCAL-00085" summary="cuentacorriente;&#10;fixtures;">
+      <option name="closed" value="true" />
+      <created>1737490193953</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1737490193953</updated>
+    </task>
+    <task id="LOCAL-00086" summary="&#10;fixtures;">
+      <option name="closed" value="true" />
+      <created>1737490889931</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1737490889931</updated>
+    </task>
+    <task id="LOCAL-00087" summary="&#10;fixtures;">
+      <option name="closed" value="true" />
+      <created>1737490953030</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1737490953030</updated>
+    </task>
+    <task id="LOCAL-00088" summary="&#10;fixtures;">
+      <option name="closed" value="true" />
+      <created>1737491314626</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1737491314626</updated>
+    </task>
+    <task id="LOCAL-00089" summary="&#10;fixtures;">
+      <option name="closed" value="true" />
+      <created>1737491373394</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1737491373394</updated>
+    </task>
+    <task id="LOCAL-00090" summary="&#10;fixtures;">
+      <option name="closed" value="true" />
+      <created>1737491641958</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1737491641959</updated>
+    </task>
+    <task id="LOCAL-00091" summary="&#10;fixtures;">
+      <option name="closed" value="true" />
+      <created>1737492093710</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1737492093711</updated>
+    </task>
+    <task id="LOCAL-00092" summary="fixtures;">
+      <option name="closed" value="true" />
+      <created>1737492289320</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1737492289321</updated>
+    </task>
+    <task id="LOCAL-00093" summary="fixtures;">
+      <option name="closed" value="true" />
+      <created>1737492377492</created>
+      <option name="number" value="00093" />
+      <option name="presentableId" value="LOCAL-00093" />
+      <option name="project" value="LOCAL" />
+      <updated>1737492377492</updated>
+    </task>
+    <task id="LOCAL-00094" summary="fixtures;">
+      <option name="closed" value="true" />
+      <created>1737493134190</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1737493134190</updated>
+    </task>
+    <task id="LOCAL-00095" summary="fixtures;">
+      <option name="closed" value="true" />
+      <created>1737494297672</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1737494297672</updated>
+    </task>
+    <task id="LOCAL-00096" summary="fixtures;">
+      <option name="closed" value="true" />
+      <created>1737494500885</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1737494500885</updated>
+    </task>
+    <task id="LOCAL-00097" summary="fixtures;">
+      <option name="closed" value="true" />
+      <created>1737494678949</created>
+      <option name="number" value="00097" />
+      <option name="presentableId" value="LOCAL-00097" />
+      <option name="project" value="LOCAL" />
+      <updated>1737494678949</updated>
+    </task>
+    <task id="LOCAL-00098" summary="fixtures;">
+      <option name="closed" value="true" />
+      <created>1737496981099</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1737496981099</updated>
+    </task>
+    <task id="LOCAL-00099" summary="fixtures;">
+      <option name="closed" value="true" />
+      <created>1737497071553</created>
+      <option name="number" value="00099" />
+      <option name="presentableId" value="LOCAL-00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1737497071553</updated>
+    </task>
+    <task id="LOCAL-00100" summary="fixtures;">
+      <option name="closed" value="true" />
+      <created>1737662943249</created>
+      <option name="number" value="00100" />
+      <option name="presentableId" value="LOCAL-00100" />
+      <option name="project" value="LOCAL" />
+      <updated>1737662943249</updated>
+    </task>
+    <task id="LOCAL-00101" summary="nuevos estados al generar remito">
+      <option name="closed" value="true" />
+      <created>1737666025368</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1737666025368</updated>
+    </task>
+    <option name="localTasksCounter" value="102" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -857,10 +888,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fix vista, hide breadcrumbs" />
-    <MESSAGE value="Vista fullscreen" />
-    <MESSAGE value="Salida de camara" />
-    <MESSAGE value="NumeroOrden" />
     <MESSAGE value="Pedido tiles, filtros, ultimas actividades" />
     <MESSAGE value="print, showpedido" />
     <MESSAGE value="fix show pedido" />
@@ -882,6 +909,10 @@
     <MESSAGE value="fix bug" />
     <MESSAGE value="." />
     <MESSAGE value="Mesadas" />
-    <option name="LAST_COMMIT_MESSAGE" value="Mesadas" />
+    <MESSAGE value="cuentacorriente;&#10;fixtures;" />
+    <MESSAGE value="&#10;fixtures;" />
+    <MESSAGE value="fixtures;" />
+    <MESSAGE value="nuevos estados al generar remito" />
+    <option name="LAST_COMMIT_MESSAGE" value="nuevos estados al generar remito" />
   </component>
 </project>

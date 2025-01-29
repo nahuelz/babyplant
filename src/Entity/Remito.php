@@ -69,10 +69,18 @@ class Remito {
      */
     private mixed $estado;
 
+
+    /**
+     * @ORM\OneToMany(targetEntity=Pago::class, mappedBy="remito", cascade={"all"})
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $pagos;
+
     public function __construct()
     {
         $this->remitosProductos = new ArrayCollection();
         $this->historicoEstados = new ArrayCollection();
+        $this->pagos = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -163,7 +171,7 @@ class Remito {
     }
 
     public function getTotalSinDescuento(){
-        $total = 0;
+        $total = 0.00;
         foreach ($this->remitosProductos as $remitoProducto){
             $total += $remitoProducto->getPrecioSubTotal();
         }
@@ -182,7 +190,7 @@ class Remito {
                     break;
             }
         }
-        return ($total);
+        return $total;
     }
 
     public function getMontoDescuento(){
@@ -305,7 +313,38 @@ class Remito {
         return $this;
     }
 
+    public function getPagos()
+    {
+        return $this->pagos;
+    }
 
+    public function setPagos(ArrayCollection $pagos): void
+    {
+        $this->pagos = $pagos;
+    }
 
+    /**
+     * @return mixed
+     */
+    public function addPago(Pago $pago)
+    {
+        if (!$this->pagos->contains($pago)) {
+            $this->pagos[] = $pago;
+            $pago->setRemito($this);
+        }
 
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPendiente()
+    {
+        $pendiente = $this->getTotalConDescuento();
+        foreach ($this->pagos as $pago) {
+            $pendiente -=$pago->getMonto();
+        }
+        return $pendiente;
+    }
 }

@@ -1,0 +1,30 @@
+{% import 'app/_macro_form.html.twig' as macro_form %}
+{{ form_start(form, {'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
+{{ form_widget(form._token) }}
+<div class="row">
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="label label-inline font-size-14 font-dark font-weight-bold label-light-success" style="padding: 15px">
+                    CUENTA CORRIENTE: {{ cuentaCorriente.saldo|money_format }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="label label-inline font-size-14 font-dark font-weight-bold label-light-warning" style="padding: 15px">
+                    PENDIENTE: {{ remito.pendiente|money_format }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal-body" style="padding-top: 0px;padding-bottom: 0px;">
+        <div class="row">
+            {{ macro_form._new_field(form.modoPago, "col-md-6") }}
+            {{ macro_form._new_field(form.monto, "col-md-6") }}
+            <input type="hidden" id="saldo" value="{{ cuentaCorriente.saldo }}">
+        </div>
+    </div>
+</div>
+{{ form_end(form, {"render_rest": false}) }}

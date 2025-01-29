@@ -533,7 +533,7 @@ class Usuario implements UserInterface {
     public function getPendiente(){
         $pendiente = 0;
         foreach ($this->getRemitos() as $remito){
-            $pendiente+=$remito->getTotalConDescuento();
+            $pendiente+=$remito->getPendiente();
         }
         return $pendiente;
     }

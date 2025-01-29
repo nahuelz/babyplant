@@ -67,52 +67,91 @@
                         {{ macro_show._show_detail('Fecha de entrega pedido', producto.fechaEntregaPedido is not null ? producto.fechaEntregaPedido|date("d/m/Y") : '-', 'col-md-4') }}
                         {{ macro_show._show_detail('Estado', producto.estado|default('-'), 'col-md-4') }}
                     </div>
-                {% if producto.estado.id in [3,4,5,6, 7] %}
-                    <div class="row">
-                        <div class="col-md-2">
-                            <span class="label label-inline label-light-success font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-leaf padding-right-5"></span> SEMBRADO</span>
+                    {% if producto.estado.id in [3,4,5,6,7,8,9,10] %}
+                        <div class="row">
+                            <div class="col-md-2">
+                                <span class="label label-inline label-light-success font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-leaf padding-right-5"></span> SEMBRADO</span>
+                            </div>
+                            {{ macro_show._show_detail('Fecha de siembra', producto.fechaSiembraReal is not null ? producto.fechaSiembraReal|date("d/m/Y H:i") : '-', 'col-md-8') }}
                         </div>
-                        {{ macro_show._show_detail('Fecha de siembra', producto.fechaSiembraReal is not null ? producto.fechaSiembraReal|date("d/m/Y H:i") : '-', 'col-md-8') }}
-                    </div>
-                {% endif %}
-                {% if producto.estado.id in [4,5,6, 7] %}
-                    <div class="row">
-                        <div class="col-md-2">
-                            <span class="label label-inline label-light-primary font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-list-ul padding-right-5"></span> EN CAMARA</span>
+                    {% endif %}
+                    {% if producto.estado.id in [4,5,6,7,8,9,10] %}
+                        <div class="row">
+                            <div class="col-md-2">
+                                <span class="label label-inline label-light-primary font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-list-ul padding-right-5"></span> EN CAMARA</span>
+                            </div>
+                            {{ macro_show._show_detail('Fecha de entrada a camara', producto.fechaEntradaCamaraReal is not null ? producto.fechaEntradaCamaraReal|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                            {{ macro_show._show_detail('Fecha de salida de camara', producto.fechaSalidaCamaraReal is not null ? producto.fechaSalidaCamaraReal|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                            {{ macro_show._show_detail('Tiempo en camara', producto.cantidadDiasEnCamara|default('-'), 'col-md-3') }}
                         </div>
-                        {{ macro_show._show_detail('Fecha de entrada a camara', producto.fechaEntradaCamaraReal is not null ? producto.fechaEntradaCamaraReal|date("d/m/Y H:i") : '-', 'col-md-3') }}
-                        {{ macro_show._show_detail('Fecha de salida de camara', producto.fechaSalidaCamaraReal is not null ? producto.fechaSalidaCamaraReal|date("d/m/Y H:i") : '-', 'col-md-3') }}
-                        {{ macro_show._show_detail('Tiempo en camara', producto.cantidadDiasEnCamara|default('-'), 'col-md-3') }}
-                    </div>
-                {% endif %}
-                {% if producto.estado.id in [5,6,7] %}
-                    <div class="row">
-                        <div class="col-md-2">
-                            <span class="label label-inline label-light-info font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-home padding-right-5"></span> EN INVERNACULO</span>
+                    {% endif %}
+                    {% if producto.estado.id in [5,6,7,8,9,10] %}
+                        <div class="row">
+                            <div class="col-md-2">
+                                <span class="label label-inline label-light-info font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-home padding-right-5"></span> EN INVERNACULO</span>
+                            </div>
+                            {{ macro_show._show_detail('Fecha de entrada a invernaculo', producto.fechaSalidaCamaraReal is not null ? producto.fechaSalidaCamaraReal|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                            {{ macro_show._show_detail('Mesada', producto.mesada|default('-'), 'col-md-3') }}
+                            {{ macro_show._show_detail('Dias en invernaculo', producto.cantidadDiasEnInvernaculo|default('-'), 'col-md-3') }}
                         </div>
-                        {{ macro_show._show_detail('Fecha de entrada a invernaculo', producto.fechaSalidaCamaraReal is not null ? producto.fechaSalidaCamaraReal|date("d/m/Y H:i") : '-', 'col-md-3') }}
-                        {{ macro_show._show_detail('Mesada', producto.mesada|default('-'), 'col-md-3') }}
-                        {{ macro_show._show_detail('Dias en invernaculo', producto.cantidadDiasEnInvernaculo|default('-'), 'col-md-3') }}
-                    </div>
-                {% endif %}
-                {% if producto.estado.id in [6,7] %}
+                    {% endif %}
+                    {% if producto.estado.id in [6,7,8,9,10] %}
                         {% for historicoEstados in producto.historicoEstados %}
                             {% if historicoEstados.estado.id == 6 %}
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <span class="label label-inline label-light-success font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-check padding-right-5"></span> ENTREGADO PARCIAL SIN REMITO</span>
+                                    </div>
+                                    {{ macro_show._show_detail('Fecha', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                                    {{ macro_show._show_detail('Bandejas Entregadas', historicoEstados.entregaProducto is not null ? historicoEstados.entregaProducto.cantBandejasEntregadas : '-', 'col-md-3') }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    {% if producto.estado.id in [7,8,9,10] %}
+                        {% for historicoEstados in producto.historicoEstados %}
+                            {% if historicoEstados.estado.id == 7 %}
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <span class="label label-inline label-light-success font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-check padding-right-5"></span> ENTREGADO SIN REMITO</span>
+                                    </div>
+                                    {{ macro_show._show_detail('Fecha', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                                    {{ macro_show._show_detail('Bandejas Entregadas', historicoEstados.entregaProducto is not null ? historicoEstados.entregaProducto.cantBandejasEntregadas : '-', 'col-md-3') }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    {% if producto.estado.id in [8,9,10] %}
+                        {% for historicoEstados in producto.historicoEstados %}
+                            {% if historicoEstados.estado.id == 8 %}
                                 <div class="row">
                                     <div class="col-md-2">
                                         <span class="label label-inline label-light-success font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-check padding-right-5"></span> ENTREGADO PARCIAL</span>
                                     </div>
                                     {{ macro_show._show_detail('Fecha', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                                    {{ macro_show._show_detail('Bandejas Entregadas', historicoEstados.entregaProducto is not null ? historicoEstados.entregaProducto.cantBandejasEntregadas : '-', 'col-md-3') }}
                                 </div>
                             {% endif %}
                         {% endfor %}
-                {% endif %}
-                    {% if producto.estado.id in [7] %}
+                    {% endif %}
+                    {% if producto.estado.id in [9,10] %}
+                        {% for historicoEstados in producto.historicoEstados %}
+                            {% if historicoEstados.estado.id == 9 %}
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <span class="label label-inline label-light-success font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-check padding-right-5"></span> ENTREGADO</span>
+                                    </div>
+                                    {{ macro_show._show_detail('Fecha', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                                    {{ macro_show._show_detail('Bandejas Entregadas', historicoEstados.entregaProducto is not null ? historicoEstados.entregaProducto.cantBandejasEntregadas : '-', 'col-md-3') }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    {% if producto.estado.id == 10 %}
                         <div class="row">
                             <div class="col-md-2">
-                                <span class="label label-inline label-light-success font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-check padding-right-5"></span> ENTREGADO </span>
+                                <span class="label label-inline label-light-danger font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-exclamation-triangle padding-right-5"></span> CANCELADO </span>
                             </div>
-                            {{ macro_show._show_detail('Fecha Entrega', producto.fechaEntregaPedidoReal is not null ? producto.fechaEntregaPedidoReal|date("d/m/Y H:i") : '-', 'col-md-3') }}
                         </div>
                     {% endif %}
                 </div>

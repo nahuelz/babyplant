@@ -21,6 +21,23 @@ class Movimiento {
     private $id;
 
     /**
+     * @ORM\ManyToOne(targetEntity=TipoMovimiento::class)
+     * @ORM\JoinColumn(name="id_tipo_movimiento", referencedColumnName="id")
+     */
+    private $tipoMovimiento;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=TipoReferencia::class)
+     * @ORM\JoinColumn(name="id_tipo_referencia", referencedColumnName="id")
+     */
+    private $tipoReferencia;
+
+    /**
+     * @ORM\Column(name="monto", type="decimal", precision=10, scale=2, nullable=false)
+     */
+    private $monto;
+
+    /**
      * @var string
      *
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -34,15 +51,28 @@ class Movimiento {
     private $cuentaCorriente;
 
     /**
+     * @ORM\ManyToOne(targetEntity=PedidoProducto::class)
+     * @ORM\JoinColumn(name="id_pedido_producto", referencedColumnName="id")
+     */
+    private $pedidoProducto;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Remito::class)
+     * @ORM\JoinColumn(name="id_remito", referencedColumnName="id")
+     */
+    private $remito;
+
+    /**
      * @ORM\ManyToOne(targetEntity=ModoPago::class)
      * @ORM\JoinColumn(name="id_modo_pago", referencedColumnName="id")
      */
     private $modoPago;
 
     /**
-     * @ORM\Column(name="monto", type="decimal", precision=10, scale=2, nullable=false)
+     * @ORM\OneToOne(targetEntity=Pago::class)
+     * @ORM\JoinColumn(name="id_pago", referencedColumnName="id")
      */
-    private $monto;
+    private $pago;
 
     /**
      * @return mixed
@@ -63,6 +93,64 @@ class Movimiento {
     /**
      * @return mixed
      */
+    public function getTipoMovimiento()
+    {
+        return $this->tipoMovimiento;
+    }
+
+    /**
+     * @param mixed $tipoMovimiento
+     */
+    public function setTipoMovimiento($tipoMovimiento): void
+    {
+        $this->tipoMovimiento = $tipoMovimiento;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTipoReferencia()
+    {
+        return $this->tipoReferencia;
+    }
+
+    /**
+     * @param mixed $tipoReferencia
+     */
+    public function setTipoReferencia($tipoReferencia): void
+    {
+        $this->tipoReferencia = $tipoReferencia;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMonto()
+    {
+        return $this->monto;
+    }
+
+    /**
+     * @param mixed $monto
+     */
+    public function setMonto($monto): void
+    {
+        $this->monto = $monto;
+    }
+
+    public function getDescripcion(): string
+    {
+        return $this->descripcion;
+    }
+
+    public function setDescripcion(string $descripcion): void
+    {
+        $this->descripcion = $descripcion;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getCuentaCorriente()
     {
         return $this->cuentaCorriente;
@@ -76,14 +164,20 @@ class Movimiento {
         $this->cuentaCorriente = $cuentaCorriente;
     }
 
-    public function getDescripcion(): string
+    /**
+     * @return mixed
+     */
+    public function getPedidoProducto()
     {
-        return $this->descripcion;
+        return $this->pedidoProducto;
     }
 
-    public function setDescripcion(string $descripcion): void
+    /**
+     * @param mixed $pedidoProducto
+     */
+    public function setPedidoProducto($pedidoProducto): void
     {
-        $this->descripcion = $descripcion;
+        $this->pedidoProducto = $pedidoProducto;
     }
 
     /**
@@ -105,16 +199,45 @@ class Movimiento {
     /**
      * @return mixed
      */
-    public function getMonto()
+    public function getRemito()
     {
-        return $this->monto;
+        return $this->remito;
     }
 
     /**
-     * @param mixed $monto
+     * @param mixed $remito
      */
-    public function setMonto($monto): void
+    public function setRemito($remito): void
     {
-        $this->monto = $monto;
+        $this->remito = $remito;
     }
+
+    public function getProductoRemito(){
+        if ($this->remito != null){
+            return $this->remito;
+        }
+
+        if ($this->pedidoProducto != null){
+            return $this->pedidoProducto->getNombreCorto();
+        }
+
+        return null;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPago()
+    {
+        return $this->pago;
+    }
+
+    /**
+     * @param mixed $pago
+     */
+    public function setPago($pago): void
+    {
+        $this->pago = $pago;
+    }
+
 }

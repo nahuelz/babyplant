@@ -758,4 +758,8 @@ class PedidoProducto {
         $this->mesadaDos = $mesadaDos;
     }
 
+    public function getNombreCorto(){
+        return 'Producto N° ' . $this->id . ' OS: ' . $this->getNumeroOrdenCompleto();
+    }
+
 }

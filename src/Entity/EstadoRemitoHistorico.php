@@ -50,6 +50,12 @@ class EstadoRemitoHistorico {
      */
     private $motivo;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Pago::class)
+     * @ORM\JoinColumn(name="id_pago", referencedColumnName="id")
+     */
+    private $pago;
+
     public function getId(): ?int {
         return $this->id;
     }
@@ -94,4 +100,22 @@ class EstadoRemitoHistorico {
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getPago()
+    {
+        return $this->pago;
+    }
+
+    /**
+     * @param mixed $pago
+     */
+    public function setPago($pago): void
+    {
+        $this->pago = $pago;
+    }
+
+
 }

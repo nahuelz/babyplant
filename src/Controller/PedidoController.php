@@ -28,6 +28,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/pedido")
+ * @IsGranted("ROLE_PEDIDO")
  */
 class PedidoController extends BaseController {
 

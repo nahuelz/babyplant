@@ -10,7 +10,9 @@ use App\Entity\Grupo;
 use App\Entity\ModoPago;
 use App\Entity\TipoBandeja;
 use App\Entity\TipoDescuento;
+use App\Entity\TipoMovimiento;
 use App\Entity\TipoOrigenSemilla;
+use App\Entity\TipoReferencia;
 use App\Entity\TipoUsuario;
 use App\Entity\Usuario;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -196,7 +198,7 @@ class AppFixtures extends Fixture
         $manager->persist($modoPago);
 
         $modoPago = new ModoPago();
-        $modoPago->setNombre('CORRIENTE');
+        $modoPago->setNombre('CUENTA CORRIENTE');
         $modoPago->setCodigoInterno(4);
         $modoPago->setHabilitado(1);
         $manager->persist($modoPago);
@@ -237,6 +239,24 @@ class AppFixtures extends Fixture
         $tipoOrigenSemilla->setCodigoInterno(3);
         $tipoOrigenSemilla->setHabilitado(1);
         $manager->persist($tipoOrigenSemilla);
+
+        $tipoMovimiento = new TipoMovimiento();
+        $tipoMovimiento->setNombre('INGRESO CUENTA CORRIENTE');
+        $tipoMovimiento->setCodigoInterno(1);
+        $tipoMovimiento->setHabilitado(1);
+        $manager->persist($tipoMovimiento);
+
+        $tipoMovimiento = new TipoMovimiento();
+        $tipoMovimiento->setNombre('PAGO DE TRAMITO');
+        $tipoMovimiento->setCodigoInterno(2);
+        $tipoMovimiento->setHabilitado(1);
+        $manager->persist($tipoMovimiento);
+
+        $tipoReferencia = new TipoReferencia();
+        $tipoReferencia->setNombre('ADELANTO');
+        $tipoReferencia->setCodigoInterno(1);
+        $tipoReferencia->setHabilitado(1);
+        $manager->persist($tipoReferencia);
 
         $grupoA = new Grupo();
         $grupoA->setNombre("Administrador");

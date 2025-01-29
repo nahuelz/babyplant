@@ -194,9 +194,11 @@ class RemitoController extends BaseController {
             $this->entregarBandejas($em, $pedidoProducto, $estadoMesada, $bandejasAEntregar);
 
             $em->persist($entregaProducto);
+            $em->flush();
 
-            $this->cambiarEstadoPedido($em, $pedidoProducto, $estado, 'Entrega de bandejas');
+            $this->cambiarEstadoPedido($em, $pedidoProducto, $estado, $entregaProducto);
         }
+
         $em->flush();
     }
 
@@ -214,7 +216,7 @@ class RemitoController extends BaseController {
             $badejasRestantes = $bandejasAEntregar - $bandejasEnMesadaUno;
             $mesadaUno->entregarBandejas($bandejasEnMesadaUno);
             $this->cambiarEstadoMesada($em, $mesadaUno, $estadoMesada);
-            // SI QUEDAN MAS BANDEJAS POR ENTREGAR QUE LAS QUE HAY EN LA MESADA HUBO ERROR, SE DESCUENTAN SOLO LAS QUE HAY
+            // SI QUEDAN MÁS BANDEJAS POR ENTREGAR QUE LAS QUE HAY EN LA MESADA HUBO ERROR, SE DESCUENTAN SOLO LAS QUE HAY
             if ($badejasRestantes > $bandejasEnMesadaDos){
                 $badejasRestantes = $bandejasEnMesadaDos;
             }
@@ -249,14 +251,14 @@ class RemitoController extends BaseController {
      * @param PedidoProducto $pedidoProducto
      * @param EstadoPedidoProducto $estadoProducto
      */
-    private function cambiarEstadoPedido($em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto, $motivo) {
-
+    private function cambiarEstadoPedido($em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto, $entregaProducto = null) {
         $pedidoProducto->setEstado($estadoProducto);
         $estadoPedidoProductoHistorico = new EstadoPedidoProductoHistorico();
         $estadoPedidoProductoHistorico->setPedidoProducto($pedidoProducto);
         $estadoPedidoProductoHistorico->setFecha(new DateTime());
         $estadoPedidoProductoHistorico->setEstado($estadoProducto);
-        $estadoPedidoProductoHistorico->setMotivo($motivo);
+        $estadoPedidoProductoHistorico->setMotivo('Entrega de bandejas');
+        $estadoPedidoProductoHistorico->setEntregaProducto($entregaProducto);
         $pedidoProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
 
         $em->persist($estadoPedidoProductoHistorico);

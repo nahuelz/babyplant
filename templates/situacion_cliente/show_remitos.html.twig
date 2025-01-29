@@ -17,7 +17,8 @@
                                             <thead>
                                             <tr>
                                                 <th class="text-center nowrap">Remito</th>
-                                                <th class="text-center nowrap">Monto</th>
+                                                <th class="text-center nowrap">Monto Total</th>
+                                                <th class="text-center nowrap">Monto Pendiente</th>
                                                 <th class="text-center nowrap">Estado</th>
                                                 <th class="text-center nowrap">Acciones</th>
                                             </tr>
@@ -32,15 +33,33 @@
                                                             {{ remito.totalConDescuento|money_format }}
                                                         </td>
                                                         <td class="v-middle nowrap text-center">
-                                                            <div class="label label-inline font-size-10 font-dark font-weight-bold">
+                                                            {{ remito.pendiente|money_format }}
+                                                        </td>
+                                                        <td class="v-middle nowrap text-center">
+                                                            <div class="label label-inline font-size-10 font-dark font-weight-bold {{ remito.estado.color|default('-') }}">
                                                                 {{ remito.estado|default('-') }}
                                                             </div>
                                                         </td>
-                                                        <td class="v-middle nowrap text-center">
-                                                            <a href="{{ path('imprimir_remito',{id: remito.id}) }}" target="_blank"
-                                                               class="btn btn-light-primary btn-icon btn-sm">
-                                                                <i class="la la-file-pdf icon-2x" style="color: orangered"></i>
-                                                            </a>
+                                                        <td class=" text-center dt-acciones">
+                                                            <div class="dropdown dropdown-inline">
+                                                                <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                    <i class="ki ki-bold-more-hor"></i>
+                                                                </button>
+                                                                <div class="dropdown-menu">
+                                                                    <a href="{{ path('remito_show',{id: remito.id}) }}" target="_blank" class="dropdown-item">
+                                                                        <i class="la la-search" style="margin-right: 5px;"></i> Ver Remito
+                                                                    </a>
+                                                                    <a href="#" class="dropdown-item link-ver-historico-remito" data-href="{{ path('remito_historico_estado',{id: remito.id}) }}">
+                                                                        <i class="la la-file-alt" style="margin-right: 5px;"></i> Histórico de estados
+                                                                    </a>
+                                                                    <a href="{{ path('imprimir_remito',{id: remito.id}) }}" target="_blank" class="dropdown-item">
+                                                                        <i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Remito
+                                                                    </a>
+                                                                    <a href="#" class="dropdown-item {% if remito.estado.codigoInterno == 3 %}cursor-disable{% else %}add-pago{% endif %}" data-remito="{{ remito.id }}" data-monto="{{remito.totalConDescuento }}">
+                                                                        <i class="la la-paypal" style="margin-right: 5px;"></i> Ingresar Pago
+                                                                    </a>
+                                                                </div>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 {% endfor %}
