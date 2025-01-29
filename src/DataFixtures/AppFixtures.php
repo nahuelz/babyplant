@@ -8,9 +8,11 @@ use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoRemito;
 use App\Entity\GlobalConfig;
 use App\Entity\Grupo;
+use App\Entity\Mesada;
 use App\Entity\ModoPago;
 use App\Entity\TipoBandeja;
 use App\Entity\TipoDescuento;
+use App\Entity\TipoMesada;
 use App\Entity\TipoMovimiento;
 use App\Entity\TipoOrigenSemilla;
 use App\Entity\TipoReferencia;
@@ -184,6 +186,9 @@ class AppFixtures extends Fixture
         $estadoRemito->setNombre('PAGO');
         $estadoRemito->setCodigoInterno(3);
         $estadoRemito->setHabilitado(1);
+        $estadoRemito->setColor('label-light-success');
+        $estadoRemito->setIcono('fa fa-check');
+        $estadoRemito->setColorIcono('success');
         $manager->persist($estadoRemito);
 
         $modoPago = new ModoPago();
@@ -326,7 +331,17 @@ class AppFixtures extends Fixture
         $manager->flush();
 
         $globalConfi = new GlobalConfig();
+        $globalConfi->setColumnasOcultas(1);
         $manager->persist($globalConfi);
+
+        $mesada = new TipoMesada();
+        $mesada->setNombre('1');
+        $mesada->setNumero('1');
+        $mesada->setCapacidad('500');
+        $mesada->setHabilitado(1);
+        $mesada->setCodigoInterno(1);
+        $manager->persist($mesada);
+
 
         $statement = $connection->prepare("create definer = root@localhost view _view_mesada_cantidad_bandejas as
 select `tm`.`id` AS `id`, sum(`m`.`cantidad_bandejas`) AS `cantidad_bandejas`
