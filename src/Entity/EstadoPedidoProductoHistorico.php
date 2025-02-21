@@ -51,10 +51,10 @@ class EstadoPedidoProductoHistorico {
     private $motivo;
 
     /**
-     * @ORM\OneToOne(targetEntity=EntregaProducto::class)
+     * @ORM\OneToOne(targetEntity=DatosEntrega::class)
      * @ORM\JoinColumn(name="id_entrega_producto", referencedColumnName="id", nullable=true)
      */
-    private $entregaProducto;
+    private $DatosEntrega;
 
     public function getId(): ?int {
         return $this->id;
@@ -104,17 +104,17 @@ class EstadoPedidoProductoHistorico {
     /**
      * @return mixed
      */
-    public function getEntregaProducto()
+    public function getDatosEntrega()
     {
-        return $this->entregaProducto;
+        return $this->DatosEntrega;
     }
 
     /**
-     * @param mixed $entregaProducto
+     * @param mixed $DatosEntrega
      */
-    public function setEntregaProducto($entregaProducto): void
+    public function setDatosEntrega($DatosEntrega): void
     {
-        $this->entregaProducto = $entregaProducto;
+        $this->DatosEntrega = $DatosEntrega;
     }
 
 

@@ -3,37 +3,50 @@ var fvCliente;
 var total = 0;
 
 jQuery(document).ready(function () {
-    initFormValidation();
-    initRemitoProductoHandler();
-    initProductos();
-    $('.row-remito-producto-empty').hide();
-    initBaseSubmitButton();
-    $('.submit-button').html('Guardar');
-    initPreValidation();
-    calcularDescuento();
-    $('#remito_cantidadDescuento').attr('readonly', true);
+    //initFormValidation();
+    //initRemitoProductoHandler();
+    //initProductos();
+    //$('.row-entrega-producto-empty').hide();
+    //initBaseSubmitButton();
+    //$('.submit-button').html('Guardar');
+    //initPreValidation();
+    //calcularDescuento();
+    $('#entrega_remito_cantidadDescuento').attr('readonly', true);
     tipoDescuentoHandler();
     cantidadDescuentoHandler();
+    initSubTotalHandler();
 });
 
-function tipoDescuentoHandler() {
-    $('#remito_tipoDescuento').on('change', function () {
-        if ($(this).val() !== ''){
-            $('#remito_cantidadDescuento').attr('readonly', false);
+function initSubTotalHandler() {
+    $('.precio-unitario').on('keyup', function () {
+        if( $('.precio-unitario').val() !== '') {
+            let cantidadBandejas = $(this).parent().siblings('.cantidad-bandejas').text();
+            $(this).parent().siblings('.subtotal').text(formatCurrency((parseInt($(this).val()) * parseInt(cantidadBandejas))));
         }else{
-            $('#remito_cantidadDescuento').val('');
-            $('#remito_cantidadDescuento').attr('readonly', true);
+            $(this).parent().siblings('.subtotal').text(formatCurrency(0));
+        }
+        calcularTotal();
+    })
+}
+
+function tipoDescuentoHandler() {
+    $('#entrega_remito_tipoDescuento').on('change', function () {
+        if ($(this).val() !== ''){
+            $('#entrega_remito_cantidadDescuento').attr('readonly', false);
+        }else{
+            $('#entrega_remito_cantidadDescuento').val('');
+            $('#entrega_remito_cantidadDescuento').attr('readonly', true);
         }
         calcularDescuento();
     })
 }
 
 function cantidadDescuentoHandler() {
-    $('#remito_cantidadDescuento').on('keyup', function () {
+    $('#entrega_remito_cantidadDescuento').on('keyup', function () {
         calcularDescuento();
     })
 
-    $('#remito_cantidadDescuento').on('paste', function () {
+    $('#entrega_remito_cantidadDescuento').on('paste', function () {
         calcularDescuento();
     })
 }
@@ -42,7 +55,7 @@ function cantidadDescuentoHandler() {
  * @returns {undefined}
  */
 function initFormValidation() {
-    fv = FormValidation.formValidation($("form[name=remito]")[0], {
+    fv = FormValidation.formValidation($("form[name=entrega]")[0], {
         fields: {
             requiredFields: {
                 selector: '[required="required"]',
@@ -69,19 +82,19 @@ function initFormValidation() {
  */
 function initRemitoProductoHandler() {
 
-    $('.tbody-remito-producto').data('index', $('.tr-remito-producto').length);
+    $('.tbody-entrega-producto').data('index', $('.tr-entrega-producto').length);
 
-    updateDeleteLinkRemitoProducto($(".link-delete-remito-producto"), '.tr-remito-producto');
+    updateDeleteLinkRemitoProducto($(".link-delete-entrega-producto"), '.tr-entrega-producto');
 
     // Save CaracteristicaProducto handler
-    $(document).off('click', '.link-save-remito-producto').on('click', '.link-save-remito-producto', function (e) {
+    $(document).off('click', '.link-save-entrega-producto').on('click', '.link-save-entrega-producto', function (e) {
 
         e.preventDefault();
 
-        var pedidoProductoSelect = $('#remito_remitoProducto_pedidoProducto');
+        var pedidoProductoSelect = $('#entrega_entregaProducto_pedidoProducto');
         var pedidoProducto = pedidoProductoSelect.val();
-        var cantBandejas = $('#remito_remitoProducto_cantBandejas').val();
-        var precioUnitario = $('#remito_remitoProducto_precioUnitario').val();
+        var cantidadBandejas = $('#entrega_entregaProducto_cantidadBandejas').val();
+        var precioUnitario = $('#entrega_entregaProducto_precioUnitario').val();
 
         if (existeProducto(pedidoProducto)){
             Swal.fire({
@@ -92,7 +105,7 @@ function initRemitoProductoHandler() {
             return false;
         }
 
-        if (cantBandejas === '0' ) {
+        if (cantidadBandejas === '0' ) {
             Swal.fire({
                 title: "La cantidad de bandejas a entregar no puede ser 0.",
                 icon: "warning"
@@ -101,7 +114,7 @@ function initRemitoProductoHandler() {
         }
 
 
-        if (pedidoProducto === '' || cantBandejas === '' || precioUnitario === '') {
+        if (pedidoProducto === '' || cantidadBandejas === '' || precioUnitario === '') {
             Swal.fire({
                 title: "Debe completar todos los datos del producto.",
                 icon: "warning"
@@ -109,44 +122,43 @@ function initRemitoProductoHandler() {
 
         } else {
 
-            $("#remito_remitoProducto_pedidoProducto>option[value='"+pedidoProducto+"']").attr('disabled','disabled');
+            $("#entrega_entregaProducto_pedidoProducto>option[value='"+pedidoProducto+"']").attr('disabled','disabled');
 
-            var index = $('.tbody-remito-producto').data('index');
+            var index = $('.tbody-entrega-producto').data('index');
 
             var removeLink = '\
-                        <a href="#" class="btn btn-sm delete-link-inline link-delete-remito-producto remito-producto-borrar tooltips" \n\
+                        <a href="#" class="btn btn-sm delete-link-inline link-delete-entrega-producto entrega-producto-borrar tooltips" \n\
                             data-placement="top" data-original-title="">\n\
                             <i class="fa fa-trash text-danger"></i>\n\
                         </a>';
 
             var item = '\
-                        <tr class="tr-remito-producto">\n\
-                            <td class="hidden"><input type="hidden" class="pedidoProductoId" name="remito[remitosProductos][' + index + '][pedidoProducto]" value="' + pedidoProducto + '"></td>\n\
-                            <td class="hidden"><input type="hidden" name="remito[remitosProductos][' + index + '][cantBandejas]" value="' + cantBandejas + '"></td>\n\
-                            <td class="hidden"><input type="hidden" name="remito[remitosProductos][' + index + '][precioUnitario]" value="' + precioUnitario + '"></td>\n\
+                        <tr class="tr-entrega-producto">\n\
+                            <td class="hidden"><input type="hidden" class="pedidoProductoId" name="entrega[entregasProductos][' + index + '][pedidoProducto]" value="' + pedidoProducto + '"></td>\n\
+                            <td class="hidden"><input type="hidden" name="entrega[entregasProductos][' + index + '][cantidadBandejas]" value="' + cantidadBandejas + '"></td>\n\
+                            <td class="hidden"><input type="hidden" name="entrega[entregasProductos][' + index + '][precioUnitario]" value="' + precioUnitario + '"></td>\n\
                             \n\
                             <td class="text-center v-middle">' + pedidoProductoSelect.find('option:selected').text()  + '</td>\n\
-                            <td class="text-center v-middle">' + cantBandejas + '</td>\n\
+                            <td class="text-center v-middle">' + cantidadBandejas + '</td>\n\
                             <td class="text-center v-middle">'+formatCurrency(precioUnitario)+'</td>\n\
-                            <td class="text-center v-middle subtotal">'+formatCurrency((parseInt(precioUnitario) * parseInt(cantBandejas)))+ '</td>\n\
+                            <td class="text-center v-middle subtotal">'+formatCurrency((parseInt(precioUnitario) * parseInt(cantidadBandejas)))+ '</td>\n\
                             <td class="text-center v-middle">' + removeLink + '</td>\n\
                         </tr>';
 
-            $('.tbody-remito-producto').append(item);
-            $('.tbody-remito-producto').data('index', index + 1);
+            $('.tbody-entrega-producto').append(item);
+            $('.tbody-entrega-producto').data('index', index + 1);
 
-            $('.tbody-remito-producto tr.tr-remito-producto:last').hide();
-            $('.tbody-remito-producto tr.tr-remito-producto').fadeIn("slow");
+            $('.tbody-entrega-producto tr.tr-entrega-producto:last').hide();
+            $('.tbody-entrega-producto tr.tr-entrega-producto').fadeIn("slow");
 
-            updateDeleteLinkRemitoProducto($(".link-delete-remito-producto"), '.tr-remito-producto');
+            updateDeleteLinkRemitoProducto($(".link-delete-entrega-producto"), '.tr-entrega-producto');
 
-            $('.row-remito-producto-empty').hide('slow');
-            $('.row-remito-producto').show('slow');
+            $('.row-entrega-producto-empty').hide('slow');
+            $('.row-entrega-producto').show('slow');
 
             //  Reset form
-            $('.row-agregar-remito-producto').show('slow');
+            $('.row-agregar-entrega-producto').show('slow');
             clearRemitoProductoForm();
-            calcularTotal();
         }
 
         e.stopPropagation();
@@ -179,9 +191,9 @@ function existeProducto(id){
  * @returns {undefined}
  */
 function clearRemitoProductoForm() {
-    $('#remito_remitoProducto_pedidoProducto').val('').select2();
-    $('#remito_remitoProducto_cantBandejas').val('');
-    $('#remito_remitoProducto_precioUnitario').val('');
+    $('#entrega_entregaProducto_pedidoProducto').val('').select2();
+    $('#entrega_entregaProducto_cantidadBandejas').val('');
+    $('#entrega_entregaProducto_precioUnitario').val('');
 }
 
 
@@ -207,13 +219,12 @@ function updateDeleteLinkRemitoProducto(deleteLink, closestClassName) {
                         deletableRow.hide('slow', function () {
                             customPreDeleteLinkOnCallbackOk(deletableRow);
                             deletableRow.remove();
-                            if ($('.tr-remito-producto').length === 0) {
-                                $('.row-remito-producto').hide('slow');
+                            if ($('.tr-entrega-producto').length === 0) {
+                                $('.row-entrega-producto').hide('slow');
                             }
                             customDeleteLinkOnCallbackOk();
-                            calcularTotal();
                             var id = deletableRow.find('.pedidoProductoId').val();
-                            $("#remito_remitoProducto_pedidoProducto>option[value='"+id+"']").removeAttr('disabled');
+                            $("#entrega_entregaProducto_pedidoProducto>option[value='"+id+"']").removeAttr('disabled');
                         });
                     }
                 });
@@ -221,8 +232,8 @@ function updateDeleteLinkRemitoProducto(deleteLink, closestClassName) {
                 deletableRow.hide('slow', function () {
                     customPreDeleteLinkOnCallbackOk(deletableRow);
                     deletableRow.remove();
-                    if ($('.tr-remito-producto').length === 0) {
-                        $('.row-remito-producto').hide('slow');
+                    if ($('.tr-entrega-producto').length === 0) {
+                        $('.row-entrega-producto').hide('slow');
                     }
                     customDeleteLinkOnCallbackOk();
                 });
@@ -235,7 +246,7 @@ function updateDeleteLinkRemitoProducto(deleteLink, closestClassName) {
 }
 
 function initProductos() {
-    initChainedSelect($('#remito_cliente'), $('#remito_remitoProducto_pedidoProducto'), __HOMEPAGE_PATH__ + 'remito/lista/productos', preserve_values);
+    initChainedSelect($('#entrega_cliente'), $('#entrega_entregaProducto_pedidoProducto'), __HOMEPAGE_PATH__ + 'entrega/lista/productos', preserve_values);
 }
 
 /**
@@ -244,55 +255,43 @@ function initProductos() {
  */
 function initBaseSubmitButton() {
 
-    $("#remito_submit").off('click').on('click', function (e) {
+    $("#entrega_submit").off('click').on('click', function (e) {
         e.preventDefault();
+        $.post({
+            url: __HOMEPAGE_PATH__ + "remito/confirmar-entrega-remito",
+            type: 'post',
+            dataType: 'json',
+            data: $('form[name="entrega"]').serialize()
+        }).done(function (result) {
+            if (result.error){
+                Swal.fire({
+                    title: result.tipo,
+                    text: "La cantidad de bandejas a entregar no puede superar a la cantidad de bandejas faltantes de entrega.",
+                    icon: "warning"
+                });
 
-        fv.revalidateField('requiredFields');
-        if ($('.tr-remito-producto').length === 0) {
-            $('.row-remito-producto-empty').show('slow');
-            return false;
-        }
+                return false;
+            }else {
+                showDialog({
+                    titulo: '<i class="fa fa-list-ul margin-right-10"></i> REMITO',
+                    contenido: result.html,
+                    color: 'btn-light-success ',
+                    labelCancel: 'Cancelar',
+                    labelSuccess: 'Confirmar Remito',
+                    closeButton: true,
+                    callbackCancel: function () {
 
-        fv.validate().then((status) => {
-            if (status === "Valid") {
-                $.post({
-                    url: __HOMEPAGE_PATH__ + "remito/confirmar-remito",
-                    type: 'post',
-                    dataType: 'json',
-                    data: $('form[name="remito"]').serialize()
-                }).done(function (result) {
-                    if (result.error){
-                        Swal.fire({
-                            title: result.tipo,
-                            text: "La cantidad de bandejas a entregar no puede superar a la cantidad de bandejas faltantes de entrega.",
-                            icon: "warning"
-                        });
-
-                        return false;
-                    }else {
-                        showDialog({
-                            titulo: '<i class="fa fa-list-ul margin-right-10"></i> REMITO',
-                            contenido: result.html,
-                            color: 'btn-light-success ',
-                            labelCancel: 'Cancelar',
-                            labelSuccess: 'Confirmar Remito',
-                            closeButton: true,
-                            callbackCancel: function () {
-
-                            },
-                            callbackSuccess: function () {
-                                $('form[name="remito"]').submit();
-                            }
-                        });
-                        $('.bs-popover-top').hide();
-                        $('.modal-dialog').css('width', '80%');
-                        $('.modal-dialog').addClass('modal-xl');
-                        $('.modal-dialog').addClass('modal-fullscreen-xl-down');
+                    },
+                    callbackSuccess: function () {
+                        $('form[name="entrega"]').submit();
                     }
                 });
+                $('.bs-popover-top').hide();
+                $('.modal-dialog').css('width', '80%');
+                $('.modal-dialog').addClass('modal-xl');
+                $('.modal-dialog').addClass('modal-fullscreen-xl-down');
             }
         });
-
         e.stopPropagation();
     });
 }
@@ -300,8 +299,8 @@ function initBaseSubmitButton() {
 function calcularDescuento(objeto) {
     let DESCUENTO_PORCENTAJE = '2';
     let totalAux = total;
-    const tipodescuento = $('#remito_tipoDescuento').val();
-    let valordescuento = parseInt($('#remito_cantidadDescuento').val().trim());
+    const tipodescuento = $('#entrega_remito_tipoDescuento').val();
+    let valordescuento = parseInt($('#entrega_remito_cantidadDescuento').val().trim());
     if (isNaN(valordescuento)){
         valordescuento = 0;
     }

@@ -13,7 +13,7 @@
 <div class="row-form-remito-producto">
     <div class="row">
         {{ macro_form._new_field(form.remitoProducto.pedidoProducto, 'col-md-12') }}
-        {{ macro_form._new_field(form.remitoProducto.cantBandejas, 'col-md-4') }}
+        {{ macro_form._new_field(form.remitoProducto.cantidadBandejas, 'col-md-4') }}
         {{ macro_form._new_field(form.remitoProducto.precioUnitario, 'col-md-3') }}
         <div class="col-md-3 pull-left">
             <div class="form-group">
@@ -48,14 +48,14 @@
                             <input type="hidden" name="remito[remitosProductos][{{ loop.index0 }}][pedidoProducto]" value="{{ remitoProducto.pedidoProducto }}">
                         </td>
                         <td class="hidden">
-                            <input type="hidden" name="remito[remitosProductos][{{ loop.index0 }}][cantBandejas]" value="{{ remitoProducto.cantBandejas }}">
+                            <input type="hidden" name="remito[remitosProductos][{{ loop.index0 }}][cantidadBandejas]" value="{{ remitoProducto.cantidadBandejas }}">
                         </td>
                         <td class="hidden">
                             <input type="hidden" name="remito[remitosProductos][{{ loop.index0 }}][precioUnitario]" value="{{ remitoProducto.precioUnitario }}">
                         </td>
 
                         <td class="v-middle text-center">{{ remitoProducto.pedidoProducto }}</td>
-                        <td class="v-middle text-center">{{ remitoProducto.cantBandejas }}</td>
+                        <td class="v-middle text-center">{{ remitoProducto.cantidadBandejas }}</td>
                         <td class="v-middle text-center">{{ remitoProducto.precioUnitario }}</td>
 
                         <td class="text-center v-middle">
@@ -80,9 +80,6 @@
                                 </div>
                             </div>
 
-                            {#
-                            <input type="text" style="font-size: 1.0em; max-width: 150px" onkeyup="calcularSubtotal(this)" onpaste="calcularSubtotal(this);" class="form-control ml-2 input-descuento font-weight-bold text-center">
-                            #}
                             <div class="col-md-3">
                                 <div class="form-group margin-0">
                                     <div class="form_field">

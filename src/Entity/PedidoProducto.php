@@ -1,4 +1,4 @@
-<?php /** @noinspection ALL */
+<?php
 
 namespace App\Entity;
 
@@ -53,22 +53,22 @@ class PedidoProducto {
     /**
      * @ORM\Column(name="cantidad_bandejas_pedidas", type="integer", nullable=false)
      */
-    private mixed $cantBandejasPedidas;
+    private mixed $cantidadBandejasPedidas;
 
     /**
      * @ORM\Column(name="cantidad_bandejas_reales", type="integer", nullable=true)
      */
-    private mixed $cantBandejasReales;
+    private mixed $cantidadBandejasReales;
 
     /**
      * @ORM\Column(name="cantidad_bandejas_entregadas", type="integer", nullable=true)
      */
-    private mixed $cantBandejasEntregadas;
+    private mixed $cantidadBandejasEntregadas;
 
     /**
-     * @ORM\Column(name="cantidad_bandejas_faltantes", type="integer", nullable=true)
+     * @ORM\Column(name="cantidad_bandejas_sin_entregar", type="integer", nullable=true)
      */
-    private mixed $cantBandejasFaltantes;
+    private mixed $cantidadBandejasSinEntregar;
 
     /**
      * @ORM\Column(name="cantidad_semillas", type="integer", nullable=false)
@@ -198,12 +198,12 @@ class PedidoProducto {
     {
         $this->entregasProductos = new ArrayCollection();
         $this->historicoEstados = new ArrayCollection();
-        $this->cantidad_bandejas_entregadas = 0;
+        $this->cantidadBandejasEntregadas = 0;
     }
 
     public function __toString()
     {
-        return 'Pedido Producto N° '.$this->getId(). ' Orden Siembra: '.$this->getNumeroOrdenCompleto(). ' Producto: '.$this->getNombreCompleto(). ' Bandejas: '.$this->getCantBandejasReales().' (x'.$this->getTipoBandeja().')';
+        return 'Pedido Producto N° '.$this->getId(). ' Orden Siembra: '.$this->getNumeroOrdenCompleto(). ' Producto: '.$this->getNombreCompleto(). ' Bandejas: '.$this->getCantidadBandejasReales().' (x'.$this->getTipoBandeja().')';
     }
 
     /**
@@ -273,35 +273,35 @@ class PedidoProducto {
     /**
      * @return mixed
      */
-    public function getCantBandejasPedidas(): mixed
+    public function getCantidadBandejasPedidas(): mixed
     {
-        return $this->cantBandejasPedidas;
+        return $this->cantidadBandejasPedidas;
     }
 
     /**
-     * @param mixed $cantBandejasPedidas
+     * @param mixed $cantidadBandejasPedidas
      */
-    public function setCantBandejasPedidas(mixed $cantBandejasPedidas): void
+    public function setCantidadBandejasPedidas(mixed $cantidadBandejasPedidas): void
     {
-        $this->cantBandejasPedidas = $cantBandejasPedidas;
-        $this->cantBandejasFaltantes = $cantBandejasPedidas;
+        $this->cantidadBandejasPedidas = $cantidadBandejasPedidas;
+        $this->cantidadBandejasSinEntregar = $cantidadBandejasPedidas;
     }
 
     /**
      * @return mixed
      */
-    public function getCantBandejasReales(): mixed
+    public function getCantidadBandejasReales(): mixed
     {
-        return $this->cantBandejasReales;
+        return $this->cantidadBandejasReales;
     }
 
     /**
-     * @param mixed $cantBandejasReales
+     * @param mixed $cantidadBandejasReales
      */
-    public function setCantBandejasReales(mixed $cantBandejasReales): void
+    public function setCantidadBandejasReales(mixed $cantidadBandejasReales): void
     {
-        $this->cantBandejasReales = $cantBandejasReales;
-        $this->cantBandejasFaltantes = $cantBandejasReales;
+        $this->cantidadBandejasReales = $cantidadBandejasReales;
+        $this->cantidadBandejasSinEntregar = $cantidadBandejasReales;
     }
 
     /**
@@ -634,7 +634,7 @@ class PedidoProducto {
 
     public function getBandejas(): string
     {
-        return ($this->cantBandejasReales.' (x'.$this->getTipoBandeja()->getNombre().') ');
+        return ($this->cantidadBandejasReales.' (x'.$this->getTipoBandeja()->getNombre().') ');
     }
 
     public function getCantidadDiasEnInvernaculo (): string
@@ -708,24 +708,14 @@ class PedidoProducto {
         $this->remitosProductos = $remitosProductos;
     }
 
-    public function getCantBandejasEntregadas(): mixed
+    public function getCantidadBandejasEntregadas(): mixed
     {
-        return $this->cantBandejasEntregadas;
+        return $this->cantidadBandejasEntregadas;
     }
 
-    public function setCantBandejasEntregadas(mixed $cantBandejasEntregadas): void
+    public function setCantidadBandejasEntregadas(mixed $cantidadBandejasEntregadas): void
     {
-        $this->cantBandejasEntregadas = $cantBandejasEntregadas;
-    }
-
-    public function getCantBandejasFaltantes(): mixed
-    {
-        return $this->cantBandejasFaltantes;
-    }
-
-    public function setCantBandejasFaltantes(mixed $cantBandejasFaltantes): void
-    {
-        $this->cantBandejasFaltantes = $cantBandejasFaltantes;
+        $this->cantidadBandejasEntregadas = $cantidadBandejasEntregadas;
     }
 
     public function getEntregasProductos(): ArrayCollection
@@ -761,5 +751,17 @@ class PedidoProducto {
     public function getNombreCorto(){
         return 'Producto N° ' . $this->id . ' OS: ' . $this->getNumeroOrdenCompleto();
     }
+
+    public function getCantidadBandejasSinEntregar(): mixed
+    {
+        return $this->cantidadBandejasSinEntregar;
+    }
+
+    public function setCantidadBandejasSinEntregar(mixed $cantidadBandejasSinEntregar): void
+    {
+        $this->cantidadBandejasSinEntregar = $cantidadBandejasSinEntregar;
+    }
+
+
 
 }

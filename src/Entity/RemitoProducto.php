@@ -47,7 +47,7 @@ class RemitoProducto {
     /**
      * @ORM\Column(name="cantidad_bandejas", type="string", length=50, nullable=false)
      */
-    private mixed $cantBandejas;
+    private mixed $cantidadBandejas;
 
     /**
      * @ORM\Column(name="precio_unitario", type="decimal", precision=10, scale=2, nullable=false)
@@ -74,14 +74,14 @@ class RemitoProducto {
         $this->remito = $remito;
     }
 
-    public function getCantBandejas(): mixed
+    public function getCantidadBandejas(): mixed
     {
-        return $this->cantBandejas;
+        return $this->cantidadBandejas;
     }
 
-    public function setCantBandejas(mixed $cantBandejas): void
+    public function setCantidadBandejas(mixed $cantidadBandejas): void
     {
-        $this->cantBandejas = $cantBandejas;
+        $this->cantidadBandejas = $cantidadBandejas;
     }
 
     public function getPedidoProducto()
@@ -111,7 +111,7 @@ class RemitoProducto {
     }
 
     public function getPrecioSubTotal(){
-        return $this->precioUnitario * $this->cantBandejas;
+        return $this->precioUnitario * $this->cantidadBandejas;
     }
 
     public function getCodigo(){

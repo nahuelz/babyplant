@@ -78,10 +78,10 @@
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-exclamation-triangle icon-3x text-dark', 'nombreModulo': 'Pedidos con Problemas','action': '#', 'descripcionModulo': 'Aqui podra ver los pedidos con problemas' } %}
                     {% endif %}#}
 
-                    {# PLANIFICACION ENTREGA
-                    {% if is_granted("ROLE_ENTREGA") %}
-                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-truck icon-3x text-dark', 'nombreModulo': 'Planificacion de Entregas','action': '#', 'descripcionModulo': 'Aqui podra ver la planificacion de entregas' } %}
-                    {% endif %}#}
+                    {# PLANIFICACION ENTREGA#}
+                    {% if is_granted("ROLE_PEDIDO") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-truck icon-3x text-dark', 'nombreModulo': 'Planificacion de Entregas','action': path('entrega_index'), 'descripcionModulo': 'Aqui podra ver las entregas' } %}
+                    {% endif %}
 
                     {# AGENDA ENTREGA
                     {% if is_granted("ROLE_AGENDA") %}

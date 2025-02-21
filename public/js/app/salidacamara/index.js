@@ -287,8 +287,8 @@ function initFormValidation() {
 }
 function initValidations(){
     $('#salida_camara_mesadaUno_cantidadBandejas').on('keyup', function(){
-        if ($(this).val() > parseInt($('#cantBandejasReales').val())){
-            $(this).val($('#cantBandejasReales').val());
+        if ($(this).val() > parseInt($('#cantidadBandejasReales').val())){
+            $(this).val($('#cantidadBandejasReales').val());
         }
     });
 }
@@ -301,7 +301,7 @@ jQuery(document).ready(function() {
 function cantidadDeBandejasValida(){
     let cantidadBandejasMesadaUno = $('#salida_camara_mesadaUno_cantidadBandejas').val() ? parseInt($('#salida_camara_mesadaUno_cantidadBandejas').val()) : 0;
     let cantidadBandejasMesadaDos = $('#salida_camara_mesadaDos_cantidadBandejas').val() ? parseInt($('#salida_camara_mesadaDos_cantidadBandejas').val()) : 0;
-    let cantidadBandejasReales = parseInt($('#cantBandejasReales').val());
+    let cantidadBandejasReales = parseInt($('#cantidadBandejasReales').val());
     let cantidadTotalBandejas = cantidadBandejasMesadaUno + cantidadBandejasMesadaDos;
 
     return (cantidadTotalBandejas === cantidadBandejasReales);
@@ -349,14 +349,14 @@ function initmesadaForm() {
     $('#salida_camara_mesadaDos_tipoMesada').select2();
     $('.row-mesada-empty').hide();
     $('.mesada-dos').hide();
-    $('#salida_camara_mesadaUno_cantidadBandejas').val($('#cantBandejasReales').val())
+    $('#salida_camara_mesadaUno_cantidadBandejas').val($('#cantidadBandejasReales').val())
     $(document).on('click', '.add-mesada', function (e) {
         e.preventDefault();
         disableMesadaDosOptionHandler();
         removeMesadaHandler();
         $('#salida_camara_mesadaDos_cantidadBandejas').on('keyup', function(){
-            if ($(this).val() > parseInt($('#cantBandejasReales').val())){
-                $(this).val($('#cantBandejasReales').val());
+            if ($(this).val() > parseInt($('#cantidadBandejasReales').val())){
+                $(this).val($('#cantidadBandejasReales').val());
             }
         });
         $('.add-mesada').hide();

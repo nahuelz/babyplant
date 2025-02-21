@@ -939,7 +939,7 @@ class BaseController extends AbstractController {
      */
     protected function baseInitCreateCreateForm($entityFormTypeClassName, $entity): FormInterface {
         return $this->createForm($entityFormTypeClassName, $entity, array(
-            'action' => $this->generateUrl($this->getURLPrefix() . '_create'),
+            'action' => $this->generateUrl($this->getURLPrefix() . '_create', array('id' => $entity->getId())),
             'method' => 'POST',
         ));
     }

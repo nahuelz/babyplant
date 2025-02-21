@@ -23,4 +23,9 @@ class ConstanteEstadoRemito {
      */
     const PAGO = 3;
 
+    /**
+     * PENDIENTE SIN REMITO
+     */
+    const PENDIENTE_SR = 4;
+
 }

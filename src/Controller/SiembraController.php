@@ -89,7 +89,8 @@ class SiembraController extends BaseController
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
         $pedidoProducto->setObservacion($observacion);
-        $pedidoProducto->setCantBandejasReales($bandejas);
+        $pedidoProducto->setCantidadBandejasReales($bandejas);
+        $pedidoProducto->setCantidadBandejasSinEntregar($bandejas);
         $pedidoProducto->setFechaSiembraReal(new DateTime($fechaSiembra));
         $pedidoProducto->setHoraSiembra($horaSiembra);
         $pedidoProducto->setFechaEntradaCamara($pedidoProducto->getFechaSiembraReal());
@@ -123,7 +124,8 @@ class SiembraController extends BaseController
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
         $pedidoProducto->setObservacion($observacion);
-        $pedidoProducto->setCantBandejasReales($bandejas);
+        $pedidoProducto->setCantidadBandejasReales($bandejas);
+        $pedidoProducto->setCantidadBandejasSinRemito($bandejas);
         $em->flush();
 
         $message = 'Se guardó correctamente el producto con N° de orden: '.$pedidoProducto->getNumeroOrdenCompleto();

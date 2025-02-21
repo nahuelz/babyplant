@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+
+    {{ parent() }}
+
+    <style type="text/css">
+        .card.card-detail .card-header {
+            padding: 15px;
+            background-color: #f5f5f5;
+        }
+
+        .card.card-detail {
+            margin-bottom: 20px;
+        }
+    </style>
+
+{% endblock %}
+
+{% block body %}
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon-search text-primary"></i></span>
+                <h3 class="card-label">{{ entity }}</h3>
+            </div>
+            <div class="card-toolbar">
+            </div>
+        </div>
+
+        {% include 'remito/datos_cliente.html.twig' %}
+        {% include 'remito/datos_remito.html.twig' %}
+        {% include 'remito/pagos.html.twig' %}
+
+
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('pedido_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/pedido/show.js') }}" ></script>
+
+{% endblock %}
+
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+{% endblock %}
+
+{% block stylesheets %}
+
+{% endblock %}
+

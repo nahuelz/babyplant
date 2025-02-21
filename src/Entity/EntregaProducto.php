@@ -7,21 +7,30 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * EntregaPedido
+ * Grupo
  *
  * @ORM\Table(name="entrega_producto")
- * @ORM\Entity()
+ * @ORM\Entity
+ * @Gedmo\SoftDeleteable(fieldName="fechaBaja")
  */
 class EntregaProducto {
 
     use Auditoria;
 
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    protected int $id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Entrega::class, inversedBy="entregasProductos")
+     * @ORM\JoinColumn(name="id_entrega", referencedColumnName="id", nullable=true)
+     */
+    private mixed $entrega;
 
     /**
      * @ORM\ManyToOne(targetEntity=PedidoProducto::class, inversedBy="entregasProductos")
@@ -30,50 +39,46 @@ class EntregaProducto {
     private mixed $pedidoProducto;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Remito::class, inversedBy="remitosProductos")
-     * @ORM\JoinColumn(name="id_remito", referencedColumnName="id", nullable=false)
+     * @ORM\Column(name="cantidad_bandejas", type="string", length=50, nullable=false)
      */
-    private mixed $remito;
+    private $cantidadBandejas;
 
     /**
-     * @ORM\Column(name="cantidad_bandejas_entregadas", type="string", length=50, nullable=false)
+     * @ORM\Column(name="precio_unitario", type="decimal", precision=10, scale=2, nullable=true)
      */
-    private mixed $cantBandejasEntregadas;
+    private $precioUnitario;
 
-    /**
-     * @ORM\Column(name="cantidad_bandejas_pendientes", type="string", length=50, nullable=false)
-     */
-    private mixed $cantBandejasPendientes;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Mesada::class)
-     * @ORM\JoinColumn(name="id_mesada_uno", referencedColumnName="id", nullable=false)
-     */
-    private $mesadaUno;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Mesada::class)
-     * @ORM\JoinColumn(name="id_mesada_dos", referencedColumnName="id", nullable=true)
-     */
-    private $mesadaDos;
-
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param mixed $id
-     */
-    public function setId($id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
 
-    public function getPedidoProducto(): mixed
+    public function getEntrega(): mixed
+    {
+        return $this->entrega;
+    }
+
+    public function setEntrega(mixed $entrega): void
+    {
+        $this->entrega = $entrega;
+    }
+
+    public function getCantidadBandejas()
+    {
+        return $this->cantidadBandejas;
+    }
+
+    public function setCantidadBandejas(mixed $cantidadBandejas): void
+    {
+        $this->cantidadBandejas = $cantidadBandejas;
+    }
+
+    public function getPedidoProducto()
     {
         return $this->pedidoProducto;
     }
@@ -83,66 +88,24 @@ class EntregaProducto {
         $this->pedidoProducto = $pedidoProducto;
     }
 
-    public function getRemito(): mixed
-    {
-        return $this->remito;
-    }
-
-    public function setRemito(mixed $remito): void
-    {
-        $this->remito = $remito;
-    }
-
-    public function getCantBandejasEntregadas(): mixed
-    {
-        return $this->cantBandejasEntregadas;
-    }
-
-    public function setCantBandejasEntregadas(mixed $cantBandejasEntregadas): void
-    {
-        $this->cantBandejasEntregadas = $cantBandejasEntregadas;
-    }
-
-    public function getCantBandejasPendientes(): mixed
-    {
-        return $this->cantBandejasPendientes;
-    }
-
-    public function setCantBandejasPendientes(mixed $cantBandejasPendientes): void
-    {
-        $this->cantBandejasPendientes = $cantBandejasPendientes;
-    }
-
     /**
      * @return mixed
      */
-    public function getMesadaUno()
+    public function getPrecioUnitario()
     {
-        return $this->mesadaUno;
+        return $this->precioUnitario;
     }
 
     /**
-     * @param mixed $mesadaUno
+     * @param mixed $precioUnitario
      */
-    public function setMesadaUno($mesadaUno): void
+    public function setPrecioUnitario($precioUnitario): void
     {
-        $this->mesadaUno = $mesadaUno;
+        $this->precioUnitario = $precioUnitario;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getMesadaDos()
-    {
-        return $this->mesadaDos;
-    }
-
-    /**
-     * @param mixed $mesadaDos
-     */
-    public function setMesadaDos($mesadaDos): void
-    {
-        $this->mesadaDos = $mesadaDos;
+    public function getPrecioSubTotal(){
+        return $this->precioUnitario * $this->cantidadBandejas;
     }
 
 }

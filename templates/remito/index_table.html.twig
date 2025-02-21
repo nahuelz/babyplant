@@ -10,14 +10,21 @@
         "{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}",
         "{{ entity.cliente|default('-') }}",
         {
-        "nombreProductoCompleto" : "{{ entity.nombreProductoCompleto|default('default') }}",
-        "nombreProducto" : "{{ entity.nombreProducto|default('default') }}"
+        "nombreProductoCompleto": "{{ entity.nombreProductoCompleto|default('default') }}",
+        "nombreProducto": "{{ entity.nombreProducto|default('default') }}"
+        },
+        {
+        "estado" : "{{ entity.estado|default('Sin estado') }}",
+        "colorEstado" : "{{ entity.colorEstado|default('default') }}"
         },
         "{{ entity.cantidadBandejas|default('-') }}",
         "{{ entity.precioUnitario|money_format|default('-') }}",
         "{{ entity.precioSubTotal|money_format|default('-') }}",
         {
-        "print_pdf" : " {{ path( "imprimir_remito", { "id": entity.idRemito }) }}"
+        "situacion_cliente": "{{ path( "situacioncliente_show", { "id": entity.idCliente }) }}",
+        "show": "{{ path('remito_show',{id: entity.idRemito}) }}",
+        "historico_estados": "{{ path('remito_historico_estado',{id: entity.idRemito}) }}",
+        "print_pdf": "{{ path( "imprimir_remito", { "id": entity.idRemito }) }}"
         }
         ]{{ (loop.last ? '' : ',') }}
     {% endfor %}

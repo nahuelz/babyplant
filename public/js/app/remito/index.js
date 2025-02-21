@@ -5,7 +5,7 @@ var $table = $('#table-remito');
 
 $(document).ready(function () {
     initTable();
-
+    initVerHistoricoEstadoRemitoHandler();
 });
 /**
  *
@@ -141,6 +141,18 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
+            name: 'estado',
+            width: '90',
+            className: 'nowrap text-center align-middle',
+            render: function (data, type, full, meta) {
+                if (type === 'display') {
+                    return '<span class="label label-inline ' + data.colorEstado + ' font-weight-bold p-4" style="width: 120px">' + data.estado + '</span>';
+                }
+                return data.estado;
+            }
+        },
+        {
+            targets: index++,
             name: 'cantidadBandejas',
             className: 'dt-center',
             width: '30px',
@@ -183,10 +195,67 @@ function dataTablesActionFormatter(data, type, full, meta) {
     if (jQuery.isEmptyObject(data)) {
         actions = '';
     } else {
-        actions = ' <a class="btn btn-light-primary btn-icon btn-sm" target="_blank" title="Ver PDF" href="' + data.print_pdf + '">\
-                        <i class="la la-file-pdf icon-2x" style="color: orangered"></i> \
-                    </a>';
+        actions +=
+            (data.situacion_cliente !== undefined ? '<a class="dropdown-item" href="' + data.situacion_cliente + '" target="_blank"><i class="la la-user" style="margin-right: 5px;"></i> Situacion Cliente</a>' : '')
+            +
+            (data.show !== undefined ? '<a class="dropdown-item" href="' + data.show + '" target="_blank"><i class="la la-search" style="margin-right: 5px;"></i> Ver Remito</a>' : '')
+            +
+            (data.historico_estados !== undefined ? '<a class="dropdown-item link-ver-historico-remito" href="#" data-href="' + data.historico_estados + '"><i class="la la-file-alt" style="margin-right: 5px;" data-original-title="Hist&oacute;rico de estados"></i>Hist&oacute;rico de estados</a>' : '')
+            +
+            (data.print_pdf !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf + '" target="_blank"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Remito</a>' : '')
+            +
+            (data.delete !== undefined ? '<a class="dropdown-item accion-borrar" href="' + data.delete + '"><i class="la la-remove" style="margin-right: 5px;"></i> Borrar</a>' : '')
+        ;
+
+        actions = ' <div class="dropdown dropdown-inline">\
+                        <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\
+                            <i class="ki ki-bold-more-hor"></i>\
+                        </button>\
+                        <div class="dropdown-menu">' + actions + '</div>\
+                    </div>';
     }
 
     return actions;
+}
+
+/**
+ *
+ * @returns {undefined}
+ */
+function initVerHistoricoEstadoRemitoHandler() {
+
+    $(document).off('click', '.link-ver-historico-remito').on('click', '.link-ver-historico-remito', function (e) {
+
+        e.preventDefault();
+
+        var idAmenaza = $(this).data('id');
+
+        var actionUrl = $(this).data('href');
+
+        $.ajax({
+            type: 'POST',
+            url: actionUrl,
+            data: {
+                id: idAmenaza
+            }
+        }).done(function (form) {
+
+            showDialog({
+                titulo: '<i class="fa fa-list-ul margin-right-10"></i> Hist&oacute;rico de estados',
+                contenido: form,
+                color: 'yellow',
+                labelCancel: 'Cerrar',
+                labelSuccess: 'Cerrar',
+                closeButton: true,
+                callbackCancel: function () {
+                    return;
+                },
+                callbackSuccess: function () {
+                    return;
+                }
+            });
+            $('.bs-popover-top').hide();
+            $('.btn-submit').hide();
+        });
+    });
 }

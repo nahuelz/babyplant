@@ -1,0 +1,173 @@
+<?php
+
+namespace App\Entity;
+
+use App\Entity\Traits\Auditoria;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+/**
+ * Grupo
+ *
+ * @ORM\Table(name="entrega")
+ * @ORM\Entity
+ * @Gedmo\SoftDeleteable(fieldName="fechaBaja")
+ */
+class Entrega {
+
+    use Auditoria;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    protected $id;
+
+    /**
+     * @ORM\OneToMany(targetEntity=EntregaProducto::class, mappedBy="entrega", cascade={"all"})
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $entregasProductos;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Usuario::class, inversedBy="entregas")
+     * @ORM\JoinColumn(name="id_cliente", referencedColumnName="id")
+     */
+    private $cliente;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Remito::class, mappedBy="entrega",cascade={"persist"}).)
+     */
+    private $remito;
+
+    /**
+     * @ORM\OneToMany(targetEntity=EstadoEntregaHistorico::class, mappedBy="entrega", cascade={"all"})
+     * @ORM\OrderBy({"fecha" = "DESC", "id" = "DESC"})
+     */
+    private $historicoEstados;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=EstadoEntrega::class)
+     * @ORM\JoinColumn(name="id_estado", referencedColumnName="id", nullable=true)
+     */
+    private mixed $estado;
+
+    /**
+     * @param $historicoEstados
+     */
+    public function __construct()
+    {
+        $this->entregasProductos = new ArrayCollection();
+        $this->historicoEstados = new ArrayCollection();
+    }
+
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCliente()
+    {
+        return $this->cliente;
+    }
+
+    /**
+     * @param mixed $cliente
+     */
+    public function setCliente($cliente): void
+    {
+        $this->cliente = $cliente;
+    }
+
+    public function getRemito(): mixed
+    {
+        return $this->remito;
+    }
+
+    public function setRemito(mixed $remito): void
+    {
+        $this->remito = $remito;
+        $remito->setEntrega($this);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEntregasProductos()
+    {
+        return $this->entregasProductos;
+    }
+
+    /**
+     * @param mixed $entregasProductos
+     */
+    public function setEntregasProductos($entregasProductos): void
+    {
+        $this->entregasProductos = $entregasProductos;
+    }
+
+    public function getCodigo(){
+        return str_pad($this->id, 6, "0", STR_PAD_LEFT);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHistoricoEstados()
+    {
+        return $this->historicoEstados;
+    }
+
+    /**
+     * @param mixed $historicoEstados
+     */
+    public function setHistoricoEstados($historicoEstados): void
+    {
+        $this->historicoEstados = $historicoEstados;
+    }
+
+    public function getEstado(): mixed
+    {
+        return $this->estado;
+    }
+
+    public function setEstado(mixed $estado): void
+    {
+        $this->estado = $estado;
+    }
+
+    public function addHistoricoEstado(EstadoEntregaHistorico $historicoEstado): self {
+        if (!$this->historicoEstados->contains($historicoEstado)) {
+            $this->historicoEstados[] = $historicoEstado;
+            $historicoEstado->setEntrega($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHistoricoEstado(EstadoEntregaHistorico $historicoEstado): self {
+        if ($this->historicoEstados->removeElement($historicoEstado)) {
+            // set the owning side to null (unless already changed)
+            if ($historicoEstado->getEntrega() === $this) {
+                $historicoEstado->setEntrega(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+}

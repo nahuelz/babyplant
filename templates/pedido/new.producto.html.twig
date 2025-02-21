@@ -18,7 +18,7 @@
 </div>
 <div class="row">
     {{ macro_form._new_field(form.pedidoProducto.tipoOrigenSemilla, 'col-md-3') }}
-    {{ macro_form._new_field(form.pedidoProducto.cantBandejasPedidas, 'col-md-3') }}
+    {{ macro_form._new_field(form.pedidoProducto.cantidadBandejasPedidas, 'col-md-3') }}
     {{ macro_form._new_field(form.pedidoProducto.tipoBandeja, 'col-md-3') }}
     {{ macro_form._new_field(form.pedidoProducto.cantSemillas, 'col-md-3') }}
 </div>
@@ -85,7 +85,7 @@
                         <input type="hidden" name="pedido[pedidosProductos][{{ loop.index0 }}][cantSemillas]" value="{{ pedidoProducto.cantSemillas }}">
                     </td>
                     <td class="hidden">
-                        <input type="hidden" name="pedido[pedidosProductos][{{ loop.index0 }}][cantBandejasPedidas]" value="{{ pedidoProducto.cantBandejasPedidas }}">
+                        <input type="hidden" name="pedido[pedidosProductos][{{ loop.index0 }}][cantidadBandejasPedidas]" value="{{ pedidoProducto.cantidadBandejasPedidas }}">
                     </td>
                     <td class="hidden">
                         <input type="hidden" name="pedido[pedidosProductos][{{ loop.index0 }}][origenSemilla]" value="{{ pedidoProducto.tipoOrigenSemilla }}">
@@ -105,7 +105,7 @@
                     <td class="v-middle text-center">{{ pedidoProducto.tipoVariedad }}</td>
                     <td class="v-middle text-center">{{ pedidoProducto.tipoBandeja }}</td>
                     <td class="v-middle text-center">{{ pedidoProducto.cantSemillas }}</td>
-                    <td class="v-middle text-center">{{ pedidoProducto.cantBandejasPedidas }}</td>
+                    <td class="v-middle text-center">{{ pedidoProducto.cantidadBandejasPedidas }}</td>
                     <td class="v-middle text-center">{{ pedidoProducto.tipoOrigenSemilla }}</td>
                     <td class="v-middle text-center">{{ pedidoProducto.fechaSiembraPedido|date('d/m/Y') }}</td>
                     <td class="v-middle text-center">{{ pedidoProducto.cantDiasProduccion }}</td>

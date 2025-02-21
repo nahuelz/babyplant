@@ -131,7 +131,7 @@ var KTCalendarListView = function() {
                             $('.yellow').attr('font-size', '17px');
                             initToggleOptions();
                             initDateInput();
-                            $('#bandejas').val($('#cantBandejasValue').val());
+                            $('#bandejas').val($('#cantidadBandejasValue').val());
                             if ($('.estado').text() == 'SEMBRADO'){
                                 $('.success').hide();
                             }

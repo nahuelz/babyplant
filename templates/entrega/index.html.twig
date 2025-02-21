@@ -1,0 +1,114 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+
+    {{ parent() }}
+
+    <link href="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css"/>
+
+    <style>
+        .label-light-secondary{
+            color:black !important;
+        }
+    </style>
+
+{% endblock %}
+
+{% block body %}
+    <!--begin::Card-->
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon2-layers text-primary"></i></span>
+                <h3 class="card-label">Entregas</h3>
+            </div>
+            <div class="card-toolbar">
+                {% if is_granted('ROLE_REMITO') %}
+                    <a href="{{ path('entrega_new') }}" class="btn btn-primary font-weight-bolder mr-2">
+                        <i class="la la-plus"></i>
+                        Nueva Entrega
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row padding-top-15">
+            <div class="col-md-6 actividad-reciente">
+                <div class="portlet light bordered portlet-nivel-1" style="padding: 5px 10px; margin-left: 30px;border-radius: 5px;background-color: #E1F0FF">
+                    <div class="col-md-12 padding-0">
+                        <label>Fecha</label>
+                        <div class="input-daterange input-group" id="kt_datepicker">
+                            <input type="text" class="form-control datepicker" id="reporte_filtro_fechaDesde" name="reporte_filtro[fechaDesde]"  placeholder="Desde" value="{{ "now"|date_modify("-90 day")|date('d/m/Y') }}" />
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <i class="la la-ellipsis-h"></i>
+                                </span>
+                            </div>
+                            <input type="text" class="form-control datepicker" id="reporte_filtro_fechaHasta" name="reporte_filtro[fechaHasta]" placeholder="Hasta" value="{{ "now"|date('d/m/Y') }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="reporte_filtro_cliente" class="control-label">Cliente</label>
+                            <select class="choice form-control datatable-input" id="reporte_filtro_cliente" name="reporte_filtro[cliente]">
+                                <option value="">TODOS</option>
+                                {% for cliente in clienteSelect %}
+                                    <option value="{{ cliente.id }}"> {{ cliente.nombre }} {{ cliente.razon_social }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-5 padding-top-25">
+                            <button class="btn btn-primary btn-primary--icon" id="kt_search">
+                                <span>
+                                    <i class="la la-search"></i>
+                                    <span>Buscar</span>
+                                </span>
+                            </button>
+                            <button class="btn btn-secondary btn-secondary--icon" id="kt_reset">
+                                <span>
+                                    <i class="la la-close"></i>
+                                    <span>Limpiar</span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body padding-top-0 padding-bottom-0">
+            <!--begin: Datatable-->
+            <table class="table table-bordered table-hover table-checkable" id="table-entrega">
+                <thead>
+                <tr>
+                    <th class="not-in-filter">ID</th>
+                    <th data-type="string" class="text-center">N° Entrega</th>
+                    {#  #}<th data-type="string" class="text-center">N° Producto</th>
+                    <th data-type="string" class="text-center">Orden Siembra</th>
+                    <th data-type="string" class="text-center">Fecha</th>
+                    <th data-type="string" class="text-center">Cliente</th>
+                    <th data-type="string" class="text-center">Producto</th>
+                    <th data-type="string" class="text-center">Estado</th>
+                    <th data-type="string" class="text-center">Cantidad Bandejas</th>
+                    <th data-type="search">Acciones</th>
+                </tr>
+                </thead>
+            </table>
+            <!--end: Datatable-->
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script type="text/javascript" src="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.js') }}"></script>
+
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}" ></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-datatables.js') }}" ></script>
+
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/entrega/index.js') }}" ></script>
+
+{% endblock %}
+

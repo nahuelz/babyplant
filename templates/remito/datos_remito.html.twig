@@ -1,0 +1,62 @@
+{% import 'app/_macro_show.html.twig' as macro_show %}
+<div class="card-body">
+    <div class="card card-detail">
+        <h4 class="card-header">Remito</h4>
+        <div class="card-body">
+            <div class="row">
+                {{ macro_show._show_detail('Remito', entity, 'col-md-3') }}
+                {{ macro_show._show_detail('Fecha', entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-', 'col-md-3') }}
+                {# macro_show._show_detail('Subtotal', entity.totalSinDescuento|money_format|default('-'), 'col-md-3') #}
+                {# macro_show._show_detail('Descuento', entity.montoDescuento|money_format|default('-'), 'col-md-2') #}
+                {{ macro_show._show_detail('Total', entity.totalConDescuento|money_format|default('-'), 'col-md-3') }}
+                {{ macro_show._show_detail('Estado', entity.estado|default('-'), 'col-md-3') }}
+            </div>
+            <div class="row mt-10">
+                <div class="col">
+                    <div class="d-flex">
+                        <div class="mt-3"><h4>Productos del Remito</h4></div>
+                    </div>
+                    <hr>
+                    <table class="table" style="text-align: center;">
+                        <thead>
+                            <tr>
+                                <th scope="col">N° Orden</th>
+                                <th scope="col">Producto</th>
+                                <th scope="col">Cantidad</th>
+                                <th scope="col">Precio U.</th>
+                                <th scope="col">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for remitoProducto in entity.remitosProductos %}
+                            <tr>
+                                <td>{{ remitoProducto.pedidoProducto.numeroOrdenCompleto }}</td>
+                                <td>{{ remitoProducto.pedidoProducto.productoBandeja }}</td>
+                                <td>{{ remitoProducto.cantidadBandejas }}</td>
+                                <td>{{ remitoProducto.precioUnitario|money_format }}</td>
+                                <td>{{ remitoProducto.precioSubTotal|money_format }}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <th colspan="4" style="text-align: right; font-size: 16px; padding-right: 5px;">
+                                {% if entity.tipoDescuento != null %}
+                                    Subtotal <br>
+                                    Descuento <br>
+                                {% endif %}
+                                TOTAL
+                            </th>
+                            <th colspan="1" style="text-align: left;font-size: 16px">
+                                {% if entity.tipoDescuento != null %}
+                                    {{ entity.totalSinDescuento|money_format }}<br>
+                                    {{ entity.tipoDescuentoString }} {{ entity.montoDescuento|money_format }} <br>
+                                {% endif %}
+                                {{ entity.totalConDescuento|money_format }}
+                            </th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

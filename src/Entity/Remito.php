@@ -30,23 +30,6 @@ class Remito {
     protected $id;
 
     /**
-     * @ORM\OneToMany(targetEntity=RemitoProducto::class, mappedBy="remito", cascade={"all"})
-     * @ORM\OrderBy({"id" = "DESC"})
-     */
-    private $remitosProductos;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Usuario::class, inversedBy="remitos")
-     * @ORM\JoinColumn(name="id_cliente", referencedColumnName="id")
-     */
-    private $cliente;
-
-    /**
-     * @ORM\Column(name="fecha_remito", type="datetime", nullable=true)
-     */
-    private $fechaRemito;
-
-    /**
      * @ORM\ManyToOne(targetEntity=TipoDescuento::class)
      * @ORM\JoinColumn(name="id_tipo_descuento", referencedColumnName="id", nullable=true)
      */
@@ -65,9 +48,14 @@ class Remito {
 
     /**
      * @ORM\ManyToOne(targetEntity=EstadoRemito::class)
-     * @ORM\JoinColumn(name="id_estado_remito", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="id_estado_remito", referencedColumnName="id", nullable=true)
      */
     private mixed $estado;
+
+    /**
+     * @ORM\OneToMany(targetEntity=RemitoProducto::class, mappedBy="remito", cascade={"all"})
+     */
+    private $remitosProductos;
 
 
     /**
@@ -75,6 +63,18 @@ class Remito {
      * @ORM\OrderBy({"id" = "DESC"})
      */
     private $pagos;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Entrega::class, inversedBy="remito", cascade={"persist"})
+     * @ORM\JoinColumn(name="id_entrega", referencedColumnName="id", nullable=true)
+     */
+    private $entrega;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Usuario::class, inversedBy="remitos")
+     * @ORM\JoinColumn(name="id_cliente", referencedColumnName="id")
+     */
+    private $cliente;
 
     public function __construct()
     {
@@ -112,39 +112,6 @@ class Remito {
     /**
      * @return mixed
      */
-    public function getRemitosProductos()
-    {
-        return $this->remitosProductos;
-    }
-
-    /**
-     * @param mixed $remitosProductos
-     */
-    public function setRemitosProductos($remitosProductos): void
-    {
-        $this->remitosProductos = $remitosProductos;
-
-        foreach ($remitosProductos as $remitoProducto){
-            $remitoProducto->setRemito($this);
-        }
-    }
-
-    /**
-     * @return mixed
-     */
-    public function addRemitosProductos($remitoProducto)
-    {
-        if (!$this->remitosProductos->contains($remitoProducto)) {
-            $this->remitosProductos[] = $remitoProducto;
-            $remitoProducto->setRemito($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getCliente()
     {
         return $this->cliente;
@@ -158,22 +125,11 @@ class Remito {
         $this->cliente = $cliente;
     }
 
-    public function removeRemitosProducto(RemitoProducto $remitosProducto): static
-    {
-        if ($this->remitosProductos->removeElement($remitosProducto)) {
-            // set the owning side to null (unless already changed)
-            if ($remitosProducto->getRemito() === $this) {
-                $remitosProducto->setRemito(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getTotalSinDescuento(){
         $total = 0.00;
-        foreach ($this->remitosProductos as $remitoProducto){
-            $total += $remitoProducto->getPrecioSubTotal();
+        $entrega = $this->getEntrega();
+        foreach ($entrega->getEntregasProductos() as $entregaProducto){
+            $total += $entregaProducto->getPrecioSubTotal();
         }
         return ($total);
     }
@@ -223,16 +179,6 @@ class Remito {
         }
 
         return $tipoDescuento;
-    }
-
-    public function getFechaRemito(): mixed
-    {
-        return $this->fechaRemito;
-    }
-
-    public function setFechaRemito(mixed $fechaRemito): void
-    {
-        $this->fechaRemito = $fechaRemito;
     }
 
     /**
@@ -347,4 +293,32 @@ class Remito {
         }
         return $pendiente;
     }
+
+    public function getRemitosProductos(): ArrayCollection
+    {
+        return $this->remitosProductos;
+    }
+
+    public function setRemitosProductos(ArrayCollection $remitosProductos): void
+    {
+        $this->remitosProductos = $remitosProductos;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEntrega()
+    {
+        return $this->entrega;
+    }
+
+    /**
+     * @param mixed $entrega
+     */
+    public function setEntrega($entrega): void
+    {
+        $this->entrega = $entrega;
+    }
+
+
 }

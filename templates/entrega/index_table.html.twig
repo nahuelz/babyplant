@@ -1,0 +1,34 @@
+{% autoescape false %}
+    {
+    "data": [
+    {% for entity in entities %}
+        [
+        "{{ entity.idEntrega }}",
+        "{{ entity.idEntrega }}",
+        "{{ entity.idPedidoProducto }}",
+        "{{ entity.ordenSiembra }}",
+        "{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}",
+        "{{ entity.cliente|default('-') }}",
+        {
+        "nombreProductoCompleto": "{{ entity.nombreProductoCompleto|default('default') }}",
+        "nombreProducto": "{{ entity.nombreProducto|default('default') }}"
+        },
+        {
+        "estado" : "{{ entity.estado|default('Sin estado') }}",
+        "colorEstado" : "{{ entity.colorEstado|default('default') }}"
+        },
+        "{{ entity.cantidadBandejas|default('-') }}",
+        {
+        {% if entity.idEstado == 1 %} {# 1 = PENDIENTE DE REMITO #}
+            "generar_remito": "{{ path( "remito_new", { "id": entity.idEntrega }) }}",
+        {% endif %}
+        "situacion_cliente": "{{ path( "situacioncliente_show", { "id": entity.idCliente }) }}",
+        "show": "{{ path('entrega_show',{id: entity.idEntrega}) }}",
+        "historico_estados": "{{ path('entrega_historico_estado',{id: entity.idEntrega}) }}",
+        "print_pdf": "{{ path( "imprimir_entrega", { "id": entity.idEntrega }) }}"
+        }
+        ]{{ (loop.last ? '' : ',') }}
+    {% endfor %}
+    ]
+    }
+{% endautoescape %}

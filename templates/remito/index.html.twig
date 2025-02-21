@@ -24,7 +24,7 @@
             </div>
             <div class="card-toolbar">
                 {% if is_granted('ROLE_REMITO') %}
-                    <a href="{{ path('remito_new') }}" class="btn btn-primary font-weight-bolder mr-2">
+                    <a href="#" class="btn btn-primary font-weight-bolder mr-2">
                         <i class="la la-plus"></i>
                         Nuevo Remito
                     </a>
@@ -88,6 +88,7 @@
                     <th data-type="string" class="text-center">Fecha</th>
                     <th data-type="string" class="text-center">Cliente</th>
                     <th data-type="string" class="text-center">Producto</th>
+                    <th data-type="string" class="text-center">Estado</th>
                     <th data-type="string" class="text-center">Cantidad Bandejas</th>
                     <th data-type="string" class="text-center">Percio Unitario</th>
                     <th data-type="string" class="text-center">Percio Subtotal</th>

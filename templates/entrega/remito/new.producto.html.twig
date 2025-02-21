@@ -1,0 +1,69 @@
+{% import 'app/_macro_form.html.twig' as macro_form %}
+
+{% set tienePedidoProducto = entity.entregasProductos|length > 0 %}
+
+<div class="col-md-12 row row-entrega-producto margin-top-15" {{ tienePedidoProducto ? '' : 'style="display:none;"' }}>
+    <div class="col-md-12">
+        <div class="table-scrollable">
+            <table class="table table-striped table-bordered table-advance table-hover">
+                <thead>
+                <tr>
+                    <th class="text-center">PRODUCTO</th>
+                    <th class="text-center">CANTIDAD DE BANDEJAS A ENTREGAR</th>
+                    <th class="text-center">PRECIO UNITARIO</th>
+                    <th class="text-center">SUBTOTAL</th>
+                </tr>
+                </thead>
+                <tbody class="tbody-entrega-producto">
+
+                {% for entregaProducto in entity.entregasProductos %}
+                    <tr class="tr-entrega-producto">
+                        <td class="hidden">
+                            <input type="hidden" name="entrega[entregasProductos][{{ loop.index0 }}][pedidoProducto]" value="{{ entregaProducto.pedidoProducto.id }}">
+                        </td>
+                        <td class="hidden">
+                            <input type="hidden" name="entrega[entregasProductos][{{ loop.index0 }}][cantidadBandejas]" value="{{ entregaProducto.cantidadBandejas }}">
+                        </td>
+
+                        <td class="v-middle text-center">{{ entregaProducto.pedidoProducto }}</td>
+                        <td class="v-middle text-center cantidad-bandejas">{{ entregaProducto.cantidadBandejas }}</td>
+                        <td class="text-center v-middle">
+                            <input type="number" class="precio-unitario" name="entrega[entregasProductos][{{ loop.index0 }}][precioUnitario]" value="0">
+                        </td>
+                        <td class="text-center v-middle subtotal">
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot style="background-color: aliceblue;">
+                <tr>
+                    <td style="border:none;">
+                        <div class="d-flex flex-row">
+                            <h6 style="padding-top: 10px;">APLICAR DESCUENTO:</h6>
+                            <div class="col-md-5">
+                                <div class="form-group margin-0">
+                                    <div class="form_field">
+                                        {{ form_widget(form.remito.tipoDescuento) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group margin-0">
+                                    <div class="form_field">
+                                        {{ form_widget(form.remito.cantidadDescuento) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="border:none;"></td>
+                    <th style="float: right;font-weight: bold;font-size: 18px;border: none;">TOTAL</th>
+                    <td class="v-middle text-center total" style="font-weight: bold; font-size: 18px;border: none;"></td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+

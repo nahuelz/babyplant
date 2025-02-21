@@ -7,7 +7,7 @@ jQuery(document).ready(function () {
     initPedidoProductoHandler();
     initProductos();
     initCantSemillasHandler();
-    initCantBandejasHandler();
+    initCantidadBandejasHandler();
     initFechaEntregaHandler();
     initDiasProduccionHandler();
     $('.row-pedido-producto-empty').hide();
@@ -97,8 +97,8 @@ function setFechaEntrega() {
 
 }
 
-function initCantBandejasHandler(){
-    $('#pedido_pedidoProducto_cantBandejasPedidas').on('input',function(e){
+function initCantidadBandejasHandler(){
+    $('#pedido_pedidoProducto_cantidadBandejasPedidas').on('input',function(e){
         calcularSemillas();
     });
 }
@@ -111,10 +111,10 @@ function initCantSemillasHandler(){
 function calcularSemillas(){
     var tipoBandejaVal = $('#pedido_pedidoProducto_tipoBandeja').val();
     var tipoBandeja = $('#pedido_pedidoProducto_tipoBandeja :selected').text();
-    var cantBandejasPedidas = $('#pedido_pedidoProducto_cantBandejasPedidas').val();
+    var cantidadBandejasPedidas = $('#pedido_pedidoProducto_cantidadBandejasPedidas').val();
 
-    if ( tipoBandejaVal && cantBandejasPedidas){
-        $('#pedido_pedidoProducto_cantSemillas').val(tipoBandeja*cantBandejasPedidas);
+    if ( tipoBandejaVal && cantidadBandejasPedidas){
+        $('#pedido_pedidoProducto_cantSemillas').val(tipoBandeja*cantidadBandejasPedidas);
     }
 
 }
@@ -225,13 +225,13 @@ function initPedidoProductoHandler() {
         var tipoVariedad = tipoVariedadSelect.val();
         var tipoBandeja = tipoBandejaSelect.val();
         var cantSemillas = $('#pedido_pedidoProducto_cantSemillas').val();
-        var cantBandejasPedidas = $('#pedido_pedidoProducto_cantBandejasPedidas').val();
+        var cantidadBandejasPedidas = $('#pedido_pedidoProducto_cantidadBandejasPedidas').val();
         var origenSemilla = origenSemillaSelect.val();
         var fechaSiembraPedido = $('#pedido_pedidoProducto_fechaSiembraPedido').val();
         var cantDiasProduccion = $('#pedido_pedidoProducto_cantDiasProduccion').val();
         var fechaEntregaPedido = $('#pedido_pedidoProducto_fechaEntregaPedido').val();
 
-        if (tipoProducto === '' || tipoSubProducto === '' || tipoVariedad === '' || tipoBandeja === '' || cantSemillas === '' || cantBandejasPedidas === '' || origenSemilla === '' || fechaSiembraPedido === '' || cantDiasProduccion === '' || fechaEntregaPedido === '') {
+        if (tipoProducto === '' || tipoSubProducto === '' || tipoVariedad === '' || tipoBandeja === '' || cantSemillas === '' || cantidadBandejasPedidas === '' || origenSemilla === '' || fechaSiembraPedido === '' || cantDiasProduccion === '' || fechaEntregaPedido === '') {
             Swal.fire({
                 title: "Debe completar todos los datos del producto.",
                 icon: "warning"
@@ -254,7 +254,7 @@ function initPedidoProductoHandler() {
                             <td class="hidden"><input type="hidden" name="pedido[pedidosProductos][' + index + '][tipoVariedad]" value="' + tipoVariedad + '"></td>\n\
                             <td class="hidden"><input type="hidden" name="pedido[pedidosProductos][' + index + '][tipoBandeja]" value="' + tipoBandeja + '"></td>\n\
                             <td class="hidden"><input type="hidden" name="pedido[pedidosProductos][' + index + '][cantSemillas]" value="' + cantSemillas + '"></td>\n\
-                            <td class="hidden"><input type="hidden" name="pedido[pedidosProductos][' + index + '][cantBandejasPedidas]" value="' + cantBandejasPedidas + '"></td>\n\
+                            <td class="hidden"><input type="hidden" name="pedido[pedidosProductos][' + index + '][cantidadBandejasPedidas]" value="' + cantidadBandejasPedidas + '"></td>\n\
                             <td class="hidden"><input type="hidden" name="pedido[pedidosProductos][' + index + '][tipoOrigenSemilla]" value="' + origenSemilla + '"></td>\n\
                             <td class="hidden"><input type="hidden" name="pedido[pedidosProductos][' + index + '][fechaSiembraPedido]" value="' + fechaSiembraPedido + '"></td>\n\
                             <td class="hidden"><input type="hidden" name="pedido[pedidosProductos][' + index + '][cantDiasProduccion]" value="' + cantDiasProduccion + '"></td>\n\
@@ -265,7 +265,7 @@ function initPedidoProductoHandler() {
                             <td class="text-center v-middle">' + tipoVariedadSelect.find('option:selected').text()  + '</td>\n\
                             <td class="text-center v-middle">' + tipoBandejaSelect.find('option:selected').text()  + '</td>\n\
                             <td class="text-center v-middle">' + cantSemillas + '</td>\n\
-                            <td class="text-center v-middle">' + cantBandejasPedidas + '</td>\n\
+                            <td class="text-center v-middle">' + cantidadBandejasPedidas + '</td>\n\
                             <td class="text-center v-middle">' + origenSemillaSelect.find('option:selected').text()  + '</td>\n\
                             <td class="text-center v-middle">' + fechaSiembraPedido + '</td>\n\
                             <td class="text-center v-middle">' + cantDiasProduccion + '</td>\n\
@@ -305,7 +305,7 @@ function clearPedidoProductoForm() {
     $('#pedido_pedidoProducto_tipoVariedad').val('').select2();
     $('#pedido_pedidoProducto_tipoBandeja').val('').select2();
     $('#pedido_pedidoProducto_cantSemillas').val('');
-    $('#pedido_pedidoProducto_cantBandejasPedidas').val('');
+    $('#pedido_pedidoProducto_cantidadBandejasPedidas').val('');
     $('#pedido_pedidoProducto_origenSemilla').val('').select2();
     $('#pedido_pedidoProducto_fechaSiembraPedido').val('');
     $('#pedido_pedidoProducto_cantDiasProduccion').val('');

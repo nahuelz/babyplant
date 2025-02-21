@@ -113,7 +113,7 @@ class PedidoProductoType extends AbstractType {
                         'readonly' => 'true',
                         'tabindex' => '5'))
             )
-            ->add('cantBandejasPedidas', TextType::class, array(
+            ->add('cantidadBandejasPedidas', TextType::class, array(
                     'attr' => array(
                         'placeholder' => 'Escriba la cantidad de bandejas',
                         'class' => 'form-control'))

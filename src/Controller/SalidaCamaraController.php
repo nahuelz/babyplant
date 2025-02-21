@@ -174,7 +174,7 @@ class SalidaCamaraController extends BaseController
         $estadoMesadaHistorico->setMesada($mesada);
         $estadoMesadaHistorico->setFecha(new DateTime());
         $estadoMesadaHistorico->setEstado($estadoMesada);
-        $estadoMesadaHistorico->setCantBandejas($mesada->getCantidadBandejas());
+        $estadoMesadaHistorico->setCantidadBandejas($mesada->getCantidadBandejas());
         $estadoMesadaHistorico->setMotivo('Producto enviado a invernaculo.');
         $mesada->addHistoricoEstado($estadoMesadaHistorico);
 

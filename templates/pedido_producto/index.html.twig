@@ -9,9 +9,9 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>CantBandejasPedidas</th>
-                <th>CantBandejasReales</th>
-                <th>CantBandejasEntregadas</th>
+                <th>CantidadBandejasPedidas</th>
+                <th>CantidadBandejasReales</th>
+                <th>CantidadBandejasEntregadas</th>
                 <th>CantSemillas</th>
                 <th>FechaPedido</th>
                 <th>FechaSiembraPedido</th>
@@ -39,9 +39,9 @@
         {% for pedido_producto in pedido_productos %}
             <tr>
                 <td>{{ pedido_producto.id }}</td>
-                <td>{{ pedido_producto.cantBandejasPedidas }}</td>
-                <td>{{ pedido_producto.cantBandejasReales }}</td>
-                <td>{{ pedido_producto.cantBandejasEntregadas }}</td>
+                <td>{{ pedido_producto.cantidadBandejasPedidas }}</td>
+                <td>{{ pedido_producto.cantidadBandejasReales }}</td>
+                <td>{{ pedido_producto.cantidadBandejasEntregadas }}</td>
                 <td>{{ pedido_producto.cantSemillas }}</td>
                 <td>{{ pedido_producto.fechaPedido ? pedido_producto.fechaPedido|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ pedido_producto.fechaSiembraPedido ? pedido_producto.fechaSiembraPedido|date('Y-m-d H:i:s') : '' }}</td>

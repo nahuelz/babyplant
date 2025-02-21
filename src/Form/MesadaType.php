@@ -41,7 +41,7 @@ class MesadaType extends AbstractType {
                     'mapped' => true,
                     'label' => 'Cantidad Bandejas',
                     'attr' => array(
-                        'class' => 'form-control cantBandejas',
+                        'class' => 'form-control cantidadBandejas',
                         'min' => 1,
                         'tabindex' => '5'))
             )

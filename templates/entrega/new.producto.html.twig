@@ -1,0 +1,67 @@
+{% import 'app/_macro_form.html.twig' as macro_form %}
+
+{% set tienePedidoProducto = entity.entregasProductos|length > 0 %}
+
+<div class="row row-entrega-producto-empty margin-top-20">
+    <div class="col-md-12">
+        <div class="alert alert-danger alert-form-error" style="background-color: #fbe1e3;color: brown;">
+            Debe ingresar al menos un producto.
+        </div>
+    </div>
+</div>
+
+<div class="row-form-entrega-producto">
+    <div class="row">
+        {{ macro_form._new_field(form.entregaProducto.pedidoProducto, 'col-md-12') }}
+        {{ macro_form._new_field(form.entregaProducto.cantidadBandejas, 'col-md-4') }}
+        <div class="col-md-3 pull-left">
+            <div class="form-group">
+                <button class="btn btn-light-primary font-weight-bold margin-top-25 link-save-entrega-producto">
+                    Agregar Producto
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="col-md-12 row row-entrega-producto margin-top-15" {{ tienePedidoProducto ? '' : 'style="display:none;"' }}>
+    <div class="col-md-12">
+        <div class="table-scrollable">
+            <table class="table table-striped table-bordered table-advance table-hover">
+                <thead>
+                <tr>
+                    <th class="text-center">PRODUCTO</th>
+                    <th class="text-center">CANTIDAD DE BANDEJAS A ENTREGAR</th>
+                    <th class="nowrap text-center"></th>
+                </tr>
+                </thead>
+                <tbody class="tbody-entrega-producto">
+
+                {% for entregaProducto in entity.entregasProductos %}
+                    <tr class="tr-entrega-producto">
+                        <td class="hidden">
+                            <input type="hidden" name="entrega[entregasProductos][{{ loop.index0 }}][pedidoProducto]" value="{{ entregaProducto.pedidoProducto }}">
+                        </td>
+                        <td class="hidden">
+                            <input type="hidden" name="entrega[entregasProductos][{{ loop.index0 }}][cantidadBandejas]" value="{{ entregaProducto.cantidadBandejas }}">
+                        </td>
+
+                        <td class="v-middle text-center">{{ entregaProducto.pedidoProducto }}</td>
+                        <td class="v-middle text-center">{{ entregaProducto.cantidadBandejas }}</td>
+
+                        <td class="text-center v-middle">
+                            <a href="#" class="btn btn-sm delete-link-inline link-delete-entrega-producto entrega-producto-borrar tooltips"
+                               data-placement="top" data-original-title="Eliminar">
+                                <i class="fa fa-trash text-danger"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

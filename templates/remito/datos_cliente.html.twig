@@ -1,0 +1,20 @@
+{% import 'app/_macro_show.html.twig' as macro_show %}
+<div class="card-body">
+    <div class="card card-detail">
+        <h4 class="card-header">Datos Cliente</h4>
+        <div class="card-body">
+            <div class="row">
+                {{ macro_show._show_detail('Apellido', entity.cliente.apellido|default('-'), 'col-md-4') }}
+                {{ macro_show._show_detail('Nombre', entity.cliente.nombre|default('-'), 'col-md-4') }}
+                {{ macro_show._show_detail('CUIT', entity.cliente.cuit|default('-'), 'col-md-4') }}
+                {{ macro_show._show_detail('Email', entity.cliente.email|default('-'), 'col-md-4') }}
+                {{ macro_show._show_detail('Celular', entity.cliente.celular|default('-'), 'col-md-4') }}
+                {{ macro_show._show_detail('Domicilio', entity.cliente.domicilio|default('-'), 'col-md-4') }}
+            </div>
+            <div class="row">
+                {{ macro_show._show_detail('Razon Social', entity.cliente.razonSocial.razonSocial|default('-'), 'col-md-2') }}
+                {{ macro_show._show_detail('CUIT Razon Social', entity.cliente.razonSocial.cuit|default('-'), 'col-md-2') }}
+            </div>
+        </div>
+    </div>
+</div>

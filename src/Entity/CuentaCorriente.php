@@ -32,8 +32,7 @@ class CuentaCorriente {
     private $movimientos;
 
     /**
-     * @ORM\OneToOne(targetEntity=Usuario::class, inversedBy="cuentaCorriente")
-     * @ORM\JoinColumn(name="id_cliente", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity=Usuario::class, mappedBy="cuentaCorriente")
      */
     private $cliente;
 

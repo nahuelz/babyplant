@@ -130,8 +130,8 @@ class Usuario implements UserInterface {
     private $tieneRazonSocial;
 
     /**
-     * @ORM\OneToOne(targetEntity=CuentaCorriente::class, mappedBy="cliente", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_cuenta_corriente", referencedColumnName="id", nullable=true)
+     * @ORM\OneToOne(targetEntity=CuentaCorriente::class, inversedBy="cliente")
+     * @ORM\JoinColumn(name="id_cuenta_corriente", referencedColumnName="id")
      */
     private $cuentaCorriente;
 
@@ -147,12 +147,19 @@ class Usuario implements UserInterface {
      */
     private $remitos;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Entrega::class, mappedBy="cliente", cascade={"all"})
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $entregas;
+
     public function __construct() {
         $this->grupos = new \Doctrine\Common\Collections\ArrayCollection();
         $this->habilitado = true;
         $this->tieneRazonSocial = false;
         $this->pedidos = new \Doctrine\Common\Collections\ArrayCollection();
         $this->remitos = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->entregas = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
 
@@ -536,6 +543,17 @@ class Usuario implements UserInterface {
         }
         return $pendiente;
     }
+
+    public function getEntregas(): ArrayCollection
+    {
+        return $this->entregas;
+    }
+
+    public function setEntregas(ArrayCollection $entregas): void
+    {
+        $this->entregas = $entregas;
+    }
+
 
 
 

@@ -41,7 +41,7 @@ class RemitoProductoType extends AbstractType {
                 'placeholder' => '-- Elija el pedido producto --',
                 'auto_initialize' => false)
             )
-            ->add('cantBandejas', IntegerType::class, array(
+            ->add('cantidadBandejas', IntegerType::class, array(
                 'required' => true,
                 'label' => 'CANTIDAD DE BANDEJAS A ENTREGAR',
                 'attr' => array(

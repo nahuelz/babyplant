@@ -48,20 +48,6 @@ class RemitoType extends AbstractType {
                         ->orderBy('x.apellido', 'ASC');
                 },
             ))
-            ->add('remitoProducto', RemitoProductoType::class, array(
-                'required' => false,
-                'mapped' => false,
-                'data_class' => 'App\Entity\RemitoProducto',
-            ))
-            ->add('remitosProductos', CollectionType::class, array(
-                    'entry_type' => RemitoProductoType::class,
-                    'allow_delete' => true,
-                    'allow_add' => true,
-                    'label' => '',
-                    'prototype_name' => '__remitos_productos__',
-                    'label_attr' => array('class' => 'hidden'),
-                    'attr' => array('class' => 'hidden'))
-            )
             ->add(
                 'tipoDescuento',
                 EntityType::class,

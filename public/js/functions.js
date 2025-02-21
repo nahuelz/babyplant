@@ -238,7 +238,6 @@ function initChainedSelect($sourceSelect, $targetSelect, ajaxURL, preserve_value
                     url: ajaxURL,
                     data: data,
                     success: function (data) {
-
                         if (data.length === 0) {
 
                             $targetSelect.attr('readonly', true);

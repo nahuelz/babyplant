@@ -53,11 +53,11 @@ class EstadoMesadaHistorico {
     /**
      * @ORM\Column(name="cantidad_bandejas", type="integer", nullable=false)
      */
-    private mixed $cantBandejas;
+    private mixed $cantidadBandejas;
 
     public function __construct()
     {
-        $this->cantBandejas = 0;
+        $this->cantidadBandejas = 0;
     }
 
     public function getId(): ?int {
@@ -105,14 +105,14 @@ class EstadoMesadaHistorico {
         return $this;
     }
 
-    public function getCantBandejas(): mixed
+    public function getCantidadBandejas(): mixed
     {
-        return $this->cantBandejas;
+        return $this->cantidadBandejas;
     }
 
-    public function setCantBandejas(mixed $cantBandejas): void
+    public function setCantidadBandejas(mixed $cantidadBandejas): void
     {
-        $this->cantBandejas = $cantBandejas;
+        $this->cantidadBandejas = $cantidadBandejas;
     }
 
 

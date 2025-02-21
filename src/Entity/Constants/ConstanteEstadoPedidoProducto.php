@@ -34,29 +34,18 @@ class ConstanteEstadoPedidoProducto {
     const EN_INVERNACULO = 5;
 
     /**
-     * ENTREGADO PSR
+     * ENTREGADO P
      */
-    const ENTREGADO_PSR = 6;
-
-    /**
-     * ENTREGADO SR
-    */
-    const ENTREGADO_SR = 7;
-
-
-    /**
-     * ENTREGADO_P
-     */
-    const ENTREGADO_P = 8;
+    const ENTREGADO_PARCIAL = 6;
 
     /**
      * ENTREGADO
-     */
-    const ENTREGADO = 9;
+    */
+    const ENTREGADO = 7;
 
     /**
      * CANCELADO
      */
-    const CANCELADO = 10;
+    const CANCELADO = 8;
 
 }
