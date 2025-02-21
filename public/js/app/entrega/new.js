@@ -10,7 +10,14 @@ jQuery(document).ready(function () {
     initBaseSubmitButton();
     $('.submit-button').html('Guardar');
     initPreValidation();
+    initClienteEntregaHandler();
 });
+
+function initClienteEntregaHandler() {
+    $('#entrega_cliente').on('change', function(){
+        $('#entrega_clienteEntrega').val('1369').select2();
+    })
+}
 /**
  *
  * @returns {undefined}

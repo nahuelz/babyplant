@@ -148,7 +148,7 @@ class Usuario implements UserInterface {
     private $remitos;
 
     /**
-     * @ORM\OneToMany(targetEntity=Entrega::class, mappedBy="cliente", cascade={"all"})
+     * @ORM\OneToMany(targetEntity=Entrega::class, mappedBy="clienteEntrega", cascade={"all"})
      * @ORM\OrderBy({"id" = "DESC"})
      */
     private $entregas;
@@ -192,7 +192,7 @@ class Usuario implements UserInterface {
     }
 
     public function setNombre(string $nombre): self {
-        $this->nombre = $nombre;
+        $this->nombre = strtoupper($nombre);
 
         return $this;
     }
@@ -202,7 +202,7 @@ class Usuario implements UserInterface {
     }
 
     public function setApellido(?string $apellido): self {
-        $this->apellido = $apellido;
+        $this->apellido = strtoupper($apellido);
 
         return $this;
     }
@@ -211,7 +211,7 @@ class Usuario implements UserInterface {
      * A visual identifier that represents this user.
      */
     public function setUsername($username): self {
-        $this->username = $username;
+        $this->username = strtoupper($username);
 
         return $this;
     }

@@ -77,6 +77,7 @@ class EntregaController extends BaseController {
         $rsm->addScalarResult('ordenSiembra', 'ordenSiembra');
         $rsm->addScalarResult('fechaCreacion', 'fechaCreacion');
         $rsm->addScalarResult('cliente', 'cliente');
+        $rsm->addScalarResult('clienteEntrega', 'clienteEntrega');
         $rsm->addScalarResult('idCliente', 'idCliente');
         $rsm->addScalarResult('nombreProductoCompleto', 'nombreProductoCompleto');
         $rsm->addScalarResult('nombreProducto', 'nombreProducto');

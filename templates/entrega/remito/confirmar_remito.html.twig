@@ -126,7 +126,7 @@
                             <p><strong>DIRECCION</strong></p>
                         </div>
                         <div class="col-md-6">
-                            <p>{{ entity.cliente.telefono|default('-') }}</p>
+                            <p>{{ entity.cliente.telefono|default('') }}{{ entity.cliente.celular|default('') }}</p>
                             <p>{{ entity.cliente.domicilio|default('-') }}</p>
                         </div>
                     </div>

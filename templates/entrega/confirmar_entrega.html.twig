@@ -115,8 +115,8 @@
                             <p><strong>CUIT</strong> </p>
                         </div>
                         <div class="col-md-6">
-                            <p>{{ entity.cliente.nombreCompleto|default('-') }}</p>
-                            <p>{{ entity.cliente.cuit|default('-') }}</p>
+                            <p>{{ entity.clienteEntrega.nombreCompleto|default('-') }}</p>
+                            <p>{{ entity.clienteEntrega.cuit|default('-') }}</p>
                         </div>
                     </div>
 
@@ -128,8 +128,8 @@
                             <p><strong>DIRECCION</strong></p>
                         </div>
                         <div class="col-md-6">
-                            <p>{{ entity.cliente.telefono|default('-') }}</p>
-                            <p>{{ entity.cliente.domicilio|default('-') }}</p>
+                            <p>{{ entity.clienteEntrega.telefono|default('') }} {{ entity.clienteEntrega.celular|default('') }}</p>
+                            <p>{{ entity.clienteEntrega.domicilio|default('-') }}</p>
                         </div>
                     </div>
                 </div>

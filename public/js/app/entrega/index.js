@@ -130,6 +130,12 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
+            name: 'clienteEntrega',
+            width: '250px',
+            className: 'dt-center'
+        },
+        {
+            targets: index++,
             name: 'producto',
             className: 'nowrap text-center margin-0 ',
             render: function (data, type, full, meta) {

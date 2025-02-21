@@ -34,10 +34,16 @@ class Entrega {
     private $entregasProductos;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Usuario::class, inversedBy="entregas")
+     * @ORM\ManyToOne(targetEntity=Usuario::class)
      * @ORM\JoinColumn(name="id_cliente", referencedColumnName="id")
      */
     private $cliente;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Usuario::class, inversedBy="entregas")
+     * @ORM\JoinColumn(name="id_cliente_entrega", referencedColumnName="id")
+     */
+    private $clienteEntrega;
 
     /**
      * @ORM\OneToOne(targetEntity=Remito::class, mappedBy="entrega",cascade={"persist"}).)
@@ -168,6 +174,24 @@ class Entrega {
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getClienteEntrega()
+    {
+        return $this->clienteEntrega;
+    }
+
+    /**
+     * @param mixed $clienteEntrega
+     */
+    public function setClienteEntrega($clienteEntrega): void
+    {
+        $this->clienteEntrega = $clienteEntrega;
+    }
+
+
 
 
 }

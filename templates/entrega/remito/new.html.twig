@@ -17,12 +17,13 @@
         <div class="card-header">
             <div class="card-title">
                 <span class="card-icon"><i class="flaticon-search text-primary"></i></span>
-                <h3 class="card-label"><strong>Nuevo Remito - {{ entity.cliente }}</strong></h3>
+                <h3 class="card-label"><strong>Nuevo Remito - {{ entity.clienteEntrega }}</strong></h3>
             </div>
         </div>
 
         {{ macro_form._new_field(form.remito.cliente, 'col-md-12 hidden') }}
         {{ macro_form._new_field(form.cliente, 'col-md-12 hidden') }}
+        {{ macro_form._new_field(form.clienteEntrega, 'col-md-12 hidden') }}
 
         <div class="card-body">
             <div class="row">

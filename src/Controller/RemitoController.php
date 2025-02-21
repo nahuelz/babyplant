@@ -129,47 +129,42 @@ class RemitoController extends BaseController {
      */
     public function createAction($id,Request $request) {
         $em = $this->doctrine->getManager();
-        $entity = $em->getRepository("App\Entity\Entrega")->find($id);
+        $entrega = $em->getRepository("App\Entity\Entrega")->find($id);
 
         $remito = new Remito();
-        $remito->setCliente($entity->getCliente());
-        $entity->setRemito($remito);
+        $remito->setCliente($entrega->getClienteEntrega());
+        $entrega->setRemito($remito);
 
-        $form = $this->baseInitCreateCreateForm(EntregaType::class, $entity);
-
-        $form->add('submit', SubmitType::class, array(
-                'label' => 'Agregar',
-                'attr' => array('class' => 'btn btn-light-primary font-weight-bold submit-button'))
-        );
+        $form = $this->baseInitCreateCreateForm(EntregaType::class, $entrega);
 
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             $remito = new Remito();
-            $remito->setCliente($entity->getCliente());
-            $entity->setRemito($remito);
+            $remito->setCliente($entrega->getClienteEntrega());
+            $entrega->setRemito($remito);
             $estadoRemito = $em->getRepository(EstadoRemito::class)->findOneByCodigoInterno(ConstanteEstadoRemito::PENDIENTE);
             $this->cambiarEstadoRemito($em, $remito, $estadoRemito);
             $estadoEntrega = $em->getRepository(EstadoEntrega::class)->findOneByCodigoInterno(ConstanteEstadoEntrega::CON_REMITO);
-            $this->cambiarEstadoEntrega($em, $entity, $estadoEntrega);
+            $this->cambiarEstadoEntrega($em, $entrega, $estadoEntrega);
             $em->persist($remito);
-            $em->persist($entity);
+            $em->persist($entrega);
             $em->flush();
 
-            $message = $this->getCreateMessage($entity, true);
+            $message = $this->getCreateMessage($entrega, true);
             $this->get('session')->getFlashBag()->add('success', $message);
-            return $this->getCreateRedirectResponse($request, $entity);
+            return $this->getCreateRedirectResponse($request, $entrega);
         } else {
             $request->attributes->set('form-error', true);
         }
 
         $parametros = array(
-            'entity' => $entity,
+            'entity' => $entrega,
             'form' => $form->createView(),
             'page_title' => 'Remito'
         );
 
-        return array_merge($parametros, $this->getExtraParametersNewAction($entity));
+        return array_merge($parametros, $this->getExtraParametersNewAction($entrega));
     }
 
     /**
@@ -246,11 +241,11 @@ class RemitoController extends BaseController {
 
     /**
      *
-     * @param type $em
+     * @param ObjectManager $em
      * @param Entrega $entrega
      * @param EstadoEntrega $estadoEntrega
      */
-    private function cambiarEstadoEntrega($em, Entrega $entrega, EstadoEntrega $estadoEntrega): void
+    private function cambiarEstadoEntrega(ObjectManager $em, Entrega $entrega, EstadoEntrega $estadoEntrega): void
     {
         $entrega->setEstado($estadoEntrega);
         $estadoEntregaHistorico = new EstadoEntregaHistorico();
@@ -338,7 +333,7 @@ class RemitoController extends BaseController {
      */
     protected function baseInitPreCreateForm($entity) {
         $remito = new Remito();
-        $remito->setCliente($entity->getCliente());
+        $remito->setCliente($entity->getClienteEntrega());
         $entity->setRemito($remito);
     }
 

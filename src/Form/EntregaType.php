@@ -44,6 +44,22 @@ class EntregaType extends AbstractType {
                         ->orderBy('x.apellido', 'ASC');
                 },
             ))
+            ->add('clienteEntrega', EntityType::class, array(
+                'class' => Usuario::class,
+                'required' => true,
+                'label' => 'CLIENTE A ENTREGAR',
+                'placeholder' => '-- Elija --',
+                'attr' => array(
+                    'class' => 'form-control choice',
+                    'data-placeholder' => '-- Elija --',
+                    'tabindex' => '5'
+                ),
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('x')
+                        ->where('x.tipoUsuario = 1')
+                        ->orderBy('x.apellido', 'ASC');
+                },
+            ))
             ->add('entregaProducto', EntregaProductoType::class, array(
                 'required' => false,
                 'mapped' => false,
