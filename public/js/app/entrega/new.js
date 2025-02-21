@@ -15,7 +15,7 @@ jQuery(document).ready(function () {
 
 function initClienteEntregaHandler() {
     $('#entrega_cliente').on('change', function(){
-        $('#entrega_clienteEntrega').val('1369').select2();
+        $('#entrega_clienteEntrega').val($(this).val()).select2();
     })
 }
 /**
