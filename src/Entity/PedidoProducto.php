@@ -182,12 +182,6 @@ class PedidoProducto {
     private mixed $mesadaDos;
 
     /**
-     * @ORM\OneToMany(targetEntity=RemitoProducto::class, mappedBy="pedidoProducto", cascade={"all"})
-     * @ORM\OrderBy({"id" = "DESC"})
-     */
-    private $remitosProductos;
-
-    /**
      * @ORM\OneToMany(targetEntity=EntregaProducto::class, mappedBy="pedidoProducto", cascade={"all"})
      * @ORM\OrderBy({"id" = "DESC"})
      */
@@ -690,22 +684,6 @@ class PedidoProducto {
     public function setFechaEntradaCamaraReal($fechaEntradaCamaraReal): void
     {
         $this->fechaEntradaCamaraReal = $fechaEntradaCamaraReal;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getRemitosProductos()
-    {
-        return $this->remitosProductos;
-    }
-
-    /**
-     * @param mixed $remitosProductos
-     */
-    public function setRemitosProductos($remitosProductos): void
-    {
-        $this->remitosProductos = $remitosProductos;
     }
 
     public function getCantidadBandejasEntregadas(): mixed

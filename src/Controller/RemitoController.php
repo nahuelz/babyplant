@@ -95,76 +95,21 @@ class RemitoController extends BaseController {
     }
 
     /**
-     * @Route("/new/{id}", name="remito_new", methods={"GET","POST"})
-     * @Template("entrega/remito/new.html.twig")
+     * @Route("/new", name="remito_new", methods={"GET","POST"})
+     * @Template("remito/new.html.twig")
      * @IsGranted("ROLE_REMITO")
      */
-    public function new($id): Array {
-        $em = $this->doctrine->getManager();
-        $entity = $em->getRepository("App\Entity\Entrega")->find($id);
-
-        $this->baseInitPreCreateForm($entity);
-
-        $form = $this->baseInitCreateCreateForm(EntregaType::class, $entity);
-
-        $form->add('submit', SubmitType::class, array(
-                'label' => 'Agregar',
-                'attr' => array('class' => 'btn btn-light-primary font-weight-bold submit-button'))
-        );
-
-        $parametros = array(
-            'entity' => $entity,
-            'form' => $form->createView(),
-            'form_action' => $this->getURLPrefix() . '_create',
-            'page_title' => 'Agregar ' . $this->getEntityRenderName()
-        );
-
-        return array_merge($parametros, $this->getExtraParametersNewAction($entity));
+    public function new(): Array {
+        return parent::baseNewAction();
     }
 
     /**
-     * @Route("/insertar/{id}", name="remito_create", methods={"GET","POST"})
-     * @Template("entrega/remito/new.html.twig")
+     * @Route("/insertar", name="remito_create", methods={"GET","POST"})
+     * @Template("remito/new.html.twig")
      * @IsGranted("ROLE_REMITO")
      */
-    public function createAction($id,Request $request) {
-        $em = $this->doctrine->getManager();
-        $entrega = $em->getRepository("App\Entity\Entrega")->find($id);
-
-        $remito = new Remito();
-        $remito->setCliente($entrega->getClienteEntrega());
-        $entrega->setRemito($remito);
-
-        $form = $this->baseInitCreateCreateForm(EntregaType::class, $entrega);
-
-        $form->handleRequest($request);
-
-        if ($form->isValid()) {
-            $remito = new Remito();
-            $remito->setCliente($entrega->getClienteEntrega());
-            $entrega->setRemito($remito);
-            $estadoRemito = $em->getRepository(EstadoRemito::class)->findOneByCodigoInterno(ConstanteEstadoRemito::PENDIENTE);
-            $this->cambiarEstadoRemito($em, $remito, $estadoRemito);
-            $estadoEntrega = $em->getRepository(EstadoEntrega::class)->findOneByCodigoInterno(ConstanteEstadoEntrega::CON_REMITO);
-            $this->cambiarEstadoEntrega($em, $entrega, $estadoEntrega);
-            $em->persist($remito);
-            $em->persist($entrega);
-            $em->flush();
-
-            $message = $this->getCreateMessage($entrega, true);
-            $this->get('session')->getFlashBag()->add('success', $message);
-            return $this->getCreateRedirectResponse($request, $entrega);
-        } else {
-            $request->attributes->set('form-error', true);
-        }
-
-        $parametros = array(
-            'entity' => $entrega,
-            'form' => $form->createView(),
-            'page_title' => 'Remito'
-        );
-
-        return array_merge($parametros, $this->getExtraParametersNewAction($entrega));
+    public function createAction(Request $request) {
+        return parent::baseCreateAction($request);
     }
 
     /**
@@ -199,25 +144,6 @@ class RemitoController extends BaseController {
      */
     public function delete($id) {
         return parent::baseDeleteAction($id);
-    }
-
-    /**
-     *
-     * @param type $em
-     * @param PedidoProducto $pedidoProducto
-     * @param EstadoPedidoProducto $estadoProducto
-     */
-    private function cambiarEstadoPedido($em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto, $DatosEntrega = null) {
-        $pedidoProducto->setEstado($estadoProducto);
-        $estadoPedidoProductoHistorico = new EstadoPedidoProductoHistorico();
-        $estadoPedidoProductoHistorico->setPedidoProducto($pedidoProducto);
-        $estadoPedidoProductoHistorico->setFecha(new DateTime());
-        $estadoPedidoProductoHistorico->setEstado($estadoProducto);
-        $estadoPedidoProductoHistorico->setMotivo('Entrega de bandejas');
-        $estadoPedidoProductoHistorico->setDatosEntrega($DatosEntrega);
-        $pedidoProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
-
-        $em->persist($estadoPedidoProductoHistorico);
     }
 
     /**
@@ -261,7 +187,7 @@ class RemitoController extends BaseController {
     /**
      * Print a Remito Entity.
      *
-     * @Route("/imprimir-remito-a4/{id}", name="imprimir_remito", methods={"GET"})
+     * @Route("/imprimir-remito/{id}", name="imprimir_remito", methods={"GET"})
      */
     public function imprimirRemitoAction($id) {
         $em = $this->doctrine->getManager();
@@ -276,8 +202,6 @@ class RemitoController extends BaseController {
         $html = $this->renderView('remito/remito_pdf.html.twig', array('entity' => $remito, 'website' => "http://192.168.0.182/babyplant/public/"));
 
         $filename = 'remito.pdf';
-
-        //$mpdfService = new mPDF(array('A4-L', 0, '', 10, 5, 5, 5, 5, 5));
 
         $mpdfService = new Mpdf([
             'mode' => 'utf-8',
@@ -305,6 +229,14 @@ class RemitoController extends BaseController {
     }
 
     /**
+     *
+     * @return string
+     */
+    protected function getPrintOutputType() {
+        return "I";
+    }
+
+    /**
      * @Route("/{id}/historico_estados", name="remito_historico_estado", methods={"POST"})
      * @Template("remito/historico_estados.html.twig")
      */
@@ -325,41 +257,5 @@ class RemitoController extends BaseController {
             'historicoEstados' => $remito->getHistoricoEstados(),
             'page_title' => 'Histórico de estados'
         );
-    }
-
-    /**
-     *
-     * @param type $entity
-     */
-    protected function baseInitPreCreateForm($entity) {
-        $remito = new Remito();
-        $remito->setCliente($entity->getClienteEntrega());
-        $entity->setRemito($remito);
-    }
-
-    /**
-     * @Route("/confirmar-entrega-remito", name="confirmar_entrega_remito", methods={"GET","POST", "PUT"})
-     * @IsGranted("ROLE_REMITO")
-     */
-    public function confirmarEntregaRemito(Request $request) {
-        $entity = new Entrega();
-        $form = $this->createForm(EntregaType::class, $entity);
-        $form->handleRequest($request);
-        $result = array(
-            'html' => $this->renderView('entrega/remito/confirmar_remito.html.twig', array('entity' => $entity)),
-            'error' => false
-        );
-
-        return new JsonResponse($result);
-    }
-
-    /**
-     *
-     * @param type $entity
-     * @param type $request
-     * @return bool
-     */
-    protected function execPrePersistAction($entity, $request): bool {
-        return true;
     }
 }

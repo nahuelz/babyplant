@@ -28,14 +28,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                        {% for remitoProducto in entity.remitosProductos %}
-                            <tr>
-                                <td>{{ remitoProducto.pedidoProducto.numeroOrdenCompleto }}</td>
-                                <td>{{ remitoProducto.pedidoProducto.productoBandeja }}</td>
-                                <td>{{ remitoProducto.cantidadBandejas }}</td>
-                                <td>{{ remitoProducto.precioUnitario|money_format }}</td>
-                                <td>{{ remitoProducto.precioSubTotal|money_format }}</td>
-                            </tr>
+                        {% for entrega in entity.entregas %}
+                            {% for entregaProducto in entrega.entregasProductos %}
+                                <tr>
+                                    <td>{{ entregaProducto.pedidoProducto.numeroOrdenCompleto }}</td>
+                                    <td>{{ entregaProducto.pedidoProducto.productoBandeja }}</td>
+                                    <td>{{ entregaProducto.cantidadBandejas }}</td>
+                                    <td>{{ entregaProducto.precioUnitario|money_format }}</td>
+                                    <td>{{ entregaProducto.precioSubTotal|money_format }}</td>
+                                </tr>
+                            {% endfor %}
                         {% endfor %}
                         <tr>
                             <th colspan="4" style="text-align: right; font-size: 16px; padding-right: 5px;">
@@ -45,7 +47,7 @@
                                 {% endif %}
                                 TOTAL
                             </th>
-                            <th colspan="1" style="text-align: left;font-size: 16px">
+                            <th colspan="1" style="text-align: center;font-size: 16px">
                                 {% if entity.tipoDescuento != null %}
                                     {{ entity.totalSinDescuento|money_format }}<br>
                                     {{ entity.tipoDescuentoString }} {{ entity.montoDescuento|money_format }} <br>

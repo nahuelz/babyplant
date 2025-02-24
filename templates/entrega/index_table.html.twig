@@ -5,7 +5,10 @@
         [
         "{{ entity.idEntrega }}",
         "{{ entity.idEntrega }}",
-        "{{ entity.idPedidoProducto }}",
+        {
+            "idPedidoProducto": "{{ entity.idPedidoProducto }}",
+            "path": "{{ path('pedido_producto_show', { "id": entity.idPedidoProducto }) }}"
+        },
         "{{ entity.ordenSiembra }}",
         "{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}",
         "{{ entity.cliente|default('-') }}",
@@ -21,7 +24,7 @@
         "{{ entity.cantidadBandejas|default('-') }}",
         {
         {% if entity.idEstado == 1 %} {# 1 = PENDIENTE DE REMITO #}
-            "generar_remito": "{{ path( "remito_new", { "id": entity.idEntrega }) }}",
+            "generar_remito": "{{ path( "entrega_remito_new", { "id": entity.idEntrega }) }}",
         {% endif %}
         "situacion_cliente": "{{ path( "situacioncliente_show", { "id": entity.idCliente }) }}",
         "show": "{{ path('entrega_show',{id: entity.idEntrega}) }}",

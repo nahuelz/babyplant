@@ -6,6 +6,7 @@ use App\Entity\Constants\ConstanteAPI;
 use App\Entity\Constants\ConstanteEstadoEntrega;
 use App\Entity\Constants\ConstanteEstadoMesada;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
+use App\Entity\Constants\ConstanteEstadoRemito;
 use App\Entity\DatosEntrega;
 use App\Entity\EntregaProducto;
 use App\Entity\EstadoEntrega;
@@ -14,6 +15,8 @@ use App\Entity\EstadoMesada;
 use App\Entity\EstadoMesadaHistorico;
 use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
+use App\Entity\EstadoRemito;
+use App\Entity\EstadoRemitoHistorico;
 use App\Entity\Mesada;
 use App\Entity\PedidoProducto;
 use App\Entity\Entrega;
@@ -25,6 +28,7 @@ use Doctrine\Persistence\ObjectManager;
 use Mpdf\Mpdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -150,9 +154,9 @@ class EntregaController extends BaseController {
     }
 
     function execPrePersistAction($entity, $request): bool {
-        /** @var DatosEntrega $datosEntrega */
-        foreach ($entity->getEntregasProductos() as $datosEntrega){
-            $datosEntrega->setEntrega($entity);
+        /** @var EntregaProducto $entregaProducto */
+        foreach ($entity->getEntregasProductos() as $entregaProducto){
+            $entregaProducto->setEntrega($entity);
         }
         return true;
     }
@@ -428,5 +432,127 @@ class EntregaController extends BaseController {
      */
     protected function getPrintOutputType() {
         return "I";
+    }
+
+    /**
+     * @Route("/remito/new/{id}", name="entrega_remito_new", methods={"GET","POST"})
+     * @Template("entrega/remito/new.html.twig")
+     * @IsGranted("ROLE_REMITO")
+     */
+    public function entregaNew($id): Array {
+        $em = $this->doctrine->getManager();
+
+        $entity = $em->getRepository("App\Entity\Entrega")->find($id);
+
+        $this->baseInitPreCreateForm($entity);
+
+        $form = $this->createForm(EntregaType::class, $entity, array(
+            'action' => $this->generateUrl($this->getURLPrefix() . '_remito_create', array('id' => $entity->getId())),
+            'method' => 'POST',
+        ));
+
+        $form->add('submit', SubmitType::class, array(
+                'label' => 'Agregar',
+                'attr' => array('class' => 'btn btn-light-primary font-weight-bold submit-button'))
+        );
+
+        $parametros = array(
+            'entity' => $entity,
+            'form' => $form->createView(),
+            'form_action' => $this->getURLPrefix() . '_remito_create',
+            'page_title' => 'Agregar ' . $this->getEntityRenderName()
+        );
+
+        return array_merge($parametros, $this->getExtraParametersNewAction($entity));
+    }
+
+    /**
+     * @Route("remito/insertar/{id}", name="entrega_remito_create", methods={"GET","POST"})
+     * @Template("entrega/remito/new.html.twig")
+     * @IsGranted("ROLE_REMITO")
+     */
+    public function remitoCreateAction($id,Request $request) {
+        $em = $this->doctrine->getManager();
+        $entrega = $em->getRepository("App\Entity\Entrega")->find($id);
+
+        $remito = new Remito();
+        $remito->setCliente($entrega->getClienteEntrega());
+        $entrega->setRemito($remito);
+
+        $form = $this->baseInitCreateCreateForm(EntregaType::class, $entrega);
+
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $remito->setCliente($entrega->getClienteEntrega());
+            $estadoRemito = $em->getRepository(EstadoRemito::class)->findOneByCodigoInterno(ConstanteEstadoRemito::PENDIENTE);
+            $this->cambiarEstadoRemito($em, $remito, $estadoRemito);
+            $estadoEntrega = $em->getRepository(EstadoEntrega::class)->findOneByCodigoInterno(ConstanteEstadoEntrega::CON_REMITO);
+            $this->cambiarEstadoEntrega($em, $entrega, $estadoEntrega);
+            $em->persist($remito);
+            $em->persist($entrega);
+            $em->flush();
+
+            $message = $this->getCreateMessage($entrega, true);
+            $this->get('session')->getFlashBag()->add('success', $message);
+            return $this->getCreateRedirectResponse($request, $entrega);
+        } else {
+            $request->attributes->set('form-error', true);
+        }
+
+        $parametros = array(
+            'entity' => $entrega,
+            'form' => $form->createView(),
+            'page_title' => 'Remito'
+        );
+
+        return array_merge($parametros, $this->getExtraParametersNewAction($entrega));
+    }
+
+    /**
+     *
+     * @param ObjectManager $em
+     * @param Remito $remito
+     * @param EstadoRemito $estadoRemito
+     */
+    private function cambiarEstadoRemito(ObjectManager $em, Remito $remito, EstadoRemito $estadoRemito) : void {
+
+        $remito->setEstado($estadoRemito);
+        $estadoRemitoHistorico = new EstadoRemitoHistorico();
+        $estadoRemitoHistorico->setRemito($remito);
+        $estadoRemitoHistorico->setFecha(new DateTime());
+        $estadoRemitoHistorico->setEstado($estadoRemito);
+        $estadoRemitoHistorico->setMotivo('Creacion de remito');
+        $remito->addHistoricoEstado($estadoRemitoHistorico);
+
+        $em->persist($estadoRemitoHistorico);
+    }
+
+    /**
+     *
+     * @param type $entity
+     */
+    protected function baseInitPreCreateForm($entity): void
+    {
+        $remito = new Remito();
+        $remito->setCliente($entity->getClienteEntrega());
+        $entity->setRemito($remito);
+    }
+
+    /**
+     * @Route("/confirmar-entrega-remito", name="confirmar_entrega_remito", methods={"GET","POST","PUT"})
+     * @IsGranted("ROLE_REMITO")
+     */
+    public function confirmarEntregaRemito(Request $request): JsonResponse
+    {
+        $entity = new Entrega();
+        $form = $this->createForm(EntregaType::class, $entity);
+        $form->handleRequest($request);
+        $result = array(
+            'html' => $this->renderView('entrega/remito/confirmar_remito.html.twig', array('entity' => $entity)),
+            'error' => false
+        );
+
+        return new JsonResponse($result);
     }
 }

@@ -103,7 +103,7 @@
                                         <span class="label label-inline label-light-success font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-check padding-right-5"></span> ENTREGADO PARCIAL SIN REMITO</span>
                                     </div>
                                     {{ macro_show._show_detail('Fecha', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-3') }}
-                                    {{ macro_show._show_detail('Bandejas Entregadas', historicoEstados.DatosEntrega is not null ? historicoEstados.DatosEntrega.cantidadBandejasEntregadas : '-', 'col-md-3') }}
+                                    {{ macro_show._show_detail('Bandejas Entregadas', historicoEstados.DatosEntrega is not null ? historicoEstados.DatosEntrega.cantidadBandejasAEntregar : '-', 'col-md-3') }}
                                 </div>
                             {% endif %}
                         {% endfor %}
@@ -116,7 +116,7 @@
                                         <span class="label label-inline label-light-success font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-check padding-right-5"></span> ENTREGADO SIN REMITO</span>
                                     </div>
                                     {{ macro_show._show_detail('Fecha', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-3') }}
-                                    {{ macro_show._show_detail('Bandejas Entregadas', historicoEstados.DatosEntrega is not null ? historicoEstados.DatosEntrega.cantidadBandejasEntregadas : '-', 'col-md-3') }}
+                                    {{ macro_show._show_detail('Bandejas Entregadas', historicoEstados.DatosEntrega is not null ? historicoEstados.DatosEntrega.cantidadBandejasAEntregar : '-', 'col-md-3') }}
                                 </div>
                             {% endif %}
                         {% endfor %}
@@ -129,7 +129,7 @@
                                         <span class="label label-inline label-light-success font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-check padding-right-5"></span> ENTREGADO PARCIAL</span>
                                     </div>
                                     {{ macro_show._show_detail('Fecha', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-3') }}
-                                    {{ macro_show._show_detail('Bandejas Entregadas', historicoEstados.DatosEntrega is not null ? historicoEstados.DatosEntrega.cantidadBandejasEntregadas : '-', 'col-md-3') }}
+                                    {{ macro_show._show_detail('Bandejas Entregadas', historicoEstados.DatosEntrega is not null ? historicoEstados.DatosEntrega.cantidadBandejasAEntregar : '-', 'col-md-3') }}
                                 </div>
                             {% endif %}
                         {% endfor %}
@@ -142,7 +142,7 @@
                                         <span class="label label-inline label-light-success font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-check padding-right-5"></span> ENTREGADO</span>
                                     </div>
                                     {{ macro_show._show_detail('Fecha', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-3') }}
-                                    {{ macro_show._show_detail('Bandejas Entregadas', historicoEstados.DatosEntrega is not null ? historicoEstados.DatosEntrega.cantidadBandejasEntregadas : '-', 'col-md-3') }}
+                                    {{ macro_show._show_detail('Bandejas Entregadas', historicoEstados.DatosEntrega is not null ? historicoEstados.DatosEntrega.cantidadBandejasAEntregar : '-', 'col-md-3') }}
                                 </div>
                             {% endif %}
                         {% endfor %}

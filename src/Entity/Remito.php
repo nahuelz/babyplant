@@ -52,11 +52,6 @@ class Remito {
      */
     private mixed $estado;
 
-    /**
-     * @ORM\OneToMany(targetEntity=RemitoProducto::class, mappedBy="remito", cascade={"all"})
-     */
-    private $remitosProductos;
-
 
     /**
      * @ORM\OneToMany(targetEntity=Pago::class, mappedBy="remito", cascade={"all"})
@@ -65,10 +60,10 @@ class Remito {
     private $pagos;
 
     /**
-     * @ORM\OneToOne(targetEntity=Entrega::class, inversedBy="remito", cascade={"persist"})
-     * @ORM\JoinColumn(name="id_entrega", referencedColumnName="id", nullable=true)
+     * @ORM\OneToMany(targetEntity=Entrega::class, mappedBy="remito", cascade={"all"})
+     * @ORM\OrderBy({"id" = "DESC"})
      */
-    private $entrega;
+    private $entregas;
 
     /**
      * @ORM\ManyToOne(targetEntity=Usuario::class, inversedBy="remitos")
@@ -78,7 +73,7 @@ class Remito {
 
     public function __construct()
     {
-        $this->remitosProductos = new ArrayCollection();
+        $this->entregas = new ArrayCollection();
         $this->historicoEstados = new ArrayCollection();
         $this->pagos = new ArrayCollection();
     }
@@ -127,9 +122,10 @@ class Remito {
 
     public function getTotalSinDescuento(){
         $total = 0.00;
-        $entrega = $this->getEntrega();
-        foreach ($entrega->getEntregasProductos() as $entregaProducto){
-            $total += $entregaProducto->getPrecioSubTotal();
+        foreach ($this->getEntregas() as $entrega) {
+            foreach ($entrega->getEntregasProductos() as $entregaProducto) {
+                $total += $entregaProducto->getPrecioSubTotal();
+            }
         }
         return ($total);
     }
@@ -294,31 +290,20 @@ class Remito {
         return $pendiente;
     }
 
-    public function getRemitosProductos(): ArrayCollection
-    {
-        return $this->remitosProductos;
-    }
+    public function addEntrega(Entrega $entrega): self {
+        if (!$this->entregas->contains($entrega)) {
+            $this->entregas[] = $entrega;
+        }
 
-    public function setRemitosProductos(ArrayCollection $remitosProductos): void
-    {
-        $this->remitosProductos = $remitosProductos;
+        return $this;
     }
 
     /**
      * @return mixed
      */
-    public function getEntrega()
+    public function getEntregas()
     {
-        return $this->entrega;
+        return $this->entregas;
     }
-
-    /**
-     * @param mixed $entrega
-     */
-    public function setEntrega($entrega): void
-    {
-        $this->entrega = $entrega;
-    }
-
 
 }

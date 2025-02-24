@@ -105,9 +105,13 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'idPedidoProducto',
-            width: '30px',
-            className: 'dt-center',
-            type: 'num'
+            className: 'nowrap text-center margin-0 ',
+            render: function (data, type, full, meta) {
+                if (type === 'display') {
+                    return '<a href="' + data.path + '" target="_blank">' + data.idPedidoProducto + '</a>';
+                }
+                return data.idPedidoProducto;
+            }
         },
         {
             targets: index++,

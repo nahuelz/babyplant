@@ -172,7 +172,9 @@ function calcularTotal(){
         total += parseInt(subtotal.slice(1));
     });
 
-    $('.total').html(formatCurrency(total));
+    if (!isNaN(total)) {
+        $('.total').html(formatCurrency(total));
+    }
     calcularDescuento();
 }
 
@@ -258,7 +260,7 @@ function initBaseSubmitButton() {
     $("#entrega_submit").off('click').on('click', function (e) {
         e.preventDefault();
         $.post({
-            url: __HOMEPAGE_PATH__ + "remito/confirmar-entrega-remito",
+            url: __HOMEPAGE_PATH__ + "entrega/confirmar-entrega-remito",
             type: 'post',
             dataType: 'json',
             data: $('form[name="entrega"]').serialize()
@@ -309,7 +311,9 @@ function calcularDescuento(objeto) {
     } else{
         totalAux -= valordescuento;
     }
-    $('.total').html(formatCurrency(totalAux));
+    if (!isNaN(totalAux)) {
+        $('.total').html(formatCurrency(totalAux));
+    }
 
 }
 

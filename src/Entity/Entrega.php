@@ -46,7 +46,8 @@ class Entrega {
     private $clienteEntrega;
 
     /**
-     * @ORM\OneToOne(targetEntity=Remito::class, mappedBy="entrega",cascade={"persist"}).)
+     * @ORM\ManyToOne(targetEntity=Remito::class, inversedBy="entregas")
+     * @ORM\JoinColumn(name="id_remito", referencedColumnName="id", nullable=true)
      */
     private $remito;
 
@@ -106,7 +107,7 @@ class Entrega {
     public function setRemito(mixed $remito): void
     {
         $this->remito = $remito;
-        $remito->setEntrega($this);
+        $remito->addEntrega($this);
     }
 
     /**
@@ -190,6 +191,8 @@ class Entrega {
     {
         $this->clienteEntrega = $clienteEntrega;
     }
+
+
 
 
 

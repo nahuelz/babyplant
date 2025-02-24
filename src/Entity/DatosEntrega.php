@@ -39,10 +39,10 @@ class DatosEntrega {
     private $entrega;
 
     /**
-     * @ORM\ManyToOne(targetEntity=PedidoProducto::class, inversedBy="remitosProductos")
+     * @ORM\ManyToOne(targetEntity=PedidoProducto::class, cascade={"persist"})
      * @ORM\JoinColumn(name="id_pedido_producto", referencedColumnName="id", nullable=false)
      */
-    private mixed $pedidoProducto;
+    private $pedidoProducto;
 
     /**
      * @ORM\Column(name="cantidad_bandejas_entregadas", type="string", length=50, nullable=false)

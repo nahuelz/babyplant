@@ -101,15 +101,17 @@
                 </tr>
             </thead>
             <tbody>
-            {% for remitoProducto in entity.remitosProductos %}
-                <tr>
-                    <td width="103" align="center">{{ remitoProducto.pedidoProducto.numeroOrdenCompleto }}</td>
-                    <td width="345" align="center">{{ remitoProducto.pedidoProducto.productoBandeja }}</td>
-                    <td width="94" align="center">{{ remitoProducto.cantidadBandejas }}</td>
-                    <td width="107" align="center">{{ remitoProducto.precioUnitario|money_format }}</td>
-                    <td width="133" align="center">{{ remitoProducto.precioSubTotal|money_format }}</td>
-                </tr>
-            {% endfor %}
+                {% for entrega in entity.entregas %}
+                    {% for entregaProducto in entrega.entregasProductos %}
+                        <tr>
+                            <td width="103" align="center">{{ entregaProducto.pedidoProducto.numeroOrdenCompleto }}</td>
+                            <td width="345" align="center">{{ entregaProducto.pedidoProducto.productoBandeja }}</td>
+                            <td width="94" align="center">{{ entregaProducto.cantidadBandejas }}</td>
+                            <td width="107" align="center">{{ entregaProducto.precioUnitario|money_format }}</td>
+                            <td width="133" align="center">{{ entregaProducto.precioSubTotal|money_format }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
 
                 <tr>
                     <th colspan="3" style="text-align: right; font-size: 16px; padding-right: 5px;">

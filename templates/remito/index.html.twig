@@ -24,7 +24,7 @@
             </div>
             <div class="card-toolbar">
                 {% if is_granted('ROLE_REMITO') %}
-                    <a href="#" class="btn btn-primary font-weight-bolder mr-2">
+                    <a href="{{ path('remito_new') }}" class="btn btn-primary font-weight-bolder mr-2">
                         <i class="la la-plus"></i>
                         Nuevo Remito
                     </a>
