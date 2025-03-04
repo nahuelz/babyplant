@@ -3,6 +3,7 @@
 namespace App\Form;
 
 
+use App\Entity\Entrega;
 use App\Entity\Remito;
 use App\Entity\TipoBandeja;
 use App\Entity\TipoDescuento;
@@ -32,6 +33,22 @@ class RemitoType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options) {
 
         $builder
+            ->add('entrega', RemitoEntregaType::class, array(
+                'required' => false,
+                'mapped' => false,
+                'data_class' => 'App\Entity\Entrega',
+            ))
+            ->add('entregas', CollectionType::class, array(
+                    'required' => false,
+                    'mapped' => true,
+                    'entry_type' => RemitoEntregaType::class,
+                    'allow_delete' => true,
+                    'allow_add' => true,
+                    'label' => '',
+                    'prototype_name' => '__entregas__',
+                    'label_attr' => array('class' => 'hidden'),
+                    'attr' => array('class' => 'hidden'))
+            )
             ->add('cliente', EntityType::class, array(
                 'class' => Usuario::class,
                 'required' => true,

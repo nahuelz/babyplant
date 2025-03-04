@@ -1,38 +1,36 @@
 {% import 'app/_macro_form.html.twig' as macro_form %}
 
-{% set tienePedidoProducto = entity.remitosProductos|length > 0 %}
+{% set tieneEntrega = entity.entregas|length > 0 %}
 
-<div class="row row-remito-producto-empty margin-top-20">
+<div class="row row-remito-entrega-empty margin-top-20" style="display: none">
     <div class="col-md-12">
         <div class="alert alert-danger alert-form-error" style="background-color: #fbe1e3;color: brown;">
-            Debe ingresar al menos un producto.
+            Debe ingresar al menos una entrega.
         </div>
     </div>
 </div>
 
-<div class="row-form-remito-producto">
+<div class="row-form-remito-entrega">
     <div class="row">
-        {{ macro_form._new_field(form.remitoProducto.pedidoProducto, 'col-md-12') }}
-        {{ macro_form._new_field(form.remitoProducto.cantidadBandejas, 'col-md-4') }}
-        {{ macro_form._new_field(form.remitoProducto.precioUnitario, 'col-md-3') }}
+        {{ macro_form._new_field(form.entrega.entrega, 'col-md-4') }}
         <div class="col-md-3 pull-left">
             <div class="form-group">
-                <button class="btn btn-light-primary font-weight-bold margin-top-25 link-save-remito-producto">
-                    Agregar Producto
+                <button class="btn btn-light-primary font-weight-bold margin-top-25 link-save-remito-entrega">
+                    Agregar Entrega
                 </button>
             </div>
         </div>
     </div>
-
 </div>
 
 
-<div class="col-md-12 row row-remito-producto margin-top-15" {{ tienePedidoProducto ? '' : 'style="display:none;"' }}>
+<div class="col-md-12 row row-remito-producto margin-top-15" {{ tieneEntrega ? '' : 'style="display:none;"' }}>
     <div class="col-md-12">
         <div class="table-scrollable">
             <table class="table table-striped table-bordered table-advance table-hover">
                 <thead>
                     <tr>
+                        <th class="text-center">ENTREGA</th>
                         <th class="text-center">PRODUCTO</th>
                         <th class="text-center">CANTIDAD DE BANDEJAS A ENTREGAR</th>
                         <th class="text-center">PRECIO UNITARIO</th>
@@ -42,33 +40,36 @@
                 </thead>
                 <tbody class="tbody-remito-producto">
 
-                {% for remitoProducto in entity.remitosProductos %}
-                    <tr class="tr-remito-producto">
-                        <td class="hidden">
-                            <input type="hidden" name="remito[remitosProductos][{{ loop.index0 }}][pedidoProducto]" value="{{ remitoProducto.pedidoProducto }}">
-                        </td>
-                        <td class="hidden">
-                            <input type="hidden" name="remito[remitosProductos][{{ loop.index0 }}][cantidadBandejas]" value="{{ remitoProducto.cantidadBandejas }}">
-                        </td>
-                        <td class="hidden">
-                            <input type="hidden" name="remito[remitosProductos][{{ loop.index0 }}][precioUnitario]" value="{{ remitoProducto.precioUnitario }}">
-                        </td>
+                {% for entrega in entity.entregas %}
+                    {% for entregaProducto in entrega.entregaProducto %}
+                        <tr class="tr-remito-producto">
+                            <td class="hidden">
+                                <input type="hidden" name="remito[entrega][{{ entrega.id }}][pedidoProducto]" value="{{ entregaProducto.pedidoProducto }}">
+                            </td>
+                            <td class="hidden">
+                                <input type="hidden" name="remito[entrega][{{ entrega.id }}][cantidadBandejas]" value="{{ entregaProducto.cantidadBandejas }}">
+                            </td>
+                            <td class="hidden">
+                                <input type="hidden" name="remito[entrega][{{ entrega.id }}][precioUnitario]" value="{{ entregaProducto.precioUnitario }}">
+                            </td>
 
-                        <td class="v-middle text-center">{{ remitoProducto.pedidoProducto }}</td>
-                        <td class="v-middle text-center">{{ remitoProducto.cantidadBandejas }}</td>
-                        <td class="v-middle text-center">{{ remitoProducto.precioUnitario }}</td>
+                            <td class="v-middle text-center">{{ entregaProducto.pedidoProducto }}</td>
+                            <td class="v-middle text-center">{{ entregaProducto.cantidadBandejas }}</td>
+                            <td class="v-middle text-center">{{ entregaProducto.precioUnitario }}</td>
 
-                        <td class="text-center v-middle">
-                            <a href="#" class="btn btn-sm delete-link-inline link-delete-remito-producto remito-producto-borrar tooltips"
-                               data-placement="top" data-original-title="Eliminar">
-                                <i class="fa fa-trash text-danger"></i>
-                            </a>
-                        </td>
-                    </tr>
+                            <td class="text-center v-middle">
+                                <a href="#" class="btn btn-sm delete-link-inline link-delete-remito-producto remito-producto-borrar tooltips"
+                                   data-placement="top" data-original-title="Eliminar">
+                                    <i class="fa fa-trash text-danger"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
                 {% endfor %}
                 </tbody>
                 <tfoot style="background-color: aliceblue;">
                 <tr>
+                    <td style="border:none;"></td>
                     <td style="border:none;">
                         <div class="d-flex flex-row">
                             <h6 style="padding-top: 10px;">APLICAR DESCUENTO:</h6>

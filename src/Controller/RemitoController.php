@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Constants\ConstanteEstadoEntrega;
+use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Constants\ConstanteEstadoRemito;
 use App\Entity\Entrega;
+use App\Entity\EntregaProducto;
 use App\Entity\EstadoEntrega;
 use App\Entity\EstadoEntregaHistorico;
 use App\Entity\EstadoPedidoProducto;
@@ -14,6 +16,8 @@ use App\Entity\EstadoRemitoHistorico;
 use App\Entity\PedidoProducto;
 use App\Entity\Remito;
 use App\Form\EntregaType;
+use App\Form\RemitoType;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ObjectManager;
 use Mpdf\Mpdf;
@@ -109,7 +113,26 @@ class RemitoController extends BaseController {
      * @IsGranted("ROLE_REMITO")
      */
     public function createAction(Request $request) {
-        return parent::baseCreateAction($request);
+        $em = $this->doctrine->getManager();
+        $remito = $this->remitoSetData($request);
+
+        $form = $this->createForm(RemitoType::class, $remito);
+        $form->handleRequest($request);
+
+        $estadoRemito = $em->getRepository(EstadoRemito::class)->findOneByCodigoInterno(ConstanteEstadoRemito::PENDIENTE);
+        $this->cambiarEstadoRemito($em, $remito, $estadoRemito);
+        $estadoEntrega = $em->getRepository(EstadoEntrega::class)->findOneByCodigoInterno(ConstanteEstadoEntrega::CON_REMITO);
+        foreach ($remito->getEntregas() as $entrega) {
+            $this->cambiarEstadoEntrega($em, $entrega, $estadoEntrega);
+        }
+
+        $em->persist($remito);
+        $em->flush();
+        $message = $this->getCreateMessage($remito, true);
+        $this->get('session')->getFlashBag()->add('success', $message);
+
+        return $this->getCreateRedirectResponse($request, $remito);
+
     }
 
     /**
@@ -258,4 +281,63 @@ class RemitoController extends BaseController {
             'page_title' => 'Histórico de estados'
         );
     }
+
+    /**
+     * @Route("/lista/entregas", name="remito_lista_entregas")
+     */
+    public function listaEntregasAction(Request $request): JsonResponse
+    {
+        $idCliente = $request->request->get('id_entity');
+
+        $repository = $this->getDoctrine()->getRepository(Entrega::class);
+
+        $query = $repository->createQueryBuilder('e')
+            ->select("e.id, concat ('Entrega N° ', e.id) as denominacion")
+            ->where('e.cliente = :cliente')
+            ->andWhere('e.estado = :estado')
+            ->setParameter('cliente', $idCliente)
+            ->setParameter('estado', ConstanteEstadoEntrega::SIN_REMITO)
+            ->orderBy('e.id', 'ASC')
+            ->groupBy('e.id')
+            ->getQuery();
+
+        return new JsonResponse($query->getResult());
+    }
+
+    /**
+     * @Route("/confirmar-remito", name="confirmar_remito", methods={"GET","POST","PUT"})
+     * @IsGranted("ROLE_REMITO")
+     */
+    public function confirmarRemito(Request $request): JsonResponse
+    {
+        $entity = $this->remitoSetData($request);
+
+        $form = $this->createForm(RemitoType::class, $entity);
+        $form->handleRequest($request);
+        $result = array(
+            'html' => $this->renderView('remito/confirmar_remito.html.twig', array('entity' => $entity)),
+            'error' => false
+        );
+
+        return new JsonResponse($result);
+    }
+
+    private function remitoSetData(Request $request){
+        $entity = new Remito();
+        $em = $this->doctrine->getManager();
+        $entregas = $request->request->get('remito')['entregas'];
+        for($i = 0; $i < count($entregas); ++$i) {
+            $entrega = $entregas[$i]['entrega'];
+            $entregasProductos = $entrega['entregasProductos'];
+            for($x = 0; $x < count($entregasProductos); ++$x) {
+                /* @var EntregaProducto $entregaProductoEntity */
+                $entregaProductoEntity = $em->getRepository('App\Entity\EntregaProducto')->find($entregasProductos[$x]['entregaProducto']);
+                $entregaProductoEntity->setPrecioUnitario($entregasProductos[$x]['precioUnitario']);
+                $entity->addEntrega($entregaProductoEntity->getEntrega());
+            }
+        }
+
+        return $entity;
+    }
+
 }

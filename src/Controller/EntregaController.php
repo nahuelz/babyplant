@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Constants\ConstanteAPI;
 use App\Entity\Constants\ConstanteEstadoEntrega;
 use App\Entity\Constants\ConstanteEstadoMesada;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
@@ -22,13 +21,16 @@ use App\Entity\PedidoProducto;
 use App\Entity\Entrega;
 use App\Entity\Remito;
 use App\Form\EntregaType;
+use DateInvalidOperationException;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ObjectManager;
 use Mpdf\Mpdf;
+use Mpdf\MpdfException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -65,6 +67,7 @@ class EntregaController extends BaseController {
      *
      * @Route("/index_table/", name="entrega_table", methods={"GET|POST"})
      * @IsGranted("ROLE_REMITO")
+     * @throws DateInvalidOperationException
      */
     public function indexTableAction(Request $request): Response {
 
@@ -106,7 +109,8 @@ class EntregaController extends BaseController {
      * @Template("entrega/new.html.twig")
      * @IsGranted("ROLE_REMITO")
      */
-    public function new(): Array {
+    public function new(): array
+    {
         return parent::baseNewAction();
     }
 
@@ -115,7 +119,8 @@ class EntregaController extends BaseController {
      * @Template("entrega/new.html.twig")
      * @IsGranted("ROLE_REMITO")
      */
-    public function createAction(Request $request) {
+    public function createAction(Request $request): RedirectResponse|Response
+    {
         return parent::baseCreateAction($request);
     }
 
@@ -132,7 +137,8 @@ class EntregaController extends BaseController {
      * @Template("entrega/new.html.twig")
      * @IsGranted("ROLE_REMITO")
      */
-    public function edit($id): Array {
+    public function edit($id): RedirectResponse|array
+    {
         return parent::baseEditAction($id);
     }
 
@@ -141,7 +147,8 @@ class EntregaController extends BaseController {
      * @Template("entrega/new.html.twig")
      * @IsGranted("ROLE_REMITO")
      */
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id): RedirectResponse|Response
+    {
         return parent::baseUpdateAction($request, $id);
     }
 
@@ -149,7 +156,8 @@ class EntregaController extends BaseController {
      * @Route("/{id}/borrar", name="entrega_delete", methods={"GET"})
      * @IsGranted("ROLE_REMITO")
      */
-    public function delete($id) {
+    public function delete($id): RedirectResponse|JsonResponse
+    {
         return parent::baseDeleteAction($id);
     }
 
@@ -163,7 +171,7 @@ class EntregaController extends BaseController {
 
     /**
      *
-     * @param type $em
+     * @param ObjectManager $em
      * @param Entrega $entity
      */
     function execPostPersistAction($em, $entity, $request): void
@@ -257,11 +265,12 @@ class EntregaController extends BaseController {
 
     /**
      *
-     * @param type $em
+     * @param ObjectManager $em
      * @param PedidoProducto $pedidoProducto
      * @param EstadoPedidoProducto $estadoProducto
+     * @param null $datosEntrega
      */
-    private function cambiarEstadoPedido($em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto, $datosEntrega = null): void
+    private function cambiarEstadoPedido(ObjectManager $em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto, $datosEntrega = null): void
     {
         $pedidoProducto->setEstado($estadoProducto);
         $estadoPedidoProductoHistorico = new EstadoPedidoProductoHistorico();
@@ -277,11 +286,11 @@ class EntregaController extends BaseController {
 
     /**
      *
-     * @param type $em
+     * @param ObjectManager $em
      * @param Entrega $entrega
      * @param EstadoEntrega $estadoEntrega
      */
-    private function cambiarEstadoEntrega($em, Entrega $entrega, EstadoEntrega $estadoEntrega): void
+    private function cambiarEstadoEntrega(ObjectManager $em, Entrega $entrega, EstadoEntrega $estadoEntrega): void
     {
         $entrega->setEstado($estadoEntrega);
         $estadoEntregaHistorico = new EstadoEntregaHistorico();
@@ -297,10 +306,11 @@ class EntregaController extends BaseController {
     /**
      * @Route("/lista/productos", name="entrega_lista_productos")
      */
-    public function listaProductosAction(Request $request) {
+    public function listaProductosAction(Request $request): JsonResponse
+    {
         $idCliente = $request->request->get('id_entity');
 
-        $repository = $this->getDoctrine()->getRepository(PedidoProducto::class);
+        $repository = $this->doctrine->getRepository(PedidoProducto::class);
 
         $query = $repository->createQueryBuilder('pp')
             ->select("pp.id, concat ('ORDEN N° ',pp.numeroOrden,' ', tp.nombre,' (x',tb.nombre,') BANDEJAS SEMBRADAS: ',pp.cantidadBandejasReales,' SIN ENTREGAR: ',pp.cantidadBandejasSinEntregar, ' MESADA N° ', tm.nombre) as denominacion")
@@ -326,7 +336,8 @@ class EntregaController extends BaseController {
      * @Route("/confirmar-entrega", name="confirmar_entrega", methods={"GET","POST", "PUT"})
      * @IsGranted("ROLE_REMITO")
      */
-    public function confirmarEntrega(Request $request) {
+    public function confirmarEntrega(Request $request): JsonResponse
+    {
 
         $entity = new Entrega();
         $form = $this->createForm(EntregaType::class, $entity);
@@ -384,8 +395,10 @@ class EntregaController extends BaseController {
      * Print a Entrega Entity.
      *
      * @Route("/imprimir-entrega/{id}", name="imprimir_entrega", methods={"GET"})
+     * @throws MpdfException
      */
-    public function imprimirEntregaAction($id) {
+    public function imprimirEntregaAction($id): Response
+    {
         $em = $this->doctrine->getManager();
 
         /* @var $entrega Entrega */
@@ -398,8 +411,6 @@ class EntregaController extends BaseController {
         $html = $this->renderView('entrega/remito_pdf.html.twig', array('entity' => $entrega, 'website' => "http://192.168.0.182/babyplant/public/"));
 
         $filename = 'remito.pdf';
-
-        //$mpdfService = new mPDF(array('A4-L', 0, '', 10, 5, 5, 5, 5, 5));
 
         $mpdfService = new Mpdf([
             'mode' => 'utf-8',
@@ -430,7 +441,8 @@ class EntregaController extends BaseController {
      *
      * @return string
      */
-    protected function getPrintOutputType() {
+    protected function getPrintOutputType(): string
+    {
         return "I";
     }
 
@@ -439,7 +451,7 @@ class EntregaController extends BaseController {
      * @Template("entrega/remito/new.html.twig")
      * @IsGranted("ROLE_REMITO")
      */
-    public function entregaNew($id): Array {
+    public function remitoNew($id): Array {
         $em = $this->doctrine->getManager();
 
         $entity = $em->getRepository("App\Entity\Entrega")->find($id);
@@ -467,46 +479,32 @@ class EntregaController extends BaseController {
     }
 
     /**
-     * @Route("remito/insertar/{id}", name="entrega_remito_create", methods={"GET","POST"})
+     * @Route("/remito/insertar/{id}", name="entrega_remito_create", methods={"GET","POST"})
      * @Template("entrega/remito/new.html.twig")
      * @IsGranted("ROLE_REMITO")
      */
-    public function remitoCreateAction($id,Request $request) {
+    public function remitoCreateAction($id,Request $request): RedirectResponse|array
+    {
         $em = $this->doctrine->getManager();
         $entrega = $em->getRepository("App\Entity\Entrega")->find($id);
-
-        $remito = new Remito();
-        $remito->setCliente($entrega->getClienteEntrega());
-        $entrega->setRemito($remito);
 
         $form = $this->baseInitCreateCreateForm(EntregaType::class, $entrega);
 
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
-            $remito->setCliente($entrega->getClienteEntrega());
-            $estadoRemito = $em->getRepository(EstadoRemito::class)->findOneByCodigoInterno(ConstanteEstadoRemito::PENDIENTE);
-            $this->cambiarEstadoRemito($em, $remito, $estadoRemito);
-            $estadoEntrega = $em->getRepository(EstadoEntrega::class)->findOneByCodigoInterno(ConstanteEstadoEntrega::CON_REMITO);
-            $this->cambiarEstadoEntrega($em, $entrega, $estadoEntrega);
-            $em->persist($remito);
-            $em->persist($entrega);
-            $em->flush();
+        $remito = $entrega->getRemito();
+        $estadoRemito = $em->getRepository(EstadoRemito::class)->findOneByCodigoInterno(ConstanteEstadoRemito::PENDIENTE);
+        $this->cambiarEstadoRemito($em, $remito, $estadoRemito);
+        $estadoEntrega = $em->getRepository(EstadoEntrega::class)->findOneByCodigoInterno(ConstanteEstadoEntrega::CON_REMITO);
+        $this->cambiarEstadoEntrega($em, $entrega, $estadoEntrega);
+        $em->persist($remito);
+        $em->flush();
 
-            $message = $this->getCreateMessage($entrega, true);
-            $this->get('session')->getFlashBag()->add('success', $message);
-            return $this->getCreateRedirectResponse($request, $entrega);
-        } else {
-            $request->attributes->set('form-error', true);
-        }
+        $message = $this->getCreateMessage($entrega, true);
+        $this->get('session')->getFlashBag()->add('success', $message);
 
-        $parametros = array(
-            'entity' => $entrega,
-            'form' => $form->createView(),
-            'page_title' => 'Remito'
-        );
+        return $this->getCreateRedirectResponse($request, $entrega);
 
-        return array_merge($parametros, $this->getExtraParametersNewAction($entrega));
     }
 
     /**
@@ -530,13 +528,13 @@ class EntregaController extends BaseController {
 
     /**
      *
-     * @param type $entity
+     * @param Entrega $entity
      */
     protected function baseInitPreCreateForm($entity): void
     {
         $remito = new Remito();
         $remito->setCliente($entity->getClienteEntrega());
-        $entity->setRemito($remito);
+        $remito->addEntrega($entity);
     }
 
     /**
@@ -551,6 +549,32 @@ class EntregaController extends BaseController {
         $result = array(
             'html' => $this->renderView('entrega/remito/confirmar_remito.html.twig', array('entity' => $entity)),
             'error' => false
+        );
+
+        return new JsonResponse($result);
+    }
+
+    /**
+     * @Route("/get-entrega", name="get_entrega", methods={"GET","POST"})
+     */
+    public function getEntrega(Request $request): JsonResponse
+    {
+        $em = $this->doctrine->getManager();
+        $idEntrega = $request->request->get('id');
+        $entrega = $em->getRepository("App\Entity\Entrega")->find($idEntrega);
+        $productos = [];
+        foreach ($entrega->getEntregasProductos() as $entregaProducto) {
+            $productos[] = [
+                'idEntrega' => $entrega->getId(),
+                'idEntregaProducto' => $entregaProducto->getId(),
+                'idProducto' => $entregaProducto->getPedidoProducto()->getId(),
+                'textProducto' => $entregaProducto->getPedidoProducto()->__toString(),
+                'cantidadBandejas' => $entregaProducto->getCantidadBandejas()
+            ];
+        }
+
+        $result = array(
+            'productos' => $productos
         );
 
         return new JsonResponse($result);

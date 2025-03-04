@@ -128,7 +128,7 @@
                                     <p><strong>DIRECCION</strong></p>
                                 </div>
                                 <div class="col-md-6">
-                                    <p>{{ entity.cliente.telefono|default('-') }}</p>
+                                    <p>{{ entity.cliente.telefono|default('') }}{{ entity.cliente.celular|default('-') }}</p>
                                     <p>{{ entity.cliente.domicilio|default('-') }}</p>
                                 </div>
                             </div>
@@ -150,14 +150,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                        {% for entregaProducto in entity.entrega.entregasProductos %}
-                            <tr>
-                                <td width="170" align="center">{{ entregaProducto.pedidoProducto.numeroOrdenCompleto }}</td>
-                                <td width="395" align="center">{{ entregaProducto.pedidoProducto.productoBandeja }}</td>
-                                <td width="144" align="center">{{ entregaProducto.cantidadBandejas }}</td>
-                                <td width="157" align="center">{{ entregaProducto.precioUnitario|money_format }}</td>
-                                <td width="183" align="right">{{ entregaProducto.precioSubTotal|money_format }}</td>
-                            </tr>
+                        {% for entrega in entity.entregas %}
+                            {% for entregaProducto in entrega.entregasProductos %}
+                                <tr>
+                                    <td width="170" align="center">{{ entregaProducto.pedidoProducto.numeroOrdenCompleto }}</td>
+                                    <td width="395" align="center">{{ entregaProducto.pedidoProducto.productoBandeja }}</td>
+                                    <td width="144" align="center">{{ entregaProducto.cantidadBandejas }}</td>
+                                    <td width="157" align="center">{{ entregaProducto.precioUnitario|money_format }}</td>
+                                    <td width="183" align="right">{{ entregaProducto.precioSubTotal|money_format }}</td>
+                                </tr>
+                            {% endfor %}
                         {% endfor %}
                         </tbody>
                         <tfoot>

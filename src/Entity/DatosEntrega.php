@@ -33,7 +33,7 @@ class DatosEntrega {
     protected int $id;
 
     /**
-     * @ORM\OneToOne(targetEntity=Entrega::class, cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity=Entrega::class, cascade={"persist"})
      * @ORM\JoinColumn(name="id_entrega", referencedColumnName="id", nullable=false)
      */
     private $entrega;

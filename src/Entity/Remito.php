@@ -48,7 +48,7 @@ class Remito {
 
     /**
      * @ORM\ManyToOne(targetEntity=EstadoRemito::class)
-     * @ORM\JoinColumn(name="id_estado_remito", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="id_estado_remito", referencedColumnName="id", nullable=false)
      */
     private mixed $estado;
 
@@ -67,7 +67,7 @@ class Remito {
 
     /**
      * @ORM\ManyToOne(targetEntity=Usuario::class, inversedBy="remitos")
-     * @ORM\JoinColumn(name="id_cliente", referencedColumnName="id")
+     * @ORM\JoinColumn(name="id_cliente", referencedColumnName="id", nullable=false)
      */
     private $cliente;
 
@@ -293,6 +293,18 @@ class Remito {
     public function addEntrega(Entrega $entrega): self {
         if (!$this->entregas->contains($entrega)) {
             $this->entregas[] = $entrega;
+            $entrega->setRemito($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEntrega(Entrega $entrega): self {
+        if ($this->entregas->removeElement($entrega)) {
+            // set the owning side to null (unless already changed)
+            if ($entrega->getRemito() === $this) {
+                $entrega->setRemito(null);
+            }
         }
 
         return $this;

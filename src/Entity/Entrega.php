@@ -46,7 +46,7 @@ class Entrega {
     private $clienteEntrega;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Remito::class, inversedBy="entregas")
+     * @ORM\ManyToOne(targetEntity=Remito::class, inversedBy="entregas", cascade={"all"}))
      * @ORM\JoinColumn(name="id_remito", referencedColumnName="id", nullable=true)
      */
     private $remito;
@@ -70,6 +70,12 @@ class Entrega {
     {
         $this->entregasProductos = new ArrayCollection();
         $this->historicoEstados = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+
+        return 'Entrega N° '.$this->getId();
     }
 
 
@@ -107,7 +113,6 @@ class Entrega {
     public function setRemito(mixed $remito): void
     {
         $this->remito = $remito;
-        $remito->addEntrega($this);
     }
 
     /**

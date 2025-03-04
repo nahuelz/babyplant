@@ -21,9 +21,9 @@
             </div>
         </div>
 
-        {{ macro_form._new_field(form.remito.cliente, 'col-md-12 hidden') }}
-        {{ macro_form._new_field(form.cliente, 'col-md-12 hidden') }}
-        {{ macro_form._new_field(form.clienteEntrega, 'col-md-12 hidden') }}
+        {{ macro_form._new_field(form.remito.cliente, 'col-md-4 hidden') }}
+        {{ macro_form._new_field(form.cliente, 'col-md-4 hidden') }}
+        {{ macro_form._new_field(form.clienteEntrega, 'col-md-4 hidden') }}
 
         <div class="card-body">
             <div class="row">
@@ -49,7 +49,7 @@
     {{ parent() }}
 
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}" ></script>
-    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/remito/new.js') }}" ></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/entrega/remito_new.js') }}" ></script>
 
     <script>
         var preserve_values = {{ preserve_values is defined ? (preserve_values  ? 'true' : 'false'): 'false'}};

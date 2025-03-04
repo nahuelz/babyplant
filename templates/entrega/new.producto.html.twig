@@ -2,7 +2,7 @@
 
 {% set tienePedidoProducto = entity.entregasProductos|length > 0 %}
 
-<div class="row row-entrega-producto-empty margin-top-20">
+<div class="row row-entrega-producto-empty margin-top-20" style="display: none">
     <div class="col-md-12">
         <div class="alert alert-danger alert-form-error" style="background-color: #fbe1e3;color: brown;">
             Debe ingresar al menos un producto.
@@ -12,7 +12,7 @@
 
 <div class="row-form-entrega-producto">
     <div class="row">
-        {{ macro_form._new_field(form.entregaProducto.pedidoProducto, 'col-md-12') }}
+        {{ macro_form._new_field(form.entregaProducto.pedidoProducto, 'col-md-4') }}
         {{ macro_form._new_field(form.entregaProducto.cantidadBandejas, 'col-md-4') }}
         <div class="col-md-3 pull-left">
             <div class="form-group">

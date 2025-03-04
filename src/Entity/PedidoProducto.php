@@ -139,7 +139,6 @@ class PedidoProducto {
 
     /**
      * @ORM\OneToMany(targetEntity=EstadoPedidoProductoHistorico::class, mappedBy="pedidoProducto", cascade={"all"})
-     * @ORM\OrderBy({"fecha" = "DESC", "id" = "DESC"})
      */
     private $historicoEstados;
 
