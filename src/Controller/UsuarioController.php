@@ -134,7 +134,17 @@ class UsuarioController extends BaseController {
      */
     public function delete($id): RedirectResponse|JsonResponse|type
     {
-        return parent::baseDeleteAction($id);
+        $em = $this->doctrine->getManager();
+        $usuario = $em->getRepository('App\Entity\Usuario')->find($id);
+
+        if ($usuario->getPedidos()->isEmpty()) {
+            return parent::baseDeleteAction($id);
+        } else {
+            $this->get('session')->getFlashBag()->add('error', 'No puedes eliminar este Usuario ya que tiene pedidos realizados. Utilice la funcion "DESHABILITAR".');
+            return $this->getDeleteRedirectResponse($usuario);
+        }
+
+
     }
 
     /**
