@@ -782,8 +782,10 @@ class PedidoProducto {
     private function getCantidadBandejasReservadasSinEntregar(){
         $cantidadBandejas = 0;
         foreach ($this->getReservas() as $reserva){
-            if ($reserva->getEstado()->getCodigoInterno() == ConstanteEstadoReserva::SIN_ENTREGAR) {
-                $cantidadBandejas += $reserva->getCantidadBandejas();
+            if ($reserva->getEstado() != null) {
+                if ($reserva->getEstado()->getCodigoInterno() == ConstanteEstadoReserva::SIN_ENTREGAR) {
+                    $cantidadBandejas += $reserva->getCantidadBandejas();
+                }
             }
         }
         return $cantidadBandejas;
