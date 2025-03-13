@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Controller\ConstanteEstadoReserva;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Traits\Auditoria;
 use App\Repository\PedidoProductoRepository;
@@ -61,14 +62,9 @@ class PedidoProducto {
     private mixed $cantidadBandejasReales;
 
     /**
-     * @ORM\Column(name="cantidad_bandejas_entregadas", type="integer", nullable=true)
+     * @ORM\Column(name="cantidad_bandejas_disponibles", type="integer", nullable=true)
      */
-    private mixed $cantidadBandejasEntregadas;
-
-    /**
-     * @ORM\Column(name="cantidad_bandejas_sin_entregar", type="integer", nullable=true)
-     */
-    private mixed $cantidadBandejasSinEntregar;
+    private mixed $cantidadBandejasDisponibles;
 
     /**
      * @ORM\Column(name="cantidad_semillas", type="integer", nullable=false)
@@ -186,9 +182,16 @@ class PedidoProducto {
      */
     private $entregasProductos;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Reserva::class, mappedBy="pedidoProducto", cascade={"all"})
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $reservas;
+
 
     public function __construct()
     {
+        $this->reservas = new ArrayCollection();
         $this->entregasProductos = new ArrayCollection();
         $this->historicoEstados = new ArrayCollection();
         $this->cantidadBandejasEntregadas = 0;
@@ -277,7 +280,7 @@ class PedidoProducto {
     public function setCantidadBandejasPedidas(mixed $cantidadBandejasPedidas): void
     {
         $this->cantidadBandejasPedidas = $cantidadBandejasPedidas;
-        $this->cantidadBandejasSinEntregar = $cantidadBandejasPedidas;
+        $this->setCantidadBandejasReales($cantidadBandejasPedidas);
     }
 
     /**
@@ -294,7 +297,7 @@ class PedidoProducto {
     public function setCantidadBandejasReales(mixed $cantidadBandejasReales): void
     {
         $this->cantidadBandejasReales = $cantidadBandejasReales;
-        $this->cantidadBandejasSinEntregar = $cantidadBandejasReales;
+        $this->cantidadBandejasDisponibles = $cantidadBandejasReales;
     }
 
     /**
@@ -609,7 +612,7 @@ class PedidoProducto {
      */
     public function getNumeroOrden(): mixed
     {
-        return $this->numeroOrden;
+        return $this->numeroOrden != null ? $this->numeroOrden : '00';
     }
 
     public function getDiasEnCamara(): string
@@ -685,17 +688,20 @@ class PedidoProducto {
         $this->fechaEntradaCamaraReal = $fechaEntradaCamaraReal;
     }
 
-    public function getCantidadBandejasEntregadas(): mixed
+    public function getCantidadBandejasEntregadas()
     {
-        return $this->cantidadBandejasEntregadas;
+        $cantidadBandejas = 0;
+        foreach ($this->getEntregasProductos() as $entregaProducto){
+            $cantidadBandejas+= $entregaProducto->getCantidadBandejas();
+        }
+        return $cantidadBandejas;
     }
 
-    public function setCantidadBandejasEntregadas(mixed $cantidadBandejasEntregadas): void
-    {
-        $this->cantidadBandejasEntregadas = $cantidadBandejasEntregadas;
+    public function getCantidadBandejasSinEntregar(){
+        return ($this->getCantidadBandejasReales() - $this->getCantidadBandejasEntregadas());
     }
 
-    public function getEntregasProductos(): ArrayCollection
+    public function getEntregasProductos()
     {
         return $this->entregasProductos;
     }
@@ -703,6 +709,7 @@ class PedidoProducto {
     public function setEntregasProductos(ArrayCollection $entregasProductos): void
     {
         $this->entregasProductos = $entregasProductos;
+        $this->setCantidadBandejasDisponibles();
     }
 
     public function getMesadaUno(): mixed
@@ -729,15 +736,59 @@ class PedidoProducto {
         return 'Producto N° ' . $this->id . ' OS: ' . $this->getNumeroOrdenCompleto();
     }
 
-    public function getCantidadBandejasSinEntregar(): mixed
+    public function getReservas()
     {
-        return $this->cantidadBandejasSinEntregar;
+        return $this->reservas;
     }
 
-    public function setCantidadBandejasSinEntregar(mixed $cantidadBandejasSinEntregar): void
-    {
-        $this->cantidadBandejasSinEntregar = $cantidadBandejasSinEntregar;
+    public function addReserva(Reserva $reserva){
+        if (!$this->reservas->contains($reserva)) {
+            $this->reservas[] = $reserva;
+            $reserva->setPedidoProducto($this);
+        }
+        $this->setCantidadBandejasDisponibles();
     }
+
+    public function removeReserva(Reserva $reserva){
+        if ($this->reservas->removeElement($reserva)) {
+            // set the owning side to null (unless already changed)
+            if ($reserva->getPedidoProducto() === $this) {
+                $reserva->setPedidoProducto(null);
+            }
+        }
+        $this->setCantidadBandejasDisponibles();
+
+        return $this;
+    }
+
+    public function getCantidadBandejasReservadas(){
+        $cantidadBandejas = 0;
+        foreach ($this->getReservas() as $reserva){
+            $cantidadBandejas+= $reserva->getCantidadBandejas();
+        }
+        return $cantidadBandejas;
+    }
+
+    public function getCantidadBandejasDisponibles(){
+        // Disponible = bandejasReasles - (bandejasEntregadas + bandejasReservadas)
+        return ($this->getCantidadBandejasReales() - ($this->getCantidadBandejasEntregadas() + $this->getCantidadBandejasReservadasSinEntregar()));
+    }
+
+    public function setCantidadBandejasDisponibles()
+    {
+        $this->cantidadBandejasDisponibles = $this->getCantidadBandejasDisponibles();
+    }
+
+    private function getCantidadBandejasReservadasSinEntregar(){
+        $cantidadBandejas = 0;
+        foreach ($this->getReservas() as $reserva){
+            if ($reserva->getEstado()->getCodigoInterno() == ConstanteEstadoReserva::SIN_ENTREGAR) {
+                $cantidadBandejas += $reserva->getCantidadBandejas();
+            }
+        }
+        return $cantidadBandejas;
+    }
+
 
 
 

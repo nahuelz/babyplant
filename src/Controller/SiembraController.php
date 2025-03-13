@@ -90,7 +90,6 @@ class SiembraController extends BaseController
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
         $pedidoProducto->setObservacion($observacion);
         $pedidoProducto->setCantidadBandejasReales($bandejas);
-        $pedidoProducto->setCantidadBandejasSinEntregar($bandejas);
         $pedidoProducto->setFechaSiembraReal(new DateTime($fechaSiembra));
         $pedidoProducto->setHoraSiembra($horaSiembra);
         $pedidoProducto->setFechaEntradaCamara($pedidoProducto->getFechaSiembraReal());

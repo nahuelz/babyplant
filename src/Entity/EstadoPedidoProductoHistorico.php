@@ -56,6 +56,12 @@ class EstadoPedidoProductoHistorico {
      */
     private $DatosEntrega;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Reserva::class)
+     * @ORM\JoinColumn(name="id_reserva", referencedColumnName="id", nullable=true)
+     */
+    private $reserva;
+
     public function getId(): ?int {
         return $this->id;
     }
@@ -116,6 +122,24 @@ class EstadoPedidoProductoHistorico {
     {
         $this->DatosEntrega = $DatosEntrega;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getReserva()
+    {
+        return $this->reserva;
+    }
+
+    /**
+     * @param mixed $reserva
+     */
+    public function setReserva($reserva): void
+    {
+        $this->reserva = $reserva;
+    }
+
+
 
 
 }

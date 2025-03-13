@@ -153,6 +153,12 @@ class Usuario implements UserInterface {
      */
     private $entregas;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Reserva::class, mappedBy="cliente", cascade={"all"})
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $reservas;
+
     public function __construct() {
         $this->grupos = new \Doctrine\Common\Collections\ArrayCollection();
         $this->habilitado = true;
@@ -160,6 +166,7 @@ class Usuario implements UserInterface {
         $this->pedidos = new \Doctrine\Common\Collections\ArrayCollection();
         $this->remitos = new \Doctrine\Common\Collections\ArrayCollection();
         $this->entregas = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->reservas = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
 
@@ -544,7 +551,7 @@ class Usuario implements UserInterface {
         return $pendiente;
     }
 
-    public function getEntregas(): ArrayCollection
+    public function getEntregas()
     {
         return $this->entregas;
     }
@@ -554,6 +561,28 @@ class Usuario implements UserInterface {
         $this->entregas = $entregas;
     }
 
+    public function getReservas()
+    {
+        return $this->reservas;
+    }
+
+    public function addReserva(Reserva $reserva){
+        if (!$this->reservas->contains($reserva)) {
+            $this->reservas[] = $reserva;
+            $reserva->setCliente($this);
+        }
+    }
+
+    public function removeReserva(Reserva $reserva){
+        if ($this->reservas->removeElement($reserva)) {
+            // set the owning side to null (unless already changed)
+            if ($reserva->getCliente() === $this) {
+                $reserva->setCliente(null);
+            }
+        }
+
+        return $this;
+    }
 
 
 

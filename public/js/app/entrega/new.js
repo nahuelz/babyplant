@@ -227,7 +227,7 @@ function initBaseSubmitButton() {
                     if (result.error) {
                         Swal.fire({
                             title: result.tipo,
-                            text: "La cantidad de bandejas a entregar no puede superar a la cantidad de bandejas faltantes de entrega.",
+                            text: "La cantidad de bandejas a entregar no puede superar a la cantidad de bandejas disponibles para entregar.",
                             icon: "warning"
                         });
 

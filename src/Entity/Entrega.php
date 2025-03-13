@@ -197,6 +197,26 @@ class Entrega {
         $this->clienteEntrega = $clienteEntrega;
     }
 
+    public function addEntregaProducto(EntregaProducto $entregaProducto): self {
+        if (!$this->entregasProductos->contains($entregaProducto)) {
+            $this->entregasProductos[] = $entregaProducto;
+            $entregaProducto->setEntrega($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEntregaProducto(EntregaProducto $entregaProducto): self {
+        if ($this->entregasProductos->removeElement($entregaProducto)) {
+            // set the owning side to null (unless already changed)
+            if ($entregaProducto->getEntrega() === $this) {
+                $entregaProducto->setEntrega(null);
+            }
+        }
+
+        return $this;
+    }
+
 
 
 

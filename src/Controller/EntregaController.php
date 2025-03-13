@@ -21,6 +21,7 @@ use App\Entity\PedidoProducto;
 use App\Entity\Entrega;
 use App\Entity\Remito;
 use App\Form\EntregaType;
+use App\Service\EntregaService;
 use DateInvalidOperationException;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -176,112 +177,8 @@ class EntregaController extends BaseController {
      */
     function execPostPersistAction($em, $entity, $request): void
     {
-        /** @var EntregaProducto $entregaProducto */
-        foreach ($entity->getEntregasProductos() as $entregaProducto){
-
-            $bandejasAEntregar = $entregaProducto->getCantidadBandejas();
-
-            /* @var $pedidoProducto PedidoProducto */
-            $pedidoProducto = $entregaProducto->getPedidoProducto();
-
-            $cantidadBandejasEntregadas = ($pedidoProducto->getCantidadBandejasEntregadas() + $bandejasAEntregar);
-            $cantidadBandejasSinEntregar = ($pedidoProducto->getCantidadBandejasSinEntregar() - $bandejasAEntregar);
-
-            // SI ENTREGO TODAS LAS BANDEJAS DEL PEDIDO EL ESTADO PASA A ENTREGADO COMPLETO SI NO A ENTREGADO PARCIAL
-            if ($cantidadBandejasSinEntregar == 0){
-                $estadoPedidoProducto = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::ENTREGADO);
-                $estadoMesada = $em->getRepository(EstadoMesada::class)->findOneByCodigoInterno(ConstanteEstadoMesada::ENTREGADO);
-                $pedidoProducto->setFechaEntregaPedidoReal(new DateTime());
-            }else{
-                $estadoPedidoProducto = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::ENTREGADO_PARCIAL);
-                $estadoMesada = $em->getRepository(EstadoMesada::class)->findOneByCodigoInterno(ConstanteEstadoMesada::ENTREGADO_PARCIAL);
-            }
-
-            $pedidoProducto->setCantidadBandejasEntregadas($cantidadBandejasEntregadas);
-            $pedidoProducto->setCantidadBandejasSinEntregar($cantidadBandejasSinEntregar);
-
-            $datosEntrega = new DatosEntrega();
-            $datosEntrega->setPedidoProducto($pedidoProducto);
-            $datosEntrega->setEntrega($entity);
-            $datosEntrega->setCantidadBandejasEntregadas($cantidadBandejasEntregadas);
-            $datosEntrega->setCantidadBandejasSinEntregar($cantidadBandejasSinEntregar);
-            $datosEntrega->setCantidadBandejasAEntregar($bandejasAEntregar);
-            $datosEntrega->setMesadaUno($pedidoProducto->getMesadaUno());
-            $datosEntrega->setMesadaDos($pedidoProducto->getMesadaDos());
-            $this->entregarBandejas($em, $pedidoProducto, $estadoMesada, $bandejasAEntregar);
-            $em->persist($datosEntrega);
-
-            $this->cambiarEstadoPedido($em, $pedidoProducto, $estadoPedidoProducto, $datosEntrega);
-
-            $em->flush();
-        }
-        $estadoEntrega = $em->getRepository(EstadoEntrega::class)->findOneByCodigoInterno(ConstanteEstadoEntrega::SIN_REMITO);
-        $this->cambiarEstadoEntrega($em, $entity, $estadoEntrega);
-        $em->flush();
-    }
-
-    public function entregarBandejas($em, $pedidoProducto, $estadoMesada, $bandejasAEntregar): void
-    {
-        $mesadaUno = $pedidoProducto->getMesadaUno();
-        $mesadaDos = $pedidoProducto->getMesadaDos();
-        $bandejasEnMesadaUno = $mesadaUno != null ? $mesadaUno->getCantidadBandejas() : null;
-        $bandejasEnMesadaDos = $mesadaDos != null ? $mesadaDos->getCantidadBandejas() : null;
-
-        if($bandejasEnMesadaUno >= $bandejasAEntregar){
-            $mesadaUno->entregarBandejas($bandejasAEntregar);
-            $this->cambiarEstadoMesada($em, $mesadaUno, $estadoMesada);
-        }else{
-            $badejasRestantes = $bandejasAEntregar - $bandejasEnMesadaUno;
-            $mesadaUno->entregarBandejas($bandejasEnMesadaUno);
-            $this->cambiarEstadoMesada($em, $mesadaUno, $estadoMesada);
-            // SI QUEDAN MÁS BANDEJAS POR ENTREGAR QUE LAS QUE HAY EN LA MESADA HUBO ERROR, SE DESCUENTAN SOLO LAS QUE HAY
-            if ($badejasRestantes > $bandejasEnMesadaDos){
-                $badejasRestantes = $bandejasEnMesadaDos;
-            }
-            $mesadaDos->entregarBandejas($badejasRestantes);
-            $this->cambiarEstadoMesada($em, $mesadaDos, $estadoMesada);
-        }
-    }
-
-    /**
-     *
-     * @param ObjectManager $em
-     * @param Mesada $mesada
-     * @param EstadoMesada $estadoMesada
-     */
-    private function cambiarEstadoMesada(ObjectManager $em, Mesada $mesada, EstadoMesada $estadoMesada): void
-    {
-        $mesada->setEstado($estadoMesada);
-        $estadoMesadaHistorico = new EstadoMesadaHistorico();
-        $estadoMesadaHistorico->setMesada($mesada);
-        $estadoMesadaHistorico->setFecha(new DateTime());
-        $estadoMesadaHistorico->setEstado($estadoMesada);
-        $estadoMesadaHistorico->setCantidadBandejas($mesada->getCantidadBandejas());
-        $estadoMesadaHistorico->setMotivo('Entrega de producto.');
-        $mesada->addHistoricoEstado($estadoMesadaHistorico);
-
-        $em->persist($estadoMesadaHistorico);
-    }
-
-    /**
-     *
-     * @param ObjectManager $em
-     * @param PedidoProducto $pedidoProducto
-     * @param EstadoPedidoProducto $estadoProducto
-     * @param null $datosEntrega
-     */
-    private function cambiarEstadoPedido(ObjectManager $em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto, $datosEntrega = null): void
-    {
-        $pedidoProducto->setEstado($estadoProducto);
-        $estadoPedidoProductoHistorico = new EstadoPedidoProductoHistorico();
-        $estadoPedidoProductoHistorico->setPedidoProducto($pedidoProducto);
-        $estadoPedidoProductoHistorico->setFecha(new DateTime());
-        $estadoPedidoProductoHistorico->setEstado($estadoProducto);
-        $estadoPedidoProductoHistorico->setMotivo('Entrega de bandejas');
-        $estadoPedidoProductoHistorico->setDatosEntrega($datosEntrega);
-        $pedidoProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
-
-        $em->persist($estadoPedidoProductoHistorico);
+        $entregaService = new EntregaService();
+        $entregaService->entregar($em, $entity);
     }
 
     /**
@@ -313,7 +210,7 @@ class EntregaController extends BaseController {
         $repository = $this->doctrine->getRepository(PedidoProducto::class);
 
         $query = $repository->createQueryBuilder('pp')
-            ->select("pp.id, concat ('ORDEN N° ',pp.numeroOrden,' ', tp.nombre,' (x',tb.nombre,') BANDEJAS SEMBRADAS: ',pp.cantidadBandejasReales,' SIN ENTREGAR: ',pp.cantidadBandejasSinEntregar, ' MESADA N° ', tm.nombre) as denominacion")
+            ->select("pp.id, concat ('ORDEN N° ',pp.numeroOrden,' ', tp.nombre,' (x',tb.nombre,') BANDEJAS SEMBRADAS: ',pp.cantidadBandejasReales,' DISPONIBLES: ',pp.cantidadBandejasDisponibles, ' MESADA N° ', tm.nombre) as denominacion")
             ->leftJoin('pp.pedido', 'p' )
             ->leftJoin('App:TipoVariedad', 'v', Join::WITH, 'pp.tipoVariedad = v')
             ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')
@@ -323,6 +220,7 @@ class EntregaController extends BaseController {
             ->leftJoin('App:TipoMesada', 'tm', Join::WITH, 'm.tipoMesada = tm')
             ->where('p.cliente = :cliente')
             ->andWhere('pp.estado IN (:estados)')
+            ->andWhere('pp.cantidadBandejasDisponibles > 0')
             ->setParameter('cliente', $idCliente)
             ->setParameter('estados', [ConstanteEstadoPedidoProducto::EN_INVERNACULO, ConstanteEstadoPedidoProducto::ENTREGADO_PARCIAL])
             ->orderBy('pp.id', 'ASC')
@@ -345,7 +243,7 @@ class EntregaController extends BaseController {
         $error = false;
         $tipoError = '';
         foreach ($entity->getEntregasProductos() as $entregaProducto) {
-            if ($entregaProducto->getCantidadBandejas() > $entregaProducto->getPedidoProducto()->getCantidadBandejasSinEntregar()) {
+            if ($entregaProducto->getCantidadBandejas() > $entregaProducto->getPedidoProducto()->getCantidadBandejasDisponibles()) {
                 $error = true;
                 $tipoError = 'ERROR ORDEN N° '.$entregaProducto->getPedidoProducto()->getNumeroOrdenCompleto();
             }
@@ -410,7 +308,7 @@ class EntregaController extends BaseController {
 
         $html = $this->renderView('entrega/remito_pdf.html.twig', array('entity' => $entrega, 'website' => "http://192.168.0.182/babyplant/public/"));
 
-        $filename = 'remito.pdf';
+        $filename = 'entrega.pdf';
 
         $mpdfService = new Mpdf([
             'mode' => 'utf-8',

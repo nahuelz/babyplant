@@ -80,13 +80,13 @@
 
                     {# PLANIFICACION ENTREGA#}
                     {% if is_granted("ROLE_PEDIDO") %}
-                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-truck icon-3x text-dark', 'nombreModulo': 'Planificacion de Entregas','action': path('entrega_index'), 'descripcionModulo': 'Aqui podra ver las entregas' } %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-truck icon-3x text-dark', 'nombreModulo': 'Ver Entregas','action': path('entrega_index'), 'descripcionModulo': 'Aqui podra ver las entregas' } %}
                     {% endif %}
 
-                    {# AGENDA ENTREGA
+                    {# AGENDA ENTREGA #}
                     {% if is_granted("ROLE_AGENDA") %}
-                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-calendar-alt icon-3x text-dark', 'nombreModulo': 'Agenda de Entregas','action': '#', 'descripcionModulo': 'Aqui podra ver la agenda de entregas' } %}
-                    {% endif %}#}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-calendar-alt icon-3x text-dark', 'nombreModulo': 'Ver Reservas','action': path('reserva_index'), 'descripcionModulo': 'Aqui podra ver las reservas' } %}
+                    {% endif %}
 
                     {# HISTORIAL ENTREGA
                     {% if is_granted("ROLE_HISTORIAL") %}

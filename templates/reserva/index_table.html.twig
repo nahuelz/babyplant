@@ -1,0 +1,43 @@
+{% autoescape false %}
+    {
+    "data": [
+    {% for entity in entities %}
+        [
+        "{{ entity.idReserva }}",
+        "{{ entity.idReserva }}",
+        {
+        "idPedidoProducto": "{{ entity.idPedidoProducto }}",
+        "path": "{{ path('pedido_producto_show', { "id": entity.idPedidoProducto }) }}"
+        },
+        "{{ entity.ordenSiembra|default('-') }}",
+        "{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}",
+        "{{ entity.cliente|default('-') }}",
+        "{{ entity.clienteReserva|default('-') }}",
+        {
+        "nombreProductoCompleto": "{{ entity.nombreProductoCompleto|default('default') }}",
+        "nombreProducto": "{{ entity.nombreProducto|default('default') }}"
+        },
+        {
+        "estado": "{{ entity.estado|default('Sin estado') }}",
+        "colorEstado": "{{ entity.colorEstado|default('default') }}"
+        },
+        {
+        "estadoPedidoProducto": "{{ entity.estadoPedidoProducto|default('Sin estado') }}",
+        "colorEstadoPedidoProducto": "{{ entity.colorEstadoPedidoProducto|default('default') }}"
+        },
+        "{{ entity.cantidadBandejas|default('-') }}",
+        {
+        {% if entity.idEstado != 2 %}
+            "entregar": "{{ path( "reserva_confirmar_entrega", { id: entity.idReserva }) }}",
+            "idReserva": "{{ entity.idReserva }}",
+        {% endif %}
+        "situacion_cliente": "{{ path( "situacioncliente_show", { "id": entity.idClienteReserva }) }}",
+        "show": "{{ path('reserva_show',{id: entity.idReserva}) }}",
+        "historico_estados": "{{ path('reserva_historico_estado',{id: entity.idReserva}) }}",
+        "print_pdf": "{{ path( "imprimir_reserva", { "id": entity.idReserva }) }}"
+        }
+        ]{{ (loop.last ? '' : ',') }}
+    {% endfor %}
+    ]
+    }
+{% endautoescape %}

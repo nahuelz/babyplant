@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% set edit = form.vars.value.id != null %}
+
+{% import 'app/_macro_form.html.twig' as macro_form %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+{% endblock %}
+
+{% block body %}
+    {{ form_start(form, {'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
+    {% include ('app/_fields_errors.html.twig') %}
+
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon-search text-primary"></i></span>
+                <h3 class="card-label">Nueva reserva</h3>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                {{ macro_form._new_field(form.clienteOrigen, 'col-md-6') }}
+                {{ macro_form._new_field(form.cliente, 'col-md-6') }}
+            </div>
+            <div class="row">
+                {{ macro_form._new_field(form.fechaEntregaEstimada, 'col-md-3') }}
+                {{ macro_form._new_field(form.pedidoProducto, 'col-md-6') }}
+                {{ macro_form._new_field(form.cantidadBandejas, 'col-md-3') }}
+            </div>
+        </div>
+
+
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('remito_index') }}" class="btn btn-light-dark font-weight-bold">Volver</a>
+            {{ form_widget(form.submit) }}
+        </div>
+    </div>
+    {{ form_widget(form._token) }}
+    {{ form_end(form, {"render_rest": false}) }}
+
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}" ></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/reserva/new.js') }}" ></script>
+
+    <script>
+        var preserve_values = {{ preserve_values is defined ? (preserve_values  ? 'true' : 'false'): 'false'}};
+    </script>
+
+{% endblock %}

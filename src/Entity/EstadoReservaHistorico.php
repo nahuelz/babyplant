@@ -7,12 +7,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="estado_entrega_historico")
+ * @ORM\Table(name="estado_reserva_historico")
  * @ORM\Entity()
  *
  * @Gedmo\SoftDeleteable(fieldName="fechaBaja")
  */
-class EstadoEntregaHistorico {
+class EstadoReservaHistorico {
 
     use Auditoria;
 
@@ -24,14 +24,14 @@ class EstadoEntregaHistorico {
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Entrega::class, inversedBy="historicoEstados")
-     * @ORM\JoinColumn(name="id_entrega", referencedColumnName="id", nullable=true)
+     * @ORM\ManyToOne(targetEntity=Reserva::class, inversedBy="historicoEstados")
+     * @ORM\JoinColumn(name="id_reserva", referencedColumnName="id", nullable=true)
      */
-    protected $entrega;
+    protected $reserva;
 
     /**
-     * @ORM\ManyToOne(targetEntity=EstadoEntrega::class)
-     * @ORM\JoinColumn(name="id_estado_entrega", referencedColumnName="id", nullable=false)
+     * @ORM\ManyToOne(targetEntity=EstadoReserva::class)
+     * @ORM\JoinColumn(name="id_estado_reserva", referencedColumnName="id", nullable=false)
      */
     private $estado;
 
@@ -57,21 +57,21 @@ class EstadoEntregaHistorico {
         return $this->id;
     }
 
-    public function getEntrega(): ?Entrega {
-        return $this->entrega;
+    public function getReserva(): ?Reserva {
+        return $this->reserva;
     }
 
-    public function setEntrega(?Entrega $entrega): self {
-        $this->entrega = $entrega;
+    public function setReserva(?Reserva $reserva): self {
+        $this->reserva = $reserva;
 
         return $this;
     }
 
-    public function getEstado(): ?EstadoEntrega {
+    public function getEstado(): ?EstadoReserva {
         return $this->estado;
     }
 
-    public function setEstado(?EstadoEntrega $estado): self {
+    public function setEstado(?EstadoReserva $estado): self {
         $this->estado = $estado;
 
         return $this;

@@ -2,8 +2,8 @@
 <html>
 <head>
     <style type="text/css">
-        .entrega{
-            background: url({{ asset('images/logo/plantilla-entrega.png') }});
+        .reserva{
+            background: url({{ asset('images/logo/plantilla-reserva.png') }});
             background-repeat: no-repeat;
             background-image-resize: 1;
             font-size: 16px;
@@ -26,7 +26,7 @@
             line-height: 5.7mm;
             width: 200px;
         }
-        .datos-entrega{
+        .datos-reserva{
             margin-left: 630px;
             margin-top: -197px;
             line-height: 12mm;
@@ -60,7 +60,7 @@
 </head>
 <body>
 
-<div class="entrega">
+<div class="reserva">
     <br>
     <div class="logo-empresa" ></div>
     <div class="datos-empresa">
@@ -72,8 +72,8 @@
         <div>  0221 15-669-0199 </div>
     </div>
 
-    <div class="datos-entrega">
-        <div>{{ entity.codigo }}</div>
+    <div class="datos-reserva">
+        <div>{{ entity.id }}</div>
         <div>{{ entity.fechaCreacion|date('d/m/Y') }}</div>
     </div>
     <div class="datos-cliente-left">
@@ -88,19 +88,17 @@
         <table class="datos-productos-table" border="1" cellpadding="0" cellspacing="0" align="center">
             <thead>
             <tr>
-                <th class="text-center">N° ORDEN</th>
+                <th class="text-center">N° producto</th>
                 <th class="text-center">PRODUCTO</th>
                 <th class="text-center">CANTIDAD</th>
             </tr>
             </thead>
             <tbody>
-            {% for entregaProducto in entity.entregasProductos %}
-                <tr>
-                    <td width="200" align="center">{{ entregaProducto.pedidoProducto.numeroOrdenCompleto }}</td>
-                    <td width="430" align="center">{{ entregaProducto.pedidoProducto.productoBandeja }}</td>
-                    <td width="150" align="center">{{ entregaProducto.cantidadBandejas }}</td>
-                </tr>
-            {% endfor %}
+            <tr>
+                <td width="200" align="center">{{ entity.pedidoProducto.id }}</td>
+                <td width="430" align="center">{{ entity.pedidoProducto.productoBandeja }}</td>
+                <td width="150" align="center">{{ entity.cantidadBandejas }}</td>
+            </tr>
         </table>
     </div>
 </div>
