@@ -293,7 +293,7 @@ class RemitoController extends BaseController {
 
         $query = $repository->createQueryBuilder('e')
             ->select("e.id, concat ('Entrega N° ', e.id) as denominacion")
-            ->where('e.cliente = :cliente')
+            ->where('e.clienteEntrega = :cliente')
             ->andWhere('e.estado = :estado')
             ->setParameter('cliente', $idCliente)
             ->setParameter('estado', ConstanteEstadoEntrega::SIN_REMITO)
