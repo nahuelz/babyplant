@@ -7,13 +7,19 @@
         [
         "{{ entity.id }}",
         "{{ entity.id }}",
-        "{{ entity.idProducto }}",
+        {
+        "idProducto": "{{ entity.idProducto }}",
+        "path": "{{ path('pedido_producto_show', { "id": entity.idProducto }) }}"
+        },
         "{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}",
         {
-        "nombreProductoCompleto" : "{{ entity.nombreProductoCompleto|default('default') }}",
-        "nombreProducto" : "{{ entity.nombreProducto|default('default') }}"
+        "nombreProductoCompleto": "{{ entity.nombreProductoCompleto|default('default') }}",
+        "nombreProducto": "{{ entity.nombreProducto|default('default') }}"
         },
-        "{{ entity.cliente|default('-') }}",
+        {
+        "nombreCliente": "{{ entity.cliente|default('-') }}",
+        "path": "{{ path('situacioncliente_show', { "id": entity.idCliente }) }}"
+        },
         "{{ entity.cantidadBandejas|default('-') }}",
         "{{ entity.fechaSiembraPedido is not null ? entity.fechaSiembraPedido|date('d/m/Y') : '-' }}",
         "{{ entity.fechaEntregaPedido is not null ? entity.fechaEntregaPedido|date('d/m/Y') : '-' }}",

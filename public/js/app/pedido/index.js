@@ -36,8 +36,8 @@ function setSameHeight(target) {
     });
 }
 
-function initColumnsHandler (){
-    $('#multiple').on('change', function(e){
+function initColumnsHandler () {
+    $('#multiple').on('change', function (e) {
         e.preventDefault();
         $.ajax({
             type: 'post',
@@ -48,7 +48,6 @@ function initColumnsHandler (){
             url: __HOMEPAGE_PATH__ + "pedido/save_columns/",
             success: function (response) {
                 toastr.success(response.message);
-                //toggleHiddeColumn();
                 location.reload();
             },
             error: function () {
@@ -56,21 +55,6 @@ function initColumnsHandler (){
             }
         });
     });
-}
-
-function toggleHiddeColumn() {
-    var targets = getTargets();
-    $.each(targets , function(index, val) {
-        var column = $table.DataTable().columns(val);
-        if (column.visible()[0]) {
-            column.visible(false);
-            $('.filter th:nth-child(' + val + ')').hide();
-        }/* else {
-            $('.filter th:nth-child(' + val + ')').show();
-            column.visible(true);
-        }*/
-    });
-    $table.DataTable().ajax.reload();
 }
 
 function getTargets(){
@@ -262,10 +246,15 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
-            name: 'id',
-            width: '15px',
-            className: 'dt-center',
-            type: 'num'
+            name: 'idProducto',
+            width: '5px',
+            className: 'nowrap text-center margin-0 ',
+            render: function (data, type, full, meta) {
+                if (type === 'display') {
+                    return '<a href="' + data.path + '" target="_blank">' + data.idProducto + '</a>';
+                }
+                return data.idProducto;
+            }
         },
         {
             targets: index++,
@@ -293,9 +282,15 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
-            name: 'cliente',
-            width: '150px',
-            className: 'dt-center',
+            name: 'nombreCliente',
+            className: 'nowrap text-center margin-0 ',
+            width: '50px',
+            render: function (data, type, full, meta) {
+                if (type === 'display') {
+                    return '<a href="' + data.path + '" target="_blank">' + data.nombreCliente + '</a>';
+                }
+                return data.nombreCliente;
+            }
         },
         {
             targets: index++,

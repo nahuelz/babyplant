@@ -4,12 +4,6 @@ var total = 0;
 var indexEntrega = 0;
 
 jQuery(document).ready(function () {
-    //initFormValidation();
-    //initProductos();
-    //$('.row-remito-producto-empty').hide();
-    //initBaseSubmitButton();
-    //$('.submit-button').html('Guardar');
-    //initPreValidation();
     calcularDescuento();
     initRemitoProductoHandler();
     $('#remito_cantidadDescuento').attr('readonly', true);
@@ -171,7 +165,7 @@ function agregarEntregaProducto(producto, indexEntrega) {
 function calcularTotal(){
     total = 0;
     $(".subtotal").each(function( index ) {
-        var subtotal = $(this).text().replace(',', '');
+        var subtotal = $(this).text().replaceAll(',', '');
         total += parseInt(subtotal.slice(1));
     });
 

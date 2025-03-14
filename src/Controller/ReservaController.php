@@ -213,7 +213,7 @@ class ReservaController extends BaseController {
         $repository = $this->doctrine->getRepository(PedidoProducto::class);
 
         $query = $repository->createQueryBuilder('pp')
-            ->select("pp.id, concat ('PEDIDO N° ',pp.id,' ', tp.nombre,' BANDEJAS SEMBRADAS: ',pp.cantidadBandejasReales,' DISPONIBLES: ',pp.cantidadBandejasDisponibles,' ESTADO: ',e.nombre) as denominacion")
+            ->select("pp.id, concat ('PEDIDO N° ',pp.id,' ', tp.nombre, ' ', v.nombre,' BANDEJAS SEMBRADAS: ',pp.cantidadBandejasReales,' DISPONIBLES: ',pp.cantidadBandejasDisponibles,' ESTADO: ',e.nombre) as denominacion")
             ->leftJoin('pp.pedido', 'p' )
             ->leftJoin('App:TipoVariedad', 'v', Join::WITH, 'pp.tipoVariedad = v')
             ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')

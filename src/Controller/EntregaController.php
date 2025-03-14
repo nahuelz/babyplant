@@ -210,7 +210,7 @@ class EntregaController extends BaseController {
         $repository = $this->doctrine->getRepository(PedidoProducto::class);
 
         $query = $repository->createQueryBuilder('pp')
-            ->select("pp.id, concat ('ORDEN N° ',pp.numeroOrden,' ', tp.nombre,' (x',tb.nombre,') BANDEJAS SEMBRADAS: ',pp.cantidadBandejasReales,' DISPONIBLES: ',pp.cantidadBandejasDisponibles, ' MESADA N° ', tm.nombre) as denominacion")
+            ->select("pp.id, concat ('ORDEN N° ',pp.numeroOrden,' ', tp.nombre, ' ', v.nombre,' (x',tb.nombre,') BANDEJAS SEMBRADAS: ',pp.cantidadBandejasReales,' DISPONIBLES: ',pp.cantidadBandejasDisponibles, ' MESADA N° ', tm.nombre) as denominacion")
             ->leftJoin('pp.pedido', 'p' )
             ->leftJoin('App:TipoVariedad', 'v', Join::WITH, 'pp.tipoVariedad = v')
             ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')
@@ -307,6 +307,52 @@ class EntregaController extends BaseController {
         }
 
         $html = $this->renderView('entrega/remito_pdf.html.twig', array('entity' => $entrega, 'website' => "http://192.168.0.182/babyplant/public/"));
+
+        $filename = 'entrega.pdf';
+
+        $mpdfService = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'default_font_size' => 0,
+            'default_font' => '',
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'margin_top' => 0,
+            'margin_bottom' => 0,
+            'margin_header' => 0,
+            'margin_footer' => 0,
+            'orientation' => 'P',
+        ]);
+
+        $mpdfService->shrink_tables_to_fit = 1;
+
+        $mpdfService->SetTitle($filename);
+
+        $mpdfService->WriteHTML($html);
+
+        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
+
+        return new Response($mpdfOutput);
+    }
+
+    /**
+     * Print a Entrega Entity.
+     *
+     * @Route("/imprimir-entrega-interno/{id}", name="imprimir_entrega_interno", methods={"GET"})
+     * @throws MpdfException
+     */
+    public function imprimirEntregaInternoAction($id): Response
+    {
+        $em = $this->doctrine->getManager();
+
+        /* @var $entrega Entrega */
+        $entrega = $em->getRepository("App\Entity\Entrega")->find($id);
+
+        if (!$entrega) {
+            throw $this->createNotFoundException("No se puede encontrar la entidad.");
+        }
+
+        $html = $this->renderView('entrega/interno_pdf.html.twig', array('entity' => $entrega, 'website' => "http://192.168.0.182/babyplant/public/"));
 
         $filename = 'entrega.pdf';
 
