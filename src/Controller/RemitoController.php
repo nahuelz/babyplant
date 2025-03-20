@@ -2,28 +2,22 @@
 
 namespace App\Controller;
 
+use Afip;
 use App\Entity\Constants\ConstanteEstadoEntrega;
-use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Constants\ConstanteEstadoRemito;
 use App\Entity\Entrega;
 use App\Entity\EntregaProducto;
 use App\Entity\EstadoEntrega;
 use App\Entity\EstadoEntregaHistorico;
-use App\Entity\EstadoPedidoProducto;
-use App\Entity\EstadoPedidoProductoHistorico;
 use App\Entity\EstadoRemito;
 use App\Entity\EstadoRemitoHistorico;
-use App\Entity\PedidoProducto;
 use App\Entity\Remito;
-use App\Form\EntregaType;
 use App\Form\RemitoType;
-use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ObjectManager;
 use Mpdf\Mpdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -249,6 +243,115 @@ class RemitoController extends BaseController {
         $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
 
         return new Response($mpdfOutput);
+    }
+
+    /**
+     *
+     * @Route("/imprimir-factura-arca/{id}", name="imprimir_factura_arca", methods={"GET"})
+     */
+    public function imprimirFacturaArcaAction($id) {
+        $em = $this->doctrine->getManager();
+
+        /* @var $remito Remito */
+        $remito = $em->getRepository("App\Entity\Remito")->find($id);
+
+        if (!$remito) {
+            throw $this->createNotFoundException("No se puede encontrar la entidad.");
+        }
+
+        // Certificado (Puede estar guardado en archivos, DB, etc)
+        $cert = file_get_contents('certificado/prueba.crt');
+
+        // Key (Puede estar guardado en archivos, DB, etc)
+        $key = file_get_contents('certificado/prueba');
+
+
+        // Tu CUIT
+        $tax_id = 20382971923;
+        $afip = new Afip(array(
+            'CUIT' => $tax_id,
+            'cert' => $cert,
+            'key' => $key
+        ));
+
+        $html = $this->render('arca/factura.html.twig', array('remito' => $remito))->getContent();
+
+        // Nombre para el archivo (sin .pdf)
+        $name = 'PDF de prueba';
+
+        // Opciones para el archivo
+        $options = array(
+            "width" => 8, // Ancho de pagina en pulgadas. Usar 3.1 para ticket
+            "marginLeft" => 0.4, // Margen izquierdo en pulgadas. Usar 0.1 para ticket
+            "marginRight" => 0.4, // Margen derecho en pulgadas. Usar 0.1 para ticket
+            "marginTop" => 0.4, // Margen superior en pulgadas. Usar 0.1 para ticket
+            "marginBottom" => 0.4 // Margen inferior en pulgadas. Usar 0.1 para ticket
+        );
+
+        // Creamos el PDF
+        $res = $afip->ElectronicBilling->CreatePDF(array(
+            "html" => $html,
+            "file_name" => $name,
+            "options" => $options
+        ));
+
+        // Mostramos la url del archivo creado
+        return $this->redirect($res['file']);
+    }
+
+    /**
+     *
+     * @Route("/imprimir-ticket-arca/{id}", name="imprimir_ticket_arca", methods={"GET"})
+     */
+    public function imprimirTicketArcaAction($id): \Symfony\Component\HttpFoundation\RedirectResponse
+    {
+        $em = $this->doctrine->getManager();
+
+        /* @var $remito Remito */
+        $remito = $em->getRepository("App\Entity\Remito")->find($id);
+
+        if (!$remito) {
+            throw $this->createNotFoundException("No se puede encontrar la entidad.");
+        }
+
+        // Certificado (Puede estar guardado en archivos, DB, etc)
+        $cert = file_get_contents('certificado/prueba.crt');
+
+        // Key (Puede estar guardado en archivos, DB, etc)
+        $key = file_get_contents('certificado/prueba');
+
+
+        // Tu CUIT
+        $tax_id = 20382971923;
+        $afip = new Afip(array(
+            'CUIT' => $tax_id,
+            'cert' => $cert,
+            'key' => $key
+        ));
+
+        $html = $this->render('arca/ticket.html.twig', array('remito' => $remito))->getContent();
+
+        // Nombre para el archivo (sin .pdf)
+        $name = 'PDF de prueba';
+
+        // Opciones para el archivo
+        $options = array(
+            "width" => 3.1, // Ancho de pagina en pulgadas. Usar 3.1 para ticket
+            "marginLeft" => 0.1, // Margen izquierdo en pulgadas. Usar 0.1 para ticket
+            "marginRight" => 0.1, // Margen derecho en pulgadas. Usar 0.1 para ticket
+            "marginTop" => 0.1, // Margen superior en pulgadas. Usar 0.1 para ticket
+            "marginBottom" => 0.1 // Margen inferior en pulgadas. Usar 0.1 para ticket
+        );
+
+        // Creamos el PDF
+        $res = $afip->ElectronicBilling->CreatePDF(array(
+            "html" => $html,
+            "file_name" => $name,
+            "options" => $options
+        ));
+
+        // Mostramos la url del archivo creado
+        return $this->redirect($res['file']);
     }
 
     /**

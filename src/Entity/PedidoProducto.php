@@ -791,7 +791,4 @@ class PedidoProducto {
         return $cantidadBandejas;
     }
 
-
-
-
 }
