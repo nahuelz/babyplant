@@ -7,6 +7,7 @@ use App\Entity\EstadoEntrega;
 use App\Entity\EstadoMesada;
 use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoRemito;
+use App\Entity\EstadoReserva;
 use App\Entity\GlobalConfig;
 use App\Entity\Grupo;
 use App\Entity\Mesada;
@@ -147,6 +148,24 @@ class AppFixtures extends Fixture
         $estadoMesada->setCodigoInterno(3);
         $estadoMesada->setHabilitado(1);
         $manager->persist($estadoMesada);
+
+        $estadoReserva = new EstadoReserva();
+        $estadoReserva->setNombre('SIN ENTREGAR');
+        $estadoReserva->setCodigoInterno(1);
+        $estadoReserva->setHabilitado(1);
+        $estadoReserva->setColor('label-light-warning');
+        $estadoReserva->setIcono('fa fa-info-circle');
+        $estadoReserva->setColorIcono('warning');
+        $manager->persist($estadoReserva);
+
+        $estadoReserva = new EstadoReserva();
+        $estadoReserva->setNombre('ENTREGADO');
+        $estadoReserva->setCodigoInterno(2);
+        $estadoReserva->setHabilitado(2);
+        $estadoReserva->setColor('label-light-success');
+        $estadoReserva->setIcono('fa fa-check');
+        $estadoReserva->setColorIcono('success');
+        $manager->persist($estadoReserva);
 
         $estadoRemito = new EstadoRemito();
         $estadoRemito->setNombre('PENDIENTE');
