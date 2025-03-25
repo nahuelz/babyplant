@@ -374,7 +374,7 @@ group by `tm`.`id`;");
         $statement = $connection->prepare("create definer = root@localhost view _view_remito_precio_total as
 select `r`.`id` AS `id_remito`, sum(`ep`.`precio_unitario` * `ep`.`cantidad_bandejas`) AS `total`
 from ((`babyplant2`.`remito` `r` left join `babyplant2`.`entrega` `e`
-       on (`r`.`id_entrega` = `e`.`id`)) left join `babyplant2`.`entrega_producto` `ep`
+       on (`e`.`id_remito` = `r`.`id`)) left join `babyplant2`.`entrega_producto` `ep`
       on (`ep`.`id_entrega` = `e`.`id`))
 group by `r`.`id`;");
         $statement->execute();
