@@ -35,7 +35,7 @@ class SalidaCamaraController extends BaseController
     /**
      * @Route("/", name="salidacamara_index", methods={"GET"})
      * @Template("salida_camara/index.html.twig")
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_CAMARA")
      */
     public function index(): array
     {
@@ -51,7 +51,7 @@ class SalidaCamaraController extends BaseController
     /**
      *
      * @Route("/index_table/", name="salida_camara_table", methods={"GET|POST"})
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_CAMARA")
      */
     public function indexTableAction(Request $request): Response {
 
@@ -83,7 +83,7 @@ class SalidaCamaraController extends BaseController
 
     /**
      * @Route("/{id}", name="salida_camara_show", methods={"GET","POST"})
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_CAMARA")
      */
     public function show(Request $request, $id) {
         $em = $this->doctrine->getManager();

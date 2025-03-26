@@ -28,7 +28,7 @@ class EntradaCamaraController extends BaseController
     /**
      * @Route("/", name="entradacamara_index", methods={"GET"})
      * @Template("entrada_camara/index.html.twig")
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_CAMARA")
      */
     public function index(): array
     {
@@ -44,7 +44,7 @@ class EntradaCamaraController extends BaseController
     /**
      *
      * @Route("/index_table/", name="entrada_camara_table", methods={"GET|POST"})
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_CAMARA")
      */
     public function indexTableAction(Request $request): Response {
 
@@ -96,7 +96,7 @@ class EntradaCamaraController extends BaseController
     /**
      *
      * @Route("/guardar/", name="guardar_entrada_camara", methods={"POST"})
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_CAMARA")
      */
     public function guardarEntradaCamara(Request $request){
 
