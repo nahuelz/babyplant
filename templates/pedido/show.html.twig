@@ -71,7 +71,7 @@
                         {{ macro_show._show_detail('Cantidad Bandejas Reales', producto.cantidadBandejasReales|default('-'), 'col-md-2') }}
                         {{ macro_show._show_detail('Cantidad Bandejas Entregadas', producto.cantidadBandejasEntregadas|default('-'), 'col-md-2') }}
                         {{ macro_show._show_detail('Cantidad Bandejas Sin Entregar', producto.cantidadBandejasSinEntregar|default('-'), 'col-md-2') }}
-                        {{ macro_show._show_detail('Cantidad Bandejas Reservadas', producto.cantidadBandejasReservadas|default('-'), 'col-md-2') }}
+                        {{ macro_show._show_detail('Cantidad Bandejas Reservadas', producto.cantidadBandejasReservadasSinEntregar|default('-'), 'col-md-2') }}
                         {{ macro_show._show_detail('Cantidad Bandejas Disponibles', producto.cantidadBandejasDisponibles|default('-'), 'col-md-2') }}
                     </div>
                     {% if producto.estado.id in [3,4,5,6,7,8,9,10] %}

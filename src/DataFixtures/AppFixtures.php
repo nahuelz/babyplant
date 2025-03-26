@@ -101,33 +101,40 @@ class AppFixtures extends Fixture
         $estadoPedidoProducto = new EstadoPedidoProducto();
         $estadoPedidoProducto->setCodigoInterno(6);
         $estadoPedidoProducto->setHabilitado(1);
-        $estadoPedidoProducto->setNombre('ENTREGADO PARCIAL');
-        $estadoPedidoProducto->setColor('label-light-warning');
-        $estadoPedidoProducto->setIcono('fas fa-check');
-        $estadoPedidoProducto->setClassName('fc-event-success fc-event-solid-success');
-        $estadoPedidoProducto->setColorIcono('success');
+        $estadoPedidoProducto->setNombre('RESERVA');
+        $estadoPedidoProducto->setColor('label-light-info');
+        $estadoPedidoProducto->setIcono('fas fa-home');
+        $estadoPedidoProducto->setClassName('fc-event-warning fc-event-solid-warning');
+        $estadoPedidoProducto->setColorIcono('warning');
         $manager->persist($estadoPedidoProducto);
 
         $estadoPedidoProducto = new EstadoPedidoProducto();
         $estadoPedidoProducto->setCodigoInterno(7);
         $estadoPedidoProducto->setHabilitado(1);
-        $estadoPedidoProducto->setNombre('ENTREGADO');
-        $estadoPedidoProducto->setColor('label-light-success');
-        $estadoPedidoProducto->setIcono('fas fa-check');
-        $estadoPedidoProducto->setClassName('fc-event-success fc-event-solid-success');
-        $estadoPedidoProducto->setColorIcono('success');
+        $estadoPedidoProducto->setNombre('ENTREGADO PARCIAL');
+        $estadoPedidoProducto->setColor('label-light-warning');
+        $estadoPedidoProducto->setIcono('fas fa-fas fa-check');
+        $estadoPedidoProducto->setClassName('fc-event-warning fc-event-solid-warning');
+        $estadoPedidoProducto->setColorIcono('warning');
         $manager->persist($estadoPedidoProducto);
-
-
-
 
         $estadoPedidoProducto = new EstadoPedidoProducto();
         $estadoPedidoProducto->setCodigoInterno(8);
         $estadoPedidoProducto->setHabilitado(1);
+        $estadoPedidoProducto->setNombre('ENTREGADO');
+        $estadoPedidoProducto->setColor('label-light-success');
+        $estadoPedidoProducto->setIcono('fas fa-fas fa-check');
+        $estadoPedidoProducto->setClassName('fc-event-success fc-event-solid-success');
+        $estadoPedidoProducto->setColorIcono('success');
+        $manager->persist($estadoPedidoProducto);
+
+        $estadoPedidoProducto = new EstadoPedidoProducto();
+        $estadoPedidoProducto->setCodigoInterno(9);
+        $estadoPedidoProducto->setHabilitado(1);
         $estadoPedidoProducto->setNombre('CANCELADO');
         $estadoPedidoProducto->setColor('label-light-danger');
         $estadoPedidoProducto->setIcono('fas fa-exclamation-triangle');
-        $estadoPedidoProducto->setClassName('fc-event-danger fc-event-solid-danger');
+        $estadoPedidoProducto->setClassName('fc-event-warning fc-event-solid-warning');
         $estadoPedidoProducto->setColorIcono('danger');
         $manager->persist($estadoPedidoProducto);
 
