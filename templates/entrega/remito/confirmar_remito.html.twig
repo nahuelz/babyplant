@@ -114,7 +114,7 @@
                         </div>
                         <div class="col-md-6">
                             <p>{{ entity.remito.cliente.nombreCompleto|default('-') }}</p>
-                            <p>{{ entity.cliente.cuit|default('-') }}</p>
+                            <p>{{ entity.remito.cliente.cuit|default('-') }}</p>
                         </div>
                     </div>
 
@@ -126,8 +126,8 @@
                             <p><strong>DIRECCION</strong></p>
                         </div>
                         <div class="col-md-6">
-                            <p>{{ entity.cliente.telefono|default('') }}{{ entity.cliente.celular|default('') }}</p>
-                            <p>{{ entity.cliente.domicilio|default('-') }}</p>
+                            <p>{{ entity.remito.cliente.telefono|default('') }}{{ entity.cliente.celular|default('') }}</p>
+                            <p>{{ entity.remito.cliente.domicilio|default('-') }}</p>
                         </div>
                     </div>
                 </div>
@@ -169,10 +169,10 @@
                     </th>
                     <td align="right" colspan="2">
                         {% if entity.remito.tipoDescuento != null %}
-                            {{ entity.remito.totalSinDescuento|money_format }}<br>
+                            {{ entity.totalSinDescuento|money_format }}<br>
                             {{ entity.remito.tipoDescuentoString }}{{ entity.remito.montoDescuento|money_format }} <br>
                         {% endif %}
-                        {{ entity.remito.totalConDescuento|money_format }}
+                        {{ entity.totalConDescuento|money_format }}
                     </td>
                 </tr>
                 </tfoot>

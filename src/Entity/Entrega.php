@@ -217,6 +217,29 @@ class Entrega {
         return $this;
     }
 
+    public function getTotalSinDescuento(){
+        $total = 0.00;
+        foreach ($this->getEntregasProductos() as $entregaProducto) {
+            $total += $entregaProducto->getPrecioSubTotal();
+        }
+        return ($total);
+    }
+
+    public function getTotalConDescuento(){
+        $total = $this->getTotalSinDescuento();
+        if ($this->getRemito()->getTipoDescuento() != null) {
+            switch ($this->getRemito()->getTipoDescuento()->getCodigoInterno()) {
+                case 1:
+                    $total -= $this->getRemito()->getCantidadDescuento();
+                    break;
+                case 2:
+                    $total -= (($total * $this->getRemito()->getCantidadDescuento()) / 100);
+                    break;
+            }
+        }
+        return $total;
+    }
+
 
 
 
