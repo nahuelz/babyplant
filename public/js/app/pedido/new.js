@@ -47,7 +47,9 @@ function initFechaSiembra(){
     fechaEntregaPedido.setDate(fechaEntregaPedido.getDate()+20);
     $('#pedido_pedidoProducto_fechaEntregaPedido').datepicker('setStartDate', fechaEntregaPedido);
     $('#pedido_pedidoProducto_fechaEntregaPedido').datepicker('setDate', fechaEntregaPedido);
+    clearPedidoProductoForm();
 }
+
 function initFechaEntregaHandler(){
     $('#pedido_pedidoProducto_fechaEntregaPedido').change(function() {
         setFechaSiembra();
@@ -286,9 +288,8 @@ function initPedidoProductoHandler() {
 
             //  Reset form
             $('.row-agregar-pedido-producto').show('slow');
-            clearPedidoProductoForm();
-            $('#pedido_pedidoProducto_cantDiasProduccion').val('20');
             initFechaSiembra();
+
         }
 
         e.stopPropagation();
@@ -307,9 +308,11 @@ function clearPedidoProductoForm() {
     $('#pedido_pedidoProducto_cantSemillas').val('');
     $('#pedido_pedidoProducto_cantidadBandejasPedidas').val('');
     $('#pedido_pedidoProducto_origenSemilla').val('').select2();
+    $('#pedido_pedidoProducto_cantDiasProduccionSelect').val('');
     $('#pedido_pedidoProducto_fechaSiembraPedido').val('');
     $('#pedido_pedidoProducto_cantDiasProduccion').val('');
     $('#pedido_pedidoProducto_fechaEntregaPedido').val('');
+    $('#pedido_pedidoProducto_tipoOrigenSemilla').val('').select2();
 }
 
 

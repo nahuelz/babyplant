@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+        .remito{
+            background: url({{ asset('images/logo/plantilla-pago.png') }});
+            background-repeat: no-repeat;
+            background-image-resize: 1;
+            font-size: 16px;
+            font-family: monospace;
+        }
+        .logo-empresa{
+            background: url({{ asset('images/logo/logo.png') }});
+            float:left;
+            background-repeat: no-repeat;
+            width: 40mm;
+            height: 50.98mm;
+            background-image-resize: 3;
+            overflow: hidden;
+            margin-left: 20px;
+            margin-top: 30px;
+        }
+        .datos-empresa{
+            margin-left: 290px;
+            margin-top: -37px;
+            line-height: 5.7mm;
+            width: 200px;
+        }
+        .datos-remito{
+            margin-left: 630px;
+            margin-top: -197px;
+            line-height: 12mm;
+            width: 110px;
+            font-size: 18px;
+            height: 90px;
+        }
+        .datos-cliente-left{
+            margin-top: 36px;
+            line-height: 6.3mm;
+            margin-left: 170px;
+        }
+        .datos-cliente-right{
+            margin-top: -49px;
+            margin-left: 570px;
+            line-height: 6.3mm;
+        }
+        .datos-productos{
+            margin-top: 45px;
+            height: 300px;
+        }
+        .datos-productos-table{
+            margin-left: -173px;
+            line-height: 7.5mm;
+            margin-top: -20px;
+        }
+        td{
+            font-size: 16px;
+            margin-bottom: 50px;
+        }
+        .total{
+            height: 100px;
+            margin-left: 600px;
+            margin-top: -75px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="remito">
+    <br>
+    <div class="logo-empresa" ></div>
+    <div class="datos-empresa">
+        <div>Baby Plant srl</div>
+        <div>33-71230651-9</div>
+        <div>www.babyplant.com.ar</div>
+        <div> 44 4303 </div>
+        <div> Lis. Olmos la Plata </div>
+        <div>  0221 15-669-0199 </div>
+    </div>
+
+    <div class="datos-remito">
+        <div>{{ entity.fechaCreacion|date('d/m/Y') }}</div>
+    </div>
+    <div class="datos-cliente-left">
+        <div>{{ entity.remito.cliente.nombreCompleto|default('-') }}</div>
+        <div>{{ entity.remito.cliente.cuit|default('-') }}</div>
+    </div>
+    <div class="datos-cliente-right">
+        <div>{{ entity.remito.cliente.telefono|default('-') }}</div>
+        <div>{{ entity.remito.cliente.domicilio|default('-') }}</div>
+    </div>
+    <div class="datos-productos">
+        <table class="datos-productos-table" border="1" cellpadding="0" cellspacing="0" align="center">
+            <thead>
+            <tr>
+                <th class="text-center">FECHA</th>
+                <th class="text-center">REMITO</th>
+                <th class="text-center">MONTO</th>
+                <th class="text-center">MODO PAGO</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td width="160" align="center">{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}</td>
+                <td width="230" align="center">{{ entity.remito }}</td>
+                <td width="230" align="center">{{ entity.monto|money_format  }}</td>
+                <td width="160" align="center">{{ entity.modoPago  }}</td>
+            </tr>
+            </tbody>
+            <tfoot>
+
+            </tfoot>
+        </table>
+    </div>
+</div>
+</body>
+</html>

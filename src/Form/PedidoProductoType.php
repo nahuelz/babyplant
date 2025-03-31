@@ -185,6 +185,7 @@ class PedidoProductoType extends AbstractType {
                         'class' => 'form-control choice',
                         'tabindex' => '5'),
                     'choices' => array(
+                        '-- Elija  --' => '',
                         '20 días' => 20,
                         '28 días' => 28,
                         '30 días' => 30,

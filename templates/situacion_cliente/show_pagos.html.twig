@@ -20,6 +20,7 @@
                                                 <th class="text-center nowrap">Monto</th>
                                                 <th class="text-center nowrap">Modo de pago</th>
                                                 <th class="text-center nowrap">Fecha</th>
+                                                <th class="text-center nowrap"></th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -37,6 +38,12 @@
                                                         </td>
                                                         <td class="v-middle nowrap text-center">
                                                             {{ pago.fechaCreacion is not null ? pago.fechaCreacion|date('d/m/Y') : '-' }}
+                                                        </td>
+                                                        <td class="v-middle nowrap text-center">
+                                                            <a href="{{ path('imprimir_comprobante_pago',{id: pago.id}) }}" target="_blank"
+                                                               class="btn btn-light-primary btn-icon btn-sm blue" title="Imprimir comprobante" style="height: 25px;width: 25px;">
+                                                                <i class="fa fa-file-pdf text-white"></i>
+                                                            </a>
                                                         </td>
                                                     </tr>
                                                 {% endfor %}

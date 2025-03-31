@@ -10,6 +10,7 @@ $(document).ready(function () {
     initColumnsHandler();
     $('#multiple').select2();
     setSameHeight('.portlet-nivel-1');
+
 });
 
 /**
@@ -68,6 +69,8 @@ function getTargets(){
 }
 
 function initFiltrosHandler(){
+    $('.actividad-reciente').hide();
+    $('#filtros').hide();
     $('.mostrar-filtros').on('click', function (){
         $('#filtros').toggle();
         $("#reporte_filtro_cliente").select2();
