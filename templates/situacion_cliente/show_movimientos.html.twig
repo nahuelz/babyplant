@@ -2,6 +2,14 @@
     <div class="card-header">
         <div class="row">
             <div class="col-md-5"><h4>Movimientos</h4></div>
+            <div class="col-md-7">
+                <td class="v-middle nowrap text-center">
+                    <a href="{{ path('imprimir_comprobante_movimiento_todos',{id: entity.id}) }}" target="_blank"
+                       class="btn btn-light-primary btn-icon btn-sm blue" title="Imprimir comprobante" style="width: 150px; float: right">
+                        <i class="fa fa-file-pdf text-white">&nbsp;</i> Imprimir todos
+                    </a>
+                </td>
+            </div>
         </div>
     </div>
     <div class="card-body">
@@ -22,6 +30,7 @@
                                                 <th class="text-center nowrap">Referencia</th>
                                                 <th class="text-center nowrap">Producto / Remito</th>
                                                 <th class="text-center nowrap">Fecha</th>
+                                                <th class="text-center nowrap"></th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -44,6 +53,12 @@
                                                     </td>
                                                     <td class="v-middle nowrap text-center">
                                                         {{ movimiento.fechaCreacion is not null ? movimiento.fechaCreacion|date('d/m/Y') : '-' }}
+                                                    </td>
+                                                    <td class="v-middle nowrap text-center">
+                                                        <a href="{{ path('imprimir_comprobante_movimiento',{id: movimiento.id}) }}" target="_blank"
+                                                           class="btn btn-light-primary btn-icon btn-sm blue" title="Imprimir comprobante" style="height: 25px;width: 25px;">
+                                                            <i class="fa fa-file-pdf text-white"></i>
+                                                        </a>
                                                     </td>
                                                 </tr>
                                             {% endfor %}

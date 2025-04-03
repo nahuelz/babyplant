@@ -40,7 +40,7 @@ class PedidoController extends BaseController {
         $em = $this->doctrine->getManager();
 
         /* @var $columnas GlobalConfig */
-        $columnas = $em->getRepository('App\Entity\GlobalConfig')->find(1);
+        $columnas = $em->getRepository('App\Entity\GlobalConfig')->find($this->getUser()->getId());
 
         if (!$columnas) {
             throw $this->createNotFoundException('No se configuraron las columnas visibles en la base de datos.');
@@ -72,7 +72,15 @@ class PedidoController extends BaseController {
         $estadoSelect = $this->getSelectService()->getEstadoSelect();
 
         $em = $this->doctrine->getManager();
-        $columnasOcultas = $em->getRepository('App\Entity\GlobalConfig')->find(1);
+        $columnasOcultas = $em->getRepository('App\Entity\GlobalConfig')->find($this->getUser()->getId());
+
+        if (!$columnasOcultas) {{
+            $columnasOcultas = new GlobalConfig();
+            $columnasOcultas->setColumnasOcultas('1,6,10,11,13');
+            $columnasOcultas->setUsuario($this->getUser());
+            $em->persist($columnasOcultas);
+            $em->flush();
+        }}
 
         return array(
             'columnasOcultas' => $columnasOcultas->getColumnasOcultas(),

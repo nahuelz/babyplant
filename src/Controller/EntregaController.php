@@ -210,7 +210,7 @@ class EntregaController extends BaseController {
         $repository = $this->doctrine->getRepository(PedidoProducto::class);
 
         $query = $repository->createQueryBuilder('pp')
-            ->select("pp.id, concat ('ORDEN N° ',pp.numeroOrden,' ', tp.nombre, ' ', v.nombre,' (x',tb.nombre,') BANDEJAS SEMBRADAS: ',pp.cantidadBandejasReales,' DISPONIBLES: ',pp.cantidadBandejasDisponibles, ' MESADA N° ', tm.nombre) as denominacion")
+            ->select("pp.id, concat ('ORDEN N° ',pp.numeroOrden,' ', tp.nombre, ' ', v.nombre,' (x',tb.nombre,') DISPONIBLES: ',pp.cantidadBandejasDisponibles, ' MESADA N° ', tm.nombre) as denominacion")
             ->leftJoin('pp.pedido', 'p' )
             ->leftJoin('App:TipoVariedad', 'v', Join::WITH, 'pp.tipoVariedad = v')
             ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')

@@ -5,7 +5,16 @@
 {% import 'app/_macro_form.html.twig' as macro_form %}
 
 {% block stylesheets %}
+
     {{ parent() }}
+
+    <style>
+        .highlight {
+            background-color: darkseagreen;
+            font-weight: bold;
+        }
+    </style>
+
 
 {% endblock %}
 

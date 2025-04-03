@@ -4,14 +4,50 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="FIX ROLES">
-      <change afterPath="$PROJECT_DIR$/templates/pago/comprobante_pdf.html.twig" afterDir="false" />
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Comprobante pago">
+      <change afterPath="$PROJECT_DIR$/templates/pago/comprobante_todos_pdf.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/situacion_cliente/movimiento_pdf.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/situacion_cliente/movimiento_todos_pdf.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/pedido/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/pedido/new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/new.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/logo/plantia-remito-a4/plantilla-remito-a4-.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/plantilla/plantia-remito-a4/plantilla-remito-a4-.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/logo/plantia-remito-a4/plantilla-remito.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/plantilla/plantia-remito-a4/plantilla-remito.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/logo/plantia-remito-a4/plantilla-remitoA4.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/plantilla/plantia-remito-a4/plantilla-remitoA4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/logo/plantilla-entrega-interno.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/plantilla/plantilla-entrega-interno.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/logo/plantilla-entrega.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/plantilla/plantilla-entrega.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/logo/plantilla-pago.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/plantilla/plantilla-pago.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/logo/plantilla-remito-a6/plantilla-remitoA6.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/plantilla/plantilla-remito-a6/plantilla-remitoA6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/logo/plantilla-remito-a6/plantilla-remitoA6L.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/plantilla/plantilla-remito-a6/plantilla-remitoA6L.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/logo/plantilla-remito.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/plantilla/plantilla-remito.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/logo/plantilla-remito/plantilla-remito1.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/plantilla/plantilla-remito/plantilla-remito1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/logo/plantilla-remito/plantilla-remito2.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/plantilla/plantilla-remito/plantilla-remito2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/logo/plantilla-remito/plantilla-remito33.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/plantilla/plantilla-remito/plantilla-remito33.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/logo/plantilla-remito/plantilla-remito5.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/plantilla/plantilla-remito/plantilla-remito5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/logo/plantilla-reserva.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/plantilla/plantilla-reserva.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/entradacamara/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/entradacamara/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/entrega/new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/entrega/new.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/reserva/new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/reserva/new.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/EntregaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntregaController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/PagoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PagoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/PedidoProductoType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/PedidoProductoType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pedido/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PedidoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PedidoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/ReservaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ReservaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/GlobalConfig.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/GlobalConfig.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrada_camara/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrada_camara/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrega/confirmar_entrega.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/confirmar_entrega.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrega/entrega_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/entrega_pdf.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrega/interno_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/interno_pdf.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrega/new.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/new.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrega/remito_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/remito_pdf.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/remito/confirmar_remito.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/confirmar_remito.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/remito/remitoA4_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/remitoA4_pdf.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/remito/remitoA6L_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/remitoA6L_pdf.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/remito/remitoA6_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/remitoA6_pdf.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/remito/remito_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/remito_pdf.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/reserva/confirmar_reserva.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/reserva/confirmar_reserva.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/reserva/new.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/reserva/new.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/reserva/remito_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/reserva/remito_pdf.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show_movimientos.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_movimientos.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show_pagos.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_pagos.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -237,7 +273,7 @@
     &quot;database.data.extractors.current.export.id&quot;: &quot;SQL Inserts&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/xampp81/htdocs/babyplant/public/certificado&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/xampp81/htdocs/capitaltrack&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -262,11 +298,11 @@
       <recent name="C:\xampp81\htdocs\babyplant\templates\log_auditoria" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp81\htdocs\babyplant\public\images\plantilla" />
       <recent name="C:\xampp81\htdocs\babyplant\templates\entrega" />
       <recent name="C:\xampp81\htdocs\babyplant\src\Entity\Constants" />
       <recent name="C:\xampp81\htdocs\babyplant\src\Entity" />
       <recent name="C:\xampp81\htdocs\babyplant\templates\remito" />
-      <recent name="C:\xampp81\htdocs\babyplant\templates\salida_camara" />
     </key>
   </component>
   <component name="RunManager" selected="PHP Script.PedidoController.php">
@@ -529,15 +565,10 @@
       <workItem from="1743006715994" duration="2018000" />
       <workItem from="1743020172927" duration="2467000" />
       <workItem from="1743045990583" duration="1033000" />
-      <workItem from="1743426592822" duration="5866000" />
-    </task>
-    <task id="LOCAL-00080" summary="cuentacorriente">
-      <option name="closed" value="true" />
-      <created>1736274405533</created>
-      <option name="number" value="00080" />
-      <option name="presentableId" value="LOCAL-00080" />
-      <option name="project" value="LOCAL" />
-      <updated>1736274405534</updated>
+      <workItem from="1743426592822" duration="7194000" />
+      <workItem from="1743463669808" duration="4801000" />
+      <workItem from="1743522288917" duration="5331000" />
+      <workItem from="1743618491441" duration="49000" />
     </task>
     <task id="LOCAL-00081" summary="pefil.png">
       <option name="closed" value="true" />
@@ -923,7 +954,15 @@
       <option name="project" value="LOCAL" />
       <updated>1743023147293</updated>
     </task>
-    <option name="localTasksCounter" value="129" />
+    <task id="LOCAL-00129" summary="Comprobante pago">
+      <option name="closed" value="true" />
+      <created>1743432759363</created>
+      <option name="number" value="00129" />
+      <option name="presentableId" value="LOCAL-00129" />
+      <option name="project" value="LOCAL" />
+      <updated>1743432759364</updated>
+    </task>
+    <option name="localTasksCounter" value="130" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -941,7 +980,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix bug" />
     <MESSAGE value="." />
     <MESSAGE value="Mesadas" />
     <MESSAGE value="cuentacorriente;&#10;fixtures;" />
@@ -966,6 +1004,7 @@
     <MESSAGE value="FIX TAMAÑO GRILLA" />
     <MESSAGE value="FIX CAMPO ENTREGA PRODUCTO" />
     <MESSAGE value="FIX ROLES" />
-    <option name="LAST_COMMIT_MESSAGE" value="FIX ROLES" />
+    <MESSAGE value="Comprobante pago" />
+    <option name="LAST_COMMIT_MESSAGE" value="Comprobante pago" />
   </component>
 </project>

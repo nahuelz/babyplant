@@ -187,7 +187,7 @@ class PagoController extends BaseController {
      *
      * @Route("/imprimir-comprobante-pago/{id}", name="imprimir_comprobante_pago", methods={"GET"})
      */
-    public function imprimirRemitoAction($id) {
+    public function imprimirComprobantePagoAction($id) {
         $em = $this->doctrine->getManager();
 
         /* @var $remito Remito */
@@ -198,6 +198,50 @@ class PagoController extends BaseController {
         }
 
         $html = $this->renderView('pago/comprobante_pdf.html.twig', array('entity' => $remito, 'website' => "http://192.168.0.182/babyplant/public/"));
+
+        $filename = 'pago.pdf';
+
+        $mpdfService = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'default_font_size' => 0,
+            'default_font' => '',
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'margin_top' => 0,
+            'margin_bottom' => 0,
+            'margin_header' => 0,
+            'margin_footer' => 0,
+            'orientation' => 'P',
+        ]);
+
+        $mpdfService->shrink_tables_to_fit = 1;
+
+        $mpdfService->SetTitle($filename);
+
+        $mpdfService->WriteHTML($html);
+
+        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
+
+        return new Response($mpdfOutput);
+    }
+
+    /**
+     * Print a Remito Entity.
+     *
+     * @Route("/imprimir-comprobante-pago-todos/{id}", name="imprimir_comprobante_pago_todos", methods={"GET"})
+     */
+    public function imprimirComprobantePagoTodosAction($id) {
+        $em = $this->doctrine->getManager();
+
+        /* @var $usuario Usuario */
+        $usuario = $em->getRepository("App\Entity\Usuario")->find($id);
+
+        if (!$usuario) {
+            throw $this->createNotFoundException("No se puede encontrar la entidad.");
+        }
+
+        $html = $this->renderView('pago/comprobante_todos_pdf.html.twig', array('entity' => $usuario, 'website' => "http://192.168.0.182/babyplant/public/"));
 
         $filename = 'pago.pdf';
 

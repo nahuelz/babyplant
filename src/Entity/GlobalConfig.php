@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity()
@@ -26,6 +27,12 @@ class GlobalConfig{
      * @ORM\Column(name="columnas_ocultas", type="string", length=512, nullable=false)
      */
     protected $columnasOcultas;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Usuario::class)
+     * @ORM\JoinColumn(name="id_usuario", referencedColumnName="id")
+     */
+    private $usuario;
 
     /**
      * @return int
@@ -55,6 +62,24 @@ class GlobalConfig{
     {
         $this->columnasOcultas = $columnasOcultas;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getUsuario()
+    {
+        return $this->usuario;
+    }
+
+    /**
+     * @param mixed $usuario
+     */
+    public function setUsuario($usuario): void
+    {
+        $this->usuario = $usuario;
+    }
+
+
 
 
 

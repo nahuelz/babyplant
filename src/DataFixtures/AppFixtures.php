@@ -358,7 +358,8 @@ class AppFixtures extends Fixture
         $manager->persist($user);
 
         $globalConfi = new GlobalConfig();
-        $globalConfi->setColumnasOcultas(1);
+        $globalConfi->setColumnasOcultas('1,6,10,11,13');
+        $globalConfi->setUsuario($user);
         $manager->persist($globalConfi);
 
         $mesada = new TipoMesada();
@@ -392,19 +393,21 @@ from `babyplant2`.`tipo_bandeja` `b`;");
         $statement->execute();
 
         $statement = $connection->prepare("create definer = root@localhost view view_entrada_camara as
-select `pp`.`id`                                                                              AS `id`,
-       `pp`.`numero_orden`                                                                    AS `numeroOrden`,
+select `pp`.`id`                                                                    AS `id`,
+       `pp`.`numero_orden`                                                          AS `numeroOrden`,
        concat(`pp`.`numero_orden`, ' ', substr(`tp`.`nombre`, 1, 3), ' - ', `tp`.`nombre`, ' ', `tsp`.`nombre`, ' ',
-              `tv`.`nombre`, ' ', `pp`.`cantidad_bandejas_reales`, ' (x', `tb`.`nombre`, ')') AS `title`,
-       concat(`pp`.`cantidad_bandejas_reales`, ' (', `tb`.`nombre`, ')')                      AS `cantidadTipoBandejabandeja`,
-       concat(`u`.`nombre`, ' ', `u`.`apellido`)                                              AS `cliente`,
-       `epp`.`nombre`                                                                         AS `estado`,
-       `epp`.`color`                                                                          AS `colorEstado`,
+              `tv`.`nombre`, ' - Bandejas: <strong class=band-', `tb`.`nombre`, '>', `pp`.`cantidad_bandejas_reales`,
+              ' (X', `tb`.`nombre`, ')</strong>', ' Semillas: ', `pp`.`cantidad_semillas`, ' - Cliente: ', `u`.`nombre`,
+              ' ', `u`.`apellido`)                                                  AS `title`,
+       concat(`pp`.`cantidad_bandejas_reales`, ' (', `tb`.`nombre`, ')')            AS `cantidadTipoBandejabandeja`,
+       concat(`u`.`nombre`, ' ', `u`.`apellido`)                                    AS `cliente`,
+       `epp`.`nombre`                                                               AS `estado`,
+       `epp`.`color`                                                                AS `colorEstado`,
        if(`epp`.`nombre` <> 'SEMBRADO', concat(`epp`.`class_name`, ' ', `tp`.`nombre`, ' ', `epp`.`nombre`),
-          concat(`epp`.`class_name`, ' ', `tp`.`nombre`))                                     AS `className`,
-       `pp`.`fecha_siembra_real`                                                              AS `fechaSiembraReal`,
+          concat(`epp`.`class_name`, ' ', `tp`.`nombre`))                           AS `className`,
+       `pp`.`fecha_siembra_real`                                                    AS `fechaSiembraReal`,
        concat(`tp`.`nombre`, ' ', `tsp`.`nombre`, ' ', `tv`.`nombre`, ' ', `pp`.`cantidad_bandejas_reales`, ' (',
-              `tb`.`nombre`, ')', ', Cliente: ', `u`.`nombre`, ' ', `u`.`apellido`)           AS `descripcion`
+              `tb`.`nombre`, ')', ', Cliente: ', `u`.`nombre`, ' ', `u`.`apellido`) AS `descripcion`
 from (((((((`babyplant2`.`pedido` `p` left join `babyplant2`.`pedido_producto` `pp`
             on (`p`.`id` = `pp`.`id_pedido`)) left join `babyplant2`.`tipo_variedad` `tv`
            on (`pp`.`id_tipo_variedad` = `tv`.`id`)) left join `babyplant2`.`tipo_sub_producto` `tsp`
@@ -464,8 +467,10 @@ where `pp`.`fecha_baja` is null
 select `pp`.`id`                                                                    AS `id`,
        `tp`.`id`                                                                    AS `idProducto`,
        `pp`.`numero_orden`                                                          AS `numeroOrden`,
-       concat(`pp`.`numero_orden`, ' ', substr(`tp`.`nombre`, 1, 3), ' - ', `tv`.`nombre`, ' ',
-              `pp`.`cantidad_bandejas_reales`, ' (x', `tb`.`nombre`, ')')           AS `nombreCorto`,
+       concat(`pp`.`numero_orden`, ' ', substr(`tp`.`nombre`, 1, 3), ' - ', `tp`.`nombre`, ' ', `tsp`.`nombre`, ' ',
+              `tv`.`nombre`, ' - Bandejas: <strong class=band-', `tb`.`nombre`, '>', `pp`.`cantidad_bandejas_reales`,
+              ' (X', `tb`.`nombre`, ')</strong>', ' Semillas: ', `pp`.`cantidad_semillas`, ' - Cliente: ', `u`.`nombre`,
+              ' ', `u`.`apellido`)                                                  AS `nombreCorto`,
        concat(`pp`.`cantidad_bandejas_reales`, ' (', `tb`.`nombre`, ')')            AS `cantidadTipoBandejabandeja`,
        concat(`u`.`nombre`, ' ', `u`.`apellido`)                                    AS `cliente`,
        `epp`.`id`                                                                   AS `idEstado`,

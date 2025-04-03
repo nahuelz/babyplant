@@ -118,7 +118,9 @@ var KTCalendarListView = function() {
                 },
                 eventRender: function(info) {
                     var element = $(info.el);
+                    element.find('.fc-title').html(info.event.title);
                     element.attr('data-id', info.event.id);
+                    element.attr('data-idpedido', info.event.extendedProps.idPedido);
                     element.attr('data-toggle', 'modal');
                     element.attr('data-target', '#productoModal');
                     element.attr('data-href', info.event.extendedProps.href);

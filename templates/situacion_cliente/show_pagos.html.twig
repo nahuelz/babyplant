@@ -2,6 +2,14 @@
     <div class="card-header">
         <div class="row">
             <div class="col-md-5"><h4>Pagos</h4></div>
+            <div class="col-md-7">
+                <td class="v-middle nowrap text-center">
+                    <a href="{{ path('imprimir_comprobante_pago_todos',{id: entity.id}) }}" target="_blank"
+                       class="btn btn-light-primary btn-icon btn-sm blue" title="Imprimir comprobante" style="width: 150px; float: right">
+                        <i class="fa fa-file-pdf text-white">&nbsp;</i> Imprimir todos
+                    </a>
+                </td>
+            </div>
         </div>
     </div>
     <div class="card-body">

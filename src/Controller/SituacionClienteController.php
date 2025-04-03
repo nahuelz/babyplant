@@ -6,10 +6,12 @@ use App\Entity\CuentaCorriente;
 use App\Entity\ModoPago;
 use App\Entity\Movimiento;
 use App\Entity\PedidoProducto;
+use App\Entity\Remito;
 use App\Entity\TipoMovimiento;
 use App\Entity\TipoReferencia;
 use App\Entity\Usuario;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Mpdf\Mpdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -228,6 +230,102 @@ class SituacionClienteController extends BaseController {
 
         return $response;
 
+    }
+
+    /**
+     * Print a Remito Entity.
+     *
+     * @Route("/imprimir-comprobante-movimiento/{id}", name="imprimir_comprobante_movimiento", methods={"GET"})
+     */
+    public function imprimirComprobanteMovimientoAction($id) {
+        $em = $this->doctrine->getManager();
+
+        /* @var $remito Remito */
+        $remito = $em->getRepository("App\Entity\Movimiento")->find($id);
+
+        if (!$remito) {
+            throw $this->createNotFoundException("No se puede encontrar la entidad.");
+        }
+
+        $html = $this->renderView('situacion_cliente/movimiento_pdf.html.twig', array('entity' => $remito, 'website' => "http://192.168.0.182/babyplant/public/"));
+
+        $filename = 'pago.pdf';
+
+        $mpdfService = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'default_font_size' => 0,
+            'default_font' => '',
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'margin_top' => 0,
+            'margin_bottom' => 0,
+            'margin_header' => 0,
+            'margin_footer' => 0,
+            'orientation' => 'P',
+        ]);
+
+        $mpdfService->shrink_tables_to_fit = 1;
+
+        $mpdfService->SetTitle($filename);
+
+        $mpdfService->WriteHTML($html);
+
+        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
+
+        return new Response($mpdfOutput);
+    }
+
+    /**
+     * Print a Remito Entity.
+     *
+     * @Route("/imprimir-comprobante-movimiento-todos/{id}", name="imprimir_comprobante_movimiento_todos", methods={"GET"})
+     */
+    public function imprimirComprobanteMovimientoTodosAction($id) {
+        $em = $this->doctrine->getManager();
+
+        /* @var $usuario Usuario */
+        $usuario = $em->getRepository("App\Entity\Usuario")->find($id);
+
+        if (!$usuario) {
+            throw $this->createNotFoundException("No se puede encontrar la entidad.");
+        }
+
+        $html = $this->renderView('situacion_cliente/movimiento_todos_pdf.html.twig', array('entity' => $usuario, 'website' => "http://192.168.0.182/babyplant/public/"));
+
+        $filename = 'pago.pdf';
+
+        $mpdfService = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'default_font_size' => 0,
+            'default_font' => '',
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'margin_top' => 0,
+            'margin_bottom' => 0,
+            'margin_header' => 0,
+            'margin_footer' => 0,
+            'orientation' => 'P',
+        ]);
+
+        $mpdfService->shrink_tables_to_fit = 1;
+
+        $mpdfService->SetTitle($filename);
+
+        $mpdfService->WriteHTML($html);
+
+        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
+
+        return new Response($mpdfOutput);
+    }
+
+    /**
+     *
+     * @return string
+     */
+    protected function getPrintOutputType() {
+        return "I";
     }
 
 }
