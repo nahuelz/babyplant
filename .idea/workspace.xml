@@ -4,27 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Cambios varios">
-      <change afterPath="$PROJECT_DIR$/.dockerignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.env.dist" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker-compose.local.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/panel_usuario.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env.test" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/babyplant.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/babyplant.iml" afterDir="false" />
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="docker-co">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/theme/css/custom/custom.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/css/custom/custom.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/entrada_camara/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrada_camara/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/notificacion/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/notificacion/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/planificacion/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/planificacion/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/salida_camara/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/salida_camara/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/siembra/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/siembra/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.local.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -553,63 +536,7 @@
       <workItem from="1744304919597" duration="1342000" />
       <workItem from="1744391500087" duration="79000" />
       <workItem from="1744590790653" duration="3254000" />
-      <workItem from="1744636919489" duration="16562000" />
-    </task>
-    <task id="LOCAL-00084" summary="Mesadas">
-      <option name="closed" value="true" />
-      <created>1737403826952</created>
-      <option name="number" value="00084" />
-      <option name="presentableId" value="LOCAL-00084" />
-      <option name="project" value="LOCAL" />
-      <updated>1737403826952</updated>
-    </task>
-    <task id="LOCAL-00085" summary="cuentacorriente;&#10;fixtures;">
-      <option name="closed" value="true" />
-      <created>1737490193953</created>
-      <option name="number" value="00085" />
-      <option name="presentableId" value="LOCAL-00085" />
-      <option name="project" value="LOCAL" />
-      <updated>1737490193953</updated>
-    </task>
-    <task id="LOCAL-00086" summary="&#10;fixtures;">
-      <option name="closed" value="true" />
-      <created>1737490889931</created>
-      <option name="number" value="00086" />
-      <option name="presentableId" value="LOCAL-00086" />
-      <option name="project" value="LOCAL" />
-      <updated>1737490889931</updated>
-    </task>
-    <task id="LOCAL-00087" summary="&#10;fixtures;">
-      <option name="closed" value="true" />
-      <created>1737490953030</created>
-      <option name="number" value="00087" />
-      <option name="presentableId" value="LOCAL-00087" />
-      <option name="project" value="LOCAL" />
-      <updated>1737490953030</updated>
-    </task>
-    <task id="LOCAL-00088" summary="&#10;fixtures;">
-      <option name="closed" value="true" />
-      <created>1737491314626</created>
-      <option name="number" value="00088" />
-      <option name="presentableId" value="LOCAL-00088" />
-      <option name="project" value="LOCAL" />
-      <updated>1737491314626</updated>
-    </task>
-    <task id="LOCAL-00089" summary="&#10;fixtures;">
-      <option name="closed" value="true" />
-      <created>1737491373394</created>
-      <option name="number" value="00089" />
-      <option name="presentableId" value="LOCAL-00089" />
-      <option name="project" value="LOCAL" />
-      <updated>1737491373394</updated>
-    </task>
-    <task id="LOCAL-00090" summary="&#10;fixtures;">
-      <option name="closed" value="true" />
-      <created>1737491641958</created>
-      <option name="number" value="00090" />
-      <option name="presentableId" value="LOCAL-00090" />
-      <option name="project" value="LOCAL" />
-      <updated>1737491641959</updated>
+      <workItem from="1744636919489" duration="25221000" />
     </task>
     <task id="LOCAL-00091" summary="&#10;fixtures;">
       <option name="closed" value="true" />
@@ -947,7 +874,63 @@
       <option name="project" value="LOCAL" />
       <updated>1743692924265</updated>
     </task>
-    <option name="localTasksCounter" value="133" />
+    <task id="LOCAL-00133" summary="Docker">
+      <option name="closed" value="true" />
+      <created>1744660976318</created>
+      <option name="number" value="00133" />
+      <option name="presentableId" value="LOCAL-00133" />
+      <option name="project" value="LOCAL" />
+      <updated>1744660976318</updated>
+    </task>
+    <task id="LOCAL-00134" summary="Docker">
+      <option name="closed" value="true" />
+      <created>1744661004009</created>
+      <option name="number" value="00134" />
+      <option name="presentableId" value="LOCAL-00134" />
+      <option name="project" value="LOCAL" />
+      <updated>1744661004009</updated>
+    </task>
+    <task id="LOCAL-00135" summary="docker-co">
+      <option name="closed" value="true" />
+      <created>1744662638201</created>
+      <option name="number" value="00135" />
+      <option name="presentableId" value="LOCAL-00135" />
+      <option name="project" value="LOCAL" />
+      <updated>1744662638201</updated>
+    </task>
+    <task id="LOCAL-00136" summary="docker-co">
+      <option name="closed" value="true" />
+      <created>1744668920221</created>
+      <option name="number" value="00136" />
+      <option name="presentableId" value="LOCAL-00136" />
+      <option name="project" value="LOCAL" />
+      <updated>1744668920221</updated>
+    </task>
+    <task id="LOCAL-00137" summary="docker-co">
+      <option name="closed" value="true" />
+      <created>1744669360913</created>
+      <option name="number" value="00137" />
+      <option name="presentableId" value="LOCAL-00137" />
+      <option name="project" value="LOCAL" />
+      <updated>1744669360913</updated>
+    </task>
+    <task id="LOCAL-00138" summary="docker-co">
+      <option name="closed" value="true" />
+      <created>1744669394442</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1744669394442</updated>
+    </task>
+    <task id="LOCAL-00139" summary="docker-co">
+      <option name="closed" value="true" />
+      <created>1744669432117</created>
+      <option name="number" value="00139" />
+      <option name="presentableId" value="LOCAL-00139" />
+      <option name="project" value="LOCAL" />
+      <updated>1744669432118</updated>
+    </task>
+    <option name="localTasksCounter" value="140" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -965,8 +948,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Mesadas" />
-    <MESSAGE value="cuentacorriente;&#10;fixtures;" />
     <MESSAGE value="&#10;fixtures;" />
     <MESSAGE value="fixtures;" />
     <MESSAGE value="nuevos estados al generar remito" />
@@ -990,6 +971,8 @@
     <MESSAGE value="FIX ROLES" />
     <MESSAGE value="Comprobante pago" />
     <MESSAGE value="Cambios varios" />
-    <option name="LAST_COMMIT_MESSAGE" value="Cambios varios" />
+    <MESSAGE value="Docker" />
+    <MESSAGE value="docker-co" />
+    <option name="LAST_COMMIT_MESSAGE" value="docker-co" />
   </component>
 </project>
