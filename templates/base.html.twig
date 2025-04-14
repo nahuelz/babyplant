@@ -45,17 +45,16 @@
         <link href="{{ asset(css_path ~ 'style.bundle.css') }}" rel="stylesheet" type="text/css"/>
         <link href="{{ asset(css_path ~ 'colores.css') }}" rel="stylesheet" type="text/css"/>
         <link href="{{ asset(css_path ~ 'spinner.css') }}" rel="stylesheet" type="text/css"/>
+        <link href="{{ asset(css_path ~ 'jquery-ui.css') }}" rel="stylesheet" type="text/css"/>
         <!--end::Global Theme Styles-->
 
 
 
         <!--begin::Layout Themes(used by all pages)-->
-
         <link href="{{ asset(css_path ~ 'themes/layout/header/base/light.css') }}" rel="stylesheet" type="text/css"/>
         <link href="{{ asset(css_path ~ 'themes/layout/header/menu/light.css') }}" rel="stylesheet" type="text/css"/>
         <link href="{{ asset(css_path ~ 'themes/layout/brand/light.css') }}" rel="stylesheet" type="text/css"/>
         <link href="{{ asset(css_path ~ 'themes/layout/aside/dark.css') }}" rel="stylesheet" type="text/css"/>        <!--end::Layout Themes-->
-
         <link href="{{ asset(css_path ~ 'custom/custom.css') }}" rel="stylesheet" type="text/css"/>
 
         <!--end::Layout Skins -->
@@ -81,9 +80,6 @@
 
 <div id="kt_header_mobile" class="header-mobile align-items-center  header-mobile-fixed">
     <!--begin::Logo-->
-    {# <a href="#">
-            <img alt="#" src="#"/>
-        </a>#}
     <!--end::Logo-->
 
     <!--begin::Toolbar-->
@@ -96,16 +92,8 @@
 
         <!--begin::Topbar Mobile Toggle-->
         <button class="btn btn-hover-text-primary p-0 ml-2" id="kt_header_mobile_topbar_toggle">
-			<span class="svg-icon svg-icon-xl"><!--begin::Svg Icon | path:/metronic/theme/html/demo1/dist/assets/media/svg/icons/General/User.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-        <title>Stockholm-icons / General / User</title>
-        <desc>Created with Sketch.</desc>
-        <defs/>
-        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-            <polygon points="0 0 24 0 24 24 0 24"/>
-            <path d="M12,11 C9.790861,11 8,9.209139 8,7 C8,4.790861 9.790861,3 12,3 C14.209139,3 16,4.790861 16,7 C16,9.209139 14.209139,11 12,11 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"/>
-            <path d="M3.00065168,20.1992055 C3.38825852,15.4265159 7.26191235,13 11.9833413,13 C16.7712164,13 20.7048837,15.2931929 20.9979143,20.2 C21.0095879,20.3954741 20.9979143,21 20.2466999,21 C16.541124,21 11.0347247,21 3.72750223,21 C3.47671215,21 2.97953825,20.45918 3.00065168,20.1992055 Z" fill="#000000" fill-rule="nonzero"/>
-        </g>
-        </svg><!--end::Svg Icon--></span>		</button>
+            <i class="fas fa-user icon-2x"></i>
+        </button>
         <!--end::Topbar Mobile Toggle-->
     </div>
     <!--end::Toolbar-->
@@ -130,7 +118,6 @@
                                 <a href="{{path('index_index')}}">
                                     <img id="img-logo" width="150px" src="{{ asset(image_path ~ 'logo/logo.png') }}" alt="logo" />
                                 </a>
-                                {# <a href="{{path('index_index')}}">CPCIBA</a> #}
                             {% else %}
                                 <a href="#">
                                     <img id="img-logo" width="150px" src="{{ asset(image_path ~ 'logo/logo.png') }}" alt="logo" />
@@ -169,29 +156,7 @@
                                             </span>
                                 </div>
                             </div>
-                            {#
-                            <div class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-xl">
 
-                                <!--begin: Navigation -->
-                                <div class="kt-notification">
-                                    <a href="#" class="kt-notification__item">
-                                        <div class="kt-notification__item-icon">
-                                            <i class="flaticon2-calendar-3 kt-font-success"></i>
-                                        </div>
-                                        <div class="kt-notification__item-details">
-                                            <div class="kt-notification__item-title kt-font-bold">
-                                                Cambiar contrase&ntilde;a
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <div class="kt-notification__custom kt-space-between">
-                                        <a href="{{ path('app_logout') }}" target="_blank" class="btn btn-label btn-label-brand btn-sm btn-bold">Cerrar sesi&oacute;n</a>
-                                    </div>
-                                </div>
-
-                                <!--end: Navigation -->
-                            </div>
-                            #}
                             <!-- end: User Bar -->
                         </div>
                     {% endif %}
@@ -202,11 +167,6 @@
 
             <div class="content d-flex flex-column flex-column-fluid page-content"
                  id="kt_content" style="padding-top: 0px">
-                {#
-                {% if breadcrumbs is defined %}
-                    {% include 'app/_breadcrumbs.html.twig' %}
-                {% endif %}
-                #}
 
                 <!-- end:: Subheader -->
 
@@ -312,7 +272,7 @@
                                         Cambiar contrase&ntilde;a
                                     </div>
                                     <div class="text-muted">
-                                        Haga click para cambiarla
+                                        Haga clic para cambiarla
                                     </div>
                                 </div>
                             </div>
@@ -441,8 +401,6 @@
     <!--end::Script menu-->
 
     <script type="text/javascript" src="{{ asset('js/config/config-spinner.js') }}"></script>
-
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
 
 
     {# ToastR #}
