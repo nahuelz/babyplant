@@ -5,7 +5,7 @@
     {{ parent() }}
 
     <link href="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css"/>
-
+    <link href="{{ asset(plugins_path ~ 'custom/fullcalendar/fullcalendar.bundle.css') }}" rel="stylesheet" type="text/css"/>
     <style>
         .label-light-secondary{
             color:black !important;
@@ -44,5 +44,6 @@
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}"></script>
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/salidacamara/index.js') }}" ></script>
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ '../plugins/jquery-validation/dist/jquery.validate.js') }}" ></script>
+    <script src="{{ asset(plugins_path ~ 'custom/fullcalendar/fullcalendar.bundle.js') }}"></script>
 
 {% endblock %}

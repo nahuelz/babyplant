@@ -5,7 +5,7 @@
     {{ parent() }}
 
     <link href="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css"/>
-
+    <link href="{{ asset(plugins_path ~ 'custom/fullcalendar/fullcalendar.bundle.css') }}" rel="stylesheet" type="text/css"/>
     <style>
         .label-light-secondary{
             color:black !important;
@@ -42,6 +42,7 @@
 
     {{ parent() }}
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/siembra/index.js') }}" ></script>
+    <script src="{{ asset(plugins_path ~ 'custom/fullcalendar/fullcalendar.bundle.js') }}"></script>
     <script>
         var __ES_ADMIN__ = {{ is_granted('ROLE_SIEMBRA') }}
     </script>

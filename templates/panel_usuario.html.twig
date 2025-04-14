@@ -1,0 +1,85 @@
+<!-- begin::User Panel -->
+<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
+    <!-- begin::Header -->
+    <div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
+        <h3 class="font-weight-bold m-0">
+            Men&uacute; usuario
+        </h3>
+        <a href="#"
+           class="btn btn-xs btn-icon btn-light btn-hover-primary"
+           id="kt_quick_user_close">
+            <i class="ki ki-close icon-xs text-muted"></i>
+        </a>
+    </div>
+    <!-- end::Header -->
+
+    <!--begin::Content-->
+    <div class="offcanvas-content pr-5 mr-n5">
+
+        <!--begin::Header-->
+        <div class="d-flex align-items-center mt-5">
+            <div class="symbol symbol-100 mr-5">
+                <span class="symbol symbol-lg-90 symbol-25 symbol-light-success">
+                    <span class="symbol-label font-size-h1 font-weight-bold">{{ app.user.nombre|capitalize[0:1] }}</span>
+                </span>
+            </div>
+            <div class="d-flex flex-column">
+                <span href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">
+                    {{ app.user.nombre }} <br>
+                    {{ app.user.apellido }}
+                </span>
+                <div class="navi mt-2">
+                    <a href="#" class="navi-item">
+                        <span class="navi-link p-0 pb-2">
+                            <span class="navi-icon mr-1">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                            <span class="navi-text text-muted text-hover-primary">{{app.user.email}}</span>
+                        </span>
+                    </a>
+                    <a href="{{ path('app_logout') }}" class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5">Cerrar sesi&oacute;n</a>
+                </div>
+            </div>
+        </div>
+        <!--end::Header-->
+
+        <!--begin::Separator-->
+        <div class="separator separator-dashed mt-8 mb-5"></div>
+        <!--end::Separator-->
+
+        <!--begin::Nav-->
+        <div class="navi navi-spacer-x-0 p-0">
+            {% block user_panel_options %}
+                <!--begin::Item-->
+                <a href="{{ path('change_password') }}" class="navi-item">
+                    <div class="navi-link">
+                        <div class="symbol symbol-40 bg-light mr-3">
+                            <div class="symbol-label">
+                                <i class="fas fa-key"></i>
+                            </div>
+                        </div>
+
+                        <div class="navi-text">
+                            <div class="font-weight-bold">
+                                Cambiar contrase&ntilde;a
+                            </div>
+                            <div class="text-muted">
+                                Haga clic para cambiarla
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <!--end:Item-->
+            {% endblock %}
+        </div>
+        <!--end::Nav-->
+    </div>
+</div>
+</a>
+<!-- end:Item -->
+</div>
+<!-- end::Nav -->
+</div>
+<!-- end::Content -->
+</div>
+<!-- end::User Panel -->
