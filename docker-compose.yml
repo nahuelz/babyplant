@@ -8,37 +8,9 @@ services:
       - "8001:80"
     volumes:
       - .:/var/www/html
-    environment:
-      - COMPOSER_ALLOW_SUPERUSER=1
-    depends_on:
-      - db
+    networks:
+      database: {}
 
-  db:
-    image: mysql:8.0
-    container_name: mysql_db_babyplant
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    ports:
-      - "3306:3306"
-    volumes:
-      - db_data:/var/lib/mysql
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin_babyplant
-    restart: always
-    ports:
-      - "8081:80"
-    environment:
-      PMA_HOST: ${MYSQL_USER}         # Este es el nombre del servicio de la base de datos que configuraste
-      PMA_USER: ${MYSQL_USER}         # El usuario de la base de datos
-      PMA_PASSWORD: ${MYSQL_PASSWORD} # La contraseña de la base de datos
-    depends_on:
-      - db
-
-volumes:
-  db_data:
+networks:
+  database:
+    external: true
