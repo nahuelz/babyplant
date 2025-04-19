@@ -6,6 +6,7 @@ RUN apt-get update \
     && apt-get install -qq -y --no-install-recommends \
     cron \
      vim \
+     nano \
      locales coreutils apt-utils git libicu-dev g++ libpng-dev libxml2-dev libzip-dev libonig-dev libxslt-dev;
 
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
@@ -23,6 +24,9 @@ ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/do
 
 RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
     install-php-extensions amqp
+
+# Copiar código fuente al contenedor
+COPY . /var/www/html
 
 WORKDIR /var/www/html
 
