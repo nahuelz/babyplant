@@ -7,11 +7,15 @@ use App\Entity\TipoUsuario;
 use App\Form\TipoUsuarioType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/tipo/usuario')]
+/**
+ * @Route("/tipo/usuario")
+ * @IsGranted("ROLE_TIPO_USUARIO")
+ */
 class TipoUsuarioController extends BaseController
 {
     #[Route('/', name: 'tipousuario_index', methods: ['GET'])]

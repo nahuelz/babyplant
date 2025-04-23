@@ -22,14 +22,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/situacion_cliente")
- * @IsGranted("ROLE_PEDIDO")
+ * @IsGranted("ROLE_SITUACION_CLIENTE")
  */
 class SituacionClienteController extends BaseController {
 
     /**
      * @Route("/", name="situacioncliente_index", methods={"GET"})
      * @Template("situacion_cliente/index.html.twig")
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
      */
     public function index(): array
     {
@@ -44,7 +44,7 @@ class SituacionClienteController extends BaseController {
     /**
      *
      * @Route("/index_table/", name="situacion_cliente_table", methods={"GET|POST"})
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
      */
     public function indexTableAction(Request $request): Response {
 
@@ -75,7 +75,7 @@ class SituacionClienteController extends BaseController {
     /**
      * @Route("/new", name="situacion_cliente_new", methods={"GET","POST"})
      * @Template("situacion_cliente/new.html.twig")
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
      */
     public function new(): Array {
         return parent::baseNewAction();
@@ -85,7 +85,7 @@ class SituacionClienteController extends BaseController {
     /**
      * @Route("/insertar", name="situacion_cliente_create", methods={"GET","POST"})
      * @Template("situacion_cliente/new.html.twig")
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
      */
     public function createAction(Request $request) {
         return parent::baseCreateAction($request);
@@ -125,7 +125,7 @@ class SituacionClienteController extends BaseController {
     /**
      * @Route("/{id}/edit", name="situacion_cliente_edit", methods={"GET","POST"})
      * @Template("situacion_cliente/new.html.twig")
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
      */
     public function edit($id): Array {
         return parent::baseEditAction($id);
@@ -134,7 +134,7 @@ class SituacionClienteController extends BaseController {
     /**
      * @Route("/{id}/actualizar", name="situacion_cliente_update", methods={"PUT"})
      * @Template("situacion_cliente/new.html.twig")
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
      */
     public function update(Request $request, $id) {
         return parent::baseUpdateAction($request, $id);
@@ -142,14 +142,14 @@ class SituacionClienteController extends BaseController {
 
     /**
      * @Route("/{id}/borrar", name="situacion_cliente_delete", methods={"GET"})
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
      */
     public function delete($id) {
         return parent::baseDeleteAction($id);
     }
     /**
      * @Route("/movimiento/new", name="movimiento_new", methods={"GET","POST"})
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
      */
     public function movimientoNewAction(Request $request): Response
     {
@@ -188,7 +188,7 @@ class SituacionClienteController extends BaseController {
 
     /**
      * @Route("/movimiento/create", name="situacioncliente_create", methods={"GET","POST"})
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
      */
     public function movimientoCreateAction(Request $request): Response
     {

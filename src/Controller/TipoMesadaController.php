@@ -8,13 +8,17 @@ use App\Entity\TipoMesada;
 use App\Form\TipoMesadaType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/tipo/mesada')]
+/**
+ * @Route("/tipo/mesada")
+ * @IsGranted("ROLE_MESADA_CRUD")
+ */
 class TipoMesadaController extends BaseController
 {
     #[Route('/', name: 'tipomesada_index', methods: ['GET'])]

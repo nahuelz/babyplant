@@ -23,13 +23,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/pago")
+ * @IsGranted("ROLE_PAGO")
  */
 class PagoController extends BaseController {
 
     /**
      * @Route("/", name="pago_index", methods={"GET"})
      * @Template("pago/index.html.twig")
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_PAGO")
      */
     public function index(): array
     {
@@ -47,7 +48,7 @@ class PagoController extends BaseController {
 
     /**
      * @Route("/new", name="pago_new", methods={"GET","POST"})
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_PAGO")
      */
     public function new(Request $request) {
 
@@ -73,7 +74,7 @@ class PagoController extends BaseController {
 
     /**
      * @Route("/create", name="pago_create", methods={"GET","POST"})
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_PAGO")
      */
     public function createAction(Request $request) {
         $em = $this->doctrine->getManager();
@@ -139,7 +140,7 @@ class PagoController extends BaseController {
     /**
      * @Route("/{id}/edit", name="pago_edit", methods={"GET","POST"})
      * @Template("pago/new.html.twig")
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_PAGO")
      */
     public function edit($id): Array {
         return parent::baseEditAction($id);
@@ -148,7 +149,7 @@ class PagoController extends BaseController {
     /**
      * @Route("/{id}/actualizar", name="pago_update", methods={"PUT"})
      * @Template("pago/new.html.twig")
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_PAGO")
      */
     public function update(Request $request, $id) {
         return parent::baseUpdateAction($request, $id);
@@ -156,7 +157,7 @@ class PagoController extends BaseController {
 
     /**
      * @Route("/{id}/borrar", name="pago_delete", methods={"GET"})
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_PAGO")
      */
     public function delete($id) {
         return parent::baseDeleteAction($id);

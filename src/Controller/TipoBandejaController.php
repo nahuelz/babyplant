@@ -8,12 +8,17 @@ use App\Entity\Usuario;
 use App\Form\TipoBandejaType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/tipo/bandeja')]
+
+/**
+ * @Route("/tipo/bandeja")
+ * @IsGranted("ROLE_BANDEJA_CRUD")
+ */
 class TipoBandejaController extends BaseController
 {
     #[Route('/', name: 'tipobandeja_index', methods: ['GET'])]

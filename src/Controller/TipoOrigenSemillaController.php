@@ -8,12 +8,16 @@ use App\Entity\TipoProducto;
 use App\Form\TipoOrigenSemillaType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/tipo/origen/semilla')]
+/**
+ * @Route("/tipo/origen/semilla")
+ * @IsGranted("ROLE_ORIGEN_SEMILLA_CRUD")
+ */
 class TipoOrigenSemillaController extends BaseController
 {
     #[Route('/', name: 'tipoorigensemilla_index', methods: ['GET'])]

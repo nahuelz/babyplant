@@ -1,6 +1,4 @@
 .git
-vendor/
 var/
 .env
-.env.*
-docker-compose.local.yml
+docker-compose.yml

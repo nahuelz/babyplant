@@ -20,6 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/siembra")
+ * @IsGranted("ROLE_SIEMBRA")
  */
 class SiembraController extends BaseController
 {

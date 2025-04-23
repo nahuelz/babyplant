@@ -27,6 +27,7 @@ use DateInterval;
 
 /**
  * @Route("/remito")
+ * @IsGranted("ROLE_REMITO")
  */
 class RemitoController extends BaseController {
 

@@ -4,10 +4,37 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="docker-co">
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment=".">
+      <change beforePath="$PROJECT_DIR$/.dockerignore" beforeDir="false" afterPath="$PROJECT_DIR$/.dockerignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env.dist" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/babyplant.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/babyplant.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.local.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/prod/monolog.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/prod/monolog.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/roles.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/roles.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.dev.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/AuditoriaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/AuditoriaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/ConstanteEstadoReserva.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Constants/ConstanteEstadoReserva.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/EntradaCamaraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntradaCamaraController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/EntregaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntregaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PagoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PagoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PedidoProductoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PedidoProductoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PlanificacionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PlanificacionController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/RemitoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RemitoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/ReservaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ReservaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SalidaCamaraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SalidaCamaraController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SiembraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SiembraController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/TipoBandejaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/TipoBandejaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/TipoMesadaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/TipoMesadaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/TipoOrigenSemillaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/TipoOrigenSemillaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/TipoProductoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/TipoProductoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/TipoSubProductoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/TipoSubProductoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/TipoUsuarioController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/TipoUsuarioController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/TipoVariedadController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/TipoVariedadController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -224,6 +251,9 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Docker.docker-compose.yml.app: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yml.phpmyadmin: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yml: Compose Deployment.executor&quot;: &quot;Run&quot;,
     &quot;PHP Script.PedidoController.php.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
@@ -232,7 +262,7 @@
     &quot;database.data.extractors.current.export.id&quot;: &quot;SQL Inserts&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/xampp81/htdocs/capitaltrack&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/xampp81/htdocs/viveroapp&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -244,7 +274,8 @@
   },
   &quot;keyToStringList&quot;: {
     &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+      &quot;mysql&quot;,
+      &quot;mariadb&quot;
     ]
   }
 }</component>
@@ -257,14 +288,14 @@
       <recent name="C:\xampp81\htdocs\babyplant\templates\log_auditoria" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp81\htdocs\babyplant\nginx\conf" />
       <recent name="C:\xampp81\htdocs\babyplant" />
       <recent name="C:\xampp81\htdocs\babyplant\templates" />
       <recent name="C:\xampp81\htdocs\babyplant\public\theme\css" />
       <recent name="C:\xampp81\htdocs\babyplant\public\images\plantilla" />
-      <recent name="C:\xampp81\htdocs\babyplant\templates\entrega" />
     </key>
   </component>
-  <component name="RunManager" selected="PHP Script.PedidoController.php">
+  <component name="RunManager" selected="Docker.docker-compose.yml.app: Compose Deployment">
     <configuration name="phpunit.xml.dist" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
       <TestRunner scope="XML" />
       <method v="2" />
@@ -272,8 +303,51 @@
     <configuration name="PedidoController.php" type="PhpLocalRunConfigurationType" factoryName="PHP Console" temporary="true" path="$PROJECT_DIR$/src/Controller/PedidoController.php">
       <method v="2" />
     </configuration>
+    <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
+      <deployment type="docker-compose.yml">
+        <settings />
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="docker-compose.yml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="sourceFilePath" value="docker-compose.yml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="docker-compose.yml.app: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="services">
+            <list>
+              <option value="app" />
+            </list>
+          </option>
+          <option name="sourceFilePath" value="docker-compose.yml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="docker-compose.yml.phpmyadmin: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="services">
+            <list>
+              <option value="phpmyadmin" />
+            </list>
+          </option>
+          <option name="sourceFilePath" value="docker-compose.yml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Docker.docker-compose.yml.app: Compose Deployment" />
+        <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
+        <item itemvalue="Docker.docker-compose.yml.phpmyadmin: Compose Deployment" />
         <item itemvalue="PHP Script.PedidoController.php" />
       </list>
     </recent_temporary>
@@ -536,79 +610,22 @@
       <workItem from="1744304919597" duration="1342000" />
       <workItem from="1744391500087" duration="79000" />
       <workItem from="1744590790653" duration="3254000" />
-      <workItem from="1744636919489" duration="25221000" />
-    </task>
-    <task id="LOCAL-00091" summary="&#10;fixtures;">
-      <option name="closed" value="true" />
-      <created>1737492093710</created>
-      <option name="number" value="00091" />
-      <option name="presentableId" value="LOCAL-00091" />
-      <option name="project" value="LOCAL" />
-      <updated>1737492093711</updated>
-    </task>
-    <task id="LOCAL-00092" summary="fixtures;">
-      <option name="closed" value="true" />
-      <created>1737492289320</created>
-      <option name="number" value="00092" />
-      <option name="presentableId" value="LOCAL-00092" />
-      <option name="project" value="LOCAL" />
-      <updated>1737492289321</updated>
-    </task>
-    <task id="LOCAL-00093" summary="fixtures;">
-      <option name="closed" value="true" />
-      <created>1737492377492</created>
-      <option name="number" value="00093" />
-      <option name="presentableId" value="LOCAL-00093" />
-      <option name="project" value="LOCAL" />
-      <updated>1737492377492</updated>
-    </task>
-    <task id="LOCAL-00094" summary="fixtures;">
-      <option name="closed" value="true" />
-      <created>1737493134190</created>
-      <option name="number" value="00094" />
-      <option name="presentableId" value="LOCAL-00094" />
-      <option name="project" value="LOCAL" />
-      <updated>1737493134190</updated>
-    </task>
-    <task id="LOCAL-00095" summary="fixtures;">
-      <option name="closed" value="true" />
-      <created>1737494297672</created>
-      <option name="number" value="00095" />
-      <option name="presentableId" value="LOCAL-00095" />
-      <option name="project" value="LOCAL" />
-      <updated>1737494297672</updated>
-    </task>
-    <task id="LOCAL-00096" summary="fixtures;">
-      <option name="closed" value="true" />
-      <created>1737494500885</created>
-      <option name="number" value="00096" />
-      <option name="presentableId" value="LOCAL-00096" />
-      <option name="project" value="LOCAL" />
-      <updated>1737494500885</updated>
-    </task>
-    <task id="LOCAL-00097" summary="fixtures;">
-      <option name="closed" value="true" />
-      <created>1737494678949</created>
-      <option name="number" value="00097" />
-      <option name="presentableId" value="LOCAL-00097" />
-      <option name="project" value="LOCAL" />
-      <updated>1737494678949</updated>
-    </task>
-    <task id="LOCAL-00098" summary="fixtures;">
-      <option name="closed" value="true" />
-      <created>1737496981099</created>
-      <option name="number" value="00098" />
-      <option name="presentableId" value="LOCAL-00098" />
-      <option name="project" value="LOCAL" />
-      <updated>1737496981099</updated>
-    </task>
-    <task id="LOCAL-00099" summary="fixtures;">
-      <option name="closed" value="true" />
-      <created>1737497071553</created>
-      <option name="number" value="00099" />
-      <option name="presentableId" value="LOCAL-00099" />
-      <option name="project" value="LOCAL" />
-      <updated>1737497071553</updated>
+      <workItem from="1744636919489" duration="26911000" />
+      <workItem from="1744723922995" duration="24578000" />
+      <workItem from="1744816968993" duration="8000" />
+      <workItem from="1744827220417" duration="3017000" />
+      <workItem from="1744834143750" duration="149000" />
+      <workItem from="1744835112802" duration="6000" />
+      <workItem from="1744847520927" duration="8838000" />
+      <workItem from="1744910522799" duration="3133000" />
+      <workItem from="1744941888347" duration="1245000" />
+      <workItem from="1745025460047" duration="7357000" />
+      <workItem from="1745039839702" duration="4232000" />
+      <workItem from="1745110226356" duration="1818000" />
+      <workItem from="1745327378455" duration="1932000" />
+      <workItem from="1745347609367" duration="4376000" />
+      <workItem from="1745354456384" duration="12000" />
+      <workItem from="1745414792496" duration="4805000" />
     </task>
     <task id="LOCAL-00100" summary="fixtures;">
       <option name="closed" value="true" />
@@ -930,7 +947,79 @@
       <option name="project" value="LOCAL" />
       <updated>1744669432118</updated>
     </task>
-    <option name="localTasksCounter" value="140" />
+    <task id="LOCAL-00140" summary="docker-co">
+      <option name="closed" value="true" />
+      <created>1744673442361</created>
+      <option name="number" value="00140" />
+      <option name="presentableId" value="LOCAL-00140" />
+      <option name="project" value="LOCAL" />
+      <updated>1744673442361</updated>
+    </task>
+    <task id="LOCAL-00141" summary="docker configurado">
+      <option name="closed" value="true" />
+      <created>1744734827433</created>
+      <option name="number" value="00141" />
+      <option name="presentableId" value="LOCAL-00141" />
+      <option name="project" value="LOCAL" />
+      <updated>1744734827433</updated>
+    </task>
+    <task id="LOCAL-00142" summary="borro esto">
+      <option name="closed" value="true" />
+      <created>1744830523745</created>
+      <option name="number" value="00142" />
+      <option name="presentableId" value="LOCAL-00142" />
+      <option name="project" value="LOCAL" />
+      <updated>1744830523746</updated>
+    </task>
+    <task id="LOCAL-00143" summary=".env">
+      <option name="closed" value="true" />
+      <created>1744834156834</created>
+      <option name="number" value="00143" />
+      <option name="presentableId" value="LOCAL-00143" />
+      <option name="project" value="LOCAL" />
+      <updated>1744834156834</updated>
+    </task>
+    <task id="LOCAL-00144" summary=".env.dist">
+      <option name="closed" value="true" />
+      <created>1744834218876</created>
+      <option name="number" value="00144" />
+      <option name="presentableId" value="LOCAL-00144" />
+      <option name="project" value="LOCAL" />
+      <updated>1744834218876</updated>
+    </task>
+    <task id="LOCAL-00145" summary="docker-compose.yml">
+      <option name="closed" value="true" />
+      <created>1744834252158</created>
+      <option name="number" value="00145" />
+      <option name="presentableId" value="LOCAL-00145" />
+      <option name="project" value="LOCAL" />
+      <updated>1744834252158</updated>
+    </task>
+    <task id="LOCAL-00146" summary=".">
+      <option name="closed" value="true" />
+      <created>1745036605885</created>
+      <option name="number" value="00146" />
+      <option name="presentableId" value="LOCAL-00146" />
+      <option name="project" value="LOCAL" />
+      <updated>1745036605886</updated>
+    </task>
+    <task id="LOCAL-00147" summary=".">
+      <option name="closed" value="true" />
+      <created>1745036668906</created>
+      <option name="number" value="00147" />
+      <option name="presentableId" value="LOCAL-00147" />
+      <option name="project" value="LOCAL" />
+      <updated>1745036668906</updated>
+    </task>
+    <task id="LOCAL-00148" summary=".">
+      <option name="closed" value="true" />
+      <created>1745040459216</created>
+      <option name="number" value="00148" />
+      <option name="presentableId" value="LOCAL-00148" />
+      <option name="project" value="LOCAL" />
+      <updated>1745040459217</updated>
+    </task>
+    <option name="localTasksCounter" value="149" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -948,12 +1037,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="&#10;fixtures;" />
-    <MESSAGE value="fixtures;" />
-    <MESSAGE value="nuevos estados al generar remito" />
-    <MESSAGE value="Cuenta corriente pagos de remitos" />
-    <MESSAGE value="fixtures" />
-    <MESSAGE value="fix crear CC" />
     <MESSAGE value="sql views" />
     <MESSAGE value="Entregas / Remitos" />
     <MESSAGE value="Reservas" />
@@ -973,6 +1056,12 @@
     <MESSAGE value="Cambios varios" />
     <MESSAGE value="Docker" />
     <MESSAGE value="docker-co" />
-    <option name="LAST_COMMIT_MESSAGE" value="docker-co" />
+    <MESSAGE value="docker configurado" />
+    <MESSAGE value="borro esto" />
+    <MESSAGE value=".env" />
+    <MESSAGE value=".env.dist" />
+    <MESSAGE value="docker-compose.yml" />
+    <MESSAGE value="." />
+    <option name="LAST_COMMIT_MESSAGE" value="." />
   </component>
 </project>

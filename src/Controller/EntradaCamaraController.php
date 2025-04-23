@@ -21,6 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/entrada_camara")
+ * @IsGranted("ROLE_CAMARA")
  */
 class EntradaCamaraController extends BaseController
 {

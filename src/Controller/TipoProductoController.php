@@ -8,12 +8,16 @@ use App\Entity\TipoUsuario;
 use App\Form\TipoProductoType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/tipo/producto')]
+/**
+ * @Route("/tipo/producto")
+ * @IsGranted("ROLE_PRODUCTO_CRUD")
+ */
 class TipoProductoController extends BaseController
 {
     #[Route('/', name: 'tipoproducto_index', methods: ['GET'])]

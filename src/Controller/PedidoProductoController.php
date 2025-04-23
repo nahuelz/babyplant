@@ -3,15 +3,18 @@
 namespace App\Controller;
 
 use App\Entity\PedidoProducto;
-use App\Form\PedidoProducto1Type;
 use App\Repository\PedidoProductoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-#[Route('/pedido/producto')]
+/**
+ * @Route("/pedido/producto")
+ * @IsGranted("ROLE_PEDIDO")
+ */
 class PedidoProductoController extends AbstractController
 {
     #[Route('/', name: 'app_pedido_producto_index', methods: ['GET'])]

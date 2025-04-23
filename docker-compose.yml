@@ -11,9 +11,9 @@ services:
     networks:
       - cliente_net
 
-  mysql:
-    image: mysql:8.0
-    container_name: mysql_babyplant
+  mariadb:
+    image: mariadb:10.6
+    container_name: mariadb_babyplant
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
@@ -29,11 +29,11 @@ services:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin_babyplant
     environment:
-      PMA_HOST: mysql_babyplant
+      PMA_HOST: mariadb_babyplant
     ports:
       - "8081:80"  # Accedés desde http://localhost:8082
     depends_on:
-      - mysql
+      - mariadb
     networks:
       - cliente_net
 

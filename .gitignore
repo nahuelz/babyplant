@@ -13,6 +13,8 @@
 /vendor/
 /migrations/
 .env
+.env.prod
+.env.dev
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###

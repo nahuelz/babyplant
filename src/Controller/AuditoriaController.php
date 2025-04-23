@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Auditoria controller.
  *
  * @Route("/auditoria_interna")
+ * @IsGranted("ROLE_AUDITORIA")
  */
 class AuditoriaController extends BaseController {
 
@@ -109,7 +110,7 @@ class AuditoriaController extends BaseController {
     }
 
     /**
-     * Finds and displays a Auditoria entity.
+     * Finds and displays Auditoria entity.
      *
      * @Route("/{id}", name="auditoria_interna_show")
      * @Method("GET")

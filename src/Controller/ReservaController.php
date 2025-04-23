@@ -3,46 +3,41 @@
 namespace App\Controller;
 
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
-use App\Entity\Constants\ConstanteEstadoRemito;
+use App\Entity\Constants\ConstanteEstadoReserva;
 use App\Entity\Entrega;
 use App\Entity\EntregaProducto;
 use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
-use App\Entity\EstadoRemito;
-use App\Entity\EstadoRemitoHistorico;
 use App\Entity\EstadoReserva;
 use App\Entity\EstadoReservaHistorico;
-use App\Entity\Mesada;
 use App\Entity\PedidoProducto;
-use App\Entity\Remito;
 use App\Entity\Reserva;
 use App\Form\ReservaType;
 use App\Service\EntregaService;
+use DateInterval;
+use DateTime;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ObjectManager;
 use Mpdf\Mpdf;
-use Mpdf\MpdfException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use DateTime;
-use DateInterval;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @Route("/reserva")
+ * @IsGranted("ROLE_RESERVA")
  */
 class ReservaController extends BaseController {
 
     /**
      * @Route("/", name="reserva_index", methods={"GET"})
      * @Template("reserva/index.html.twig")
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_RESERVA")
      */
     public function index(): array
     {
@@ -62,7 +57,7 @@ class ReservaController extends BaseController {
      * Tabla para app_pago.
      *
      * @Route("/index_table/", name="reserva_table", methods={"GET|POST"})
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_RESERVA")
      */
     public function indexTableAction(Request $request): Response {
 
@@ -107,7 +102,7 @@ class ReservaController extends BaseController {
     /**
      * @Route("/new", name="reserva_new", methods={"GET","POST"})
      * @Template("reserva/new.html.twig")
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_RESERVA")
      */
     public function new(): array
     {
@@ -117,7 +112,7 @@ class ReservaController extends BaseController {
     /**
      * @Route("/insertar", name="reserva_create", methods={"GET","POST"})
      * @Template("reserva/new.html.twig")
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_RESERVA")
      */
     public function createAction(Request $request): RedirectResponse|Response
     {
@@ -135,7 +130,7 @@ class ReservaController extends BaseController {
     /**
      * @Route("/{id}/edit", name="reserva_edit", methods={"GET","POST"})
      * @Template("reserva/new.html.twig")
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_RESERVA")
      */
     public function edit($id): RedirectResponse|array
     {
@@ -145,7 +140,7 @@ class ReservaController extends BaseController {
     /**
      * @Route("/{id}/actualizar", name="reserva_update", methods={"PUT"})
      * @Template("reserva/new.html.twig")
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_RESERVA")
      */
     public function update(Request $request, $id): RedirectResponse|Response
     {
@@ -154,7 +149,7 @@ class ReservaController extends BaseController {
 
     /**
      * @Route("/{id}/borrar", name="reserva_delete", methods={"GET"})
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_RESERVA")
      */
     public function delete($id): RedirectResponse|JsonResponse
     {
@@ -233,7 +228,7 @@ class ReservaController extends BaseController {
 
     /**
      * @Route("/{id}/realizar-entrega", name="realizar_entrega", methods={"GET","POST", "PUT"})
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_RESERVA")
      * @Template("entrega/confirmar_entrega.html.twig")
      */
     public function realizarEntrega($id): JsonResponse
@@ -267,7 +262,7 @@ class ReservaController extends BaseController {
 
     /**
      * @Route("/{id}/reserva-confirmar-entrega", name="reserva_confirmar_entrega", methods={"GET","POST", "PUT"})
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_RESERVA")
      * @Template("entrega/confirmar_entrega.html.twig")
      */
     public function confirmarEntrega($id): array
@@ -297,7 +292,7 @@ class ReservaController extends BaseController {
 
     /**
      * @Route("/confirmar-reserva", name="confirmar_reserva", methods={"GET","POST", "PUT"})
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_RESERVA")
      */
     public function confirmarReserva(Request $request): JsonResponse
     {

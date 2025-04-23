@@ -2,8 +2,7 @@
 
 namespace App\Entity;
 
-use App\Controller\ConstanteEstadoReserva;
-use App\Entity\Constants\ConstanteEstadoPedidoProducto;
+use App\Entity\Constants\ConstanteEstadoReserva;
 use App\Entity\Traits\Auditoria;
 use App\Repository\PedidoProductoRepository;
 use DateTime;

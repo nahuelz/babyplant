@@ -18,6 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/planificacion")
+ * @IsGranted("ROLE_PLANIFICAR")
  */
 class PlanificacionController extends BaseController
 {
@@ -25,7 +26,7 @@ class PlanificacionController extends BaseController
     /**
      * @Route("/", name="planificacion_index", methods={"GET"})
      * @Template("planificacion/index.html.twig")
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_PLANIFICAR")
      */
     public function index(): array
     {
@@ -41,7 +42,7 @@ class PlanificacionController extends BaseController
     /**
      *
      * @Route("/index_table/", name="planificacion_table", methods={"GET|POST"})
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_PLANIFICAR")
      */
     public function indexTableAction(Request $request): Response {
 
@@ -72,7 +73,7 @@ class PlanificacionController extends BaseController
     /**
      * @Route("/{id}", name="planificacion_show", methods={"GET"})
      * @Template("pedido/show.html.twig")
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_PLANIFICAR")
      */
     public function show($id): Array {
         $em = $this->doctrine->getManager();
@@ -97,7 +98,7 @@ class PlanificacionController extends BaseController
     /**
      *
      * @Route("/cambiar_fecha_planificacion/", name="cambiar_fecha_planificacion", methods={"POST"})
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_PLANIFICAR")
      */
     public function cambiarFechaPlanificacion(Request $request){
 
@@ -126,7 +127,7 @@ class PlanificacionController extends BaseController
     /**
      *
      * @Route("/guardar_orden_siembra/", name="guardar_orden_siembra", methods={"POST"})
-     * @IsGranted("ROLE_PEDIDO")
+     * @IsGranted("ROLE_PLANIFICAR")
      */
     public function guardarOrdenSiembra(Request $request){
 

@@ -3,26 +3,18 @@
 namespace App\Controller;
 
 use App\Entity\Constants\ConstanteEstadoEntrega;
-use App\Entity\Constants\ConstanteEstadoMesada;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Constants\ConstanteEstadoRemito;
-use App\Entity\DatosEntrega;
 use App\Entity\EntregaProducto;
 use App\Entity\EstadoEntrega;
 use App\Entity\EstadoEntregaHistorico;
-use App\Entity\EstadoMesada;
-use App\Entity\EstadoMesadaHistorico;
-use App\Entity\EstadoPedidoProducto;
-use App\Entity\EstadoPedidoProductoHistorico;
 use App\Entity\EstadoRemito;
 use App\Entity\EstadoRemitoHistorico;
-use App\Entity\Mesada;
 use App\Entity\PedidoProducto;
 use App\Entity\Entrega;
 use App\Entity\Remito;
 use App\Form\EntregaType;
 use App\Service\EntregaService;
-use DateInvalidOperationException;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ObjectManager;
@@ -41,13 +33,15 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @Route("/entrega")
+ * @IsGranted("ROLE_ENTREGA")
+ *
  */
 class EntregaController extends BaseController {
 
     /**
      * @Route("/", name="entrega_index", methods={"GET"})
      * @Template("entrega/index.html.twig")
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_ENTREGA")
      */
     public function index(): array
     {
@@ -67,7 +61,7 @@ class EntregaController extends BaseController {
      * Tabla para app_pago.
      *
      * @Route("/index_table/", name="entrega_table", methods={"GET|POST"})
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_ENTREGA")
      * @throws DateInvalidOperationException
      */
     public function indexTableAction(Request $request): Response {
@@ -108,7 +102,7 @@ class EntregaController extends BaseController {
     /**
      * @Route("/new", name="entrega_new", methods={"GET","POST"})
      * @Template("entrega/new.html.twig")
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_ENTREGA")
      */
     public function new(): array
     {
@@ -118,7 +112,7 @@ class EntregaController extends BaseController {
     /**
      * @Route("/insertar", name="entrega_create", methods={"GET","POST"})
      * @Template("entrega/new.html.twig")
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_ENTREGA")
      */
     public function createAction(Request $request): RedirectResponse|Response
     {
@@ -136,7 +130,7 @@ class EntregaController extends BaseController {
     /**
      * @Route("/{id}/edit", name="entrega_edit", methods={"GET","POST"})
      * @Template("entrega/new.html.twig")
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_ENTREGA")
      */
     public function edit($id): RedirectResponse|array
     {
@@ -146,7 +140,7 @@ class EntregaController extends BaseController {
     /**
      * @Route("/{id}/actualizar", name="entrega_update", methods={"PUT"})
      * @Template("entrega/new.html.twig")
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_ENTREGA")
      */
     public function update(Request $request, $id): RedirectResponse|Response
     {
@@ -155,7 +149,7 @@ class EntregaController extends BaseController {
 
     /**
      * @Route("/{id}/borrar", name="entrega_delete", methods={"GET"})
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_ENTREGA")
      */
     public function delete($id): RedirectResponse|JsonResponse
     {
@@ -232,7 +226,7 @@ class EntregaController extends BaseController {
 
     /**
      * @Route("/confirmar-entrega", name="confirmar_entrega", methods={"GET","POST", "PUT"})
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_ENTREGA")
      */
     public function confirmarEntrega(Request $request): JsonResponse
     {
@@ -393,7 +387,7 @@ class EntregaController extends BaseController {
     /**
      * @Route("/remito/new/{id}", name="entrega_remito_new", methods={"GET","POST"})
      * @Template("entrega/remito/new.html.twig")
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_ENTREGA")
      */
     public function remitoNew($id): Array {
         $em = $this->doctrine->getManager();
@@ -425,7 +419,7 @@ class EntregaController extends BaseController {
     /**
      * @Route("/remito/insertar/{id}", name="entrega_remito_create", methods={"GET","POST"})
      * @Template("entrega/remito/new.html.twig")
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_ENTREGA")
      */
     public function remitoCreateAction($id,Request $request): RedirectResponse|array
     {
@@ -483,7 +477,7 @@ class EntregaController extends BaseController {
 
     /**
      * @Route("/confirmar-entrega-remito", name="confirmar_entrega_remito", methods={"GET","POST","PUT"})
-     * @IsGranted("ROLE_REMITO")
+     * @IsGranted("ROLE_ENTREGA")
      */
     public function confirmarEntregaRemito(Request $request): JsonResponse
     {
