@@ -7,7 +7,7 @@ imports:
     - { resource: landing.yaml }
 
 parameters:
-    dsn: '%env(DSN)%'
+    MPDF_BASE_PATH: '%env(MPDF_BASE_PATH)%'
 
 services:
     # default configuration for services in *this* file

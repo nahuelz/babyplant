@@ -287,7 +287,7 @@ class AppFixtures extends Fixture
         $manager->persist($tipoMovimiento);
 
         $tipoMovimiento = new TipoMovimiento();
-        $tipoMovimiento->setNombre('PAGO DE TRAMITO');
+        $tipoMovimiento->setNombre('PAGO DE TRAMITE');
         $tipoMovimiento->setCodigoInterno(2);
         $tipoMovimiento->setHabilitado(1);
         $manager->persist($tipoMovimiento);

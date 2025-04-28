@@ -28,6 +28,9 @@ RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
 # Copiar código fuente al contenedor
 COPY . /var/www/html
 
+# Copiás tu php.ini personalizado al lugar correcto
+COPY php.ini /usr/local/etc/php/
+
 WORKDIR /var/www/html
 
 # Asegura que los permisos sean correctos para el directorio public

@@ -381,13 +381,14 @@ class ReservaController extends BaseController {
             'orientation' => 'P',
         ]);
 
-        $mpdfService->shrink_tables_to_fit = 1;
+        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
 
         $mpdfService->SetTitle($filename);
 
         $mpdfService->WriteHTML($html);
 
         $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
+
 
         return new Response($mpdfOutput);
     }

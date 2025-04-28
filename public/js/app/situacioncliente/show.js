@@ -103,8 +103,27 @@ function initAgregarSaldo() {
                                 },
                                 success: function (data) {
                                     toastr.success(data.message);
-                                    window.location.reload();
-                                    return true;
+                                    $('.modal').modal('hide'); // <- cierra el primer modal
+                                    showDialog({
+                                        titulo: 'Imprimir Comprobante Pago',
+                                        contenido: '' +
+                                            '<a href="/situacion_cliente/imprimir-comprobante-movimiento/'+data.id+'" target="_blank" class="btn btn-light-primary blue" title="Imprimir comprobante">\n' +
+                                                '<i class="fa fa-file-pdf text-white"></i> Imprimir A4\n' +
+                                            '</a>'+
+                                            '<a href="/situacion_cliente/imprimir-comprobante-movimiento-ticket/'+data.id+'" target="_blank" class="btn btn-light-primary blue" style=" float: right; " title="Imprimir comprobante">\n' +
+                                                '<i class="fa fa-file-pdf text-white"></i> Imprimir TICKET\n' +
+                                            '</a>',
+                                        labelCancel: 'Cerrar',
+                                        labelSuccess: 'Guardar',
+                                        closeButton: true,
+                                        callbackCancel: function () {
+                                            window.location.reload();
+                                            return true;
+                                        }
+                                    });
+                                    $('.submit-button').hide();
+                                    $('.bootbox-close-button').hide();
+
                                 },
                                 error: function () {
                                     return true;
@@ -145,7 +164,7 @@ function initAgregarPago() {
             },
         }).done(function (form) {
             showDialog({
-                titulo: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar Dinero',
+                titulo: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar Pago',
                 contenido: form,
                 labelCancel: 'Cerrar',
                 labelSuccess: 'Guardar',
@@ -179,8 +198,27 @@ function initAgregarPago() {
                                     },
                                     success: function (data) {
                                         toastr.success(data.message);
-                                        window.location.reload();
-                                        return true;
+                                        $('.modal').modal('hide'); // <- cierra el primer modal
+                                        showDialog({
+                                            titulo: 'Imprimir Comprobante Pago',
+                                            contenido: '' +
+                                                '<a href="/pago/imprimir-comprobante-pago/'+data.id+'" target="_blank" class="btn btn-light-primary blue" title="Imprimir comprobante">\n' +
+                                                '<i class="fa fa-file-pdf text-white"></i> Imprimir A4\n' +
+                                                '</a>'+
+                                                '<a href="/pago/imprimir-comprobante-pago-ticket/'+data.id+'" target="_blank" class="btn btn-light-primary blue" style=" float: right; " title="Imprimir comprobante">\n' +
+                                                '<i class="fa fa-file-pdf text-white"></i> Imprimir TICKET\n' +
+                                                '</a>',
+                                            labelCancel: 'Cerrar',
+                                            labelSuccess: 'Guardar',
+                                            closeButton: true,
+                                            callbackCancel: function () {
+                                                window.location.reload();
+                                                return true;
+                                            }
+                                        });
+                                        $('.submit-button').hide();
+                                        $('.bootbox-close-button').hide();
+
                                     },
                                     error: function () {
                                         return true;

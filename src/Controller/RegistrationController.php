@@ -73,7 +73,6 @@ class RegistrationController extends AbstractController {
             // encode the plain password
             $user->setHabilitado(true);
             if ($user->getTipoUsuario()->getCodigoInterno() == ConstanteTipoUsuario::CLIENTE) {
-                $user->setHabilitado(false);
                 $user->setUsername($user->getEmail());
                 $user->setPassword(
                     $passwordEncoder->encodePassword(

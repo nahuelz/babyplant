@@ -235,7 +235,7 @@ class RemitoController extends BaseController {
             'orientation' => 'P',
         ]);
 
-        $mpdfService->shrink_tables_to_fit = 1;
+        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
 
         $mpdfService->SetTitle($filename);
 

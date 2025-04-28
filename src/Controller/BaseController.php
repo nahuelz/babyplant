@@ -19,6 +19,7 @@ use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\Asset\Packages;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -69,6 +70,8 @@ class BaseController extends AbstractController {
      */
     protected $doctrine;
 
+    protected $assets;
+
     /**
      *
      * @var type
@@ -85,7 +88,7 @@ class BaseController extends AbstractController {
      * @param AuthorizationCheckerInterface $authChecker
      * @return $this
      */
-    public function __construct(ManagerRegistry $doctrine, EntityManagementGuesser $emg, ContainerInterface $container, SelectService $selectService, ParameterBagInterface $parameterBag, AuthorizationCheckerInterface $authChecker) {
+    public function __construct(ManagerRegistry $doctrine, EntityManagementGuesser $emg, ContainerInterface $container, SelectService $selectService, ParameterBagInterface $parameterBag, AuthorizationCheckerInterface $authChecker, Packages $assets) {
         $this->container = $container;
 
         $this->guesser = $emg;
@@ -98,6 +101,8 @@ class BaseController extends AbstractController {
         $this->authChecker = $authChecker;
 
         $this->doctrine = $doctrine;
+
+        $this->assets = $assets;
 
         return $this;
     }

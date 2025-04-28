@@ -14,7 +14,6 @@ use Doctrine\ORM\Query\ResultSetMapping;
 use Mpdf\Mpdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -199,6 +198,7 @@ class SituacionClienteController extends BaseController {
         $descripcion = $request->request->get('descripcion');
         $id = $request->request->get('idCuentaCorriente');
         $idPedidoProducto = $request->request->get('idPedidoProducto');
+        $idMovimiento = '';
 
         if ((isset($modoPagoValue) and $modoPagoValue !== '') and (isset($monto) and $monto !== '')) {
             $modoPago = $em->getRepository(ModoPago::class)->findOneByCodigoInterno($modoPagoValue);
@@ -217,15 +217,18 @@ class SituacionClienteController extends BaseController {
             $movimiento->setTipoReferencia($tipoReferencia);
             $movimiento->setPedidoProducto($pedidoProducto);
             $cuentaCorriente->addMovimiento($movimiento);
+            $movimiento->setSaldoCuenta($cuentaCorriente->getSaldo());
             $em->persist($movimiento);
             $em->flush();
+            $idMovimiento = $movimiento->getId();
         }
 
         $response = new Response();
         $response->setContent(json_encode(array(
             'message' => 'SALDO AGREGADO',
             'statusCode' => 200,
-            'statusText' => 'OK'
+            'statusText' => 'OK',
+            'id' => $idMovimiento
         )));
 
         return $response;
@@ -265,12 +268,62 @@ class SituacionClienteController extends BaseController {
             'orientation' => 'P',
         ]);
 
-        $mpdfService->shrink_tables_to_fit = 1;
+        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
 
         $mpdfService->SetTitle($filename);
 
         $mpdfService->WriteHTML($html);
 
+        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
+
+        return new Response($mpdfOutput);
+    }
+
+    /**
+     * Print a Remito Entity.
+     *
+     * @Route("/imprimir-comprobante-movimiento-ticket/{id}", name="imprimir_comprobante_movimiento_ticket", methods={"GET"})
+     */
+    public function imprimirComprobanteMovimientoTicketAction($id) {
+        $em = $this->doctrine->getManager();
+
+        /* @var $remito Remito */
+        $remito = $em->getRepository("App\Entity\Movimiento")->find($id);
+
+        if (!$remito) {
+            throw $this->createNotFoundException("No se puede encontrar la entidad.");
+        }
+
+        $html = $this->renderView('situacion_cliente/movimiento_ticket_pdf.html.twig', array('entity' => $remito, 'website' => "http://192.168.0.182/babyplant/public/"));
+
+        $filename = 'pago.pdf';
+
+        $mpdfService = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => [80, 1000], // ancho x alto en milímetros
+            'margin_left' => 2,
+            'margin_right' => 2,
+            'margin_top' => 2,
+            'margin_bottom' => 2,
+            'orientation' => 'P',
+        ]);
+        $mpdfService->WriteHTML($html);
+
+        // Obtener altura usada en milímetros
+        $usedHeight = $mpdfService->y; // posición vertical actual (mm)
+
+        $mpdfService = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => [80, $usedHeight + 20], // ancho x alto en milímetros
+            'margin_left' => 2,
+            'margin_right' => 2,
+            'margin_top' => 2,
+            'margin_bottom' => 2,
+            'orientation' => 'P',
+        ]);
+        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
+        $mpdfService->SetTitle($filename);
+        $mpdfService->WriteHTML($html);
         $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
 
         return new Response($mpdfOutput);
@@ -291,8 +344,6 @@ class SituacionClienteController extends BaseController {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
 
-        $html = $this->renderView('situacion_cliente/movimiento_todos_pdf.html.twig', array('entity' => $usuario, 'website' => "http://192.168.0.182/babyplant/public/"));
-
         $filename = 'pago.pdf';
 
         $mpdfService = new Mpdf([
@@ -309,7 +360,10 @@ class SituacionClienteController extends BaseController {
             'orientation' => 'P',
         ]);
 
-        $mpdfService->shrink_tables_to_fit = 1;
+        $html = $this->renderView('situacion_cliente/movimiento_todos_pdf.html.twig', array('entity' => $usuario, 'website' => "http://192.168.0.182/babyplant/public/"));
+
+
+        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
 
         $mpdfService->SetTitle($filename);
 

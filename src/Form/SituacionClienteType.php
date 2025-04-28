@@ -83,7 +83,7 @@ class SituacionClienteType extends AbstractType
                             ->leftJoin('App:Pedido', 'p', Join::WITH, 'pp.pedido = p')
                             ->leftJoin('App:Usuario', 'u', Join::WITH, 'p.cliente = u ')
                             ->where('u.id = :idCliente')
-                            ->andWhere('pp.estado = 1 or pp.estado = 2 or pp.estado = 3 or pp.estado = 4 or pp.estado = 5')
+                            ->andWhere('pp.estado IN (1,2,3,4,5,6,7,8)')
                             ->orderBy('p.id', 'DESC')
                             ->setParameter('idCliente', $idCliente);
                         return $queryBuilder;

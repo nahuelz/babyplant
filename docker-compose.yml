@@ -31,7 +31,7 @@ services:
     environment:
       PMA_HOST: mariadb_babyplant
     ports:
-      - "8081:80"  # Accedés desde http://localhost:8082
+      - "8081:80"  # Accedés desde http://localhost:8081
     depends_on:
       - mariadb
     networks:

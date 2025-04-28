@@ -56,8 +56,12 @@
                                                     </td>
                                                     <td class="v-middle nowrap text-center">
                                                         <a href="{{ path('imprimir_comprobante_movimiento',{id: movimiento.id}) }}" target="_blank"
-                                                           class="btn btn-light-primary btn-icon btn-sm blue" title="Imprimir comprobante" style="height: 25px;width: 25px;">
+                                                           class="btn btn-light-primary btn-icon btn-sm blue" title="Imprimir a4" style="height: 25px;width: 25px;">
                                                             <i class="fa fa-file-pdf text-white"></i>
+                                                        </a>
+                                                        <a href="{{ path('imprimir_comprobante_movimiento_ticket',{id: movimiento.id}) }}" target="_blank"
+                                                           class="btn btn-light-primary btn-icon btn-sm blue" title="Imprimir ticket" style="height: 25px;width: 25px;">
+                                                            <i class="fa fa-receipt text-white"></i>
                                                         </a>
                                                     </td>
                                                 </tr>

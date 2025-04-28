@@ -2,95 +2,102 @@
 <html>
 <head>
     <style type="text/css">
-        .remito{
-            background: url({{ asset('images/plantilla/plantilla-movimiento.png') }});
-            background-repeat: no-repeat;
-            background-image-resize: 1;
-            font-size: 16px;
-            font-family: monospace;
+
+        /* Establece un margen general para todas las páginas */
+        @page {
+            margin-top: 5mm; /* Margen para todas las páginas excepto la primera */
         }
+
+        .body{
+            font-family: Arial, sans-serif; /* Arial es una fuente predeterminada en mPDF */
+        }
+
         .logo-empresa{
             background: url({{ asset('images/logo/logo.png') }});
             float:left;
             background-repeat: no-repeat;
-            width: 40mm;
-            height: 50.98mm;
+            width: 50mm;
+            height: 50mm;
             background-image-resize: 3;
             overflow: hidden;
-            margin-left: 20px;
-            margin-top: 30px;
         }
-        .datos-empresa{
-            margin-left: 290px;
-            margin-top: -37px;
+        .datos-empresa-left{
             line-height: 5.7mm;
-            width: 200px;
+            margin-right: 430px;
+            margin-top: -25px;
+            text-align: right;
+        }
+        .datos-empresa-right{
+            margin-left: 380px;
+            margin-top: -129px;
+            line-height: 5.7mm;
         }
         .datos-remito{
-            margin-left: 630px;
+            margin-left: 650px;
             margin-top: -197px;
-            line-height: 12mm;
-            width: 110px;
-            font-size: 18px;
-            height: 90px;
+
         }
         .datos-cliente-left{
-            margin-top: 36px;
             line-height: 6.3mm;
-            margin-left: 170px;
+            margin-left: 50px;
         }
         .datos-cliente-right{
             margin-top: -49px;
-            margin-left: 570px;
+            margin-left: 400px;
             line-height: 6.3mm;
         }
-        .datos-productos{
-            margin-top: 45px;
-            height: 300px;
-        }
+
         .datos-productos-table{
-            margin-left: -173px;
+            margin-top: 25px;
             line-height: 7.5mm;
-            margin-top: -20px;
+            font-family: Arial, sans-serif;
         }
         td{
-            font-size: 16px;
+            font-size: 14px;
             margin-bottom: 50px;
         }
-        .total{
-            height: 100px;
-            margin-left: 600px;
-            margin-top: -75px;
-        }
+
     </style>
 </head>
 <body>
 
-<div class="remito">
-    <br>
-    <div class="logo-empresa" ></div>
+<div class="body">
     <div class="datos-empresa">
-        <div>Baby Plant srl</div>
-        <div>33-71230651-9</div>
-        <div>www.babyplant.com.ar</div>
-        <div> 44 4303 </div>
-        <div> Lis. Olmos la Plata </div>
-        <div>  0221 15-669-0199 </div>
+        <div class="logo-empresa"></div>
+        <div class="datos-empresa-left">
+            <div><strong>RAZÓN SOCIAL</strong></div>
+            <div><strong>CUIT</strong></div>
+            <div><strong>WEB</strong></div>
+            <div><strong>DIRECCIÓN</strong></div>
+            <div><strong>LOCALIDAD</strong></div>
+            <div><strong>TELÉFONO</strong></div>
+        </div>
+        <div class="datos-empresa-right">
+            <div> Baby Plant srl</div>
+            <div>33-71230651-9</div>
+            <div>www.babyplant.com.ar</div>
+            <div> 44 4303 </div>
+            <div> Lis. Olmos la Plata </div>
+            <div>  0221 15-669-0199 </div>
+        </div>
+
+        <div class="datos-remito">
+            <div><strong>FECHA </strong>{{ entity.fechaCreacion|date('d/m/Y') }}</div>
+        </div>
+    </div>
+    <div class="datos-cliente">
+        <div class="datos-cliente-left">
+            <div><strong>CLIENTE: </strong>{{ entity.cuentaCorriente.cliente.nombreCompleto|default('-') }}</div>
+            <div><strong>CUIT: </strong>{{ entity.cuentaCorriente.cliente.cuit|default('-') }}</div>
+        </div>
+        <div class="datos-cliente-right">
+            <div><strong>TELEFONO: </strong>{{ entity.cuentaCorriente.cliente.celular|default('-') }}</div>
+            <div><strong>TELEFONO: </strong>{{ entity.cuentaCorriente.cliente.domicilio|default('-') }}</div>
+        </div>
     </div>
 
-    <div class="datos-remito">
-        <div>{{ entity.fechaCreacion|date('d/m/Y') }}</div>
-    </div>
-    <div class="datos-cliente-left">
-        <div>{{ entity.cuentaCorriente.cliente.nombreCompleto|default('-') }}</div>
-        <div>{{ entity.cuentaCorriente.cliente.cuit|default('-') }}</div>
-    </div>
-    <div class="datos-cliente-right">
-        <div>{{ entity.cuentaCorriente.cliente.telefono|default('-') }}</div>
-        <div>{{ entity.cuentaCorriente.cliente.domicilio|default('-') }}</div>
-    </div>
     <div class="datos-productos">
-        <table class="datos-productos-table" border="1" cellpadding="0" cellspacing="0" align="center">
+        <table class="datos-productos-table" >
             <thead>
             <tr>
                 <th class="text-center">FECHA</th>
@@ -98,7 +105,7 @@
                 <th class="text-center">MONTO</th>
                 <th class="text-center">MODO PAGO</th>
                 <th class="text-center">REFERENCIA</th>
-                <th class="text-center">PRODUCTO / REMITO</th>
+                <th class="text-center">SALDO</th>
             </tr>
             </thead>
             <tbody>
@@ -107,9 +114,9 @@
                     <td width="110" align="center">{{ movimiento.fechaCreacion is not null ? movimiento.fechaCreacion|date('d/m/Y') : '-' }}</td>
                     <td width="160" align="center">{{ movimiento.tipoMovimiento }}</td>
                     <td width="110" align="center">{{ movimiento.monto|money_format  }}</td>
-                    <td width="110" align="center">{{ movimiento.modoPago  }}</td>
-                    <td width="110" align="center">{{ movimiento.tipoReferencia|default('-')  }}</td>
-                    <td width="180" align="center">{{ movimiento.pedidoProducto.nombreCorto|default('-')  }}</td>
+                    <td width="160" align="center">{{ movimiento.modoPago  }}</td>
+                    <td width="110" align="center">{{ movimiento.tipoReferencia  }}{{ movimiento.remito  }}</td>
+                    <td width="110" align="center">{{ movimiento.saldoCuenta|money_format  }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

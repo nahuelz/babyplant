@@ -86,7 +86,7 @@
         <div>{{ entity.cuentaCorriente.cliente.cuit|default('-') }}</div>
     </div>
     <div class="datos-cliente-right">
-        <div>{{ entity.cuentaCorriente.cliente.telefono|default('-') }}</div>
+        <div>{{ entity.cuentaCorriente.cliente.telefono }} {{ entity.cuentaCorriente.cliente.celular|default('-') }}</div>
         <div>{{ entity.cuentaCorriente.cliente.domicilio|default('-') }}</div>
     </div>
     <div class="datos-productos">
@@ -108,7 +108,7 @@
                 <td width="110" align="center">{{ entity.monto|money_format  }}</td>
                 <td width="110" align="center">{{ entity.modoPago  }}</td>
                 <td width="110" align="center">{{ entity.tipoReferencia|default('-')  }}</td>
-                <td width="180" align="center">{{ entity.pedidoProducto|default('-')  }}</td>
+                <td width="180" align="center">{{ entity.pedidoProducto.nombreCorto|default('-')  }}</td>
             </tr>
             </tbody>
             <tfoot>

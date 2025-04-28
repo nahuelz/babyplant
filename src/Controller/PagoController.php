@@ -113,6 +113,7 @@ class PagoController extends BaseController {
                 $movimiento->setTipoMovimiento($tipoMovimiento);
                 $movimiento->setRemito($remito);
                 $cuentaCorriente->addMovimiento($movimiento);
+                $movimiento->setSaldoCuenta($cuentaCorriente->getSaldo());
                 $em->persist($movimiento);
             }
             $this->cambiarEstadoRemito($em, $remito, $estadoRemito, $pago);
@@ -184,7 +185,6 @@ class PagoController extends BaseController {
     }
 
     /**
-     * Print a Remito Entity.
      *
      * @Route("/imprimir-comprobante-pago/{id}", name="imprimir_comprobante_pago", methods={"GET"})
      */
@@ -216,7 +216,51 @@ class PagoController extends BaseController {
             'orientation' => 'P',
         ]);
 
-        $mpdfService->shrink_tables_to_fit = 1;
+        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
+
+        $mpdfService->SetTitle($filename);
+
+        $mpdfService->WriteHTML($html);
+
+        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
+
+        return new Response($mpdfOutput);
+    }
+
+    /**
+     * Print a Remito Entity.
+     *
+     * @Route("/imprimir-comprobante-pago-ticket/{id}", name="imprimir_comprobante_pago_ticket", methods={"GET"})
+     */
+    public function imprimirComprobantePagoTicketAction($id) {
+        $em = $this->doctrine->getManager();
+
+        /* @var $remito Remito */
+        $remito = $em->getRepository("App\Entity\Pago")->find($id);
+
+        if (!$remito) {
+            throw $this->createNotFoundException("No se puede encontrar la entidad.");
+        }
+
+        $html = $this->renderView('pago/comprobante_ticket_pdf.html.twig', array('entity' => $remito, 'website' => "http://192.168.0.182/babyplant/public/"));
+
+        $filename = 'pago.pdf';
+
+        $mpdfService = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'default_font_size' => 0,
+            'default_font' => '',
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'margin_top' => 0,
+            'margin_bottom' => 0,
+            'margin_header' => 0,
+            'margin_footer' => 0,
+            'orientation' => 'P',
+        ]);
+
+        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
 
         $mpdfService->SetTitle($filename);
 
@@ -260,7 +304,7 @@ class PagoController extends BaseController {
             'orientation' => 'P',
         ]);
 
-        $mpdfService->shrink_tables_to_fit = 1;
+        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
 
         $mpdfService->SetTitle($filename);
 

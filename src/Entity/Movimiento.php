@@ -37,6 +37,12 @@ class Movimiento {
      */
     private $monto;
 
+
+    /**
+     * @ORM\Column(name="monto_cuenta", type="decimal", precision=10, scale=2, nullable=false)
+     */
+    private $saldoCuenta;
+
     /**
      * @var string
      *
@@ -239,5 +245,23 @@ class Movimiento {
     {
         $this->pago = $pago;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getSaldoCuenta()
+    {
+        return $this->saldoCuenta;
+    }
+
+    /**
+     * @param mixed $saldoCuenta
+     */
+    public function setSaldoCuenta($saldoCuenta): void
+    {
+        $this->saldoCuenta = $saldoCuenta;
+    }
+
+
 
 }
