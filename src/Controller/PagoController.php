@@ -83,6 +83,7 @@ class PagoController extends BaseController {
         $modoPagoValue = $request->request->get('modoPago');
         $idRemito = $request->request->get('idRemito');
         $idCuentaCorriente = $request->request->get('idCuentaCorriente');
+        $idPago = '';
 
         if ((isset($modoPagoValue) and $modoPagoValue !== '') and (isset($monto) and $monto !== '')) {
             $modoPago = $em->getRepository(ModoPago::class)->findOneByCodigoInterno($modoPagoValue);
@@ -118,13 +119,16 @@ class PagoController extends BaseController {
             }
             $this->cambiarEstadoRemito($em, $remito, $estadoRemito, $pago);
             $em->flush();
+
+            $idPago = $pago->getId();
         }
 
         $response = new Response();
         $response->setContent(json_encode(array(
             'message' => 'PAGO REGISTRADO',
             'statusCode' => 200,
-            'statusText' => 'OK'
+            'statusText' => 'OK',
+            'id' => $idPago
         )));
 
         return $response;
@@ -191,14 +195,14 @@ class PagoController extends BaseController {
     public function imprimirComprobantePagoAction($id) {
         $em = $this->doctrine->getManager();
 
-        /* @var $remito Remito */
-        $remito = $em->getRepository("App\Entity\Pago")->find($id);
+        /* @var $pago Pago */
+        $pago = $em->getRepository("App\Entity\Pago")->find($id);
 
-        if (!$remito) {
+        if (!$pago) {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
 
-        $html = $this->renderView('pago/comprobante_pdf.html.twig', array('entity' => $remito, 'website' => "http://192.168.0.182/babyplant/public/"));
+        $html = $this->renderView('pago/comprobante_pdf.html.twig', array('entity' => $pago, 'website' => "http://192.168.0.182/babyplant/public/"));
 
         $filename = 'pago.pdf';
 
@@ -235,37 +239,42 @@ class PagoController extends BaseController {
     public function imprimirComprobantePagoTicketAction($id) {
         $em = $this->doctrine->getManager();
 
-        /* @var $remito Remito */
-        $remito = $em->getRepository("App\Entity\Pago")->find($id);
+        /* @var $pago Pago */
+        $pago = $em->getRepository("App\Entity\Pago")->find($id);
 
-        if (!$remito) {
+        if (!$pago) {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
 
-        $html = $this->renderView('pago/comprobante_ticket_pdf.html.twig', array('entity' => $remito, 'website' => "http://192.168.0.182/babyplant/public/"));
+        $html = $this->renderView('pago/comprobante_ticket_pdf.html.twig', array('entity' => $pago));
 
         $filename = 'pago.pdf';
 
         $mpdfService = new Mpdf([
             'mode' => 'utf-8',
-            'format' => 'A4',
-            'default_font_size' => 0,
-            'default_font' => '',
-            'margin_left' => 0,
-            'margin_right' => 0,
-            'margin_top' => 0,
-            'margin_bottom' => 0,
-            'margin_header' => 0,
-            'margin_footer' => 0,
+            'format' => [80, 1000], // ancho x alto en milímetros
+            'margin_left' => 2,
+            'margin_right' => 2,
+            'margin_top' => 2,
+            'margin_bottom' => 2,
             'orientation' => 'P',
         ]);
-
-        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
-
-        $mpdfService->SetTitle($filename);
-
         $mpdfService->WriteHTML($html);
 
+        // Obtener altura usada en milímetros
+        $usedHeight = $mpdfService->y; // posición vertical actual (mm)
+        $mpdfService = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => [80, $usedHeight + 20], // ancho x alto en milímetros
+            'margin_left' => 2,
+            'margin_right' => 2,
+            'margin_top' => 2,
+            'margin_bottom' => 2,
+            'orientation' => 'P',
+        ]);
+        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
+        $mpdfService->SetTitle($filename);
+        $mpdfService->WriteHTML($html);
         $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
 
         return new Response($mpdfOutput);

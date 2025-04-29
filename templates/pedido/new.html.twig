@@ -13,6 +13,10 @@
             <div class="card-title">
                 <span class="card-icon"><i class="flaticon-search text-primary"></i></span>
                 <h3 class="card-label">{{ edit ? 'Edición' : 'Ingreso'}} de pedido</h3>
+                {% set submitButton = form_widget(form.submit) %}
+            </div>
+            <div class="card-title">
+                {{ submitButton|raw }}
             </div>
         </div>
 
@@ -36,7 +40,7 @@
 
         <div class="card-footer d-flex justify-content-between">
             <a href="{{ path('pedido_index') }}" class="btn btn-light-dark font-weight-bold">Volver</a>
-            {{ form_widget(form.submit) }}
+            {{ submitButton|raw }}
         </div>
     </div>
     {{ form_widget(form._token) }}

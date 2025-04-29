@@ -18,6 +18,7 @@ use App\Service\LogAuditoriaService;
 use DateInterval;
 use DateTime;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\Persistence\ObjectManager;
 use Mpdf\Mpdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -66,7 +67,8 @@ class PedidoController extends BaseController {
      * @Template("pedido/index.html.twig")
      * @IsGranted("ROLE_PEDIDO")
      */
-    public function index(): Array {
+    public function index(): array
+    {
 
         $clienteSelect = $this->getSelectService()->getClienteFilter();
         $estadoSelect = $this->getSelectService()->getEstadoSelect();
@@ -74,13 +76,13 @@ class PedidoController extends BaseController {
         $em = $this->doctrine->getManager();
         $columnasOcultas = $em->getRepository('App\Entity\GlobalConfig')->find($this->getUser()->getId());
 
-        if (!$columnasOcultas) {{
+        if (!$columnasOcultas) {
             $columnasOcultas = new GlobalConfig();
             $columnasOcultas->setColumnasOcultas('1,6,10,11,13');
             $columnasOcultas->setUsuario($this->getUser());
             $em->persist($columnasOcultas);
             $em->flush();
-        }}
+        }
 
         return array(
             'columnasOcultas' => $columnasOcultas->getColumnasOcultas(),
@@ -251,8 +253,14 @@ class PedidoController extends BaseController {
      * @IsGranted("ROLE_PEDIDO")
      */
     public function createAction(Request $request) {
-        return parent::baseCreateAction($request);
+        return parent::baseCreateAction($request, true);
     }
+
+
+    public function getCreateMessage($entity, $useDecode = false):string{
+        return $entity->getId();
+    }
+
 
     /**
      * @Route("/{id}", name="pedido_show", methods={"GET"})
@@ -412,7 +420,7 @@ class PedidoController extends BaseController {
         );
 
         return [
-            'preserve_values' => true,
+            'preserve_values' => false,
             'registrationForm' => $form->createView(),
             'razonSocialForm' => $formRazonSocial->createView()
         ];
@@ -512,11 +520,108 @@ class PedidoController extends BaseController {
     }
 
     /**
+     * Print a Pedido Entity.
+     *
+     * @Route("/imprimir-pedido-ticket/{id}", name="imprimir_pedido_ticket", methods={"GET"})
+     */
+    public function imprimirPedidoTicketAction($id) {
+        $em = $this->doctrine->getManager();
+
+        $pedido = $em->getRepository("App\Entity\Pedido")->find($id);
+        /* @var $pedido Pedido */
+
+        if (!$pedido) {
+            throw $this->createNotFoundException("No se puede encontrar la entidad PEDIDO.");
+        }
+
+        $html = $this->renderView('pedido/pedido_pdf.html.twig', array('entity' => $pedido));
+
+        $filename = 'pedido.pdf';
+
+        $pdfService = new MYPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+
+        $pdfService->AddPage();
+        $pdfService->SetTitle($filename);
+        $pdfService->WriteHTML($html);
+
+        // set style for barcode
+        $style = array(
+            'border' => 0,
+            'vpadding' => 'auto',
+            'hpadding' => 'auto',
+            'fgcolor' => array(0,0,0),
+            'bgcolor' => false, //array(255,255,255)
+            'module_width' => 1, // width of a single module in points
+            'module_height' => 1 // height of a single module in points
+        );
+        $url = $this->generateUrl('pedido_show', array('id' => $pedido->getId()));
+        $url = ConstanteIP::LOCAL_IP.$url;
+        $pdfService->Text(82, 180, 'Seguimiento del pedido');
+        $pdfService->write2DBarcode($url, 'QRCODE,L', 80, 180, 50, 50, $style, 'N');
+
+
+        $mpdfOutput = $pdfService->Output($filename, 'I');
+
+        return new Response($mpdfOutput);
+    }
+
+    /**
      *
      * @return string
      */
     protected function getPrintOutputType() {
-// "I" = Inline , "D" = Download
         return "I";
     }
+
+    /**
+     * @Route("/{id}/cancelar", name="pedido_producto_cancelar", methods={"GET"})
+     * @IsGranted("ROLE_PEDIDO")
+     */
+    public function cancelarPedidoProducto(int $id): Response
+    {
+        $em = $this->doctrine->getManager();
+
+        /** @var PedidoProducto|null $pedidoProducto */
+        $pedidoProducto = $em->getRepository(PedidoProducto::class)->find($id);
+
+        if (!$pedidoProducto) {
+            throw $this->createNotFoundException("No se encontró el PedidoProducto con ID $id.");
+        }
+
+        $estadoCancelado = $em->getRepository(EstadoPedidoProducto::class)->find(ConstanteEstadoPedidoProducto::CANCELADO);
+        if (!$estadoCancelado) {
+            throw new \Exception("No se encontró el estado CANCELADO.");
+        }
+
+        $motivo = 'Producto Cancelado.';
+
+        $this->cambiarEstadoPedidoProducto($em, $pedidoProducto, $estadoCancelado, $motivo);
+
+        $em->flush();
+
+        $this->addFlash('success', 'El producto del pedido fue cancelado correctamente.');
+
+        return $this->redirectToRoute('pedido_index');
+    }
+
+    /**
+     *
+     * @param ObjectManager $em
+     * @param PedidoProducto $pedidoProducto
+     * @param EstadoPedidoProducto $estadoProducto
+     * @param $motivo
+     */
+    private function cambiarEstadoPedidoProducto(ObjectManager $em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto, $motivo): void
+    {
+        $pedidoProducto->setEstado($estadoProducto);
+        $estadoPedidoProductoHistorico = new EstadoPedidoProductoHistorico();
+        $estadoPedidoProductoHistorico->setPedidoProducto($pedidoProducto);
+        $estadoPedidoProductoHistorico->setFecha(new DateTime());
+        $estadoPedidoProductoHistorico->setEstado($estadoProducto);
+        $estadoPedidoProductoHistorico->setMotivo($motivo);
+        $pedidoProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
+
+        $em->persist($estadoPedidoProductoHistorico);
+    }
+
 }

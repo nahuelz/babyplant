@@ -261,6 +261,8 @@ function initChainedSelect($sourceSelect, $targetSelect, ajaxURL, preserve_value
 
                         $targetSelect.select2();
 
+                        console.log($targetSelect);
+
                         customAfterChainedSelect();
                     }
                 });

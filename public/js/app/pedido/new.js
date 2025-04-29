@@ -13,11 +13,12 @@ jQuery(document).ready(function () {
     $('.row-pedido-producto-empty').hide();
     initAgregarClienteModal();
     initAgregarClienteHandler();
-    $('#pedido_pedidoProducto_cantDiasProduccion').val('20');
     initFechaSiembra();
     initDiasProduccionSelectHandler();
     initBaseSubmitButton();
     $('.observacion').hide();
+    $('#pedido_pedidoProducto_cantDiasProduccionSelect').val('');
+    $('#pedido_pedidoProducto_fechaEntregaPedido').val('');
 });
 
 function initDiasProduccionSelectHandler(){
@@ -35,19 +36,16 @@ function initAgregarClienteHandler() {
 }
 
 function initFechaSiembra(){
-
-    $('#pedido_pedidoProducto_fechaSiembraPedido').datepicker({
-    });
+    $('#pedido_pedidoProducto_fechaSiembraPedido').datepicker({});
     var a = new Date();
     var timeZoneOffset = -3*60 //Set specific timezone according to our need. i.e. GMT+5
     a.setMinutes(a.getMinutes() + a.getTimezoneOffset() + timeZoneOffset );
     $("#pedido_pedidoProducto_fechaSiembraPedido").datepicker("setDate","today",a);
-
     var fechaEntregaPedido = $('#pedido_pedidoProducto_fechaSiembraPedido').datepicker('getDate');
     fechaEntregaPedido.setDate(fechaEntregaPedido.getDate()+20);
     $('#pedido_pedidoProducto_fechaEntregaPedido').datepicker('setStartDate', fechaEntregaPedido);
     $('#pedido_pedidoProducto_fechaEntregaPedido').datepicker('setDate', fechaEntregaPedido);
-    clearPedidoProductoForm();
+
 }
 
 function initFechaEntregaHandler(){
@@ -57,7 +55,7 @@ function initFechaEntregaHandler(){
 }
 
 function setFechaSiembra(){
-    var dias = $('#pedido_pedidoProducto_cantDiasProduccion').val();
+    var dias = $('#pedido_pedidoProducto_cantDiasProduccion').val() ? $('#pedido_pedidoProducto_cantDiasProduccion').val() : '20';
     var fechaSiembraPedido = $('#pedido_pedidoProducto_fechaEntregaPedido').datepicker('getDate');
     if (fechaSiembraPedido !== null) {
         fechaSiembraPedido.setDate(fechaSiembraPedido.getDate() - dias);
@@ -191,8 +189,51 @@ function initBaseSubmitButton() {
 
         fv.validate().then((status) => {
 
-            if (status === "Valid") {
+            /*if (status === "Valid") {
                 $('form[name="pedido"]').submit();
+                return false;
+            }*/
+
+            if (status === "Valid") {
+                $.post({
+                    url: __HOMEPAGE_PATH__ + "pedido/insertar",
+                    type: 'post',
+                    dataType: 'json',
+                    data: $('form[name="pedido"]').serialize()
+                }).done(function (result) {
+                    if (result.statusText !== 'OK') {
+                        Swal.fire({
+                            title: result.statusCode,
+                            text: result.statusText,
+                            icon: "warning"
+                        });
+
+                        return false;
+                    } else {
+                        showDialog({
+                            titulo: '<i class="fa fa-list-ul margin-right-10"></i> AGREGAR PEDIDO',
+                            contenido: '' +
+                                '<a href="/pedido/imprimir-pedido/'+result.message+'" target="_blank" class="btn btn-light-primary blue mr-10" title="Imprimir comprobante">\n' +
+                                    '<i class="fas fa-file-pdf text-white"></i> Imprimir A4\n' +
+                                '</a>'+
+                                '<a href="/pedido/imprimir-pedido-ticket/'+result.message+'" target="_blank" class="btn btn-light-primary blue mr-10" title="Imprimir comprobante">\n' +
+                                    '<i class="fas fa-receipt text-white"></i> Imprimir TICKET\n' +
+                                '</a>'+
+                                '<a href="/pedido/new" class="btn btn-light-primary blue mr-10" title="Agregar Nuevo Pedido">\n' +
+                                    '<i class="fas fa-plus text-white"></i> Agregar Nuevo Pedido\n' +
+                                '</a>'+
+                                '<a href="/pedido/" class="btn btn-light-primary blue mr-10" title="Ver Pedidos">\n' +
+                                    '<i class="fas fa-search text-white"></i> Ver los pedidos\n' +
+                                '</a>',
+                        });
+                        $('.modal-dialog').css('width', '80%');
+                        $('.modal-dialog').addClass('modal-xl');
+                        $('.modal-dialog').addClass('modal-fullscreen-xl-down');
+                        $('.submit-button').hide();
+                        $('.btn-light-dark').hide();
+                        $('.bootbox-close-button').hide();
+                    }
+                });
                 return false;
             }
         });
@@ -233,7 +274,7 @@ function initPedidoProductoHandler() {
         var cantDiasProduccion = $('#pedido_pedidoProducto_cantDiasProduccion').val();
         var fechaEntregaPedido = $('#pedido_pedidoProducto_fechaEntregaPedido').val();
 
-        if (tipoProducto === '' || tipoSubProducto === '' || tipoVariedad === '' || tipoBandeja === '' || cantSemillas === '' || cantidadBandejasPedidas === '' || origenSemilla === '' || fechaSiembraPedido === '' || cantDiasProduccion === '' || fechaEntregaPedido === '') {
+        if (tipoProducto === '' || tipoSubProducto === '' || tipoVariedad === '' || tipoBandeja === '' || cantSemillas === '' || cantidadBandejasPedidas === '' || origenSemilla === '' || cantDiasProduccion === '' || fechaSiembraPedido === '' || fechaEntregaPedido === '') {
             Swal.fire({
                 title: "Debe completar todos los datos del producto.",
                 icon: "warning"
@@ -288,7 +329,8 @@ function initPedidoProductoHandler() {
 
             //  Reset form
             $('.row-agregar-pedido-producto').show('slow');
-            initFechaSiembra();
+            clearPedidoProductoForm();
+
 
         }
 

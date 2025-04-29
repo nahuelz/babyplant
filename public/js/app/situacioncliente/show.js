@@ -206,9 +206,8 @@ function initAgregarPago() {
                                                 '<i class="fa fa-file-pdf text-white"></i> Imprimir A4\n' +
                                                 '</a>'+
                                                 '<a href="/pago/imprimir-comprobante-pago-ticket/'+data.id+'" target="_blank" class="btn btn-light-primary blue" style=" float: right; " title="Imprimir comprobante">\n' +
-                                                '<i class="fa fa-file-pdf text-white"></i> Imprimir TICKET\n' +
+                                                '<i class="fa fa-receipt text-white"></i> Imprimir TICKET\n' +
                                                 '</a>',
-                                            labelCancel: 'Cerrar',
                                             labelSuccess: 'Guardar',
                                             closeButton: true,
                                             callbackCancel: function () {

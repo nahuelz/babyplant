@@ -204,7 +204,9 @@ function dataTablesActionFormatter(data, type, full, meta) {
             +
             (data.historico_estados !== undefined ? '<a class="dropdown-item link-ver-historico-entrega" href="#" data-href="' + data.historico_estados + '"><i class="la la-file-alt" style="margin-right: 5px;" data-original-title="Hist&oacute;rico de estados"></i>Hist&oacute;rico de estados</a>' : '')
             +
-            (data.print_pdf !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf + '" target="_blank"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Entrega</a>' : '')
+            (data.print_pdf !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf + '" target="_blank"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Entrega A4</a>' : '')
+            +
+            (data.print_pdf_ticket !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf_ticket + '" target="_blank"><i class="la la-receipt" style="margin-right: 5px;"></i> Imprimir Entrega TICKET</a>' : '')
             +
             (data.print_pdf_interno !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf_interno + '" target="_blank"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Entrega Interno</a>' : '')
             +

@@ -332,6 +332,58 @@ class EntregaController extends BaseController {
     /**
      * Print a Entrega Entity.
      *
+     * @Route("/imprimir-entrega-ticket/{id}", name="imprimir_entrega_ticket", methods={"GET"})
+     * @throws MpdfException
+     */
+    public function imprimirEntregaTicketAction($id): Response
+    {
+        $em = $this->doctrine->getManager();
+
+        /* @var $entrega Entrega */
+        $entrega = $em->getRepository("App\Entity\Entrega")->find($id);
+
+        if (!$entrega) {
+            throw $this->createNotFoundException("No se puede encontrar la entidad.");
+        }
+
+        $html = $this->renderView('entrega/remito_ticket_pdf.html.twig', array('entity' => $entrega));
+
+        $filename = 'pago.pdf';
+
+        $mpdfService = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => [80, 1000], // ancho x alto en milímetros
+            'margin_left' => 2,
+            'margin_right' => 2,
+            'margin_top' => 2,
+            'margin_bottom' => 2,
+            'orientation' => 'P',
+        ]);
+        $mpdfService->WriteHTML($html);
+
+        // Obtener altura usada en milímetros
+        $usedHeight = $mpdfService->y; // posición vertical actual (mm)
+
+        $mpdfService = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => [80, $usedHeight + 20], // ancho x alto en milímetros
+            'margin_left' => 2,
+            'margin_right' => 2,
+            'margin_top' => 2,
+            'margin_bottom' => 2,
+            'orientation' => 'P',
+        ]);
+        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
+        $mpdfService->SetTitle($filename);
+        $mpdfService->WriteHTML($html);
+        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
+
+        return new Response($mpdfOutput);
+    }
+
+    /**
+     * Print a Entrega Entity.
+     *
      * @Route("/imprimir-entrega-interno/{id}", name="imprimir_entrega_interno", methods={"GET"})
      * @throws MpdfException
      */

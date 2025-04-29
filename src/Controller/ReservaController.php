@@ -208,7 +208,7 @@ class ReservaController extends BaseController {
         $repository = $this->doctrine->getRepository(PedidoProducto::class);
 
         $query = $repository->createQueryBuilder('pp')
-            ->select("pp.id, concat ('PEDIDO N° ',pp.id,' ', tp.nombre, ' ', v.nombre,' DISPONIBLES: ',pp.cantidadBandejasDisponibles,' ESTADO: ',e.nombre) as denominacion")
+            ->select("pp.id, pp.fechaEntregaPedido, concat ('PEDIDO N° ',pp.id,' ', tp.nombre, ' ', v.nombre,' DISPONIBLES: ',pp.cantidadBandejasDisponibles,' ESTADO: ',e.nombre) as descripcion")
             ->leftJoin('pp.pedido', 'p' )
             ->leftJoin('App:TipoVariedad', 'v', Join::WITH, 'pp.tipoVariedad = v')
             ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')
@@ -223,7 +223,16 @@ class ReservaController extends BaseController {
             ->groupBy('pp.id')
             ->getQuery();
 
-        return new JsonResponse($query->getResult());
+        $resultados = $query->getResult();
+
+        $datosFormateados = array_map(function ($row) {
+            return [
+                'id' => $row['id'],
+                'denominacion' => $row['descripcion'] . ' FECHA ENTREGA: ' . $row['fechaEntregaPedido']->format('d-m-Y'),
+            ];
+        }, $resultados);
+
+        return new JsonResponse($datosFormateados);
     }
 
     /**

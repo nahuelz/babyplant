@@ -10,6 +10,7 @@ $(document).ready(function () {
     initColumnsHandler();
     $('#multiple').select2();
     setSameHeight('.portlet-nivel-1');
+    initCancelarButton();
 
 });
 
@@ -416,7 +417,7 @@ function dataTablesActionFormatter(data, type, full, meta) {
             +
             (data.remito !== undefined ? '<a class="dropdown-item" href="' + data.remito + '"><i class="la la-edit" style="margin-right: 5px;"></i> Remito</a>' : '')
             +
-            (data.delete !== undefined ? '<a class="dropdown-item accion-borrar" href="' + data.delete + '"><i class="la la-remove" style="margin-right: 5px;"></i> Borrar</a>' : '')
+            (data.cancelar !== undefined ? '<a class="dropdown-item accion-cancelar" href="' + data.cancelar + '"><i class="la la-remove" style="margin-right: 5px;"></i> Cancelar</a>' : '')
         ;
 
         actions = ' <div class="dropdown dropdown-inline">\
@@ -469,5 +470,21 @@ function initVerHistoricoEstadoHandler() {
             $('.bs-popover-top').hide();
             $('.btn-submit').hide();
         });
+    });
+}
+
+function initCancelarButton() {
+    $(document).on('click', '.accion-cancelar', function (e) {
+        e.preventDefault();
+        var a_href = $(this).attr('href');
+        show_confirm({
+            title: 'Confirmar',
+            type: 'warning',
+            msg: '¿Desea cancelar este producto?',
+            callbackOK: function () {
+                location.href = a_href;
+            }
+        });
+        e.stopPropagation();
     });
 }

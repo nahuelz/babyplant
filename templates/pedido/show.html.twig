@@ -74,7 +74,7 @@
                         {{ macro_show._show_detail('Cantidad Bandejas Reservadas', producto.cantidadBandejasReservadasSinEntregar|default('0'), 'col-md-2') }}
                         {{ macro_show._show_detail('Cantidad Bandejas Disponibles', producto.cantidadBandejasDisponibles|default('-'), 'col-md-2') }}
                     </div>
-                    {% if producto.estado.id in [3,4,5,6,7,8,9,10] %}
+                    {% if producto.estado.id in [3,4,5,6,7,8] %}
                         <div class="row">
                             <div class="col-md-2">
                                 <span class="label label-inline label-light-success font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-leaf padding-right-5"></span> SEMBRADO</span>
@@ -82,7 +82,7 @@
                             {{ macro_show._show_detail('Fecha de siembra', producto.fechaSiembraReal is not null ? producto.fechaSiembraReal|date("d/m/Y H:i") : '-', 'col-md-3') }}
                         </div>
                     {% endif %}
-                    {% if producto.estado.id in [4,5,6,7,8,9,10] %}
+                    {% if producto.estado.id in [4,5,6,7,8] %}
                         <div class="row">
                             <div class="col-md-2">
                                 <span class="label label-inline label-light-primary font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-list-ul padding-right-5"></span> EN CAMARA</span>
@@ -92,7 +92,7 @@
                             {{ macro_show._show_detail('Tiempo en camara', producto.cantidadDiasEnCamara|default('-'), 'col-md-3') }}
                         </div>
                     {% endif %}
-                    {% if producto.estado.id in [5,6,7,8,9,10] %}
+                    {% if producto.estado.id in [5,6,7,8] %}
                         <div class="row">
                             <div class="col-md-2">
                                 <span class="label label-inline label-light-info font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-home padding-right-5"></span> EN INVERNACULO</span>
@@ -141,11 +141,16 @@
                         {% endfor %}
                     {% endif %}
                     {% if producto.estado.id == 9 %}
-                        <div class="row">
-                            <div class="col-md-2">
-                                <span class="label label-inline label-light-danger font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-exclamation-triangle padding-right-5"></span> {{ historicoEstados.estado.nombre }} </span>
-                            </div>
-                        </div>
+                        {% for historicoEstados in producto.historicoEstados %}
+                            {% if historicoEstados.estado.id == 9 %}
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <span class="label label-inline label-light-danger font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-exclamation-triangle padding-right-5"></span> {{ historicoEstados.estado.nombre }} </span>
+                                    </div>
+                                    {{ macro_show._show_detail('Fecha Cancelado', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
                     {% endif %}
                 </div>
             </div>

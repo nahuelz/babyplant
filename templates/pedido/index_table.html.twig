@@ -1,5 +1,6 @@
 {% set EstadoPedidoProducto = 'App\\Entity\\Constants\\ConstanteEstadoPedidoProducto' %}
 {% set EN_INVERNACULO = constant(EstadoPedidoProducto ~ '::EN_INVERNACULO') %}
+{% set PENDIENTE = constant(EstadoPedidoProducto ~ '::PENDIENTE') %}
 {% autoescape false %}
     {
     "data": [
@@ -38,6 +39,9 @@
         "situacion_cliente" : "{{ path( "situacioncliente_show", { "id": entity.idCliente }) }}"
         {% if entity.idEstado ==  EN_INVERNACULO%}
             ,"remito" : " {{ path( "imprimir_remito", { "id": entity.id }) }}"
+        {% endif %}
+        {% if entity.idEstado ==  PENDIENTE%}
+            ,"cancelar" : " {{ path( "pedido_producto_cancelar", { "id": entity.idProducto }) }}"
         {% endif %}
         }]{{ (loop.last ? '' : ',') }}
     {% endfor %}

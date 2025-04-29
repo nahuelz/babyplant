@@ -30,6 +30,7 @@
         "show": "{{ path('entrega_show',{id: entity.idEntrega}) }}",
         "historico_estados": "{{ path('entrega_historico_estado',{id: entity.idEntrega}) }}",
         "print_pdf": "{{ path( "imprimir_entrega", { "id": entity.idEntrega }) }}",
+        "print_pdf_ticket": "{{ path( "imprimir_entrega_ticket", { "id": entity.idEntrega }) }}",
         "print_pdf_interno": "{{ path( "imprimir_entrega_interno", { "id": entity.idEntrega }) }}"
         }
         ]{{ (loop.last ? '' : ',') }}
