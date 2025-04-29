@@ -1,0 +1,90 @@
+<style>
+    body {
+        font-family: sans-serif;
+        font-size: 10pt;
+        margin: 0;
+        padding: 0;
+    }
+
+    .ticket {
+        width: 100%;
+        text-align: center;
+    }
+
+    .ticket h1 {
+        font-size: 12pt;
+        margin: 0 0 5px 0;
+    }
+
+    .ticket .datos {
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    .linea {
+        border-top: 1px dashed #000;
+        margin: 10px 0;
+    }
+
+    .detalle {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 9pt;
+    }
+
+    .detalle th, .detalle td {
+        text-align: left;
+        padding: 3px 0;
+    }
+
+    .totales {
+        margin-top: 10px;
+        text-align: right;
+    }
+
+    .contenedor-logo {
+        text-align: center;
+        margin-bottom: 5mm;
+    }
+
+    .logo-empresa {
+        display: inline-block;
+        background: url({{ asset('images/logo/logo.png') }}) no-repeat center center;
+        background-size: contain;
+        width: 100mm;
+        height: 10mm;
+    }
+</style>
+
+<div class="ticket">
+    <div class="contenedor-logo">
+        <div class="logo-empresa"></div>
+    </div>
+    <div class="datos">
+        Fecha: {{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}<br>
+        Cliente: Nahuel Zanelli
+    </div>
+
+    <div class="linea"></div>
+
+    <table class="detalle">
+        <thead>
+        <tr>
+        <tr>
+            <th class=>PRODUCTO</th>
+            <th class=>CANTIDAD</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for pedidoProducto in entity.pedidosProductos %}
+            <tr>
+                <td width="30">{{ pedidoProducto.productoBandeja }}</td>
+                <td width="10">{{ pedidoProducto.cantidadBandejasPedidas }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="linea"></div>
+
+    <div>¡Gracias por su compra!</div>
+</div>

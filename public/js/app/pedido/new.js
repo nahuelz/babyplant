@@ -17,7 +17,8 @@ jQuery(document).ready(function () {
     initDiasProduccionSelectHandler();
     initBaseSubmitButton();
     $('.observacion').hide();
-    $('#pedido_pedidoProducto_cantDiasProduccionSelect').val('');
+    $('#pedido_pedidoProducto_cantDiasProduccionSelect').val('20');
+    $('#pedido_pedidoProducto_cantDiasProduccion').val('20');
     $('#pedido_pedidoProducto_fechaEntregaPedido').val('');
 });
 
@@ -211,7 +212,7 @@ function initBaseSubmitButton() {
                         return false;
                     } else {
                         showDialog({
-                            titulo: '<i class="fa fa-list-ul margin-right-10"></i> AGREGAR PEDIDO',
+                            titulo: '<i class="fa fa-list-ul margin-right-10"></i> PEDIDO AGREGADO',
                             contenido: '' +
                                 '<a href="/pedido/imprimir-pedido/'+result.message+'" target="_blank" class="btn btn-light-primary blue mr-10" title="Imprimir comprobante">\n' +
                                     '<i class="fas fa-file-pdf text-white"></i> Imprimir A4\n' +

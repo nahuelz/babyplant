@@ -20,6 +20,7 @@ use DateTime;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ObjectManager;
 use Mpdf\Mpdf;
+use Mpdf\MpdfException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -475,14 +476,13 @@ class PedidoController extends BaseController {
      * Print a Pedido Entity.
      *
      * @Route("/imprimir-pedido/{id}", name="imprimir_pedido", methods={"GET"})
+     * @throws MpdfException
      */
     public function imprimirPedidoAction($id) {
         $em = $this->doctrine->getManager();
 
         $pedido = $em->getRepository("App\Entity\Pedido")->find($id);
         /* @var $pedido Pedido */
-
-        //return new Response($this->renderView('pedido/pedido_pdf.html.twig', array('entity' => $pedido)));
 
         if (!$pedido) {
             throw $this->createNotFoundException("No se puede encontrar la entidad PEDIDO.");
@@ -492,29 +492,26 @@ class PedidoController extends BaseController {
 
         $filename = 'pedido.pdf';
 
-        $pdfService = new MYPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+        $mpdfService = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'default_font_size' => 0,
+            'default_font' => '',
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'margin_top' => 0,
+            'margin_bottom' => 0,
+            'margin_header' => 0,
+            'margin_footer' => 0,
+            'orientation' => 'P',
+        ]);
 
-        $pdfService->AddPage();
-        $pdfService->SetTitle($filename);
-        $pdfService->WriteHTML($html);
+        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
+        $mpdfService->SetTitle($filename);
 
-        // set style for barcode
-        $style = array(
-            'border' => 0,
-            'vpadding' => 'auto',
-            'hpadding' => 'auto',
-            'fgcolor' => array(0,0,0),
-            'bgcolor' => false, //array(255,255,255)
-            'module_width' => 1, // width of a single module in points
-            'module_height' => 1 // height of a single module in points
-        );
-        $url = $this->generateUrl('pedido_show', array('id' => $pedido->getId()));
-        $url = ConstanteIP::LOCAL_IP.$url;
-        $pdfService->Text(82, 180, 'Seguimiento del pedido');
-        $pdfService->write2DBarcode($url, 'QRCODE,L', 80, 180, 50, 50, $style, 'N');
+        $mpdfService->WriteHTML($html);
 
-
-        $mpdfOutput = $pdfService->Output($filename, 'I');
+        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
 
         return new Response($mpdfOutput);
     }
@@ -534,33 +531,36 @@ class PedidoController extends BaseController {
             throw $this->createNotFoundException("No se puede encontrar la entidad PEDIDO.");
         }
 
-        $html = $this->renderView('pedido/pedido_pdf.html.twig', array('entity' => $pedido));
+        $html = $this->renderView('pedido/pedido_ticket_pdf.html.twig', array('entity' => $pedido));
 
         $filename = 'pedido.pdf';
 
-        $pdfService = new MYPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+        $mpdfService = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => [80, 1000], // ancho x alto en milímetros
+            'margin_left' => 2,
+            'margin_right' => 2,
+            'margin_top' => 2,
+            'margin_bottom' => 2,
+            'orientation' => 'P',
+        ]);
+        $mpdfService->WriteHTML($html);
 
-        $pdfService->AddPage();
-        $pdfService->SetTitle($filename);
-        $pdfService->WriteHTML($html);
-
-        // set style for barcode
-        $style = array(
-            'border' => 0,
-            'vpadding' => 'auto',
-            'hpadding' => 'auto',
-            'fgcolor' => array(0,0,0),
-            'bgcolor' => false, //array(255,255,255)
-            'module_width' => 1, // width of a single module in points
-            'module_height' => 1 // height of a single module in points
-        );
-        $url = $this->generateUrl('pedido_show', array('id' => $pedido->getId()));
-        $url = ConstanteIP::LOCAL_IP.$url;
-        $pdfService->Text(82, 180, 'Seguimiento del pedido');
-        $pdfService->write2DBarcode($url, 'QRCODE,L', 80, 180, 50, 50, $style, 'N');
-
-
-        $mpdfOutput = $pdfService->Output($filename, 'I');
+        // Obtener altura usada en milímetros
+        $usedHeight = $mpdfService->y; // posición vertical actual (mm)
+        $mpdfService = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => [80, $usedHeight + 20], // ancho x alto en milímetros
+            'margin_left' => 2,
+            'margin_right' => 2,
+            'margin_top' => 2,
+            'margin_bottom' => 2,
+            'orientation' => 'P',
+        ]);
+        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
+        $mpdfService->SetTitle($filename);
+        $mpdfService->WriteHTML($html);
+        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
 
         return new Response($mpdfOutput);
     }

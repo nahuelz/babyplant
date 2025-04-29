@@ -1,61 +1,95 @@
-{% set image_path = 'images/' %}
-{% block stylesheets %}
-
-
-    <style>
-        body {
-            font-family: Tahoma, Helvetica, Arial;
-            margin: 2cm 0;
-            text-align: justify;
-            font-size:14px;
-            line-height:20px;
+<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+        .entrega{
+            background: url({{ asset('images/plantilla/plantilla-pedido.png') }});
+            background-repeat: no-repeat;
+            background-image-resize: 1;
+            font-size: 16px;
+            font-family: monospace;
         }
-
-        body div {
-            text-align: center;
+        .logo-empresa{
+            background: url({{ asset('images/logo/logo.png') }});
+            float:left;
+            background-repeat: no-repeat;
+            width: 40mm;
+            height: 50.98mm;
+            background-image-resize: 3;
+            overflow: hidden;
+            margin-left: 20px;
+            margin-top: 30px;
         }
-
-        th td {
-            text-align: center;
-            padding: 2px;
-            border-collapse: collapse;
+        .datos-entrega{
+            margin-left: 320px;
+            margin-top: -183px;
+            line-height: 11mm;
+            width: 350px;
+            font-size: 18px;
+        }
+        .datos-cliente-left{
+            margin-top: 26px;
+            line-height: 6.2mm;
+        }
+        .datos-cliente-right{
+            margin-top: -47px;
+            margin-left: 470px;
+            line-height: 6.1mm;
+        }
+        .datos-productos{
+            margin-top: 45px;
+            height: 300px;
+        }
+        .datos-productos-table{
+            margin-left: -173px;
+            line-height: 7.5mm;
+            margin-top: -20px;
+        }
+        td{
+            font-size: 16px;
+            margin-bottom: 50px;
         }
     </style>
-
-{% endblock %}
-
-{% block content %}
+</head>
 <body>
 
-    <br><br><br><br>
-
-    <table cellspacing="2" cellpadding="5" border="1" style="font-size: 8px">
-        <tr>
-            <td align="center">Cliente:{{ entity.cliente }}</td>
-            <td align="center">N° Pedido:{{ entity.id }}</td>
-            <td align="center">Fecha Pedido:{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}</td>
-        </tr>
-    </table>
+<div class="entrega">
     <br>
-    <div>
-        <table border="1" cellpadding="2" cellspacing="2" nobr="true" style="font-size: 8px">
+    <div class="logo-empresa" ></div>
+
+    <div class="datos-entrega">
+        <div>{{ entity.id }}</div>
+        <div>{{ entity.fechaCreacion|date('d/m/Y - H:i') }}</div>
+    </div>
+    <div class="datos-cliente-left">
+        <div>{{ entity.cliente.nombreCompleto|default('-') }}</div>
+        <div>{{ entity.cliente.cuit|default('-') }}</div>
+    </div>
+    <div class="datos-cliente-right">
+        <div>{{ entity.cliente.telefono }}{{ entity.cliente.celular|default('-') }}</div>
+        <div>{{ entity.cliente.domicilio|default('-') }}</div>
+    </div>
+    <div class="datos-productos">
+        <table class="datos-productos-table" border="1" cellpadding="0" cellspacing="0" align="center">
+            <thead>
             <tr>
-                <th colspan="1" align="center" width="60">N° Producto</th>
-                <th colspan="1" align="center" width="250">Producto</th>
-                <th colspan="1" align="center" width="60">Bandejas</th>
-                <th colspan="1" align="center" width="151">Fecha de entrega estimada</th>
+                <th class="text-center">N° PRODUCTO</th>
+                <th class="text-center">PRODUCTO</th>
+                <th class="text-center">CANTIDAD</th>
+                <th class="text-center">ENTREGA</th>
             </tr>
-            {% for producto in entity.pedidosProductos %}
+            </thead>
+            <tbody>
+            {% for pedidoProducto in entity.pedidosProductos %}
                 <tr>
-                    <td align="center">{{ producto.id }}</td>
-                    <td align="center">{{ producto.nombreCompleto }}</td>
-                    <td align="center">{{ producto.cantidadBandejasReales|default(producto.cantidadBandejasPedidas) }}</td>
-                    <td align="center">{{ producto.fechaEntregaPedido is not null ? producto.fechaEntregaPedido|date('d/m/Y') : '-' }}</td>
+                    <td width="190" align="center">{{ pedidoProducto.id }}</td>
+                    <td width="330" align="center">{{ pedidoProducto.productoBandeja }}</td>
+                    <td width="130" align="center">{{ pedidoProducto.cantidadBandejasPedidas }}</td>
+                    <td width="130" align="center">{{ pedidoProducto.fechaEntregaPedido|date('d/m/Y') }}</td>
                 </tr>
             {% endfor %}
         </table>
     </div>
+</div>
 </body>
-{% endblock %}
-
-
+</html>

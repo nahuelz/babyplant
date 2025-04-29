@@ -5,29 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment=".">
-      <change afterPath="$PROJECT_DIR$/templates/entrega/remito_ticket_pdf.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/pago/comprobante_ticket_pdf.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/plantilla/plantilla-pedido.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/pedido/pedido_ticket_pdf.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/entrega/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/entrega/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/pedido/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/app/pedido/new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/new.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/situacioncliente/show.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/situacioncliente/show.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/functions.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/functions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/EntregaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntregaController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/PagoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PagoController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/PedidoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PedidoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/ReservaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ReservaController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/EntregaType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/EntregaType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/RemitoType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/RemitoType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/ReservaType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/ReservaType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/entrega/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/index_table.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pedido/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/index_table.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pedido/new.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/new.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pedido/new.producto.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/new.producto.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pedido/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/show.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/planificacion/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/planificacion/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/salida_camara/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/salida_camara/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show_pagos.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_pagos.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedido/pedido_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/pedido_pdf.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -244,44 +227,44 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Docker.docker-compose.yml.app: Compose Deployment.executor&quot;: &quot;Run&quot;,
-    &quot;Docker.docker-compose.yml.phpmyadmin: Compose Deployment.executor&quot;: &quot;Run&quot;,
-    &quot;Docker.docker-compose.yml: Compose Deployment.executor&quot;: &quot;Run&quot;,
-    &quot;PHP Script.PedidoController.php.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;database.data.extractors.current.export.id&quot;: &quot;SQL Inserts&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;//wsl$/Ubuntu/home/nahu/babyplant/babyplant&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;php.override.implement.member.chooser.php.doc&quot;: &quot;NONE&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.editor&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Docker.docker-compose.yml.app: Compose Deployment.executor": "Run",
+    "Docker.docker-compose.yml.phpmyadmin: Compose Deployment.executor": "Run",
+    "Docker.docker-compose.yml: Compose Deployment.executor": "Run",
+    "PHP Script.PedidoController.php.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "database.data.extractors.current.export.id": "SQL Inserts",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "//wsl$/Ubuntu/home/nahu/babyplant/babyplant/public/images/plantilla",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "php.override.implement.member.chooser.php.doc": "NONE",
+    "settings.editor.selected.configurable": "configurable.group.editor",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;,
-      &quot;mariadb&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql",
+      "mariadb"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="\\wsl$\Ubuntu\home\nahu\babyplant\babyplant\public\images\plantilla" />
       <recent name="C:\xampp81\htdocs\babyplant\public\certificado" />
       <recent name="C:\xampp81\htdocs\babyplant\templates\pedidoproducto" />
       <recent name="C:\xampp81\htdocs\babyplant\templates" />
       <recent name="C:\xampp81\htdocs\babyplant\public\js\app\logauditoria" />
-      <recent name="C:\xampp81\htdocs\babyplant\templates\log_auditoria" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp81\htdocs\babyplant\nginx\conf" />
@@ -627,23 +610,8 @@
       <workItem from="1745702756444" duration="6000" />
       <workItem from="1745707908038" duration="1000" />
       <workItem from="1745846619165" duration="17489000" />
-      <workItem from="1745935781315" duration="3997000" />
-    </task>
-    <task id="LOCAL-00102" summary="Cuenta corriente pagos de remitos">
-      <option name="closed" value="true" />
-      <created>1738176678998</created>
-      <option name="number" value="00102" />
-      <option name="presentableId" value="LOCAL-00102" />
-      <option name="project" value="LOCAL" />
-      <updated>1738176679001</updated>
-    </task>
-    <task id="LOCAL-00103" summary="fixtures">
-      <option name="closed" value="true" />
-      <created>1738176738997</created>
-      <option name="number" value="00103" />
-      <option name="presentableId" value="LOCAL-00103" />
-      <option name="project" value="LOCAL" />
-      <updated>1738176738997</updated>
+      <workItem from="1745935781315" duration="7085000" />
+      <workItem from="1745950871671" duration="3065000" />
     </task>
     <task id="LOCAL-00104" summary="fixtures">
       <option name="closed" value="true" />
@@ -1021,7 +989,23 @@
       <option name="project" value="LOCAL" />
       <updated>1745851345501</updated>
     </task>
-    <option name="localTasksCounter" value="151" />
+    <task id="LOCAL-00151" summary=".">
+      <option name="closed" value="true" />
+      <created>1745942488668</created>
+      <option name="number" value="00151" />
+      <option name="presentableId" value="LOCAL-00151" />
+      <option name="project" value="LOCAL" />
+      <updated>1745942488668</updated>
+    </task>
+    <task id="LOCAL-00152" summary=".">
+      <option name="closed" value="true" />
+      <created>1745943641793</created>
+      <option name="number" value="00152" />
+      <option name="presentableId" value="LOCAL-00152" />
+      <option name="project" value="LOCAL" />
+      <updated>1745943641793</updated>
+    </task>
+    <option name="localTasksCounter" value="153" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
