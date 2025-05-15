@@ -34,7 +34,7 @@ COPY php.ini /usr/local/etc/php/
 WORKDIR /var/www/html
 
 # Asegura que los permisos sean correctos para el directorio public
-RUN chown -R www-data:www-data /var/www/html/
+# RUN chown -R www-data:www-data /var/www/html/
 
 # Configuramos Apache para usar la carpeta /public
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
