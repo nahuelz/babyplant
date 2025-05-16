@@ -1,0 +1,45 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app_NOMBRE_APP
+    ports:
+      - "8888:80"
+    volumes:
+      - .:/var/www/html
+    networks:
+      - NOMBRE_APP_net
+
+  mariadb:
+    image: mariadb:10.6
+    container_name: mariadb_NOMBRE_APP
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: NOMBRE_APP
+    volumes:
+      - mariadb_NOMBRE_APP_data:/var/lib/mysql
+    ports:
+      - "3333:3306"  # Puerto expuesto solo si lo necesitas
+    networks:
+      - NOMBRE_APP_net
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_NOMBRE_APP
+    environment:
+      PMA_HOST: mariadb_NOMBRE_APP
+    ports:
+      - "8888:80"
+    depends_on:
+      - mariadb
+    networks:
+      - NOMBRE_APP_net
+
+volumes:
+  mariadb_NOMBRE_APP_data:
+
+networks:
+  NOMBRE_APP_net:
+    driver: bridge
