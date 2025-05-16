@@ -17,7 +17,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: NOMBRE_APP
+      MYSQL_DATABASE: ${DB_DATABASE}
     volumes:
       - mariadb_NOMBRE_APP_data:/var/lib/mysql
     ports:
