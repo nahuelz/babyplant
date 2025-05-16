@@ -21,7 +21,7 @@ services:
     volumes:
       - mariadb_NOMBRE_APP_data:/var/lib/mysql
     ports:
-      - "3333:3306"  # Puerto expuesto solo si lo necesitas
+      - "3333:3306"
     networks:
       - NOMBRE_APP_net
 
