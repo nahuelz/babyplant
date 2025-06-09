@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Constants\ConstanteIP;
+use App\Entity\CuentaCorrientePedido;
 use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
 use App\Entity\GlobalConfig;
@@ -330,6 +331,11 @@ class PedidoController extends BaseController {
             $pedidoProducto->setPedido($entity);
             $pedidoProducto->setFechaPedido(new DateTime());
         }
+
+        $cuentaCorrientePedido = new CuentaCorrientePedido();
+        $cuentaCorrientePedido->setPedido($entity);
+        $entity->setCuentaCorrientePedido($cuentaCorrientePedido);
+        $em->persist($cuentaCorrientePedido);
         return true;
     }
 

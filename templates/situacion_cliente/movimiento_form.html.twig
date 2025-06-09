@@ -2,12 +2,12 @@
 {{ form_start(form, {'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
 {{ form_widget(form._token) }}
 <div class="row">
-    <div class="modal-body" style="padding-top: 0px;padding-bottom: 0px;">
+    <div class="modal-body" style="padding-top: 0;padding-bottom: 0;">
         <div class="row">
             {{ macro_form._new_field(form.modoPago, "col-md-6") }}
             {{ macro_form._new_field(form.monto, "col-md-6") }}
-            {{ macro_form._new_field(form.pedidoProducto, "col-md-6") }}
-            {{ macro_form._new_field(form.descripcion, "col-md-4") }}
+            {{ macro_form._new_field(form.pedido, "col-md-12") }}
+            {{ macro_form._new_field(form.descripcion, "col-md-12") }}
         </div>
     </div>
 </div>

@@ -198,7 +198,7 @@ class PedidoProducto {
 
     public function __toString()
     {
-        return 'Pedido Producto N° '.$this->getId(). ' Orden Siembra: '.$this->getNumeroOrdenCompleto(). ' Producto: '.$this->getNombreCompleto(). ' Bandejas: '.$this->getCantidadBandejasReales().' (x'.$this->getTipoBandeja().')';
+        return 'Pedido N° ' .$this->getPedido()->getId() . ' Producto N° '.$this->getId(). ' Orden Siembra: '.$this->getNumeroOrdenCompleto(). ' Producto: '.$this->getNombreCompleto(). ' Bandejas: '.$this->getCantidadBandejasReales().' (x'.$this->getTipoBandeja().')';
     }
 
     /**
@@ -788,6 +788,10 @@ class PedidoProducto {
             }
         }
         return $cantidadBandejas;
+    }
+
+    public function getAdelanto(){
+        return $this->getPedido()->getAdelanto();
     }
 
 }

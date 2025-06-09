@@ -21,6 +21,7 @@ var KTCalendarListView = function() {
             var TOMORROW = todayDate.clone().add(1, 'day').format('YYYY-MM-DD');
 
             var calendarEl = document.getElementById('kt_calendar');
+
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 locale: 'es',
                 plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
@@ -30,6 +31,7 @@ var KTCalendarListView = function() {
                     center: 'title',
                     right: 'dayGridMonth,dayGridWeek,dayGridDay,listWeek'
                 },
+                moreLinkText: "más",
                 height: 800,
                 contentHeight: 750,
                 aspectRatio: 3,  // see: https://fullcalendar.io/docs/aspectRatio
@@ -40,7 +42,7 @@ var KTCalendarListView = function() {
                     dayGridDay: { buttonText: 'dia' },
                     listWeek: { buttonText: 'lista' }
                 },
-
+                eventLimitText: 'MÁS',
                 defaultView: 'dayGridWeek',
                 defaultDate: TODAY,
                 editable: true,
@@ -113,9 +115,9 @@ var KTCalendarListView = function() {
                     element.attr('data-toggle', 'modal');
                     element.attr('data-target', '#productoModal');
                     element.attr('data-href', info.event.extendedProps.href);
-                    element.css('min-height', '75px');
-                    element.find('.fc-title').css('font-size', '1rem');
-                    element.find('.fc-content').css('margin-top', '1%');
+                    element.css('min-height', '40px');
+                    element.find('.fc-title').css('font-size', '0.9rem');
+                    element.find('.fc-content').css('margin-top', '-2%');
                 },
                 eventDrop: function(info) {
                     dialogFinalizarForm = '\

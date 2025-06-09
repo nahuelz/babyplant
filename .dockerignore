@@ -1,4 +1,5 @@
 .git
 var/
-.env
+.env.local
+.env.dev
 docker-compose.yml

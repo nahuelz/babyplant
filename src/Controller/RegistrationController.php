@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\CuentaCorriente;
+use App\Entity\CuentaCorrienteUsuario;
 use App\Entity\Cuota;
 use App\Entity\RazonSocial;
 use App\Entity\Usuario;
@@ -80,10 +80,10 @@ class RegistrationController extends AbstractController {
                         $user->getEmail()
                     )
                 );
-                $cuentaCorriente = new CuentaCorriente();
-                $cuentaCorriente->setCliente($user);
-                $user->setCuentaCorriente($cuentaCorriente);
-                $entityManager->persist($cuentaCorriente);
+                $cuentaCorrienteUsuario = new CuentaCorrienteUsuario();
+                $cuentaCorrienteUsuario->setCliente($user);
+                $user->setCuentaCorrienteUsuario($cuentaCorrienteUsuario);
+                $entityManager->persist($cuentaCorrienteUsuario);
             } else {
                 $user->setPassword(
                     $passwordEncoder->encodePassword(

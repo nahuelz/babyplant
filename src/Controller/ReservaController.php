@@ -208,7 +208,7 @@ class ReservaController extends BaseController {
         $repository = $this->doctrine->getRepository(PedidoProducto::class);
 
         $query = $repository->createQueryBuilder('pp')
-            ->select("pp.id, pp.fechaEntregaPedido, concat ('PEDIDO N° ',pp.id,' ', tp.nombre, ' ', v.nombre,' DISPONIBLES: ',pp.cantidadBandejasDisponibles,' ESTADO: ',e.nombre) as descripcion")
+            ->select("pp.id, pp.fechaEntregaPedido, concat ('PEDIDO N° ',pp.id, ' ORDEN N° ',pp.numeroOrden,' ', tp.nombre, ' ', v.nombre,' DISPONIBLES: ',pp.cantidadBandejasDisponibles,' ESTADO: ',e.nombre) as descripcion")
             ->leftJoin('pp.pedido', 'p' )
             ->leftJoin('App:TipoVariedad', 'v', Join::WITH, 'pp.tipoVariedad = v')
             ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')
@@ -218,7 +218,7 @@ class ReservaController extends BaseController {
             ->andWhere('pp.estado NOT IN (:estados)')
             ->andWhere('pp.cantidadBandejasDisponibles > 0')
             ->setParameter('cliente', $idCliente)
-            ->setParameter('estados', [ConstanteEstadoPedidoProducto::CANCELADO, ConstanteEstadoPedidoProducto::ENTREGADO])
+            ->setParameter('estados', [ConstanteEstadoPedidoProducto::CANCELADO,ConstanteEstadoPedidoProducto::PENDIENTE, ConstanteEstadoPedidoProducto::ENTREGADO])
             ->orderBy('pp.id', 'ASC')
             ->groupBy('pp.id')
             ->getQuery();

@@ -45,6 +45,9 @@
             {% include 'situacion_cliente/show_movimientos.html.twig' %}
         </div>
         <div class="col-md-6">
+            {% include 'situacion_cliente/show_adelantos.html.twig' %}
+        </div>
+        <div class="col-md-6">
             {% include 'situacion_cliente/show_pedidos.html.twig' %}
         </div>
         <div class="col-md-6">
@@ -70,7 +73,7 @@
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/situacioncliente/show.js') }}" ></script>
 
     <script>
-        var __ID_CUENTA_CORRIENTE__ = {{ entity.cuentaCorriente.id }};
+        var __ID_CUENTA_CORRIENTE__ = {{ entity.cuentaCorrienteUsuario.id }};
         var __ID_USUARIO__ = {{ entity.id }};
     </script>
 

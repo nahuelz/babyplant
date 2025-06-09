@@ -6,7 +6,7 @@ jQuery(document).ready(function () {
     initProductos();
     initBaseSubmitButton();
     initPreValidation();
-
+    $('#reserva_cliente').select2();
     $('#reserva_submit').html('Reservar');
 
 });
@@ -17,7 +17,6 @@ function customAfterChainedSelect(){
             if (!data.id) {
                 return data.text;
             }
-
 
             var palabraResaltar = "DISPONIBLES: "; // Palabras a resaltar
             var regex = new RegExp('(' + palabraResaltar + '.{0,2})', 'gi'); // Encuentra la palabra + 5 caracteres

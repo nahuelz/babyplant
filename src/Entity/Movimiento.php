@@ -27,12 +27,6 @@ class Movimiento {
     private $tipoMovimiento;
 
     /**
-     * @ORM\ManyToOne(targetEntity=TipoReferencia::class)
-     * @ORM\JoinColumn(name="id_tipo_referencia", referencedColumnName="id")
-     */
-    private $tipoReferencia;
-
-    /**
      * @ORM\Column(name="monto", type="decimal", precision=10, scale=2, nullable=false)
      */
     private $monto;
@@ -51,20 +45,26 @@ class Movimiento {
     private $descripcion;
 
     /**
-     * @ORM\ManyToOne(targetEntity=CuentaCorriente::class, inversedBy="movimientos")
-     * @ORM\JoinColumn(name="id_cuenta_corriente", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity=CuentaCorrienteUsuario::class, inversedBy="movimientos")
+     * @ORM\JoinColumn(name="id_cuenta_corriente_usuario", referencedColumnName="id", nullable=true)
      */
-    private $cuentaCorriente;
+    private $cuentaCorrienteUsuario;
 
     /**
-     * @ORM\ManyToOne(targetEntity=PedidoProducto::class)
-     * @ORM\JoinColumn(name="id_pedido_producto", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity=CuentaCorrientePedido::class, inversedBy="movimientos")
+     * @ORM\JoinColumn(name="id_cuenta_corriente_pedido", referencedColumnName="id", nullable=true)
      */
-    private $pedidoProducto;
+    private $cuentaCorrientePedido;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Pedido::class)
+     * @ORM\JoinColumn(name="id_pedido", referencedColumnName="id", nullable=true)
+     */
+    private $pedido;
 
     /**
      * @ORM\ManyToOne(targetEntity=Remito::class)
-     * @ORM\JoinColumn(name="id_remito", referencedColumnName="id")
+     * @ORM\JoinColumn(name="id_remito", referencedColumnName="id", nullable=true)
      */
     private $remito;
 
@@ -115,22 +115,6 @@ class Movimiento {
     /**
      * @return mixed
      */
-    public function getTipoReferencia()
-    {
-        return $this->tipoReferencia;
-    }
-
-    /**
-     * @param mixed $tipoReferencia
-     */
-    public function setTipoReferencia($tipoReferencia): void
-    {
-        $this->tipoReferencia = $tipoReferencia;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getMonto()
     {
         return $this->monto;
@@ -157,33 +141,33 @@ class Movimiento {
     /**
      * @return mixed
      */
-    public function getCuentaCorriente()
+    public function getCuentaCorrienteUsuario()
     {
-        return $this->cuentaCorriente;
+        return $this->cuentaCorrienteUsuario;
     }
 
     /**
-     * @param mixed $cuentaCorriente
+     * @param mixed $cuentaCorrienteUsuario
      */
-    public function setCuentaCorriente($cuentaCorriente): void
+    public function setCuentaCorrienteUsuario($cuentaCorrienteUsuario): void
     {
-        $this->cuentaCorriente = $cuentaCorriente;
+        $this->cuentaCorrienteUsuario = $cuentaCorrienteUsuario;
     }
 
     /**
      * @return mixed
      */
-    public function getPedidoProducto()
+    public function getPedido()
     {
-        return $this->pedidoProducto;
+        return $this->pedido;
     }
 
     /**
-     * @param mixed $pedidoProducto
+     * @param mixed $pedido
      */
-    public function setPedidoProducto($pedidoProducto): void
+    public function setPedido($pedido): void
     {
-        $this->pedidoProducto = $pedidoProducto;
+        $this->pedido = $pedido;
     }
 
     /**
@@ -223,8 +207,8 @@ class Movimiento {
             return $this->remito;
         }
 
-        if ($this->pedidoProducto != null){
-            return $this->pedidoProducto->getNombreCorto();
+        if ($this->Pedido != null){
+            return $this->Pedido->getNombreCorto();
         }
 
         return null;
@@ -261,6 +245,23 @@ class Movimiento {
     {
         $this->saldoCuenta = $saldoCuenta;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getCuentaCorrientePedido()
+    {
+        return $this->cuentaCorrientePedido;
+    }
+
+    /**
+     * @param mixed $cuentaCorrientePedido
+     */
+    public function setCuentaCorrientePedido($cuentaCorrientePedido): void
+    {
+        $this->cuentaCorrientePedido = $cuentaCorrientePedido;
+    }
+
 
 
 

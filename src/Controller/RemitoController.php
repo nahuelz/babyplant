@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Afip;
+use App\Entity\Constants\ConstanteAPI;
 use App\Entity\Constants\ConstanteEstadoEntrega;
 use App\Entity\Constants\ConstanteEstadoRemito;
 use App\Entity\Entrega;
@@ -124,9 +125,18 @@ class RemitoController extends BaseController {
         $em->persist($remito);
         $em->flush();
         $message = $this->getCreateMessage($remito, true);
-        $this->get('session')->getFlashBag()->add('success', $message);
 
-        return $this->getCreateRedirectResponse($request, $remito);
+        $response = new Response();
+
+        $response->setContent(json_encode(array(
+            'message' => $message,
+            'id' => $remito->getId(),
+            'idCliente' => $remito->getCliente()->getId(),
+            'statusCode' => Response::HTTP_OK,
+            'statusText' => ConstanteAPI::STATUS_TEXT_OK
+        )));
+
+        return $response;
 
     }
 

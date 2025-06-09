@@ -19,6 +19,7 @@
                                                 <th class="text-center nowrap">Remito</th>
                                                 <th class="text-center nowrap">Monto Total</th>
                                                 <th class="text-center nowrap">Monto Pendiente</th>
+                                                <th class="text-center nowrap">Adelanto</th>
                                                 <th class="text-center nowrap">Estado</th>
                                                 <th class="text-center nowrap">Acciones</th>
                                             </tr>
@@ -34,6 +35,9 @@
                                                         </td>
                                                         <td class="v-middle nowrap text-center">
                                                             {{ remito.pendiente|money_format }}
+                                                        </td>
+                                                        <td class="v-middle nowrap text-center">
+                                                            {{ remito.adelanto|money_format }}
                                                         </td>
                                                         <td class="v-middle nowrap text-center">
                                                             <div class="label label-inline font-size-10 font-dark font-weight-bold padding-15 {{ remito.estado.color|default('-') }}">

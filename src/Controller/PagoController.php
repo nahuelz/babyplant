@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Constants\ConstanteEstadoRemito;
 use App\Entity\Constants\ConstanteModoPago;
-use App\Entity\CuentaCorriente;
+use App\Entity\CuentaCorrienteUsuario;
 use App\Entity\EstadoRemito;
 use App\Entity\EstadoRemitoHistorico;
 use App\Entity\ModoPago;
@@ -54,9 +54,9 @@ class PagoController extends BaseController {
 
         $em = $this->doctrine->getManager();
         $idRemito = $request->request->get('idRemito');
-        $idCuentaCorriente = $request->request->get('idCuentaCorriente');
+        $idCuentaCorrienteUsuario = $request->request->get('idCuentaCorrienteUsuario');
         $remito = $em->getRepository(Remito::class)->find($idRemito);
-        $cuentaCorriente = $em->getRepository(CuentaCorriente::class)->find($idCuentaCorriente);
+        $cuentaCorrienteUsuario = $em->getRepository(CuentaCorrienteUsuario::class)->find($idCuentaCorrienteUsuario);
 
         $pago = new Pago();
         $pago->setMonto($remito->getPendiente());
@@ -67,7 +67,7 @@ class PagoController extends BaseController {
             'form' => $form->createView(),
             'entity' => $pago,
             'remito' => $remito,
-            'cuentaCorriente' => $cuentaCorriente,
+            'cuentaCorrienteUsuario' => $cuentaCorrienteUsuario,
             'modal' => true
         ]);
     }
@@ -82,7 +82,7 @@ class PagoController extends BaseController {
         $monto = $request->request->get('monto');
         $modoPagoValue = $request->request->get('modoPago');
         $idRemito = $request->request->get('idRemito');
-        $idCuentaCorriente = $request->request->get('idCuentaCorriente');
+        $idCuentaCorrienteUsuario = $request->request->get('idCuentaCorrienteUsuario');
         $idPago = '';
 
         if ((isset($modoPagoValue) and $modoPagoValue !== '') and (isset($monto) and $monto !== '')) {
@@ -105,7 +105,7 @@ class PagoController extends BaseController {
 
             if ($modoPagoValue == ConstanteModoPago::CUENTA_CORRIENTE){
                 $tipoMovimiento = $em->getRepository(TipoMovimiento::class)->findOneByCodigoInterno(2); // 1 = PAGO DE REMITO
-                $cuentaCorriente = $em->getRepository(CuentaCorriente::class)->find($idCuentaCorriente);
+                $cuentaCorrienteUsuario = $em->getRepository(CuentaCorrienteUsuario::class)->find($idCuentaCorrienteUsuario);
 
                 $movimiento = new Movimiento();
                 $movimiento->setMonto(-$monto);
@@ -113,8 +113,28 @@ class PagoController extends BaseController {
                 $movimiento->setDescripcion('Pago Remito N° '.$remito->getId());
                 $movimiento->setTipoMovimiento($tipoMovimiento);
                 $movimiento->setRemito($remito);
-                $cuentaCorriente->addMovimiento($movimiento);
-                $movimiento->setSaldoCuenta($cuentaCorriente->getSaldo());
+                $cuentaCorrienteUsuario->addMovimiento($movimiento);
+                $movimiento->setSaldoCuenta($cuentaCorrienteUsuario->getSaldo());
+                $em->persist($movimiento);
+            }
+
+            if ($modoPagoValue == ConstanteModoPago::ADELANTO){
+                $tipoMovimiento = $em->getRepository(TipoMovimiento::class)->findOneByCodigoInterno(2); // 1 = PAGO DE REMITO
+                $entrega = $remito->getEntregas()->first();
+                $entregaProducto = $entrega->getEntregasProductos()->first();
+                $pedido = $entregaProducto->getPedidoProducto()->getPedido();
+                $cuentaCorrientePedido = $pedido->getCuentaCorrientePedido();
+
+
+                $movimiento = new Movimiento();
+                $movimiento->setMonto(-$monto);
+                $movimiento->setModoPago($modoPago);
+                $movimiento->setDescripcion('Pago Remito N° '.$remito->getId());
+                $movimiento->setTipoMovimiento($tipoMovimiento);
+                $movimiento->setPedido($pedido);
+                $movimiento->setRemito($remito);
+                $cuentaCorrientePedido->addMovimiento($movimiento);
+                $movimiento->setSaldoCuenta($cuentaCorrientePedido->getSaldo());
                 $em->persist($movimiento);
             }
             $this->cambiarEstadoRemito($em, $remito, $estadoRemito, $pago);

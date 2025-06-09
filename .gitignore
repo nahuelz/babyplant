@@ -15,6 +15,9 @@
 .env
 .env.prod
 .env.dev
+docker-compose.dev.yml
+docker-compose.prod.yml
+
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###

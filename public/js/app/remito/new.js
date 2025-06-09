@@ -113,11 +113,12 @@ function initRemitoProductoHandler() {
 }
 
 function agregarEntregaProducto(producto, indexEntrega) {
-    var idEntrega =  producto['idEntrega']
-    var idEntregaProducto =  producto['idEntregaProducto']
-    var idPedidoProducto =  producto['idProducto']
-    var textPedidoProducto =  producto['textProducto']
-    var cantidadBandejas =  producto['cantidadBandejas']
+    var idEntrega = producto['idEntrega']
+    var idEntregaProducto = producto['idEntregaProducto']
+    var idPedidoProducto = producto['idProducto']
+    var textPedidoProducto = producto['textProducto']
+    var cantidadBandejas = producto['cantidadBandejas']
+    //var adelanto = producto['adelanto']
     var precioUnitario = 0;
 
 
@@ -262,7 +263,51 @@ function initBaseSubmitButton() {
 
                     },
                     callbackSuccess: function () {
-                        $('form[name="remito"]').submit();
+                        $('.modal-dialog').css('opacity', 0);
+                        //$('form[name="remito"]').submit();
+
+                        $.post({
+                            url: __HOMEPAGE_PATH__ + "remito/insertar",
+                            type: 'post',
+                            dataType: 'json',
+                            data: $('form[name="remito"]').serialize()
+                        }).done(function (result) {
+                            if (result.statusText !== 'OK') {
+                                Swal.fire({
+                                    title: result.statusCode,
+                                    text: result.statusText,
+                                    icon: "warning"
+                                });
+                                return false;
+                            } else {
+                                showDialog({
+                                    titulo: '<i class="fa fa-list-ul margin-right-10"></i> REMITO AGREGADO',
+                                    contenido: '' +
+                                        '<a href="/remito/imprimir-remito/'+result.id+'" target="_blank" class="btn btn-light-primary blue mr-10" title="Imprimir Remito">\n' +
+                                        '<i class="fas fa-file-pdf text-white"></i> Imprimir A4\n' +
+                                        '</a>'+
+                                        '<a href="/remito/imprimir-remito-ticket/'+result.id+'" target="_blank" class="btn btn-light-primary blue mr-10" title="Imprimir Remito">\n' +
+                                        '<i class="fas fa-receipt text-white"></i> Imprimir TICKET\n' +
+                                        '</a>'+
+                                        '<a href="/remito/new" class="btn btn-light-primary blue mr-10" title="Agregar Nuevo Remito">\n' +
+                                        '<i class="fas fa-plus text-white"></i> Agregar Nuevo Remito\n' +
+                                        '</a>'+
+                                        '<a href="/remito/" class="btn btn-light-primary blue mr-10" title="Ver Remitos">\n' +
+                                        '<i class="fas fa-search text-white"></i> Ver los Remitos\n' +
+                                        '</a>'+
+                                        '<a href="/situacion_cliente/'+result.idCliente+'" class="btn btn-light-primary blue mr-10" title="Ver Situacion Cliente">\n' +
+                                        '<i class="fas fa-search text-white"></i> Ver Situacion Cliente\n' +
+                                        '</a>',
+                                });
+                                $('.modal-dialog').css('width', '80%');
+                                $('.modal-dialog').addClass('modal-xl');
+                                $('.modal-dialog').addClass('modal-fullscreen-xl-down');
+                                $('.submit-button').hide();
+                                $('.btn-light-dark').hide();
+                                $('.bootbox-close-button').hide();
+                            }
+                        });
+                        return false;
                     }
                 });
                 $('.bs-popover-top').hide();

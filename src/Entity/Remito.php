@@ -318,4 +318,24 @@ class Remito {
         return $this->entregas;
     }
 
+    public function getAdelanto()
+    {
+        $adelanto = 0;
+        $pedidosVistos = [];
+
+        foreach ($this->entregas as $entrega) {
+            foreach ($entrega->getEntregasProductos() as $entregaProducto) {
+                $pedido = $entregaProducto->getPedidoProducto()->getPedido();
+                $pedidoId = $pedido->getId();
+
+                if (!isset($pedidosVistos[$pedidoId])) {
+                    $adelanto += $pedido->getAdelanto();
+                    $pedidosVistos[$pedidoId] = true;
+                }
+            }
+        }
+
+        return $adelanto;
+    }
+
 }

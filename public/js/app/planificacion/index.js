@@ -1,4 +1,6 @@
+
 var KTCalendarListView = function() {
+
     return {
         //main function to initiate the module
         init: function() {
@@ -22,14 +24,13 @@ var KTCalendarListView = function() {
                 height: 800,
                 contentHeight: 750,
                 aspectRatio: 3,  // see: https://fullcalendar.io/docs/aspectRatio
-
                 views: {
                     dayGridMonth: { buttonText: 'mes' },
                     dayGridWeek: { buttonText: 'semana' },
                     dayGridDay: { buttonText: 'dia' },
                     listWeek: { buttonText: 'lista' }
                 },
-
+                eventLimitText: 'MÁS',
                 defaultView: 'dayGridWeek',
                 defaultDate: TODAY,
                 eventDurationEditable: false,

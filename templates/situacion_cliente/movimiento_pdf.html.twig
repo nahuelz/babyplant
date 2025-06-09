@@ -81,14 +81,26 @@
     <div class="datos-remito">
         <div>{{ entity.fechaCreacion|date('d/m/Y') }}</div>
     </div>
-    <div class="datos-cliente-left">
-        <div>{{ entity.cuentaCorriente.cliente.nombreCompleto|default('-') }}</div>
-        <div>{{ entity.cuentaCorriente.cliente.cuit|default('-') }}</div>
-    </div>
-    <div class="datos-cliente-right">
-        <div>{{ entity.cuentaCorriente.cliente.telefono }} {{ entity.cuentaCorriente.cliente.celular|default('-') }}</div>
-        <div>{{ entity.cuentaCorriente.cliente.domicilio|default('-') }}</div>
-    </div>
+    {% if entity.cuentaCorrienteUsuario != null %}
+        <div class="datos-cliente-left">
+            <div>{{ entity.cuentaCorrienteUsuario.cliente.nombreCompleto|default('-') }}</div>
+            <div>{{ entity.cuentaCorrienteUsuario.cliente.cuit|default('-') }}</div>
+        </div>
+        <div class="datos-cliente-right">
+            <div>{{ entity.cuentaCorrienteUsuario.cliente.telefono }} {{ entity.cuentaCorrientePedido.cliente.celular|default('-') }}</div>
+            <div>{{ entity.cuentaCorrienteUsuario.cliente.domicilio|default('-') }}</div>
+        </div>
+    {% else %}
+        <div class="datos-cliente-left">
+            <div>{{ entity.cuentaCorrientePedido.pedido.cliente.nombreCompleto|default('-') }}</div>
+            <div>{{ entity.cuentaCorrientePedido.pedido.cliente.cuit|default('-') }}</div>
+        </div>
+        <div class="datos-cliente-right">
+            <div>{{ entity.cuentaCorrientePedido.pedido.cliente.telefono }} {{ entity.cuentaCorrientePedido.pedido.cliente.celular|default('-') }}</div>
+            <div>{{ entity.cuentaCorrientePedido.pedido.cliente.domicilio|default('-') }}</div>
+        </div>
+    {% endif %}
+
     <div class="datos-productos">
         <table class="datos-productos-table" border="1" cellpadding="0" cellspacing="0" align="center">
             <thead>
@@ -97,18 +109,16 @@
                 <th class="text-center">TIPO</th>
                 <th class="text-center">MONTO</th>
                 <th class="text-center">MODO PAGO</th>
-                <th class="text-center">REFERENCIA</th>
                 <th class="text-center">PRODUCTO / REMITO</th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td width="110" align="center">{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}</td>
-                <td width="160" align="center">{{ entity.tipoMovimiento }}</td>
-                <td width="110" align="center">{{ entity.monto|money_format  }}</td>
-                <td width="110" align="center">{{ entity.modoPago  }}</td>
-                <td width="110" align="center">{{ entity.tipoReferencia|default('-')  }}</td>
-                <td width="180" align="center">{{ entity.pedidoProducto.nombreCorto|default('-')  }}</td>
+                <td width="120" align="center">{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}</td>
+                <td width="170" align="center">{{ entity.tipoMovimiento }}</td>
+                <td width="120" align="center">{{ entity.monto|money_format  }}</td>
+                <td width="120" align="center">{{ entity.modoPago  }}</td>
+                <td width="250" align="center">{{ entity.pedido.nombreCorto|default('-')  }}</td>
             </tr>
             </tbody>
             <tfoot>

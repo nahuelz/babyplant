@@ -87,12 +87,12 @@
     </div>
     <div class="datos-cliente">
         <div class="datos-cliente-left">
-            <div><strong>CLIENTE: </strong>{{ entity.cuentaCorriente.cliente.nombreCompleto|default('-') }}</div>
-            <div><strong>CUIT: </strong>{{ entity.cuentaCorriente.cliente.cuit|default('-') }}</div>
+            <div><strong>CLIENTE: </strong>{{ entity.cuentaCorrienteUsuario.cliente.nombreCompleto|default('-') }}</div>
+            <div><strong>CUIT: </strong>{{ entity.cuentaCorrienteUsuario.cliente.cuit|default('-') }}</div>
         </div>
         <div class="datos-cliente-right">
-            <div><strong>TELEFONO: </strong>{{ entity.cuentaCorriente.cliente.celular|default('-') }}</div>
-            <div><strong>TELEFONO: </strong>{{ entity.cuentaCorriente.cliente.domicilio|default('-') }}</div>
+            <div><strong>TELEFONO: </strong>{{ entity.cuentaCorrienteUsuario.cliente.celular|default('-') }}</div>
+            <div><strong>TELEFONO: </strong>{{ entity.cuentaCorrienteUsuario.cliente.domicilio|default('-') }}</div>
         </div>
     </div>
 
@@ -109,7 +109,7 @@
             </tr>
             </thead>
             <tbody>
-                {% for movimiento in entity.cuentaCorriente.movimientos %}
+                {% for movimiento in entity.cuentaCorrienteUsuario.movimientos %}
                 <tr>
                     <td width="110" align="center">{{ movimiento.fechaCreacion is not null ? movimiento.fechaCreacion|date('d/m/Y') : '-' }}</td>
                     <td width="160" align="center">{{ movimiento.tipoMovimiento }}</td>

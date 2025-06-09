@@ -204,7 +204,7 @@ class EntregaController extends BaseController {
         $repository = $this->doctrine->getRepository(PedidoProducto::class);
 
         $query = $repository->createQueryBuilder('pp')
-            ->select("pp.id, concat ('ORDEN N° ',pp.numeroOrden,' ', tp.nombre, ' ', v.nombre,' (x',tb.nombre,') DISPONIBLES: ',pp.cantidadBandejasDisponibles, ' MESADA N° ', tm.nombre) as denominacion")
+            ->select("pp.id, concat ('PEDIDO N° ', p.id, ' ORDEN N° ',pp.numeroOrden,' ', tp.nombre, ' ', v.nombre,' (x',tb.nombre,') DISPONIBLES: ',pp.cantidadBandejasDisponibles, ' MESADA N° ', tm.nombre, ' ADELANTO: $',ccp.saldo) as denominacion")
             ->leftJoin('pp.pedido', 'p' )
             ->leftJoin('App:TipoVariedad', 'v', Join::WITH, 'pp.tipoVariedad = v')
             ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')
@@ -212,6 +212,7 @@ class EntregaController extends BaseController {
             ->leftJoin('App:TipoBandeja', 'tb', Join::WITH, 'pp.tipoBandeja = tb')
             ->leftJoin('App:Mesada', 'm', Join::WITH, 'm.pedidoProducto = pp')
             ->leftJoin('App:TipoMesada', 'tm', Join::WITH, 'm.tipoMesada = tm')
+            ->leftJoin('App:CuentaCorrientePedido', 'ccp', Join::WITH, 'p.cuentaCorrientePedido = ccp')
             ->where('p.cliente = :cliente')
             ->andWhere('pp.estado IN (:estados)')
             ->andWhere('pp.cantidadBandejasDisponibles > 0')
@@ -559,7 +560,8 @@ class EntregaController extends BaseController {
                 'idEntregaProducto' => $entregaProducto->getId(),
                 'idProducto' => $entregaProducto->getPedidoProducto()->getId(),
                 'textProducto' => $entregaProducto->getPedidoProducto()->__toString(),
-                'cantidadBandejas' => $entregaProducto->getCantidadBandejas()
+                'cantidadBandejas' => $entregaProducto->getCantidadBandejas(),
+                'adelanto' => $entregaProducto->getPedidoProducto()->getAdelanto()
             ];
         }
 

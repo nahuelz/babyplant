@@ -28,4 +28,9 @@ class ConstanteModoPago {
      * CUENTA CORRIENTE
      */
     const CUENTA_CORRIENTE = 4;
+
+    /**
+     * ADELANTO
+     */
+    const ADELANTO = 5;
 }

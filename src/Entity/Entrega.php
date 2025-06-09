@@ -240,6 +240,11 @@ class Entrega {
         return $total;
     }
 
+    public function getAdelanto(){
+        $entregaProducto = $this->getEntregasProductos()->first();
+        return ($entregaProducto->getEntrega()->getPedidoProducto()->getAdelanto());
+    }
+
 
 
 

@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\CuentaCorriente;
+use App\Entity\CuentaCorrienteUsuario;
 use App\Entity\EstadoEntrega;
 use App\Entity\EstadoMesada;
 use App\Entity\EstadoPedidoProducto;
@@ -335,8 +335,8 @@ class AppFixtures extends Fixture
         $tipoUsuario2->setNombre('Tecnico');
         $manager->persist($tipoUsuario2);
 
-        $cuentaCorriente = new CuentaCorriente();
-        $manager->persist($cuentaCorriente);
+        $cuentaCorrienteUsuario = new CuentaCorrienteUsuario();
+        $manager->persist($cuentaCorrienteUsuario);
 
         $user = new Usuario();
         $user->setHabilitado(1);
@@ -346,7 +346,7 @@ class AppFixtures extends Fixture
         $user->setEmail('admin@admin.com');
         $user->setTipoUsuario($tipoUsuario2);
         $user->setTieneRazonSocial(0);
-        $user->setCuentaCorriente($cuentaCorriente);
+        $user->setCuentaCorrienteUsuario($cuentaCorrienteUsuario);
         $user->addGrupo($grupoA);
         $user->addGrupo($grupoC);
         $user->setPassword(
@@ -769,7 +769,7 @@ BEGIN
         LEFT JOIN usuario_grupo ug on ug.usuario_id = u.id
         LEFT JOIN grupo g on g.id = ug.grupo_id
         LEFT JOIN razon_social rs on u.id_razon_social = rs.id
-        LEFT JOIN cuenta_corriente cc on u.id_cuenta_corriente = cc.id   
+        LEFT JOIN cuenta_corriente_usuario cc on u.id_cuenta_corriente_usuario = cc.id   
     WHERE u.fecha_baja IS NULL 
         AND g.id = 3 /* GRUPO 3 = CLINETE */
         AND (_idCliente IS NULL OR (_idCliente IS NOT NULL AND u.id = _idCliente));

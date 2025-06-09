@@ -4,13 +4,63 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment=".">
-      <change afterPath="$PROJECT_DIR$/public/images/plantilla/plantilla-pedido.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/pedido/pedido_ticket_pdf.html.twig" afterDir="false" />
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="docker base">
+      <change afterPath="$PROJECT_DIR$/.conf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/Constants/ConstanteTipoMovimiento.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/CuentaCorrientePedido.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Form/MovimientoType.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_adelantos.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dockerignore" beforeDir="false" afterPath="$PROJECT_DIR$/.dockerignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/entrega/new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/entrega/new.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/entrega/remito_new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/entrega/remito_new.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/app/pedido/new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/new.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/planificacion/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/planificacion/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/remito/new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/remito/new.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/reserva/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/reserva/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/reserva/new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/reserva/new.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/situacioncliente/show.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/situacioncliente/show.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/functions.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/functions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/plugins/fullcalendar/fullcalendar.bundle.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/plugins/fullcalendar/fullcalendar.bundle.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/EntregaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntregaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PagoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PagoController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/PedidoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PedidoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/RegistrationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RegistrationController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/RemitoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RemitoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/ReservaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ReservaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Constants/ConstanteModoPago.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Constants/ConstanteModoPago.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/CuentaCorriente.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/CuentaCorrienteUsuario.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Entrega.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Entrega.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Movimiento.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Movimiento.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Pedido.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Pedido.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/RazonSocial.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/RazonSocial.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Remito.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Remito.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/TipoReferencia.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Usuario.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Usuario.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_situacion_cliente.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_situacion_cliente.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrega/confirmar_entrega.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/confirmar_entrega.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrega/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrega/remito/new.producto.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/remito/new.producto.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pago/pago_form.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pago/pago_form.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/pedido/pedido_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/pedido_pdf.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/planificacion/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/planificacion/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/remito/confirmar_remito.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/confirmar_remito.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/remito/new.producto.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/new.producto.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/salida_camara/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/salida_camara/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/movimiento_form.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/movimiento_form.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/movimiento_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/movimiento_pdf.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/movimiento_todos_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/movimiento_todos_pdf.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show_movimientos.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_movimientos.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show_remitos.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_remitos.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show_tiles.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_tiles.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -227,37 +277,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Docker.docker-compose.yml.app: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yml.phpmyadmin: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yml: Compose Deployment.executor": "Run",
-    "PHP Script.PedidoController.php.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "database.data.extractors.current.export.id": "SQL Inserts",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "//wsl$/Ubuntu/home/nahu/babyplant/babyplant/public/images/plantilla",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "php.override.implement.member.chooser.php.doc": "NONE",
-    "settings.editor.selected.configurable": "configurable.group.editor",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Docker.docker-compose.yml.app: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yml.phpmyadmin: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yml: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;PHP Script.PedidoController.php.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;database.data.extractors.current.export.id&quot;: &quot;SQL Inserts&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Nahu/Downloads/babyplant.sql&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;php.override.implement.member.chooser.php.doc&quot;: &quot;NONE&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.editor&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql",
-      "mariadb"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;,
+      &quot;mariadb&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="\\wsl$\Ubuntu\home\nahu\babyplant\babyplant\public\images\plantilla" />
@@ -612,54 +662,32 @@
       <workItem from="1745846619165" duration="17489000" />
       <workItem from="1745935781315" duration="7085000" />
       <workItem from="1745950871671" duration="3065000" />
-    </task>
-    <task id="LOCAL-00104" summary="fixtures">
-      <option name="closed" value="true" />
-      <created>1738178061039</created>
-      <option name="number" value="00104" />
-      <option name="presentableId" value="LOCAL-00104" />
-      <option name="project" value="LOCAL" />
-      <updated>1738178061039</updated>
-    </task>
-    <task id="LOCAL-00105" summary="fix crear CC">
-      <option name="closed" value="true" />
-      <created>1738178416936</created>
-      <option name="number" value="00105" />
-      <option name="presentableId" value="LOCAL-00105" />
-      <option name="project" value="LOCAL" />
-      <updated>1738178416936</updated>
-    </task>
-    <task id="LOCAL-00106" summary="fix crear CC">
-      <option name="closed" value="true" />
-      <created>1738179372763</created>
-      <option name="number" value="00106" />
-      <option name="presentableId" value="LOCAL-00106" />
-      <option name="project" value="LOCAL" />
-      <updated>1738179372763</updated>
-    </task>
-    <task id="LOCAL-00107" summary="fix crear CC">
-      <option name="closed" value="true" />
-      <created>1738179589775</created>
-      <option name="number" value="00107" />
-      <option name="presentableId" value="LOCAL-00107" />
-      <option name="project" value="LOCAL" />
-      <updated>1738179589775</updated>
-    </task>
-    <task id="LOCAL-00108" summary="sql views">
-      <option name="closed" value="true" />
-      <created>1738869227264</created>
-      <option name="number" value="00108" />
-      <option name="presentableId" value="LOCAL-00108" />
-      <option name="project" value="LOCAL" />
-      <updated>1738869227264</updated>
-    </task>
-    <task id="LOCAL-00109" summary="Entregas / Remitos">
-      <option name="closed" value="true" />
-      <created>1740139912106</created>
-      <option name="number" value="00109" />
-      <option name="presentableId" value="LOCAL-00109" />
-      <option name="project" value="LOCAL" />
-      <updated>1740139912106</updated>
+      <workItem from="1745973088293" duration="2000" />
+      <workItem from="1746034405824" duration="1483000" />
+      <workItem from="1746469698425" duration="1330000" />
+      <workItem from="1746712055590" duration="10001000" />
+      <workItem from="1746798323224" duration="1255000" />
+      <workItem from="1746799725448" duration="6803000" />
+      <workItem from="1747066250638" duration="9317000" />
+      <workItem from="1747145765036" duration="5464000" />
+      <workItem from="1747236811480" duration="9066000" />
+      <workItem from="1747252630706" duration="3894000" />
+      <workItem from="1747315605638" duration="18916000" />
+      <workItem from="1747413433005" duration="5436000" />
+      <workItem from="1747757480726" duration="5397000" />
+      <workItem from="1747847686250" duration="6236000" />
+      <workItem from="1748021100062" duration="1609000" />
+      <workItem from="1748108050672" duration="73000" />
+      <workItem from="1748108127506" duration="4435000" />
+      <workItem from="1748319275466" duration="650000" />
+      <workItem from="1748370248863" duration="1236000" />
+      <workItem from="1748447890834" duration="5437000" />
+      <workItem from="1748529356652" duration="592000" />
+      <workItem from="1748872383925" duration="5314000" />
+      <workItem from="1748968859048" duration="4134000" />
+      <workItem from="1749060363769" duration="11698000" />
+      <workItem from="1749146649667" duration="476000" />
+      <workItem from="1749486710916" duration="3837000" />
     </task>
     <task id="LOCAL-00110" summary="Entregas / Remitos">
       <option name="closed" value="true" />
@@ -1005,7 +1033,55 @@
       <option name="project" value="LOCAL" />
       <updated>1745943641793</updated>
     </task>
-    <option name="localTasksCounter" value="153" />
+    <task id="LOCAL-00153" summary=".">
+      <option name="closed" value="true" />
+      <created>1747337344542</created>
+      <option name="number" value="00153" />
+      <option name="presentableId" value="LOCAL-00153" />
+      <option name="project" value="LOCAL" />
+      <updated>1747337344542</updated>
+    </task>
+    <task id="LOCAL-00154" summary="docker compose generico">
+      <option name="closed" value="true" />
+      <created>1747356280508</created>
+      <option name="number" value="00154" />
+      <option name="presentableId" value="LOCAL-00154" />
+      <option name="project" value="LOCAL" />
+      <updated>1747356280508</updated>
+    </task>
+    <task id="LOCAL-00155" summary="git commit -m &quot;Dejar de rastrear docker-compose.dev.yml&quot;">
+      <option name="closed" value="true" />
+      <created>1747356581100</created>
+      <option name="number" value="00155" />
+      <option name="presentableId" value="LOCAL-00155" />
+      <option name="project" value="LOCAL" />
+      <updated>1747356581100</updated>
+    </task>
+    <task id="LOCAL-00156" summary="docker base">
+      <option name="closed" value="true" />
+      <created>1747356804302</created>
+      <option name="number" value="00156" />
+      <option name="presentableId" value="LOCAL-00156" />
+      <option name="project" value="LOCAL" />
+      <updated>1747356804302</updated>
+    </task>
+    <task id="LOCAL-00157" summary="docker base">
+      <option name="closed" value="true" />
+      <created>1747414601672</created>
+      <option name="number" value="00157" />
+      <option name="presentableId" value="LOCAL-00157" />
+      <option name="project" value="LOCAL" />
+      <updated>1747414601672</updated>
+    </task>
+    <task id="LOCAL-00158" summary="docker base">
+      <option name="closed" value="true" />
+      <created>1747414611089</created>
+      <option name="number" value="00158" />
+      <option name="presentableId" value="LOCAL-00158" />
+      <option name="project" value="LOCAL" />
+      <updated>1747414611089</updated>
+    </task>
+    <option name="localTasksCounter" value="159" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1023,9 +1099,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Entregas / Remitos" />
-    <MESSAGE value="Reservas" />
-    <MESSAGE value="fix borrar y habilitar/deshabilitar usuarios" />
     <MESSAGE value="fix remito mayor a 1 millon" />
     <MESSAGE value="fix remito cliente" />
     <MESSAGE value="boletas arco" />
@@ -1048,6 +1121,9 @@
     <MESSAGE value="docker-compose.yml" />
     <MESSAGE value="roles" />
     <MESSAGE value="." />
-    <option name="LAST_COMMIT_MESSAGE" value="." />
+    <MESSAGE value="docker compose generico" />
+    <MESSAGE value="git commit -m &quot;Dejar de rastrear docker-compose.dev.yml&quot;" />
+    <MESSAGE value="docker base" />
+    <option name="LAST_COMMIT_MESSAGE" value="docker base" />
   </component>
 </project>

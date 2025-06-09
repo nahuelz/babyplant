@@ -11,7 +11,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 /**
  * @ORM\Entity()
  */
-class CuentaCorriente {
+class CuentaCorrienteUsuario {
 
     /**
      * @ORM\Id()
@@ -26,13 +26,13 @@ class CuentaCorriente {
     private $saldo;
 
     /**
-     * @ORM\OneToMany(targetEntity=Movimiento::class, mappedBy="cuentaCorriente", cascade={"all"})
+     * @ORM\OneToMany(targetEntity=Movimiento::class, mappedBy="cuentaCorrienteUsuario", cascade={"all"})
      * @ORM\OrderBy({"id" = "DESC"})
      */
     private $movimientos;
 
     /**
-     * @ORM\OneToOne(targetEntity=Usuario::class, mappedBy="cuentaCorriente")
+     * @ORM\OneToOne(targetEntity=Usuario::class, mappedBy="cuentaCorrienteUsuario")
      */
     private $cliente;
 
@@ -114,7 +114,7 @@ class CuentaCorriente {
     {
         if (!$this->movimientos->contains($movimiento)) {
             $this->movimientos[] = $movimiento;
-            $movimiento->setCuentaCorriente($this);
+            $movimiento->setCuentaCorrienteUsuario($this);
             $this->actualizarSaldo($movimiento->getMonto());
         }
 

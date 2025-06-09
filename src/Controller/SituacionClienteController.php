@@ -2,18 +2,22 @@
 
 namespace App\Controller;
 
-use App\Entity\CuentaCorriente;
+use App\Entity\Constants\ConstanteTipoMovimiento;
+use App\Entity\CuentaCorrientePedido;
+use App\Entity\CuentaCorrienteUsuario;
 use App\Entity\ModoPago;
 use App\Entity\Movimiento;
-use App\Entity\PedidoProducto;
+use App\Entity\Pedido;
 use App\Entity\Remito;
 use App\Entity\TipoMovimiento;
 use App\Entity\TipoReferencia;
 use App\Entity\Usuario;
+use App\Form\MovimientoType;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Mpdf\Mpdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -102,11 +106,11 @@ class SituacionClienteController extends BaseController {
             throw $this->createNotFoundException("No se puede encontrar el usuario.");
         }
 
-        if ($entity->getCuentaCorriente() == null){
-            $cuentaCorriente = new CuentaCorriente();
-            $cuentaCorriente->setCliente($entity);
-            $entity->setCuentaCorriente($cuentaCorriente);
-            $em->persist($cuentaCorriente);
+        if ($entity->getCuentaCorrienteUsuario() == null) {
+            $cuentaCorrienteUsuario = new CuentaCorrienteUsuario();
+            $cuentaCorrienteUsuario->setCliente($entity);
+            $entity->setCuentaCorrienteUsuario($cuentaCorrienteUsuario);
+            $em->persist($cuentaCorrienteUsuario);
             $em->flush();
         }
 
@@ -153,12 +157,12 @@ class SituacionClienteController extends BaseController {
     public function movimientoNewAction(Request $request): Response
     {
         $movimiento = new Movimiento();
-        $id = $request->request->get('idCuentaCorriente');
+        $id = $request->request->get('idCuentaCorrienteUsuario');
 
         $em = $this->doctrine->getManager();
-        /* @var $cuentaCorriente CuentaCorriente */
-        $cuentaCorriente = $em->getRepository("App\Entity\CuentaCorriente")->find($id);
-        $cuentaCorriente->addMovimiento($movimiento);
+        /* @var $cuentaCorrienteUsuario CuentaCorrienteUsuario */
+        $cuentaCorrienteUsuario = $em->getRepository("App\Entity\CuentaCorrienteUsuario")->find($id);
+        $cuentaCorrienteUsuario->addMovimiento($movimiento);
         $form = $this->baseCreateCreateForm($movimiento);
 
         return $this->render('situacion_cliente/movimiento_form.html.twig', [
@@ -177,16 +181,16 @@ class SituacionClienteController extends BaseController {
      */
     protected function baseInitCreateCreateForm($entityFormTypeClassName, $entity): FormInterface {
         return $this->createForm($entityFormTypeClassName, $entity, array(
-            'action' => $this->generateUrl($this->getURLPrefix() . '_create'),
+            'action' => 'movimiento_create',
             'method' => 'POST',
-            'idCliente' => $entity->getCuentaCorriente()->getCliente()->getId(),
+            'idCliente' => $entity->getCuentaCorrienteUsuario()->getCliente()->getId(),
         ));
     }
 
 
 
     /**
-     * @Route("/movimiento/create", name="situacioncliente_create", methods={"GET","POST"})
+     * @Route("/movimiento/create", name="movimiento_create", methods={"GET","POST"})
      * @IsGranted("ROLE_SITUACION_CLIENTE")
      */
     public function movimientoCreateAction(Request $request): Response
@@ -196,18 +200,18 @@ class SituacionClienteController extends BaseController {
         $monto = $request->request->get('monto');
         $modoPagoValue = $request->request->get('modoPago');
         $descripcion = $request->request->get('descripcion');
-        $id = $request->request->get('idCuentaCorriente');
-        $idPedidoProducto = $request->request->get('idPedidoProducto');
+        $id = $request->request->get('idCuentaCorrienteUsuario');
+        $idPedido = $request->request->get('idPedido');
         $idMovimiento = '';
 
         if ((isset($modoPagoValue) and $modoPagoValue !== '') and (isset($monto) and $monto !== '')) {
             $modoPago = $em->getRepository(ModoPago::class)->findOneByCodigoInterno($modoPagoValue);
             $tipoMovimiento = $em->getRepository(TipoMovimiento::class)->findOneByCodigoInterno(1); // 1 = INGRESO CC
             $tipoReferencia = $em->getRepository(TipoReferencia::class)->findOneByCodigoInterno(1); // 1 = ADELANTO
-            $pedidoProducto = $em->getRepository(PedidoProducto::class)->find($idPedidoProducto);
+            $pedido = $em->getRepository(Pedido::class)->find($idPedido);
 
-            /* @var $cuentaCorriente CuentaCorriente */
-            $cuentaCorriente = $em->getRepository("App\Entity\CuentaCorriente")->find($id);
+            /* @var $cuentaCorrienteUsuario CuentaCorrienteUsuario */
+            $cuentaCorrienteUsuario = $em->getRepository("App\Entity\CuentaCorrienteUsuario")->find($id);
 
             $movimiento = new Movimiento();
             $movimiento->setMonto($monto);
@@ -215,9 +219,9 @@ class SituacionClienteController extends BaseController {
             $movimiento->setDescripcion($descripcion);
             $movimiento->setTipoMovimiento($tipoMovimiento);
             $movimiento->setTipoReferencia($tipoReferencia);
-            $movimiento->setPedidoProducto($pedidoProducto);
-            $cuentaCorriente->addMovimiento($movimiento);
-            $movimiento->setSaldoCuenta($cuentaCorriente->getSaldo());
+            $movimiento->setPedido($pedido);
+            $cuentaCorrienteUsuario->addMovimiento($movimiento);
+            $movimiento->setSaldoCuenta($cuentaCorrienteUsuario->getSaldo());
             $em->persist($movimiento);
             $em->flush();
             $idMovimiento = $movimiento->getId();
@@ -232,7 +236,74 @@ class SituacionClienteController extends BaseController {
         )));
 
         return $response;
+    }
 
+    /**
+     * @Route("/adelanto/new", name="adelanto_new", methods={"GET","POST"})
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
+     */
+    public function adelantoNewAction(Request $request): Response
+    {
+        $movimiento = new Movimiento();
+        $idCliente = $request->request->get('idCliente');
+
+        $form = $this->createForm(MovimientoType::class, $movimiento, array(
+            'action' => 'adelanto_create',
+            'method' => 'POST',
+            'idCliente' => $idCliente,
+        ));
+
+        return $this->render('situacion_cliente/movimiento_form.html.twig', [
+            'form' => $form->createView(),
+            'entity' => $movimiento,
+            'modal' => true
+        ]);
+    }
+
+    /**
+     * @Route("/adelanto/create", name="adelanto_create", methods={"GET","POST"})
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
+     */
+    public function adelantoCreateAction(Request $request): Response
+    {
+        $em = $this->doctrine->getManager();
+
+        $monto = $request->request->get('monto');
+        $modoPagoValue = $request->request->get('modoPago');
+        $descripcion = $request->request->get('descripcion');
+        $idPedido = $request->request->get('idPedido');
+        $idMovimiento = '';
+
+        if ((isset($modoPagoValue) and $modoPagoValue !== '') and (isset($monto) and $monto !== '') and (isset($idPedido) and $idPedido !== '')) {
+            $modoPago = $em->getRepository(ModoPago::class)->findOneByCodigoInterno($modoPagoValue);
+            $tipoMovimiento = $em->getRepository(TipoMovimiento::class)->findOneByCodigoInterno(ConstanteTipoMovimiento::ADELANTO);
+            $pedido = $em->getRepository(Pedido::class)->find($idPedido);
+
+            /* @var $cuentaCorrientePedido CuentaCorrientePedido */
+            $cuentaCorrientePedido = $pedido->getCuentaCorrientePedido();
+
+            $movimiento = new Movimiento();
+            $movimiento->setMonto($monto);
+            $movimiento->setModoPago($modoPago);
+            $movimiento->setDescripcion($descripcion);
+            $movimiento->setTipoMovimiento($tipoMovimiento);
+            $movimiento->setPedido($pedido);
+            $cuentaCorrientePedido->addMovimiento($movimiento);
+            $movimiento->setSaldoCuenta($cuentaCorrientePedido->getSaldo());
+            $em->persist($movimiento);
+            $em->flush();
+            $idMovimiento = $movimiento->getId();
+        }
+
+        $response = new Response();
+        $response->setContent(json_encode(array(
+            'message' => 'ADELANTO AGREGADO',
+            'statusCode' => 200,
+            'statusText' => 'OK',
+            'id' => $idMovimiento
+        )));
+
+        return $response;
     }
 
     /**

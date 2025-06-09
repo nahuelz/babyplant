@@ -10,6 +10,7 @@ $(document).ready(function () {
     initVerHistoricoEstadoReservaHandler();
     initReservaEntregar();
 });
+
 /**
  *
  * @returns {undefined}

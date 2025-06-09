@@ -17,8 +17,8 @@ jQuery(document).ready(function () {
     initDiasProduccionSelectHandler();
     initBaseSubmitButton();
     $('.observacion').hide();
-    $('#pedido_pedidoProducto_cantDiasProduccionSelect').val('20');
-    $('#pedido_pedidoProducto_cantDiasProduccion').val('20');
+    $('#pedido_pedidoProducto_cantDiasProduccionSelect').val('30');
+    $('#pedido_pedidoProducto_cantDiasProduccion').val('30');
     $('#pedido_pedidoProducto_fechaEntregaPedido').val('');
 });
 
@@ -43,7 +43,7 @@ function initFechaSiembra(){
     a.setMinutes(a.getMinutes() + a.getTimezoneOffset() + timeZoneOffset );
     $("#pedido_pedidoProducto_fechaSiembraPedido").datepicker("setDate","today",a);
     var fechaEntregaPedido = $('#pedido_pedidoProducto_fechaSiembraPedido').datepicker('getDate');
-    fechaEntregaPedido.setDate(fechaEntregaPedido.getDate()+20);
+    fechaEntregaPedido.setDate(fechaEntregaPedido.getDate()+30);
     $('#pedido_pedidoProducto_fechaEntregaPedido').datepicker('setStartDate', fechaEntregaPedido);
     $('#pedido_pedidoProducto_fechaEntregaPedido').datepicker('setDate', fechaEntregaPedido);
 
@@ -56,7 +56,7 @@ function initFechaEntregaHandler(){
 }
 
 function setFechaSiembra(){
-    var dias = $('#pedido_pedidoProducto_cantDiasProduccion').val() ? $('#pedido_pedidoProducto_cantDiasProduccion').val() : '20';
+    var dias = $('#pedido_pedidoProducto_cantDiasProduccion').val() ? $('#pedido_pedidoProducto_cantDiasProduccion').val() : '30';
     var fechaSiembraPedido = $('#pedido_pedidoProducto_fechaEntregaPedido').datepicker('getDate');
     if (fechaSiembraPedido !== null) {
         fechaSiembraPedido.setDate(fechaSiembraPedido.getDate() - dias);
@@ -190,11 +190,6 @@ function initBaseSubmitButton() {
 
         fv.validate().then((status) => {
 
-            /*if (status === "Valid") {
-                $('form[name="pedido"]').submit();
-                return false;
-            }*/
-
             if (status === "Valid") {
                 $.post({
                     url: __HOMEPAGE_PATH__ + "pedido/insertar",
@@ -211,7 +206,29 @@ function initBaseSubmitButton() {
 
                         return false;
                     } else {
-                        showDialog({
+                        Swal.fire({
+                            width: '800px',
+                            title: '<strong>PEDIDO AGREGADO!</strong>',
+                            color: "#716add",
+                            allowOutsideClick: false,
+                            backdrop: false,
+                            confirmButtonText: 'Agregar Nuevo Pedido',
+                            html: '<div class="d-flex flex-row justify-content-center align-items-center w-100">' +
+                                '<a href="/pedido/imprimir-pedido/'+result.message+'" target="_blank" class="swal2-confirm swal2-styled" title="Imprimir comprobante">\n' +
+                                '<i class="fas fa-file-pdf text-white"></i> Imprimir A4\n' +
+                                '</a>'+
+                                '<a href="/pedido/imprimir-pedido-ticket/'+result.message+'" target="_blank" class="swal2-confirm swal2-styled" title="Imprimir comprobante">\n' +
+                                '<i class="fas fa-receipt text-white"></i> Imprimir TICKET\n' +
+                                '</a>'+
+                                '<a href="/pedido/" class="swal2-confirm swal2-styled" title="Ver Pedidos">\n' +
+                                '<i class="fas fa-search text-white"></i> Ver Pedidos\n' +
+                                '</a>'+
+                                '</div>',
+                            icon: "success"
+                        }).then((result) => {
+                            window.location.reload();
+                        });
+                        /*showDialog({
                             titulo: '<i class="fa fa-list-ul margin-right-10"></i> PEDIDO AGREGADO',
                             contenido: '' +
                                 '<a href="/pedido/imprimir-pedido/'+result.message+'" target="_blank" class="btn btn-light-primary blue mr-10" title="Imprimir comprobante">\n' +
@@ -226,7 +243,7 @@ function initBaseSubmitButton() {
                                 '<a href="/pedido/" class="btn btn-light-primary blue mr-10" title="Ver Pedidos">\n' +
                                     '<i class="fas fa-search text-white"></i> Ver los pedidos\n' +
                                 '</a>',
-                        });
+                        });*/
                         $('.modal-dialog').css('width', '80%');
                         $('.modal-dialog').addClass('modal-xl');
                         $('.modal-dialog').addClass('modal-fullscreen-xl-down');

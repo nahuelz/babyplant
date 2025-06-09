@@ -168,7 +168,7 @@ function initRemitoProductoHandler() {
 function calcularTotal(){
     total = 0;
     $(".subtotal").each(function( index ) {
-        var subtotal = $(this).text().replace(',', '');
+        var subtotal = $(this).text().replaceAll(',', '');
         total += parseInt(subtotal.slice(1));
     });
 

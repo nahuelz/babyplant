@@ -130,10 +130,10 @@ class Usuario implements UserInterface {
     private $tieneRazonSocial;
 
     /**
-     * @ORM\OneToOne(targetEntity=CuentaCorriente::class, inversedBy="cliente")
-     * @ORM\JoinColumn(name="id_cuenta_corriente", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity=CuentaCorrienteUsuario::class, inversedBy="cliente")
+     * @ORM\JoinColumn(name="id_cuenta_corriente_usuario", referencedColumnName="id")
      */
-    private $cuentaCorriente;
+    private $cuentaCorrienteUsuario;
 
     /**
      * @ORM\OneToMany(targetEntity=Pedido::class, mappedBy="cliente", cascade={"all"})
@@ -501,14 +501,14 @@ class Usuario implements UserInterface {
         $this->tieneRazonSocial = $tieneRazonSocial;
     }
 
-    public function getCuentaCorriente(): CuentaCorriente|null
+    public function getCuentaCorrienteUsuario(): CuentaCorrienteUsuario|null
     {
-        return $this->cuentaCorriente;
+        return $this->cuentaCorrienteUsuario;
     }
 
-    public function setCuentaCorriente(CuentaCorriente $cuentaCorriente): void
+    public function setCuentaCorrienteUsuario(CuentaCorrienteUsuario $cuentaCorrienteUsuario): void
     {
-        $this->cuentaCorriente = $cuentaCorriente;
+        $this->cuentaCorrienteUsuario = $cuentaCorrienteUsuario;
     }
 
     /**
@@ -584,6 +584,13 @@ class Usuario implements UserInterface {
         return $this;
     }
 
+    public function getSaldoAdelantos(){
+        $saldo = 0;
+        foreach ($this->getPedidos() as $pedido){
+            $saldo+= $pedido->getCuentaCorrientePedido()->getSaldo();
+        }
+        return $saldo;
+    }
 
 
 

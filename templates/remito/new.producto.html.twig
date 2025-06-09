@@ -32,6 +32,7 @@
                     <tr>
                         <th class="text-center">ENTREGA</th>
                         <th class="text-center">PRODUCTO</th>
+                        <th class="text-center">ADELANTO</th>
                         <th class="text-center">CANTIDAD DE BANDEJAS A ENTREGAR</th>
                         <th class="text-center">PRECIO UNITARIO</th>
                         <th class="text-center">SUBTOTAL</th>
@@ -54,9 +55,9 @@
                             </td>
 
                             <td class="v-middle text-center">{{ entregaProducto.pedidoProducto }}</td>
+                            <td class="v-middle text-center">${{ entregaProducto.pedidoProducto.adelanto }}</td>
                             <td class="v-middle text-center">{{ entregaProducto.cantidadBandejas }}</td>
                             <td class="v-middle text-center">{{ entregaProducto.precioUnitario }}</td>
-
                             <td class="text-center v-middle">
                                 <a href="#" class="btn btn-sm delete-link-inline link-delete-remito-producto remito-producto-borrar tooltips"
                                    data-placement="top" data-original-title="Eliminar">
@@ -90,6 +91,7 @@
                             </div>
                         </div>
                     </td>
+                    <td style="border:none;"></td>
                     <td style="border:none;"></td>
                     <th style="float: right;font-weight: bold;font-size: 18px;border: none;">TOTAL</th>
                     <td class="v-middle text-center total" style="font-weight: bold; font-size: 18px;border: none;"></td>

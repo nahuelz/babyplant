@@ -48,6 +48,12 @@ class Pedido {
      */
     private $observacion;
 
+    /**
+     * @ORM\OneToOne(targetEntity=CuentaCorrientePedido::class, inversedBy="pedido")
+     * @ORM\JoinColumn(name="id_cuenta_corriente_pedido", referencedColumnName="id")
+     */
+    private $cuentaCorrientePedido;
+
     public function __construct()
     {
         $this->historicoEstados = new ArrayCollection();
@@ -55,6 +61,11 @@ class Pedido {
     }
 
     public function __toString(): string
+    {
+        return 'Pedido N° '.$this->getId(). ' Fecha Pedido: '.$this->getFechaCreacion()->format('d/m/Y');
+    }
+
+    public function getNombreCorto(): string
     {
         return 'Pedido N° '.$this->getId();
     }
@@ -195,6 +206,26 @@ class Pedido {
         }
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCuentaCorrientePedido()
+    {
+        return $this->cuentaCorrientePedido;
+    }
+
+    /**
+     * @param mixed $cuentaCorrientePedido
+     */
+    public function setCuentaCorrientePedido($cuentaCorrientePedido): void
+    {
+        $this->cuentaCorrientePedido = $cuentaCorrientePedido;
+    }
+
+    public function getAdelanto(){
+        return $this->getCuentaCorrientePedido()->getSaldo();
     }
 
 }
