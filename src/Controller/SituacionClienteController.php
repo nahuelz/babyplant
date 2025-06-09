@@ -114,6 +114,16 @@ class SituacionClienteController extends BaseController {
             $em->flush();
         }
 
+        foreach ($entity->getPedidos() as $pedido) {
+            if ($pedido->getCuentaCorrientePedido() == null) {
+                $cuentaCorrientePedido = new CuentaCorrientePedido();
+                $cuentaCorrientePedido->setPedido($pedido);
+                $pedido->setCuentaCorrientePedido($cuentaCorrientePedido);
+                $em->persist($cuentaCorrientePedido);
+                $em->flush();
+            }
+        }
+
         $breadcrumbs = $this->getShowBaseBreadcrumbs($entity);
 
         $parametros = array(
