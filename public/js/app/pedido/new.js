@@ -474,5 +474,6 @@ function initTipoUsuario(){
     $('.user-password').hide();
     $('.grupo').hide();
     $('.tipo-usuario').hide();
+    $('.datos-acceso').hide();
     //$("#registration_form_cuit").inputmask("99-99999999-9");
 }
