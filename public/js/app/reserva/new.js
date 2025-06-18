@@ -84,7 +84,7 @@ function initBaseSubmitButton() {
                     dataType: 'json',
                     data: $('form[name="reserva"]').serialize()
                 }).done(function (result) {
-                    if (result.error) {
+                    if (result.message) {
                         Swal.fire({
                             title: result.tipo,
                             text: "La cantidad de bandejas a reservar no puede superar a la cantidad de bandejas disponibles.",
@@ -93,8 +93,8 @@ function initBaseSubmitButton() {
 
                         return false;
                     } else {
-                        showDialog({
-                            titulo: '<i class="fa fa-list-ul margin-right-10"></i> ENTREGA',
+                        let reservaDialog = showDialog({
+                            titulo: '<i class="fa fa-list-ul margin-right-10"></i> RESERVA',
                             contenido: result.html,
                             color: 'btn-light-success ',
                             labelCancel: 'Cancelar',
@@ -104,7 +104,50 @@ function initBaseSubmitButton() {
 
                             },
                             callbackSuccess: function () {
-                                $('form[name="reserva"]').submit();
+                                $.post({
+                                    url: __HOMEPAGE_PATH__ + "reserva/insertar",
+                                    type: 'post',
+                                    dataType: 'json',
+                                    data: $('form[name="reserva"]').serialize()
+                                }).done(function (result) {
+                                    if (result.statusText !== 'OK') {
+                                        Swal.fire({
+                                            title: result.statusCode,
+                                            text: result.statusText,
+                                            icon: "warning"
+                                        });
+
+                                        return false;
+                                    } else {
+                                        document.activeElement.blur(); // quitar foco
+                                        setTimeout(() => {
+                                            reservaDialog.modal('hide'); // cerrar bootbox
+                                        }, 50);
+
+                                        // ✅ Mostrar Swal después
+                                        setTimeout(() => {
+                                            Swal.fire({
+                                                width: '800px',
+                                                title: '<strong>RESERVA AGREGADA!</strong>',
+                                                color: "#716add",
+                                                allowOutsideClick: false,
+                                                backdrop: false,
+                                                confirmButtonText: 'Agregar Nueva Reserva',
+                                                html: '<div class="d-flex flex-row justify-content-center align-items-center w-100">' +
+                                                    '<a href="/reserva/imprimir-reserva/' + result.message + '" target="_blank" class="swal2-confirm swal2-styled" title="Imprimir reserva">' +
+                                                    '<i class="fas fa-file-pdf text-white"></i> Imprimir A4</a>' +
+                                                    '<a href="/reserva/imprimir-reserva-ticket/' + result.message + '" target="_blank" class="swal2-confirm swal2-styled" title="Imprimir reserva">' +
+                                                    '<i class="fas fa-receipt text-white"></i> Imprimir TICKET</a>' +
+                                                    '<a href="/reserva/" class="swal2-confirm swal2-styled" title="Ver Reservas">' +
+                                                    '<i class="fas fa-search text-white"></i> Ver Reservas</a>' +
+                                                    '</div>',
+                                                icon: "success"
+                                            }).then(() => {
+                                                window.location.reload();
+                                            });
+                                        }, 300); // esperamos un poco para evitar conflictos
+                                    }
+                                });
                             }
                         });
                         $('.bs-popover-top').hide();

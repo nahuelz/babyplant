@@ -53,7 +53,7 @@ class Usuario implements UserInterface {
     private $apellido;
 
     /**
-     * @ORM\Column(type="string", length=20, nullable=true, unique=true)
+     * @ORM\Column(type="string", length=20, nullable=true)
      */
     private $cuit;
 

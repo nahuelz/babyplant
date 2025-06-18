@@ -37,12 +37,16 @@ class RegistrationFormType extends AbstractType {
                 )
             )
             ->add('email', TextType::class, array(
+                'required' => false,
                 'attr' => array('class' => 'form-control'))
             )
             ->add('username', TextType::class, array(
                 'label' => 'Usuario',
                 'required' => false,
-                'attr' => array('class' => 'form-control'))
+                'attr' => array(
+                    'autocomplete' => 'off',
+                    'class' => 'form-control')
+                )
             )
             ->add('nombre', TextType::class, array(
                     'attr' => array('class' => 'form-control'))
@@ -51,9 +55,12 @@ class RegistrationFormType extends AbstractType {
                 'attr' => array('class' => 'form-control'))
             )
             ->add('cuit', TextType::class, array(
-                'label' => 'Cuit Persona',
-                'required' => true,
-                'attr' => array('class' => 'form-control'))
+                'label' => 'Cuit',
+                'required' => false,
+                'attr' => array(
+                    'maxlength' => 14,
+                    'class' => 'form-control')
+                )
             )
             ->add('domicilio', TextType::class, array(
                     'required' => false,
@@ -103,7 +110,10 @@ class RegistrationFormType extends AbstractType {
                         'max' => 4096,
                             ]),
                 ],
-                'attr' => array('class' => 'form-control')
+                'attr' => array(
+                    'autocomplete' => 'new-password',
+                    'class' => 'form-control'
+                )
             ])
             ->add('grupos', EntityType::class, [
                 'class' => Grupo::class,

@@ -116,7 +116,7 @@ class ReservaController extends BaseController {
      */
     public function createAction(Request $request): RedirectResponse|Response
     {
-        return parent::baseCreateAction($request);
+        return parent::baseCreateAction($request, true);
     }
 
     /**
@@ -208,7 +208,7 @@ class ReservaController extends BaseController {
         $repository = $this->doctrine->getRepository(PedidoProducto::class);
 
         $query = $repository->createQueryBuilder('pp')
-            ->select("pp.id, pp.fechaEntregaPedido, concat ('PEDIDO N° ',pp.id, ' ORDEN N° ',pp.numeroOrden,' ', tp.nombre, ' ', v.nombre,' DISPONIBLES: ',pp.cantidadBandejasDisponibles,' ESTADO: ',e.nombre) as descripcion")
+            ->select("pp.id, pp.fechaEntregaPedido, concat ('PEDIDO N° ',p.id, ' ORDEN N° ',pp.numeroOrden,' ', tp.nombre, ' ', v.nombre,' DISPONIBLES: ',pp.cantidadBandejasDisponibles,' ESTADO: ',e.nombre) as descripcion")
             ->leftJoin('pp.pedido', 'p' )
             ->leftJoin('App:TipoVariedad', 'v', Join::WITH, 'pp.tipoVariedad = v')
             ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')
@@ -246,27 +246,47 @@ class ReservaController extends BaseController {
 
         /* @var $reserva Reserva */
         $reserva = $em->getRepository('App\Entity\Reserva')->find($id);
+        $error = false;
 
         if (!$reserva) {
-            throw $this->createNotFoundException('No se puede encontrar el Reserva .');
+            $this->get('session')->getFlashBag()->add('error','No se puede encontrar la Reserva .');
+            $error = true;
         }
 
-        $entregaService = new EntregaService();
-        $entrega = new Entrega();
-        $entreaProducto = new EntregaProducto();
-        $entreaProducto->setCantidadBandejas($reserva->getCantidadBandejas());
-        $entreaProducto->setPedidoProducto($reserva->getPedidoProducto());
-        $entrega->addEntregaProducto($entreaProducto);
-        $entrega->setClienteEntrega($reserva->getCliente());
-        $entrega->setCliente($reserva->getPedidoProducto()->getPedido()->getCliente());
-        $em->persist($entrega);
-        $em->flush();
-        $result = $entregaService->entregar($em,$entrega);
-        $estadoReserva = $em->getRepository(EstadoReserva::class)->findOneByCodigoInterno(ConstanteEstadoReserva::ENTREGADO);
-        $this->cambiarEstadoReserva($em, $reserva, $estadoReserva);
-        $em->flush();
+        if ($reserva->getPedidoProducto()->getEstado()->getCodigoInterno() == ConstanteEstadoPedidoProducto::EN_CAMARA){
+            $this->get('session')->getFlashBag()->add('error', "No se puede entregar un producto que se encuentra en estado EN CAMARA.");
+            $error = true;
+        }
 
-        return new JsonResponse($result);
+        if ($reserva->getPedidoProducto()->getEstado()->getCodigoInterno() == ConstanteEstadoPedidoProducto::PLANIFICADO){
+            $this->get('session')->getFlashBag()->add('error', "No se puede entregar un producto que se encuentra en estado PLANIFICADO.");
+            $error = true;
+        }
+
+        if ($reserva->getPedidoProducto()->getEstado()->getCodigoInterno() == ConstanteEstadoPedidoProducto::SEMBRADO){
+            $this->get('session')->getFlashBag()->add('error', "No se puede entregar un producto que se encuentra en estado SEMBRADO.");
+            $error = true;
+        }
+
+        if (!$error) {
+            $entregaService = new EntregaService();
+            $entrega = new Entrega();
+            $entreaProducto = new EntregaProducto();
+            $entreaProducto->setCantidadBandejas($reserva->getCantidadBandejas());
+            $entreaProducto->setPedidoProducto($reserva->getPedidoProducto());
+            $entrega->addEntregaProducto($entreaProducto);
+            $entrega->setClienteEntrega($reserva->getCliente());
+            $entrega->setCliente($reserva->getPedidoProducto()->getPedido()->getCliente());
+            $em->persist($entrega);
+            $em->flush();
+            $entregaService->entregar($em, $entrega);
+            $estadoReserva = $em->getRepository(EstadoReserva::class)->findOneByCodigoInterno(ConstanteEstadoReserva::ENTREGADO);
+            $this->cambiarEstadoReserva($em, $reserva, $estadoReserva);
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('success', "Producto entregado.");
+        }
+
+        return new JsonResponse($error);
     }
 
     /**
@@ -372,7 +392,7 @@ class ReservaController extends BaseController {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
 
-        $html = $this->renderView('reserva/remito_pdf.html.twig', array('entity' => $reserva, 'website' => "http://192.168.0.182/babyplant/public/"));
+        $html = $this->renderView('reserva/reserva_pdf.html.twig', array('entity' => $reserva, 'website' => "http://192.168.0.182/babyplant/public/"));
 
         $filename = 'reserva.pdf';
 
@@ -398,6 +418,55 @@ class ReservaController extends BaseController {
 
         $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
 
+
+        return new Response($mpdfOutput);
+    }
+
+    /**
+     * Print a Pedido Entity.
+     *
+     * @Route("/imprimir-reserva-ticket/{id}", name="imprimir_pedido_ticket", methods={"GET"})
+     */
+    public function imprimirReservaTicketAction($id) {
+        $em = $this->doctrine->getManager();
+
+        $reserva = $em->getRepository("App\Entity\Reserva")->find($id);
+        /* @var $reserva Reserva */
+
+        if (!$reserva) {
+            throw $this->createNotFoundException("No se puede encontrar la entidad PEDIDO.");
+        }
+
+        $html = $this->renderView('reserva/reserva_ticket_pdf.html.twig', array('entity' => $reserva));
+
+        $filename = 'reserva.pdf';
+
+        $mpdfService = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => [80, 1000], // ancho x alto en milímetros
+            'margin_left' => 2,
+            'margin_right' => 2,
+            'margin_top' => 2,
+            'margin_bottom' => 2,
+            'orientation' => 'P',
+        ]);
+        $mpdfService->WriteHTML($html);
+
+        // Obtener altura usada en milímetros
+        $usedHeight = $mpdfService->y; // posición vertical actual (mm)
+        $mpdfService = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => [80, $usedHeight + 20], // ancho x alto en milímetros
+            'margin_left' => 2,
+            'margin_right' => 2,
+            'margin_top' => 2,
+            'margin_bottom' => 2,
+            'orientation' => 'P',
+        ]);
+        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
+        $mpdfService->SetTitle($filename);
+        $mpdfService->WriteHTML($html);
+        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
 
         return new Response($mpdfOutput);
     }
@@ -435,5 +504,9 @@ class ReservaController extends BaseController {
         );
 
         return new JsonResponse($result);
+    }
+
+    public function getCreateMessage($entity, $useDecode = false):string{
+        return $entity->getId();
     }
 }

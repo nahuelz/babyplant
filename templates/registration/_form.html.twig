@@ -1,4 +1,88 @@
 {% import 'app/_macro_form.html.twig' as macro_form %}
+<div class="card card-custom ">
+    {% if not modal %}
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon-user-add text-primary"></i></span>
+                <h3 class="card-label">Crear Usuario</h3>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="card-body">
+        <h5 class="text-primary mb-4 datos-acceso">Datos de acceso</h5>
+        <div class="row datos-acceso">
+            <div class="col-md-4 mb-4">
+                {{ macro_form._new_field(registrationForm.tipoUsuario) }}
+            </div>
+            <div class="col-md-4 mb-4 usuario-password">
+                {{ macro_form._new_field(registrationForm.username) }}
+            </div>
+            <div class="col-md-4 mb-4 usuario-password">
+                {{ macro_form._new_field(registrationForm.plainPassword) }}
+            </div>
+        </div>
+
+        <hr class="datos-acceso">
+
+        <h5 class="text-primary mb-4">Datos personales</h5>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                {{ macro_form._new_field(registrationForm.nombre) }}
+            </div>
+            <div class="col-md-4 mb-4">
+                {{ macro_form._new_field(registrationForm.apellido) }}
+            </div>
+            <div class="col-md-4 mb-4">
+                {{ macro_form._new_field(registrationForm.email) }}
+            </div>
+            <div class="col-md-4 mb-4">
+                {{ macro_form._new_field(registrationForm.cuit) }}
+            </div>
+            <div class="col-md-4 mb-4">
+                {{ macro_form._new_field(registrationForm.domicilio) }}
+            </div>
+            <div class="col-md-4 mb-4">
+                {{ macro_form._new_field(registrationForm.celular) }}
+            </div>
+        </div>
+
+        <hr>
+
+        <h5 class="text-primary mb-4 razon-social">Razón social</h5>
+        <div class="row mb-4 d-flex align-items-center razon-social">
+            <div class="col-md-3 mb-4 razon-social">
+                {{ macro_form._new_field(registrationForm.tieneRazonSocial) }}
+            </div>
+            <div class="col-md-4 mb-4 razonSocial">
+                {{ macro_form._new_field(registrationForm.razonSocial) }}
+            </div>
+            <div class="col-md-3 mb-4 razonSocial">
+                <button type="button" class="btn btn-success btn-sm w-100 link-agregar-razonsocial">
+                    NUEVA RAZÓN SOCIAL
+                </button>
+            </div>
+        </div>
+
+        <h5 class="text-primary mb-4 grupo">Grupos</h5>
+        <div class="row grupo">
+            <div class="col-md-12 mb-4">
+                {{ macro_form._new_field(registrationForm.grupos) }}
+            </div>
+        </div>
+    </div>
+
+    {% if not modal %}
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('usuario_index') }}" class="btn btn-light-dark font-weight-bold">← Volver</a>
+            {{ form_widget(registrationForm.submit, {'attr': {'class': 'btn btn-primary font-weight-bold'}}) }}
+        </div>
+    {% endif %}
+</div>
+
+
+{#
+{% import 'app/_macro_form.html.twig' as macro_form %}
 <div class="card card-custom">
     {% if not modal %}
     <div class="card-header">
@@ -43,3 +127,5 @@
         </div>
     {% endif %}
 </div>
+#}
+

@@ -362,6 +362,11 @@ class PedidoProducto {
     public function setFechaSiembraReal(mixed $fechaSiembraReal): void
     {
         $this->fechaSiembraReal = $fechaSiembraReal;
+
+        // ACTUALIZAR FECHA ENTREGA REAL
+        $fechaEntrega = clone $fechaSiembraReal;
+        $fechaEntrega->modify('+' . $this->getCantDiasProduccion() . ' days');
+        $this->setFechaEntregaPedidoReal($fechaEntrega);
     }
 
 
@@ -778,7 +783,7 @@ class PedidoProducto {
         $this->cantidadBandejasDisponibles = $this->getCantidadBandejasDisponibles();
     }
 
-    private function getCantidadBandejasReservadasSinEntregar(){
+    public function getCantidadBandejasReservadasSinEntregar(){
         $cantidadBandejas = 0;
         foreach ($this->getReservas() as $reserva){
             if ($reserva->getEstado() != null) {

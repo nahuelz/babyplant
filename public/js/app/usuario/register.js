@@ -3,17 +3,22 @@ function initTipoUsuario(){
         $("#registration_form_grupos").val('3').select2();
         $('.datos-personales').show();
         $('.email-nombre-apelldio').show();
-        $('.user-password').hide();
+        $('.usuario-password').hide();
         $('.grupo').hide();
+        $('.razon-social').show();
         initRazonSocial();
     }
     if($('#registration_form_tipoUsuario').val() === '2'){
+        $("#registration_form_grupos").val('').select2();
         $('.datos-personales').hide();
-        $('.user-password').show();
+        $('.usuario-password').show();
         $('.email-nombre-apelldio').show();
         $('.grupo').show();
         $('#registration_form_cuit').val('');
         $('#registration_form_razonSocial').val('');
+        $('.razon-social').hide();
+        $('.razonSocial').hide();
+        $('#registration_form_tieneRazonSocial').val('').select2().change();
     }
 }
 function initTipoUsuarioHandler(){
@@ -38,12 +43,13 @@ function initRazonSocial(){
 
 jQuery(document).ready(function () {
     if ($('#registration_form_tipoUsuario').val() === '') {
-        $('.user-password').hide();
+        $('.usuario-password').hide();
         $('.email-nombre-apelldio').hide();
         $('.datos-personales').hide();
         $('.grupo').hide();
+        $('.razon-social').hide();
+        $('.razonSocial').hide();
     }
-    $('.razonSocial').hide();
     initTipoUsuarioHandler();
     initTipoUsuario();
     initRazonSocialHandler();

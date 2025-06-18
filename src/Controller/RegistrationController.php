@@ -73,6 +73,12 @@ class RegistrationController extends AbstractController {
             // encode the plain password
             $user->setHabilitado(true);
             if ($user->getTipoUsuario()->getCodigoInterno() == ConstanteTipoUsuario::CLIENTE) {
+                if ($user->getEmail() == null || $user->getEmail() == ''){
+                    $numeroAleatorio = mt_rand(1000, 9999);
+                    $email = $user->getNombre() . '.' . $user->getApellido().'.'.$numeroAleatorio.'@gmail.com';
+                    $email = str_replace(' ', '', $email);
+                    $user->setEmail($email);
+                }
                 $user->setUsername($user->getEmail());
                 $user->setPassword(
                     $passwordEncoder->encodePassword(
@@ -117,9 +123,11 @@ class RegistrationController extends AbstractController {
         $entityManager = $this->getDoctrine()->getManager();
         $msg = false;
         if ($user->getTipoUsuario()->getCodigoInterno() == ConstanteTipoUsuario::CLIENTE) {
-            $existeCuit = $entityManager->getRepository(Usuario::class)->findBy(array('cuit' => $user->getCuit()));
-            if ($existeCuit) {
-                $msg = 'Ya existe un usuario registrado con este cuit.';
+            if  (($user->getCuit() != null) and ($user->getCuit() != '')) {
+                $existeCuit = $entityManager->getRepository(Usuario::class)->findBy(array('cuit' => $user->getCuit()));
+                if ($existeCuit) {
+                    $msg = 'Ya existe un usuario registrado con este cuit.';
+                }
             }
         }
         $existeMail = $entityManager->getRepository(Usuario::class)->findBy(array('email' => $user->getEmail()));
