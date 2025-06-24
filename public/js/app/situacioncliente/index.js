@@ -16,8 +16,12 @@ function initTable() {
     initDataTable();
 
     $('#kt_search').on('click', function () {
-        if (init) {
+        /*if (init) {
             $table.DataTable().ajax.reload();
+        }*/
+        if ($('#reporte_filtro_cliente').val() !== ''){
+            const id = $('#reporte_filtro_cliente').val();
+            window.location.href = __HOMEPAGE_PATH__ + "situacion_cliente/" + id;
         }
     });
 
@@ -236,15 +240,17 @@ function dataTablesActionFormatter(data, type, full, meta) {
     } else {
 
         actions +=
-            (data.show_cliente !== undefined ? '<a class="dropdown-item" href="' + data.show_cliente + '"><i class="la la-search" style="margin-right: 5px;"></i> Ver Situacion Cliente</a>' : '')
+            (data.show_cliente !== undefined ? '<a class="btn btn-sm btn-light-primary mr-1" href="' + data.show_cliente + '" title="Ver Situación Cliente">' +
+                '<i class="la la-search mr-1"></i> Ver' +
+                '</a>' : '')
         ;
 
-        actions = ' <div class="dropdown dropdown-inline">\
+        /*actions = ' <div class="dropdown dropdown-inline">\
                         <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\
                             <i class="ki ki-bold-more-hor"></i>\
                         </button>\
                         <div class="dropdown-menu">' + actions + '</div>\
-                    </div>';
+                    </div>';*/
     }
 
     return actions;
