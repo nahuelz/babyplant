@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Auditoria controller.
  *
  * @Route("/auditoria_interna")
- * @IsGranted("ROLE_AUDITORIA")
+ * @IsGranted("ROLE_AUDITORIA_VIEW")
  */
 class AuditoriaController extends BaseController {
 

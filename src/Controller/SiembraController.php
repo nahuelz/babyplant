@@ -57,6 +57,7 @@ class SiembraController extends BaseController
         $rsm->addScalarResult('nombreCompleto', 'nombreCompleto');
         $rsm->addScalarResult('nombreCorto', 'nombreCorto');
         $rsm->addScalarResult('title', 'title');
+        $rsm->addScalarResult('colorBandeja', 'colorBandeja');
         $rsm->addScalarResult('cantidadTipoBandejabandeja', 'cantidadTipoBandejabandeja');
         $rsm->addScalarResult('cantidadBandejas', 'cantidadBandejas');
         $rsm->addScalarResult('tipoBandeja', 'tipoBandeja');

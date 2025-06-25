@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\TipoBandeja;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\ColorType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -40,6 +41,14 @@ class TipoBandejaType extends AbstractType
                         'class' => 'form-control',
                         'tabindex' => '5'))
             )
+            ->add('colorPicker', ColorType::class, [
+                'mapped' => false,
+                'required' => false,
+            ])
+            ->add('color', TextType::class, [
+                'label' => 'O escribí el código hexadecimal',
+                'required' => true,
+            ]);
         ;
     }
 

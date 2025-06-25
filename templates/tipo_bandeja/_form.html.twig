@@ -1,6 +1,17 @@
 {% import 'app/_macro_form.html.twig' as macro_form %}
 {{ macro_form._new_field(form.nombre, "col-md-3") }}
 {{ macro_form._new_field(form.estandar, "col-md-3") }}
+<div class="form-group d-flex align-items-center">
+    <div>
+        {{ form_widget(form.colorPicker, {'attr': {'class': 'form-control-color mr-3 mt-7', 'style': 'height: 35px;'}}) }}
+    </div>
+
+    <div>
+        {{ form_label(form.color, 'Código Hexadecimal') }}
+        {{ form_widget(form.color, {'attr': {'class': 'form-control', 'placeholder': '#ffffff'}}) }}
+    </div>
+</div>
+
 {{ macro_form._new_field(form.habilitado, 'col-md-2') }}
 {{ form_widget(form._token) }}
 {{ form_end(form, {"render_rest": false}) }}

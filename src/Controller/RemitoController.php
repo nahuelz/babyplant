@@ -12,8 +12,11 @@ use App\Entity\EstadoEntrega;
 use App\Entity\EstadoEntregaHistorico;
 use App\Entity\EstadoRemito;
 use App\Entity\EstadoRemitoHistorico;
+use App\Entity\Pedido;
 use App\Entity\Remito;
+use App\Entity\Usuario;
 use App\Form\RemitoType;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ObjectManager;
 use Mpdf\Mpdf;
@@ -99,8 +102,16 @@ class RemitoController extends BaseController {
      * @Template("remito/new.html.twig")
      * @IsGranted("ROLE_REMITO")
      */
-    public function new(): Array {
-        return parent::baseNewAction();
+    public function new(Request $request, EntityManagerInterface $em): Array {
+        $entity = new Remito();
+
+        if ($request->query->has('id')) {
+            $id = $request->query->get('id');
+            $usuario = $em->getRepository(Usuario::class)->find($id);
+            $entity->setCliente($usuario);
+        }
+
+        return parent::baseNewAction($entity);
     }
 
     /**

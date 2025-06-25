@@ -4,6 +4,7 @@
         {
         "id": "{{ entity.id }}",
         "idPedido": "{{ entity.idPedido }}",
+        "colorBandeja": "{{ entity.colorBandeja }}",
         "title": "{{ entity.title|html_format|raw|default('-') }}",
         "start": "{{ entity.fechaSiembraPlanificacion is not null ? entity.fechaSiembraPlanificacion|date('Y-m-d') : '-' }}",
         "description": "{{ entity.descripcion|default('-') }}",

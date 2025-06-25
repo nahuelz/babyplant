@@ -1,10 +1,16 @@
 <div class="card card-detail">
-    <div class="card-header">
-        <div class="row">
-            <div class="col-md-5"><h4>Remitos</h4></div>
+    <div class="card-header d-flex justify-content-between align-items-center padding-10">
+        <div class="card-title mb-0">
+            <h4 class="card-label mb-0">Remitos</h4>
+        </div>
+        <div class="card-toolbar">
+            <a href="{{ path('remito_new', {'id': entity.id}) }}" class="btn btn-primary btn-sm">
+                <i class="la la-plus"></i>
+                Nuevo Remito
+            </a>
         </div>
     </div>
-    <div class="card-body">
+    <div class="card-body padding-20">
         <div class="row">
             <div class="tab-content" style="width: 100%;">
                 <div class="tab-pane active" id="portlet_pedido_listado">
@@ -21,7 +27,7 @@
                                                 <th class="text-center nowrap">Monto Pendiente</th>
                                                 <th class="text-center nowrap">Adelanto</th>
                                                 <th class="text-center nowrap">Estado</th>
-                                                <th class="text-center nowrap">Acciones</th>
+                                                <th class="text-center nowrap"></th>
                                             </tr>
                                             </thead>
                                             <tbody>

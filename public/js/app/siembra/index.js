@@ -157,18 +157,7 @@ var KTCalendarListView = function() {
                     element.css('min-height', '75px');
                     element.find('.fc-title').css('font-size', '1.1rem');
                     element.find('.fc-content').css('margin-top', '1%');
-                    /*
-                    if (info.event.extendedProps && info.event.extendedProps.description) {
-                        if (element.hasClass('fc-day-grid-event')) {
-                            element.data('content', info.event.extendedProps.description);
-                            element.data('placement', 'top');
-                            KTApp.initPopover(element);
-                        } else if (element.hasClass('fc-time-grid-event')) {
-                            element.find('.fc-title').append('<div class="fc-description">' + info.event.extendedProps.description + '</div>');
-                        } else if (element.find('.fc-list-item-title').lenght !== 0) {
-                            element.find('.fc-list-item-title').append('<div class="fc-description">' + info.event.extendedProps.description + '</div>');
-                        }
-                    }*/
+                    element.find('.tipo-bandeja').attr('style', 'color: ' + info.event.extendedProps.colorBandeja + ' !important;');
                 }
             });
             calendar.render();

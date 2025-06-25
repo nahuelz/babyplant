@@ -10,11 +10,14 @@ use App\Entity\EstadoEntrega;
 use App\Entity\EstadoEntregaHistorico;
 use App\Entity\EstadoRemito;
 use App\Entity\EstadoRemitoHistorico;
+use App\Entity\Pedido;
 use App\Entity\PedidoProducto;
 use App\Entity\Entrega;
 use App\Entity\Remito;
+use App\Entity\Usuario;
 use App\Form\EntregaType;
 use App\Service\EntregaService;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ObjectManager;
@@ -104,9 +107,17 @@ class EntregaController extends BaseController {
      * @Template("entrega/new.html.twig")
      * @IsGranted("ROLE_ENTREGA")
      */
-    public function new(): array
-    {
-        return parent::baseNewAction();
+    public function new(Request $request, EntityManagerInterface $em): Array {
+        $entity = new Entrega();
+
+        if ($request->query->has('id')) {
+            $id = $request->query->get('id');
+            $usuario = $em->getRepository(Usuario::class)->find($id);
+            $entity->setCliente($usuario);
+            $entity->setClienteEntrega($usuario);
+        }
+
+        return parent::baseNewAction($entity);
     }
 
     /**

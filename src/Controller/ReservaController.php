@@ -12,10 +12,12 @@ use App\Entity\EstadoReserva;
 use App\Entity\EstadoReservaHistorico;
 use App\Entity\PedidoProducto;
 use App\Entity\Reserva;
+use App\Entity\Usuario;
 use App\Form\ReservaType;
 use App\Service\EntregaService;
 use DateInterval;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ObjectManager;
@@ -104,9 +106,17 @@ class ReservaController extends BaseController {
      * @Template("reserva/new.html.twig")
      * @IsGranted("ROLE_RESERVA")
      */
-    public function new(): array
-    {
-        return parent::baseNewAction();
+    public function new(Request $request, EntityManagerInterface $em): Array {
+
+        $entity = new Reserva();
+
+        if ($request->query->has('id')) {
+            $id = $request->query->get('id');
+            $usuario = $em->getRepository(Usuario::class)->find($id);
+            $entity->setCliente($usuario);
+        }
+
+        return parent::baseNewAction($entity);
     }
 
     /**

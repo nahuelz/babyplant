@@ -18,6 +18,14 @@ class TipoBandeja extends EntidadBasica {
      * @ORM\Column(name="estandar", type="boolean", options={"default": 1})
      */
     protected $estandar;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="color", type="string", nullable=true)
+     */
+    protected $color;
+
     public function __construct() {
         $this->habilitado = true;
     }
@@ -36,6 +44,17 @@ class TipoBandeja extends EntidadBasica {
     public function setEstandar(bool $estandar): void
     {
         $this->estandar = $estandar;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(?string $color): self
+    {
+        $this->color = $color;
+        return $this;
     }
 
 

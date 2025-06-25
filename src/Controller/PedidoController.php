@@ -18,6 +18,7 @@ use App\Form\RegistrationFormType;
 use App\Service\LogAuditoriaService;
 use DateInterval;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ObjectManager;
 use Mpdf\Mpdf;
@@ -244,10 +245,17 @@ class PedidoController extends BaseController {
      * @Template("pedido/new.html.twig")
      * @IsGranted("ROLE_PEDIDO")
      */
-    public function new(): Array {
-        return parent::baseNewAction();
-    }
+    public function new(Request $request, EntityManagerInterface $em): Array {
+        $entity = new Pedido();
 
+        if ($request->query->has('id')) {
+            $id = $request->query->get('id');
+            $usuario = $em->getRepository(Usuario::class)->find($id);
+            $entity->setCliente($usuario);
+        }
+
+        return parent::baseNewAction($entity);
+    }
 
     /**
      * @Route("/insertar", name="pedido_create", methods={"GET","POST"})
