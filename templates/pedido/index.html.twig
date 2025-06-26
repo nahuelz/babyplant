@@ -14,15 +14,14 @@
         td {
             padding: 1px !important;
         }
-        {#
-        th {
-            padding-right: 5px !important;
-            padding-left: 5px !important;
+
+        .dataTables_wrapper .dataTable th {
+            font-size: 1.2rem !important;
         }
 
-        .sorting::after, .sorting::before, .sorting_desc::after, .sorting_desc::before, .sorting_asc::after, .sorting_asc::before {
-            display: none !important;
-        }#}
+        .dataTables_wrapper .dataTable td{
+            font-size: 1.5rem !important;
+        }
     </style>
 
 {% endblock %}
@@ -133,24 +132,24 @@
 
         <div class="card-body padding-top-0 padding-bottom-0">
             <!--begin: Datatable-->
-            <table class="table table-bordered table-hover table-checkable" id="table-pedido">
+            <table class="table table-bordered table-hover" id="table-pedido">
                 <thead>
                 <tr>
-                    <th class="not-in-filter">ID</th>
-                    <th data-type="string" class="text-center">Pedido</th>
-                    <th data-type="string" class="text-center">Producto</th>
-                    <th data-type="string" class="text-center">F. Pedido</th>
-                    <th data-type="string" class="text-center">Producto</th>
-                    <th data-type="string" class="text-center">Cliente</th>
-                    <th data-type="string" class="text-center">B. pedidas</th>
-                    <th data-type="string" class="text-center">F. Siembra</th>
-                    <th data-type="string" class="text-center">F. Entrega</th>
-                    <th data-type="select" data-select="{{ estadoSelect }}">Estado</th>
-                    <th data-type="string" class="text-center">Dias camara</th>
-                    <th data-type="string" class="text-center">Dias invernaculo</th>
-                    <th data-type="string" class="text-center">O. Siembra</th>
-                    <th data-type="string" class="text-center">Mesada</th>
-                    <th data-type="search">Acciones</th>
+                    <th style="width: 5px; padding: 0">ID</th>
+                    <th data-type="string" class="text-center">PEDIDO</th>
+                    <th data-type="string" class="text-center">PRODUCTO</th>
+                    <th data-type="string" class="text-center">F. PEDIDO</th>
+                    <th data-type="string" class="text-center">PRODUCTO</th>
+                    <th data-type="string" class="text-center">CLIENTE</th>
+                    <th data-type="string" class="text-center">B. SEMBRADAS</th>
+                    <th data-type="string" class="text-center">F. SIEMBRA</th>
+                    <th data-type="string" class="text-center">F. ENTREGA</th>
+                    <th data-type="select" data-select="{{ estadoSelect }}">ESTADO</th>
+                    <th data-type="string" class="text-center">DIAS CAMARA</th>
+                    <th data-type="string" class="text-center">DIAS INVERNACULO</th>
+                    <th data-type="string" class="text-center">O. SIEMBRA</th>
+                    <th data-type="string" class="text-center">MESADA</th>
+                    <th data-type="search" style="width: 5px; padding: 0"></th>
                 </tr>
                 </thead>
             </table>

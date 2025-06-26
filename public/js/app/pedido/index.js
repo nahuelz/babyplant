@@ -230,15 +230,11 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'id',
-            width: '15px',
+            width: '5px',
             className: 'dt-center',
             orderable: false,
             render: function (data, type, full, meta) {
-                return '\
-                    <label class="kt-checkbox kt-checkbox--single kt-checkbox--solid">\
-                        <input type="checkbox" value="" class="kt-checkable">\
-                        <span></span>\
-                    </label>';
+                return '';
             },
         },
         {
@@ -358,7 +354,7 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'ordenSiembra',
             width: '50px',
-            className: 'dt-center',
+            className: 'dt-center font-weight-bold',
             searchable: true,
         },
         {
@@ -371,8 +367,8 @@ function datatablesGetColDef() {
         },
         {
             targets: -1,
-            name: 'acciones',
-            title: 'Acciones',
+            name: '',
+            title: '',
             width: '50px',
             className: "text-center dt-acciones",
             orderable: false,
