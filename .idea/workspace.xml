@@ -4,13 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="&#10;Optimizacion query view camara.">
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="fix salida camara">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/theme/css/colores.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/css/colores.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/entrada_camara/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrada_camara/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/planificacion/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/planificacion/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/salida_camara/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/salida_camara/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/siembra/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/siembra/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/planificacion/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/planificacion/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -655,31 +652,7 @@
       <workItem from="1750868570980" duration="3021000" />
       <workItem from="1750955316516" duration="6673000" />
       <workItem from="1751044230597" duration="4594000" />
-      <workItem from="1751048837176" duration="2961000" />
-    </task>
-    <task id="LOCAL-00122" summary="Fixtures">
-      <option name="closed" value="true" />
-      <created>1742944734817</created>
-      <option name="number" value="00122" />
-      <option name="presentableId" value="LOCAL-00122" />
-      <option name="project" value="LOCAL" />
-      <updated>1742944734817</updated>
-    </task>
-    <task id="LOCAL-00123" summary="Fixtures">
-      <option name="closed" value="true" />
-      <created>1742944812023</created>
-      <option name="number" value="00123" />
-      <option name="presentableId" value="LOCAL-00123" />
-      <option name="project" value="LOCAL" />
-      <updated>1742944812023</updated>
-    </task>
-    <task id="LOCAL-00124" summary="Fixtures&#10;Fix Cantidad Bandejas Reservadas">
-      <option name="closed" value="true" />
-      <created>1743002248185</created>
-      <option name="number" value="00124" />
-      <option name="presentableId" value="LOCAL-00124" />
-      <option name="project" value="LOCAL" />
-      <updated>1743002248186</updated>
+      <workItem from="1751048837176" duration="4153000" />
     </task>
     <task id="LOCAL-00125" summary="Fix total confirar-remito entrega">
       <option name="closed" value="true" />
@@ -1049,7 +1022,31 @@
       <option name="project" value="LOCAL" />
       <updated>1751051310104</updated>
     </task>
-    <option name="localTasksCounter" value="171" />
+    <task id="LOCAL-00171" summary="&#10;Optimizacion query view camara.">
+      <option name="closed" value="true" />
+      <created>1751051810280</created>
+      <option name="number" value="00171" />
+      <option name="presentableId" value="LOCAL-00171" />
+      <option name="project" value="LOCAL" />
+      <updated>1751051810280</updated>
+    </task>
+    <task id="LOCAL-00172" summary="&#10;Optimizacion query view camara.">
+      <option name="closed" value="true" />
+      <created>1751052528204</created>
+      <option name="number" value="00172" />
+      <option name="presentableId" value="LOCAL-00172" />
+      <option name="project" value="LOCAL" />
+      <updated>1751052528204</updated>
+    </task>
+    <task id="LOCAL-00173" summary="fix salida camara">
+      <option name="closed" value="true" />
+      <created>1751052714594</created>
+      <option name="number" value="00173" />
+      <option name="presentableId" value="LOCAL-00173" />
+      <option name="project" value="LOCAL" />
+      <updated>1751052714594</updated>
+    </task>
+    <option name="localTasksCounter" value="174" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1067,7 +1064,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="FIX TAMAÑO GRILLA" />
     <MESSAGE value="FIX CAMPO ENTREGA PRODUCTO" />
     <MESSAGE value="FIX ROLES" />
     <MESSAGE value="Comprobante pago" />
@@ -1092,6 +1088,7 @@
     <MESSAGE value="index pedidos" />
     <MESSAGE value="Reemplazo telefono por celular.&#10;Optimizacion query view planificacion, siembra y camara." />
     <MESSAGE value="&#10;Optimizacion query view camara." />
-    <option name="LAST_COMMIT_MESSAGE" value="&#10;Optimizacion query view camara." />
+    <MESSAGE value="fix salida camara" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix salida camara" />
   </component>
 </project>

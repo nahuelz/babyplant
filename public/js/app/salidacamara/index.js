@@ -29,7 +29,7 @@ var KTCalendarListView = function() {
                 header: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,dayGridWeek,dayGridDay,listWeek'
+                    right: 'dayGridMonth,dayGridWeek,dayGridDay'
                 },
                 moreLinkText: "más",
                 height: 800,
@@ -39,8 +39,7 @@ var KTCalendarListView = function() {
                 views: {
                     dayGridMonth: { buttonText: 'mes' },
                     dayGridWeek: { buttonText: 'semana' },
-                    dayGridDay: { buttonText: 'dia' },
-                    listWeek: { buttonText: 'lista' }
+                    dayGridDay: { buttonText: 'dia' }
                 },
                 eventLimitText: 'MÁS',
                 defaultView: 'dayGridWeek',
