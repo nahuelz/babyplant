@@ -61,7 +61,7 @@ function datatablesGetColDef() {
     },
     {
       targets: index++,
-      name: 'telefono',
+      name: 'celular',
     },
     {
       targets: index++,

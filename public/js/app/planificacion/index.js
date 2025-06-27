@@ -112,22 +112,13 @@ var KTCalendarListView = function() {
                 },
                 eventRender: function(info) {
                     var element = $(info.el);
+                    element.find('.fc-title').html(info.event.title);
                     element.attr('data-id', info.event.id);
                     element.attr('data-toggle', 'modal');
                     element.attr('data-target', '#productoModal');
                     element.attr('data-href', info.event.extendedProps.href);
-                    /*
-                    if (info.event.extendedProps && info.event.extendedProps.description) {
-                        if (element.hasClass('fc-day-grid-event')) {
-                            element.data('content', info.event.extendedProps.description);
-                            element.data('placement', 'top');
-                            KTApp.initPopover(element);
-                        } else if (element.hasClass('fc-time-grid-event')) {
-                            element.find('.fc-title').append('<div class="fc-description">' + info.event.extendedProps.description + '</div>');
-                        } else if (element.find('.fc-list-item-title').lenght !== 0) {
-                            element.find('.fc-list-item-title').append('<div class="fc-description">' + info.event.extendedProps.description + '</div>');
-                        }
-                    }*/
+                    element.find('.fc-title').css('font-size', '1rem');
+                    element.find('.tipo-bandeja').attr('style', 'color: ' + info.event.extendedProps.colorBandeja + ' !important;');
                 },
                 eventDrop: function(info) {
                     dialogFinalizarForm = '\

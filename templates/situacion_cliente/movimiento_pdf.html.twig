@@ -87,7 +87,7 @@
             <div>{{ entity.cuentaCorrienteUsuario.cliente.cuit|default('-') }}</div>
         </div>
         <div class="datos-cliente-right">
-            <div>{{ entity.cuentaCorrienteUsuario.cliente.telefono }} {{ entity.cuentaCorrientePedido.cliente.celular|default('-') }}</div>
+            <div>{{ entity.cuentaCorrientePedido.cliente.celular|default('-') }}</div>
             <div>{{ entity.cuentaCorrienteUsuario.cliente.domicilio|default('-') }}</div>
         </div>
     {% else %}
@@ -96,7 +96,7 @@
             <div>{{ entity.cuentaCorrientePedido.pedido.cliente.cuit|default('-') }}</div>
         </div>
         <div class="datos-cliente-right">
-            <div>{{ entity.cuentaCorrientePedido.pedido.cliente.telefono }} {{ entity.cuentaCorrientePedido.pedido.cliente.celular|default('-') }}</div>
+            <div>{{ entity.cuentaCorrientePedido.pedido.cliente.celular|default('-') }}</div>
             <div>{{ entity.cuentaCorrientePedido.pedido.cliente.domicilio|default('-') }}</div>
         </div>
     {% endif %}

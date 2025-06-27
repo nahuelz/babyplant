@@ -7,7 +7,6 @@ SELECT DISTINCT
     u.nombre        AS nombre,
     u.apellido      AS apellido,
     u.cuit          AS cuit,
-    u.telefono      AS telefono,
     u.celular       AS celular,
     rs.razon_social AS razonSocial,
     cc.saldo        AS saldo

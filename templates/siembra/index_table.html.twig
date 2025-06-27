@@ -3,17 +3,10 @@
     {% for entity in entities %}
         {
         "id": "{{ entity.id }}",
-        "idPedido": "{{ entity.idPedido }}",
         "colorBandeja": "{{ entity.colorBandeja }}",
         "title": "{{ entity.title|html_format|raw|default('-') }}",
         "start": "{{ entity.fechaSiembraPlanificacion is not null ? entity.fechaSiembraPlanificacion|date('Y-m-d') : '-' }}",
-        "description": "{{ entity.descripcion|default('-') }}",
-        "cliente": "{{ entity.cliente|default('-') }}",
-        "producto": "{{ entity.nombreCompleto|default('-') }}",
-        "cantidadTipoBandejabandeja": "{{ entity.cantidadTipoBandejabandeja|default('-') }}",
-        "fechaSiembraPlanificacion": "{{ entity.fechaSiembraPlanificacion is not null ? entity.fechaSiembraPlanificacion|date('Y-m-d') : '-' }}",
         "href":  "{{ path( "pedido_producto_siembra", { 'id': entity.id }) }}",
-        "codigoSobre": "{{ entity.codigoSobre|default('-') }}",
         "className": "{{ entity.className|default('fc-event-danger fc-event-solid-danger') }}"
         }
         {{ (loop.last ? '' : ',') }}

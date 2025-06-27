@@ -43,6 +43,9 @@
         {% if entity.idEstado ==  PENDIENTE%}
             ,"cancelar" : " {{ path( "pedido_producto_cancelar", { "id": entity.idProducto }) }}"
         {% endif %}
+        {% if entity.celular != '' %}
+            ,"celular" : " {{ entity.celular }}"
+        {% endif %}
         }]{{ (loop.last ? '' : ',') }}
     {% endfor %}
     ]

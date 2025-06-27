@@ -8,7 +8,7 @@
         "{{ entity.nombre|escape_json|default('-')|raw }}",
         "{{ entity.apellido|escape_json|default('-')|raw }}",
         "{{ entity.cuit|escape_json|default('-')|raw }}",
-        "{{ entity.telefono|escape_json|default('')|raw ~ ' ' ~ entity.celular|escape_json|default('')|raw }}",
+        "{{ entity.celular|escape_json|default('')|raw }}",
         "{{ entity.razonSocial|escape_json|default('-')|raw }}",
         {
             "show_cliente" : " {{ path( "situacioncliente_show", { "id": entity.id }) }}"

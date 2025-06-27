@@ -51,20 +51,10 @@ class PlanificacionController extends BaseController
         $rsm = new ResultSetMapping();
 
         $rsm->addScalarResult('id', 'id');
-        $rsm->addScalarResult('nombreCompleto', 'nombreCompleto');
-        $rsm->addScalarResult('nombreCorto', 'nombreCorto');
-        $rsm->addScalarResult('cantidadTipoBandejabandeja', 'cantidadTipoBandejabandeja');
-        $rsm->addScalarResult('cantidadBandejas', 'cantidadBandejas');
-        $rsm->addScalarResult('tipoBandeja', 'tipoBandeja');
-        $rsm->addScalarResult('cliente', 'cliente');
-        $rsm->addScalarResult('estado', 'estado');
-        $rsm->addScalarResult('colorEstado', 'colorEstado');
-        $rsm->addScalarResult('colorIcono', 'colorIcono');
+        $rsm->addScalarResult('title', 'title');
+        $rsm->addScalarResult('colorBandeja', 'colorBandeja');
         $rsm->addScalarResult('fechaSiembraPlanificacion', 'fechaSiembraPlanificacion');
-        $rsm->addScalarResult('descripcion', 'descripcion');
-        $rsm->addScalarResult('codigoSobre', 'codigoSobre');
         $rsm->addScalarResult('className', 'className');
-        $rsm->addScalarResult('tipoProducto', 'tipoProducto');
 
         $renderPage = "planificacion/index_table.html.twig";
         return parent::baseIndexTableAction($request, [], $entityTable, ConstanteTipoConsulta::VIEW, $rsm, $renderPage);

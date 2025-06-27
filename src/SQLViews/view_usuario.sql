@@ -4,7 +4,7 @@ select `u`.`id`                                                                 
        `u`.`email`                                                                                 AS `email`,
        `u`.`nombre`                                                                                AS `nombre`,
        `u`.`apellido`                                                                              AS `apellido`,
-       if(`u`.`celular` is not null, concat(`u`.`telefono`, ' / ', `u`.`celular`), `u`.`telefono`) AS `telefono`,
+       `u`.`celular`                                                                               AS `celular`,
        `ug`.`grupos`                                                                               AS `grupos`,
        `u`.`last_seen`                                                                             AS `last_seen`,
        if(`s`.`sess_lifetime` is null or unix_timestamp() > max(`s`.`sess_lifetime`), 0, 1)        AS `logueado`,

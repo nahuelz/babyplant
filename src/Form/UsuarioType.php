@@ -57,7 +57,7 @@ class UsuarioType extends AbstractType
                     'required' => false,
                     'attr' => array('class' => 'form-control'))
             )
-            ->add('telefono', TextType::class, array(
+            ->add('celular', TextType::class, array(
                     'required' => false,
                     'attr' => array('class' => 'form-control'))
             )

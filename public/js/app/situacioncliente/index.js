@@ -195,7 +195,7 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
-            name: 'telefono',
+            name: 'celular',
             width: '30px',
             className: 'dt-center',
             type: 'num'

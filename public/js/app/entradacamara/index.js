@@ -127,6 +127,7 @@ var KTCalendarListView = function() {
                     element.css('min-height', '75px');
                     element.find('.fc-title').css('font-size', '1.1rem');
                     element.find('.fc-content').css('margin-top', '1%');
+                    element.find('.tipo-bandeja').attr('style', 'color: ' + info.event.extendedProps.colorBandeja + ' !important;');
                 }
             });
             calendar.render();

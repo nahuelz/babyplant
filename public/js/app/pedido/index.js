@@ -414,6 +414,14 @@ function dataTablesActionFormatter(data, type, full, meta) {
             (data.remito !== undefined ? '<a class="dropdown-item" href="' + data.remito + '"><i class="la la-edit" style="margin-right: 5px;"></i> Remito</a>' : '')
             +
             (data.cancelar !== undefined ? '<a class="dropdown-item accion-cancelar" href="' + data.cancelar + '"><i class="la la-remove" style="margin-right: 5px;"></i> Cancelar</a>' : '')
+            +
+            (data.celular !== undefined ?
+                '<a class="dropdown-item" href="https://api.whatsapp.com/send?phone=54'
+                + data.celular.replace(/\D+/g, '')
+                + '&text='
+                + encodeURIComponent('Hola, te contacto por el pedido #123')
+                + '" target="_blank"><i class="la la-whatsapp" style="margin-right: 5px; color: green;"></i> Enviar WhatsApp</a>'
+                : '')
         ;
 
         actions = ' <div class="dropdown dropdown-inline">\

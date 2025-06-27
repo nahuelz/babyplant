@@ -3,18 +3,10 @@
     {% for entity in entities %}
         {
         "id": "{{ entity.id }}",
-        "title": "{{ entity.nombreCorto|default('-') }}",
-        "estado": "{{ entity.estado|default('-') }}",
+        "colorBandeja": "{{ entity.colorBandeja }}",
+        "title": "{{ entity.title|default('-') }}",
         "start": "{{ entity.fechaSiembraPlanificacion is not null ? entity.fechaSiembraPlanificacion|date('Y-m-d') : '-' }}",
-        "description": "{{ entity.descripcion|default('-') }}",
-        "cliente": "{{ entity.cliente|default('-') }}",
-        "producto": "{{ entity.nombreCompleto|default('-') }}",
-        "cantidadTipoBandejabandeja": "{{ entity.cantidadTipoBandejabandeja|default('-') }}",
-        "fechaSiembraPlanificacion": "{{ entity.fechaSiembraPlanificacion is not null ? entity.fechaSiembraPlanificacion|date('Y-m-d') : '-' }}",
         "href":  "{{ path( "planificacion_producto_show", { 'id': entity.id }) }}",
-        "codigoSobre": "{{ entity.codigoSobre|default('-') }}",
-        "colorEstado": "{{ entity.colorEstado|default('-') }}",
-        "tipoProducto": "{{ entity.tipoProducto|default('-') }}",
         "className": "{{ entity.className|default('fc-event-danger fc-event-solid-danger') }}"
         }
         {{ (loop.last ? '' : ',') }}

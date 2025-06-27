@@ -54,20 +54,9 @@ class SiembraController extends BaseController
 
         $rsm->addScalarResult('id', 'id');
         $rsm->addScalarResult('idPedido', 'idPedido');
-        $rsm->addScalarResult('nombreCompleto', 'nombreCompleto');
-        $rsm->addScalarResult('nombreCorto', 'nombreCorto');
         $rsm->addScalarResult('title', 'title');
         $rsm->addScalarResult('colorBandeja', 'colorBandeja');
-        $rsm->addScalarResult('cantidadTipoBandejabandeja', 'cantidadTipoBandejabandeja');
-        $rsm->addScalarResult('cantidadBandejas', 'cantidadBandejas');
-        $rsm->addScalarResult('tipoBandeja', 'tipoBandeja');
-        $rsm->addScalarResult('cliente', 'cliente');
-        $rsm->addScalarResult('estado', 'estado');
-        $rsm->addScalarResult('colorEstado', 'colorEstado');
-        $rsm->addScalarResult('colorIcono', 'colorIcono');
         $rsm->addScalarResult('fechaSiembraPlanificacion', 'fechaSiembraPlanificacion');
-        $rsm->addScalarResult('descripcion', 'descripcion');
-        $rsm->addScalarResult('codigoSobre', 'codigoSobre');
         $rsm->addScalarResult('className', 'className');
 
         $renderPage = "siembra/index_table.html.twig";

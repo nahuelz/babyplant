@@ -62,7 +62,6 @@ class SituacionClienteController extends BaseController {
         $rsm->addScalarResult('nombre', 'nombre');
         $rsm->addScalarResult('apellido', 'apellido');
         $rsm->addScalarResult('cuit', 'cuit');
-        $rsm->addScalarResult('telefono', 'telefono');
         $rsm->addScalarResult('celular', 'celular');
         $rsm->addScalarResult('razonSocial', 'razonSocial');
 
