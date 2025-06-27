@@ -116,7 +116,7 @@ var KTCalendarListView = function() {
                     element.attr('data-target', '#productoModal');
                     element.attr('data-href', info.event.extendedProps.href);
                     element.css('min-height', '40px');
-                    element.find('.fc-title').css('font-size', '0.9rem');
+                    element.find('.fc-title').css('font-size', '1rem');
                     element.find('.fc-content').css('margin-top', '-2%');
                     element.find('.tipo-bandeja').attr('style', 'color: ' + info.event.extendedProps.colorBandeja + ' !important;');
                 },

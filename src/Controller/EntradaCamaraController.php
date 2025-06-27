@@ -54,19 +54,8 @@ class EntradaCamaraController extends BaseController
         $rsm = new ResultSetMapping();
 
         $rsm->addScalarResult('id', 'id');
-        $rsm->addScalarResult('nombreCompleto', 'nombreCompleto');
-        $rsm->addScalarResult('nombreCorto', 'nombreCorto');
         $rsm->addScalarResult('title', 'title');
-        $rsm->addScalarResult('cantidadTipoBandejabandeja', 'cantidadTipoBandejabandeja');
-        $rsm->addScalarResult('cantidadBandejasReales', 'cantidadBandejasReales');
-        $rsm->addScalarResult('tipoBandeja', 'tipoBandeja');
-        $rsm->addScalarResult('cliente', 'cliente');
-        $rsm->addScalarResult('estado', 'estado');
-        $rsm->addScalarResult('colorEstado', 'colorEstado');
-        $rsm->addScalarResult('colorIcono', 'colorIcono');
         $rsm->addScalarResult('fechaSiembraReal', 'fechaSiembraReal');
-        $rsm->addScalarResult('descripcion', 'descripcion');
-        $rsm->addScalarResult('codigoSobre', 'codigoSobre');
         $rsm->addScalarResult('className', 'className');
         $rsm->addScalarResult('colorBandeja', 'colorBandeja');
 
