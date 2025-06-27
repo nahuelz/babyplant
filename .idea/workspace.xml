@@ -4,11 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Reemplazo telefono por celular.&#10;Optimizacion query view planificacion, siembra y camara.">
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="&#10;Optimizacion query view camara.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/EntradaCamaraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntradaCamaraController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/entrada_camara/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrada_camara/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/theme/css/colores.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/css/colores.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrada_camara/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrada_camara/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/planificacion/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/planificacion/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/salida_camara/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/salida_camara/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/siembra/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/siembra/index.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -653,15 +655,7 @@
       <workItem from="1750868570980" duration="3021000" />
       <workItem from="1750955316516" duration="6673000" />
       <workItem from="1751044230597" duration="4594000" />
-      <workItem from="1751048837176" duration="2453000" />
-    </task>
-    <task id="LOCAL-00121" summary="Fixtures">
-      <option name="closed" value="true" />
-      <created>1742944627273</created>
-      <option name="number" value="00121" />
-      <option name="presentableId" value="LOCAL-00121" />
-      <option name="project" value="LOCAL" />
-      <updated>1742944627274</updated>
+      <workItem from="1751048837176" duration="2961000" />
     </task>
     <task id="LOCAL-00122" summary="Fixtures">
       <option name="closed" value="true" />
@@ -1047,7 +1041,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751050324808</updated>
     </task>
-    <option name="localTasksCounter" value="170" />
+    <task id="LOCAL-00170" summary="&#10;Optimizacion query view camara.">
+      <option name="closed" value="true" />
+      <created>1751051310104</created>
+      <option name="number" value="00170" />
+      <option name="presentableId" value="LOCAL-00170" />
+      <option name="project" value="LOCAL" />
+      <updated>1751051310104</updated>
+    </task>
+    <option name="localTasksCounter" value="171" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1065,7 +1067,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fix total confirar-remito entrega" />
     <MESSAGE value="FIX TAMAÑO GRILLA" />
     <MESSAGE value="FIX CAMPO ENTREGA PRODUCTO" />
     <MESSAGE value="FIX ROLES" />
@@ -1090,6 +1091,7 @@
     <MESSAGE value="htaccess" />
     <MESSAGE value="index pedidos" />
     <MESSAGE value="Reemplazo telefono por celular.&#10;Optimizacion query view planificacion, siembra y camara." />
-    <option name="LAST_COMMIT_MESSAGE" value="Reemplazo telefono por celular.&#10;Optimizacion query view planificacion, siembra y camara." />
+    <MESSAGE value="&#10;Optimizacion query view camara." />
+    <option name="LAST_COMMIT_MESSAGE" value="&#10;Optimizacion query view camara." />
   </component>
 </project>
