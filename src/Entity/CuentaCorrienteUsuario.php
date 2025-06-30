@@ -90,7 +90,7 @@ class CuentaCorrienteUsuario {
     public function getPendienteConCC(){
         $pendiente = $this->getCliente()->getPendiente();
         $cc = $this->getSaldo();
-        return ($pendiente - $cc);
+        return ($cc - $pendiente);
     }
 
     public function actualizarSaldo($monto){
