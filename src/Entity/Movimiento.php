@@ -207,8 +207,8 @@ class Movimiento {
             return $this->remito;
         }
 
-        if ($this->Pedido != null){
-            return $this->Pedido->getNombreCorto();
+        if ($this->pedido != null){
+            return $this->pedido->getNombreCorto();
         }
 
         return null;

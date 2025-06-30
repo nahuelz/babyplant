@@ -1,0 +1,13 @@
+{% import 'app/_macro_form.html.twig' as macro_form %}
+{{ form_start(form, {'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
+{{ form_widget(form._token) }}
+<div class="row">
+    <div class="modal-body" style="padding-top: 0;padding-bottom: 0;">
+        <div class="row">
+            {{ macro_form._new_field(form.modoPago, "col-md-6") }}
+            {{ macro_form._new_field(form.monto, "col-md-6") }}
+            {{ macro_form._new_field(form.descripcion, "col-md-12") }}
+        </div>
+    </div>
+</div>
+{{ form_end(form, {"render_rest": false}) }}

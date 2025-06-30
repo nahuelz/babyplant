@@ -166,15 +166,20 @@ class SituacionClienteController extends BaseController {
     public function movimientoNewAction(Request $request): Response
     {
         $movimiento = new Movimiento();
+
         $id = $request->request->get('idCuentaCorrienteUsuario');
 
         $em = $this->doctrine->getManager();
         /* @var $cuentaCorrienteUsuario CuentaCorrienteUsuario */
         $cuentaCorrienteUsuario = $em->getRepository("App\Entity\CuentaCorrienteUsuario")->find($id);
         $cuentaCorrienteUsuario->addMovimiento($movimiento);
-        $form = $this->baseCreateCreateForm($movimiento);
 
-        return $this->render('situacion_cliente/movimiento_form.html.twig', [
+        $form = $this->createForm(MovimientoType::class, $movimiento, array(
+            'action' => 'adelanto_create',
+            'method' => 'POST'
+        ));
+
+        return $this->render('situacion_cliente/cuenta_corriente_form.html.twig', [
             'form' => $form->createView(),
             'entity' => $movimiento,
             'modal' => true
@@ -210,14 +215,11 @@ class SituacionClienteController extends BaseController {
         $modoPagoValue = $request->request->get('modoPago');
         $descripcion = $request->request->get('descripcion');
         $id = $request->request->get('idCuentaCorrienteUsuario');
-        $idPedido = $request->request->get('idPedido');
         $idMovimiento = '';
 
         if ((isset($modoPagoValue) and $modoPagoValue !== '') and (isset($monto) and $monto !== '')) {
             $modoPago = $em->getRepository(ModoPago::class)->findOneByCodigoInterno($modoPagoValue);
             $tipoMovimiento = $em->getRepository(TipoMovimiento::class)->findOneByCodigoInterno(1); // 1 = INGRESO CC
-            $tipoReferencia = $em->getRepository(TipoReferencia::class)->findOneByCodigoInterno(1); // 1 = ADELANTO
-            $pedido = $em->getRepository(Pedido::class)->find($idPedido);
 
             /* @var $cuentaCorrienteUsuario CuentaCorrienteUsuario */
             $cuentaCorrienteUsuario = $em->getRepository("App\Entity\CuentaCorrienteUsuario")->find($id);
@@ -227,20 +229,26 @@ class SituacionClienteController extends BaseController {
             $movimiento->setModoPago($modoPago);
             $movimiento->setDescripcion($descripcion);
             $movimiento->setTipoMovimiento($tipoMovimiento);
-            $movimiento->setTipoReferencia($tipoReferencia);
-            $movimiento->setPedido($pedido);
             $cuentaCorrienteUsuario->addMovimiento($movimiento);
             $movimiento->setSaldoCuenta($cuentaCorrienteUsuario->getSaldo());
             $em->persist($movimiento);
             $em->flush();
             $idMovimiento = $movimiento->getId();
+
+            $msg = 'SALDO AGREGADO';
+            $code = 200;
+            $text = 'OK';
+        } else {
+            $msg = 'ERROR PARAMETROS';
+            $code = 400;
+            $text = 'ERROR';
         }
 
         $response = new Response();
         $response->setContent(json_encode(array(
-            'message' => 'SALDO AGREGADO',
-            'statusCode' => 200,
-            'statusText' => 'OK',
+            'message' => $msg,
+            'statusCode' => $code,
+            'statusText' => $text,
             'id' => $idMovimiento
         )));
 

@@ -22,11 +22,9 @@
                                         <table class="table table-striped table-bordered table-advance table-hover" style="border: 1px solid #ddd;">
                                             <thead>
                                             <tr>
-                                                <th class="text-center nowrap">Tipo</th>
                                                 <th class="text-center nowrap">Monto</th>
                                                 <th class="text-center nowrap">Modo de pago</th>
-                                                <th class="text-center nowrap">Referencia</th>
-                                                <th class="text-center nowrap">Producto / Remito</th>
+                                                <th class="text-center nowrap">Descripcion</th>
                                                 <th class="text-center nowrap">Fecha</th>
                                                 <th class="text-center nowrap"></th>
                                             </tr>
@@ -35,9 +33,6 @@
                                             {% for movimiento in entity.cuentaCorrienteUsuario.movimientos %}
                                                 <tr>
                                                     <td class="v-middle nowrap text-center">
-                                                        {{ movimiento.tipoMovimiento.nombre|default('-') }}
-                                                    </td>
-                                                    <td class="v-middle nowrap text-center">
                                                         {{ movimiento.monto|money_format }}
                                                     </td>
                                                     <td class="v-middle nowrap text-center">
@@ -45,9 +40,6 @@
                                                     </td>
                                                     <td class="v-middle nowrap text-center">
                                                         {{ movimiento.descripcion|default('-') }}
-                                                    </td>
-                                                    <td class="v-middle nowrap text-center">
-                                                        {{ movimiento.productoRemito|default('-') }}
                                                     </td>
                                                     <td class="v-middle nowrap text-center">
                                                         {{ movimiento.fechaCreacion is not null ? movimiento.fechaCreacion|date('d/m/Y') : '-' }}

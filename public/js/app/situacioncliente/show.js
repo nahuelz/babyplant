@@ -137,6 +137,7 @@ function initAgregarAdelanto() {
                 }
             });
             $("#movimiento_modoPago>option[value='4']").attr('disabled','disabled');
+            $("#movimiento_modoPago>option[value='5']").attr('disabled','disabled');
             let modal = $('.modal-dialog');
             modal.css('width', '80%');
             modal.addClass('modal-xl');
@@ -161,7 +162,7 @@ function initAgregarSaldo() {
             },
         }).done(function (form) {
             showDialog({
-                titulo: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar Dinero',
+                titulo: '<i class="fa fa-list-ul margin-right-10"></i> Cuenta Corriente',
                 contenido: form,
                 labelCancel: 'Cerrar',
                 labelSuccess: 'Guardar',
@@ -173,10 +174,9 @@ function initAgregarSaldo() {
                     fv.revalidateField('requiredFields');
                     status = fv.validate().then((status) => {
                         if (status === "Valid") {
-                            let modoPago = $('#situacion_cliente_modoPago').val();
-                            let monto = $('#situacion_cliente_monto').val();
-                            let descripcion = $('#situacion_cliente_descripcion').val();
-                            let idPedidoProducto = $('#situacion_cliente_pedidoProducto').val();
+                            let modoPago = $('#movimiento_modoPago').val();
+                            let monto = $('#movimiento_monto').val();
+                            let descripcion = $('#movimiento_descripcion').val();
                             $.ajax({
                                 type: 'POST',
                                 url: __HOMEPAGE_PATH__ + "situacion_cliente/movimiento/create",
@@ -187,31 +187,34 @@ function initAgregarSaldo() {
                                     descripcion: descripcion,
                                     idCuentaCorrienteUsuario: __ID_CUENTA_CORRIENTE__,
                                     idUsuario: __ID_USUARIO__,
-                                    idPedidoProducto: idPedidoProducto,
                                 },
                                 success: function (data) {
-                                    toastr.success(data.message);
-                                    $('.modal').modal('hide'); // <- cierra el primer modal
-                                    showDialog({
-                                        titulo: 'Imprimir Comprobante Pago',
-                                        contenido: '' +
-                                            '<a href="/situacion_cliente/imprimir-comprobante-movimiento/'+data.id+'" target="_blank" class="btn btn-light-primary blue" title="Imprimir comprobante">\n' +
+                                    if (data.text == 'OK') {
+                                        toastr.success(data.message);
+                                        $('.modal').modal('hide'); // <- cierra el primer modal
+                                        showDialog({
+                                            titulo: 'Imprimir Comprobante Pago',
+                                            contenido: '' +
+                                                '<a href="/situacion_cliente/imprimir-comprobante-movimiento/'+data.id+'" target="_blank" class="btn btn-light-primary blue" title="Imprimir comprobante">\n' +
                                                 '<i class="fa fa-file-pdf text-white"></i> Imprimir A4\n' +
-                                            '</a>'+
-                                            '<a href="/situacion_cliente/imprimir-comprobante-movimiento-ticket/'+data.id+'" target="_blank" class="btn btn-light-primary blue" style=" float: right; " title="Imprimir comprobante">\n' +
+                                                '</a>'+
+                                                '<a href="/situacion_cliente/imprimir-comprobante-movimiento-ticket/'+data.id+'" target="_blank" class="btn btn-light-primary blue" style=" float: right; " title="Imprimir comprobante">\n' +
                                                 '<i class="fa fa-file-pdf text-white"></i> Imprimir TICKET\n' +
-                                            '</a>',
-                                        labelCancel: 'Cerrar',
-                                        labelSuccess: 'Guardar',
-                                        closeButton: true,
-                                        callbackCancel: function () {
-                                            window.location.reload();
-                                            return true;
-                                        }
-                                    });
-                                    $('.submit-button').hide();
-                                    $('.bootbox-close-button').hide();
-
+                                                '</a>',
+                                            labelCancel: 'Cerrar',
+                                            labelSuccess: 'Guardar',
+                                            closeButton: true,
+                                            callbackCancel: function () {
+                                                window.location.reload();
+                                                return true;
+                                            }
+                                        });
+                                        $('.submit-button').hide();
+                                        $('.bootbox-close-button').hide();
+                                    }else{
+                                        toastr.error(data.message);
+                                        $('.bootbox-close-button').click();
+                                    }
                                 },
                                 error: function () {
                                     return true;
@@ -224,12 +227,14 @@ function initAgregarSaldo() {
                     return false;
                 }
             });
-            $("#situacion_cliente_modoPago>option[value='4']").attr('disabled','disabled');
+            $("#movimiento_modoPago>option[value='4']").attr('disabled','disabled');
+            $("#movimiento_modoPago>option[value='5']").attr('disabled','disabled');
             let modal = $('.modal-dialog');
             modal.css('width', '80%');
             modal.addClass('modal-xl');
             modal.addClass('modal-fullscreen-xl-down');
-            $('#situacion_cliente_modoPago').select2();
+            $('#movimiento_modoPago').select2();
+            $('#movimiento_pedido').select2();
             initFormValidation();
         });
         e.stopPropagation();
