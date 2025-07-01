@@ -219,7 +219,7 @@ class SituacionClienteController extends BaseController {
 
         if ((isset($modoPagoValue) and $modoPagoValue !== '') and (isset($monto) and $monto !== '')) {
             $modoPago = $em->getRepository(ModoPago::class)->findOneByCodigoInterno($modoPagoValue);
-            $tipoMovimiento = $em->getRepository(TipoMovimiento::class)->findOneByCodigoInterno(1); // 1 = INGRESO CC
+            $tipoMovimiento = $em->getRepository(TipoMovimiento::class)->findOneByCodigoInterno(ConstanteTipoMovimiento::INGRESO_CC);
 
             /* @var $cuentaCorrienteUsuario CuentaCorrienteUsuario */
             $cuentaCorrienteUsuario = $em->getRepository("App\Entity\CuentaCorrienteUsuario")->find($id);

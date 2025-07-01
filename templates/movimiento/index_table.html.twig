@@ -1,0 +1,19 @@
+{% autoescape false %}
+    {
+    "data": [
+    {% for entity in entities %}
+        [
+        "{{ entity.id }}",
+        "{{ entity.id }}",
+        "{{ entity.tipoMovimiento }}",
+        "{{ entity.monto }}",
+        "{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}",
+        "{{ entity.nombreCliente }}",
+        {
+        "situacion_cliente": "{{ path( "situacioncliente_show", { "id": entity.idCliente }) }}"
+        }
+        ]{{ (loop.last ? '' : ',') }}
+    {% endfor %}
+    ]
+    }
+{% endautoescape %}

@@ -4,16 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="se deshabilito la vista de &quot;lista&quot; para planificacion y salida camara">
-      <change afterPath="$PROJECT_DIR$/templates/situacion_cliente/cuenta_corriente_form.html.twig" afterDir="false" />
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Situacion cliente agregar saldo cuenta corriente.">
+      <change afterPath="$PROJECT_DIR$/public/js/app/movimiento/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Controller/MovimientoController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_movimiento.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/movimiento/index.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/movimiento/index_table.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/app/situacioncliente/show.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/situacioncliente/show.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/RazonSocialController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RazonSocialController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/CuentaCorrienteUsuario.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/CuentaCorrienteUsuario.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Movimiento.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Movimiento.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_situacion_cliente.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_situacion_cliente.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show_movimientos.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_movimientos.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show_tiles.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_tiles.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Constants/ConstanteTipoMovimiento.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Constants/ConstanteTipoMovimiento.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -661,23 +663,8 @@
       <workItem from="1751048837176" duration="4476000" />
       <workItem from="1751135922771" duration="195000" />
       <workItem from="1751299791275" duration="2299000" />
-      <workItem from="1751322964880" duration="595000" />
-    </task>
-    <task id="LOCAL-00126" summary="FIX TAMAÑO GRILLA">
-      <option name="closed" value="true" />
-      <created>1743020208443</created>
-      <option name="number" value="00126" />
-      <option name="presentableId" value="LOCAL-00126" />
-      <option name="project" value="LOCAL" />
-      <updated>1743020208444</updated>
-    </task>
-    <task id="LOCAL-00127" summary="FIX CAMPO ENTREGA PRODUCTO">
-      <option name="closed" value="true" />
-      <created>1743020781630</created>
-      <option name="number" value="00127" />
-      <option name="presentableId" value="LOCAL-00127" />
-      <option name="project" value="LOCAL" />
-      <updated>1743020781630</updated>
+      <workItem from="1751322964880" duration="1744000" />
+      <workItem from="1751396908144" duration="7963000" />
     </task>
     <task id="LOCAL-00128" summary="FIX ROLES">
       <option name="closed" value="true" />
@@ -1055,7 +1042,23 @@
       <option name="project" value="LOCAL" />
       <updated>1751053022715</updated>
     </task>
-    <option name="localTasksCounter" value="175" />
+    <task id="LOCAL-00175" summary="Situacion cliente agregar saldo cuenta corriente.">
+      <option name="closed" value="true" />
+      <created>1751323947208</created>
+      <option name="number" value="00175" />
+      <option name="presentableId" value="LOCAL-00175" />
+      <option name="project" value="LOCAL" />
+      <updated>1751323947209</updated>
+    </task>
+    <task id="LOCAL-00176" summary="Situacion cliente agregar saldo cuenta corriente.">
+      <option name="closed" value="true" />
+      <created>1751324892900</created>
+      <option name="number" value="00176" />
+      <option name="presentableId" value="LOCAL-00176" />
+      <option name="project" value="LOCAL" />
+      <updated>1751324892900</updated>
+    </task>
+    <option name="localTasksCounter" value="177" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1073,7 +1076,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="FIX ROLES" />
     <MESSAGE value="Comprobante pago" />
     <MESSAGE value="Cambios varios" />
     <MESSAGE value="Docker" />
@@ -1098,6 +1100,7 @@
     <MESSAGE value="&#10;Optimizacion query view camara." />
     <MESSAGE value="fix salida camara" />
     <MESSAGE value="se deshabilito la vista de &quot;lista&quot; para planificacion y salida camara" />
-    <option name="LAST_COMMIT_MESSAGE" value="se deshabilito la vista de &quot;lista&quot; para planificacion y salida camara" />
+    <MESSAGE value="Situacion cliente agregar saldo cuenta corriente." />
+    <option name="LAST_COMMIT_MESSAGE" value="Situacion cliente agregar saldo cuenta corriente." />
   </component>
 </project>

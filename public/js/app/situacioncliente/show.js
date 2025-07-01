@@ -189,7 +189,7 @@ function initAgregarSaldo() {
                                     idUsuario: __ID_USUARIO__,
                                 },
                                 success: function (data) {
-                                    if (data.text == 'OK') {
+                                    if (data.statusCode === 200) {
                                         toastr.success(data.message);
                                         $('.modal').modal('hide'); // <- cierra el primer modal
                                         showDialog({
