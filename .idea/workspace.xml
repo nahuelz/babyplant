@@ -4,18 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Situacion cliente agregar saldo cuenta corriente.">
-      <change afterPath="$PROJECT_DIR$/public/js/app/movimiento/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Controller/MovimientoController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_movimiento.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/movimiento/index.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/movimiento/index_table.html.twig" afterDir="false" />
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Caja">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/situacioncliente/show.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/situacioncliente/show.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/RazonSocialController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RazonSocialController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Constants/ConstanteTipoMovimiento.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Constants/ConstanteTipoMovimiento.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_movimiento.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_movimiento.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/menu/menu_pedido.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu_pedido.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -664,15 +656,7 @@
       <workItem from="1751135922771" duration="195000" />
       <workItem from="1751299791275" duration="2299000" />
       <workItem from="1751322964880" duration="1744000" />
-      <workItem from="1751396908144" duration="7963000" />
-    </task>
-    <task id="LOCAL-00128" summary="FIX ROLES">
-      <option name="closed" value="true" />
-      <created>1743023147293</created>
-      <option name="number" value="00128" />
-      <option name="presentableId" value="LOCAL-00128" />
-      <option name="project" value="LOCAL" />
-      <updated>1743023147293</updated>
+      <workItem from="1751396908144" duration="8364000" />
     </task>
     <task id="LOCAL-00129" summary="Comprobante pago">
       <option name="closed" value="true" />
@@ -1058,7 +1042,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751324892900</updated>
     </task>
-    <option name="localTasksCounter" value="177" />
+    <task id="LOCAL-00177" summary="Caja">
+      <option name="closed" value="true" />
+      <created>1751405165250</created>
+      <option name="number" value="00177" />
+      <option name="presentableId" value="LOCAL-00177" />
+      <option name="project" value="LOCAL" />
+      <updated>1751405165250</updated>
+    </task>
+    <option name="localTasksCounter" value="178" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1076,7 +1068,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Comprobante pago" />
     <MESSAGE value="Cambios varios" />
     <MESSAGE value="Docker" />
     <MESSAGE value="docker-co" />
@@ -1101,6 +1092,7 @@
     <MESSAGE value="fix salida camara" />
     <MESSAGE value="se deshabilito la vista de &quot;lista&quot; para planificacion y salida camara" />
     <MESSAGE value="Situacion cliente agregar saldo cuenta corriente." />
-    <option name="LAST_COMMIT_MESSAGE" value="Situacion cliente agregar saldo cuenta corriente." />
+    <MESSAGE value="Caja" />
+    <option name="LAST_COMMIT_MESSAGE" value="Caja" />
   </component>
 </project>
