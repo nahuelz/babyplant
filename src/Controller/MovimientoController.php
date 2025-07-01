@@ -42,6 +42,7 @@ class MovimientoController extends BaseController {
         $rsm->addScalarResult('id', 'id');
         $rsm->addScalarResult('monto', 'monto');
         $rsm->addScalarResult('tipoMovimiento', 'tipoMovimiento');
+        $rsm->addScalarResult('modoPago', 'modoPago');
         $rsm->addScalarResult('nombreCliente', 'nombreCliente');
         $rsm->addScalarResult('fechaCreacion', 'fechaCreacion');
         $rsm->addScalarResult('idCliente', 'idCliente');

@@ -58,7 +58,7 @@ function initDataTable() {
             });
         },
         lengthMenu: [5, 10, 25, 50, 100, 500, 1000],
-        pageLength: 5,
+        pageLength: 50,
         destroy: true,
         columnDefs: datatablesGetColDef(),
         order: [[1, 'desc']],
@@ -141,14 +141,14 @@ function initDataTable() {
 
             // Total general
             var total = api
-                .column(3, { search: 'applied' }) // columna 3 es 'monto'
+                .column(4, { search: 'applied' }) // columna 3 es 'monto'
                 .data()
                 .reduce(function (a, b) {
                     return parseMonto(a) + parseMonto(b);
                 }, 0);
 
             // Mostrar en el footer
-            $(api.column(3).footer()).html('$ ' + total.toLocaleString('es-AR', {
+            $(api.column(4).footer()).html('$ ' + total.toLocaleString('es-AR', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             }));
@@ -192,7 +192,13 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'tipoMovimiento',
             className: 'dt-center',
-            type: 'num'
+            type: 'string'
+        },
+        {
+            targets: index++,
+            name: 'modoPago',
+            className: 'dt-center',
+            type: 'string'
         },
         {
             targets: index++,
