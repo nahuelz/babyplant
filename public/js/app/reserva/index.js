@@ -9,6 +9,7 @@ $(document).ready(function () {
     initTable();
     initVerHistoricoEstadoReservaHandler();
     initReservaEntregar();
+    initClienteSelect2();
 });
 
 /**

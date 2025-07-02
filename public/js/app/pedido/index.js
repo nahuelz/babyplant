@@ -11,6 +11,7 @@ $(document).ready(function () {
     $('#multiple').select2();
     setSameHeight('.portlet-nivel-1');
     initCancelarButton();
+    initClienteSelect2();
 
 });
 

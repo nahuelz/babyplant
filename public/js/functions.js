@@ -350,5 +350,34 @@ function checkTabError() {
     if ($('ul li.is-invalid:first a').length) {
         $('ul li.is-invalid:first a').click();
     }
+}
 
+function initClienteSelect2(){
+    $('#reporte_filtro_cliente').select2({
+        matcher: function (params, data) {
+            // Si no hay término de búsqueda, mostrar todo
+            if ($.trim(params.term) === '') {
+                return data;
+            }
+
+            // El texto del cliente (opción)
+            var original = data.text.toLowerCase().replace(/,/g, '').replace(/\s+/g, ' ').trim();
+            // El texto de búsqueda ingresado por el usuario
+            var term = params.term.toLowerCase().replace(/,/g, '').replace(/\s+/g, ' ').trim();
+
+            // Buscar si cada palabra del término está incluida en el texto
+            var termWords = term.split(' ');
+            var allMatch = termWords.every(function(word) {
+                return original.includes(word);
+            });
+
+            // Si todas las palabras están incluidas, devolver el resultado
+            if (allMatch) {
+                return data;
+            }
+
+            // Si no hay coincidencias, no mostrar
+            return null;
+        }
+    });
 }

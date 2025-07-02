@@ -6,6 +6,7 @@ var $table = $('#table-entrega');
 $(document).ready(function () {
     initTable();
     initVerHistoricoEstadoEntregaHandler();
+    initClienteSelect2();
 });
 /**
  *

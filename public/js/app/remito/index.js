@@ -6,6 +6,7 @@ var $table = $('#table-remito');
 $(document).ready(function () {
     initTable();
     initVerHistoricoEstadoRemitoHandler();
+    initClienteSelect2();
 });
 /**
  *

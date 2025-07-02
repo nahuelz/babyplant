@@ -5,7 +5,9 @@ var $table = $('#table-movimiento');
 
 $(document).ready(function () {
     initTable();
+    initClienteSelect2();
 });
+
 /**
  *
  * @returns {undefined}

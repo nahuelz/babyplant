@@ -5,6 +5,7 @@ var $table = $('#table-situacion_cliente');
 
 $(document).ready(function () {
     initTable();
+    initClienteSelect2();
 });
 
 /**

@@ -4,12 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Caja">
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Caja mostrar modo pago">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/entrega/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/entrega/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/app/movimiento/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/movimiento/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/MovimientoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/MovimientoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/movimiento/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/movimiento/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/movimiento/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/movimiento/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/pedido/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/remito/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/remito/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/reserva/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/reserva/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/situacioncliente/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/situacioncliente/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/functions.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/functions.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -658,15 +661,9 @@
       <workItem from="1751135922771" duration="195000" />
       <workItem from="1751299791275" duration="2299000" />
       <workItem from="1751322964880" duration="1744000" />
-      <workItem from="1751396908144" duration="8991000" />
-    </task>
-    <task id="LOCAL-00130" summary="Cambios varios">
-      <option name="closed" value="true" />
-      <created>1743692607150</created>
-      <option name="number" value="00130" />
-      <option name="presentableId" value="LOCAL-00130" />
-      <option name="project" value="LOCAL" />
-      <updated>1743692607150</updated>
+      <workItem from="1751396908144" duration="9242000" />
+      <workItem from="1751475491960" duration="9000" />
+      <workItem from="1751477509591" duration="1791000" />
     </task>
     <task id="LOCAL-00131" summary="Cambios varios">
       <option name="closed" value="true" />
@@ -1052,7 +1049,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751405422149</updated>
     </task>
-    <option name="localTasksCounter" value="179" />
+    <task id="LOCAL-00179" summary="Caja mostrar modo pago">
+      <option name="closed" value="true" />
+      <created>1751406039449</created>
+      <option name="number" value="00179" />
+      <option name="presentableId" value="LOCAL-00179" />
+      <option name="project" value="LOCAL" />
+      <updated>1751406039449</updated>
+    </task>
+    <option name="localTasksCounter" value="180" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1070,7 +1075,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Cambios varios" />
     <MESSAGE value="Docker" />
     <MESSAGE value="docker-co" />
     <MESSAGE value="docker configurado" />
@@ -1095,6 +1099,7 @@
     <MESSAGE value="se deshabilito la vista de &quot;lista&quot; para planificacion y salida camara" />
     <MESSAGE value="Situacion cliente agregar saldo cuenta corriente." />
     <MESSAGE value="Caja" />
-    <option name="LAST_COMMIT_MESSAGE" value="Caja" />
+    <MESSAGE value="Caja mostrar modo pago" />
+    <option name="LAST_COMMIT_MESSAGE" value="Caja mostrar modo pago" />
   </component>
 </project>
