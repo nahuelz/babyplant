@@ -338,4 +338,8 @@ class Remito {
         return $adelanto;
     }
 
+    public function getDescuentoTipoDescuento(){
+        return  ($this->getTipoDescuento() . ' ' . $this->getCantidadDescuento());
+    }
+
 }

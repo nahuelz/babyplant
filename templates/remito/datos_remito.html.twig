@@ -6,8 +6,6 @@
             <div class="row">
                 {{ macro_show._show_detail('Remito', entity, 'col-md-3') }}
                 {{ macro_show._show_detail('Fecha', entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-', 'col-md-3') }}
-                {# macro_show._show_detail('Subtotal', entity.totalSinDescuento|money_format|default('-'), 'col-md-3') #}
-                {# macro_show._show_detail('Descuento', entity.montoDescuento|money_format|default('-'), 'col-md-2') #}
                 {{ macro_show._show_detail('Total', entity.totalConDescuento|money_format|default('-'), 'col-md-3') }}
                 {{ macro_show._show_detail('Estado', entity.estado|default('-'), 'col-md-3') }}
             </div>
@@ -20,6 +18,7 @@
                     <table class="table" style="text-align: center;">
                         <thead>
                             <tr>
+                                <th scope="col">N° Entrega</th>
                                 <th scope="col">N° Orden</th>
                                 <th scope="col">Producto</th>
                                 <th scope="col">Cantidad</th>
@@ -31,6 +30,7 @@
                         {% for entrega in entity.entregas %}
                             {% for entregaProducto in entrega.entregasProductos %}
                                 <tr>
+                                    <td>{{ entregaProducto.id }}</td>
                                     <td>{{ entregaProducto.pedidoProducto.numeroOrdenCompleto }}</td>
                                     <td>{{ entregaProducto.pedidoProducto.productoBandeja }}</td>
                                     <td>{{ entregaProducto.cantidadBandejas }}</td>
@@ -40,7 +40,7 @@
                             {% endfor %}
                         {% endfor %}
                         <tr>
-                            <th colspan="4" style="text-align: right; font-size: 16px; padding-right: 5px;">
+                            <th colspan="5" style="text-align: right; font-size: 16px; padding-right: 5px;">
                                 {% if entity.tipoDescuento != null %}
                                     Subtotal <br>
                                     Descuento <br>
