@@ -84,7 +84,7 @@
                                         {% for entrega in remito.entregas %}
                                             {% for entregaProducto in entrega.entregasProductos %}
                                                 <tr>
-                                                    <td>{{ entregaProducto.id }}</td>
+                                                    <td>{{ entrega.id }}</td>
                                                     <td>{{ entregaProducto.pedidoProducto.numeroOrdenCompleto }}</td>
                                                     <td>{{ entregaProducto.pedidoProducto.productoBandeja }}</td>
                                                     <td>{{ entregaProducto.cantidadBandejas }}</td>
