@@ -565,15 +565,17 @@ class EntregaController extends BaseController {
         $idEntrega = $request->request->get('id');
         $entrega = $em->getRepository("App\Entity\Entrega")->find($idEntrega);
         $productos = [];
-        foreach ($entrega->getEntregasProductos() as $entregaProducto) {
-            $productos[] = [
-                'idEntrega' => $entrega->getId(),
-                'idEntregaProducto' => $entregaProducto->getId(),
-                'idProducto' => $entregaProducto->getPedidoProducto()->getId(),
-                'textProducto' => $entregaProducto->getPedidoProducto()->__toString(),
-                'cantidadBandejas' => $entregaProducto->getCantidadBandejas(),
-                'adelanto' => $entregaProducto->getPedidoProducto()->getAdelanto()
-            ];
+        if ($entrega) {
+            foreach ($entrega->getEntregasProductos() as $entregaProducto) {
+                $productos[] = [
+                    'idEntrega' => $entrega->getId(),
+                    'idEntregaProducto' => $entregaProducto->getId(),
+                    'idProducto' => $entregaProducto->getPedidoProducto()->getId(),
+                    'textProducto' => $entregaProducto->getPedidoProducto()->__toString(),
+                    'cantidadBandejas' => $entregaProducto->getCantidadBandejas(),
+                    'adelanto' => $entregaProducto->getPedidoProducto()->getAdelanto()
+                ];
+            }
         }
 
         $result = array(
