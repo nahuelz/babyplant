@@ -35,8 +35,16 @@
         <div class="card-body">
             <i class="fas fa-wallet icon-3x" style="color: chocolate;"></i>
             <button class="fas fa-plus-square icon-3x float-right add-saldo" style="color: cadetblue; background: none; border: none;"></button>
-            <span class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-0 mt-6 d-block">{{ entity.cuentaCorrienteUsuario.getPendienteConCC|money_format }}</span>
-            <span class="font-weight-bold text-muted  font-size-lg">Pendiente</span>
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-0 mt-6 d-block">{{ entity.cuentaCorrienteUsuario.getPendiente|money_format }}</span>
+                    <span class="font-weight-bold text-muted  font-size-lg">Deuda</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-0 mt-6 d-block">{{ entity.cuentaCorrienteUsuario.saldo|money_format }}</span>
+                    <span class="font-weight-bold text-muted  font-size-lg">A favor</span>
+                </div>
+            </div>
         </div>
         <!--end::Body-->
     </div>
