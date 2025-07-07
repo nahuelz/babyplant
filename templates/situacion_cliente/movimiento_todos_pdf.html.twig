@@ -104,7 +104,6 @@
                 <th class="text-center">TIPO</th>
                 <th class="text-center">MONTO</th>
                 <th class="text-center">MODO PAGO</th>
-                <th class="text-center">REFERENCIA</th>
                 <th class="text-center">SALDO</th>
             </tr>
             </thead>
@@ -115,7 +114,6 @@
                     <td width="160" align="center">{{ movimiento.tipoMovimiento }}</td>
                     <td width="110" align="center">{{ movimiento.monto|money_format  }}</td>
                     <td width="160" align="center">{{ movimiento.modoPago  }}</td>
-                    <td width="110" align="center">{{ movimiento.tipoReferencia  }}{{ movimiento.remito  }}</td>
                     <td width="110" align="center">{{ movimiento.saldoCuenta|money_format  }}</td>
                 </tr>
                 {% endfor %}
