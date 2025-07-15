@@ -24,6 +24,32 @@
             </div>
         </div>
         <div class="card-body">
+
+            <div class="card card-detail">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-6"><h4>Entrega</h4></div>
+                        <div class="col-md-6 text-right">
+                            {# Acciones por producto si querés incluirlas #}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {{ macro_show._show_detail('Fecha Entrega', entity.fechaCreacion|date('d/m/Y'), 'col-md-2') }}
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="control-label d-block">
+                                    Estado Entrega
+                                </label>
+                                <span class="label label-inline font-weight-bold {{ entity.estado.color }}" style="padding: 20px;">{{ entity.estado.nombre }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             <div class="card card-detail">
                 <div class="card-header">
                     <div class="row">

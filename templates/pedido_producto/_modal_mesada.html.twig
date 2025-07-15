@@ -1,0 +1,51 @@
+{% import 'app/_macro_form.html.twig' as macro_form %}
+
+<div class="modal fade" id="modalMesada" tabindex="-1" role="dialog" aria-labelledby="modalMesadaLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        {{ form_start(form, {
+            'action': path('cambiar_mesada', {'id': pedidoProducto.id}),
+            'attr': {'id': 'formMesada'}
+        }) }}
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalMesadaLabel">Cambiar Mesadas</h5>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-6">
+                    <div id="bandejasDisponibles" class="label label-inline font-size-14 font-dark font-weight-bold label-light-dark" style="padding: 15px">
+                        BANDEJAS DISPONIBLES: 0
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    {{ macro_form._new_field(form.mesadaUno.tipoMesada, 'col-md-5') }}
+                    {{ macro_form._new_field(form.mesadaUno.cantidadBandejas, 'col-md-5') }}
+                    {{ macro_form._new_field(form.mesadaDos.tipoMesada, 'col-md-5 mesada-dos') }}
+                    {{ macro_form._new_field(form.mesadaDos.cantidadBandejas, 'col-md-5 mesada-dos') }}
+                    <input type="hidden" id="cantidadBandejasReales" value="">
+
+                    <div class="col-md-1 pull-left">
+                        <div class="form-group">
+                            <a class="btn btn-light-danger font-weight-bold margin-top-25 mesada-dos remove-mesada">
+                                <i class="fas fa-trash padding-0"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3 pull-left">
+                        <div class="form-group">
+                            <a class="btn btn-light-primary font-weight-bold margin-top-25 add-mesada">
+                                Agregar Mesada
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+        {{ form_end(form) }}
+
+    </div>
+</div>

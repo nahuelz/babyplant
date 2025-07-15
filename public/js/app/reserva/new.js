@@ -8,6 +8,7 @@ jQuery(document).ready(function () {
     initPreValidation();
     $('#reserva_cliente').select2();
     $('#reserva_submit').html('Reservar');
+    initClienteSelect2();
 
 });
 
@@ -53,7 +54,7 @@ function initFormValidation() {
 }
 
 function initProductos() {
-    initChainedSelect($('#reserva_clienteOrigen'), $('#reserva_pedidoProducto'), __HOMEPAGE_PATH__ + 'reserva/lista/productos', preserve_values);
+    initChainedSelect($('#reserva_origen_cliente'), $('#reserva_pedidoProducto'), __HOMEPAGE_PATH__ + 'reserva/lista/productos', preserve_values);
 }
 
 /**
@@ -84,11 +85,11 @@ function initBaseSubmitButton() {
                     dataType: 'json',
                     data: $('form[name="reserva"]').serialize()
                 }).done(function (result) {
-                    if (result.message) {
+                    if (result.error === true) {
                         Swal.fire({
-                            title: result.tipo,
+                            title: result.html,
                             text: "La cantidad de bandejas a reservar no puede superar a la cantidad de bandejas disponibles.",
-                            icon: "warning"
+                            icon: "error"
                         });
 
                         return false;

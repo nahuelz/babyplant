@@ -9,6 +9,7 @@ use App\Entity\Constants\ConstanteTipoFiltro;
 use App\Entity\Usuario;
 use App\Form\RegistrationFormType;
 use App\Service\EntityManagementGuesser;
+use App\Service\EstadoService;
 use App\Service\SelectService;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -54,6 +55,12 @@ class BaseController extends AbstractController {
 
     /**
      *
+     * @var EstadoService
+     */
+    protected $estadoService;
+
+    /**
+     *
      * @var ParameterBagInterface
      */
     protected $parameterBag;
@@ -84,17 +91,21 @@ class BaseController extends AbstractController {
      * @param EntityManagementGuesser $emg
      * @param ContainerInterface $container
      * @param SelectService $selectService
+     * @param EstadoService $estadoService
      * @param ParameterBagInterface $parameterBag
      * @param AuthorizationCheckerInterface $authChecker
      * @return $this
      */
-    public function __construct(ManagerRegistry $doctrine, EntityManagementGuesser $emg, ContainerInterface $container, SelectService $selectService, ParameterBagInterface $parameterBag, AuthorizationCheckerInterface $authChecker, Packages $assets) {
+    public function __construct(ManagerRegistry $doctrine, EntityManagementGuesser $emg, ContainerInterface $container, SelectService $selectService, EstadoService $estadoService, ParameterBagInterface $parameterBag, AuthorizationCheckerInterface $authChecker, Packages $assets) {
         $this->container = $container;
 
         $this->guesser = $emg;
+
         $this->guesser->initialize($this);
 
         $this->selectService = $selectService;
+
+        $this->estadoService = $estadoService;
 
         $this->parameterBag = $parameterBag;
 

@@ -101,7 +101,7 @@ class EntradaCamaraController extends BaseController
         if ($pedidoProducto->getEstado()->getCodigoInterno() != ConstanteEstadoPedidoProducto::EN_CAMARA) {
             $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::EN_CAMARA);
             $pedidoProducto->setFechaEntradaCamaraReal(new DateTime());
-            $this->cambiarEstado($em, $pedidoProducto, $estado);
+            $this->estadoService->cambiarEstadoPedidoProducto($pedidoProducto, $estado, 'EN CAMARA.');
             $cantDiasEnCamara = new DateTime($fechaEntradaCamara);
             $fechaSalidaCamara= $cantDiasEnCamara->modify($pedidoProducto->getDiasEnCamara());
             $pedidoProducto->setFechaSalidaCamara($fechaSalidaCamara);
@@ -117,25 +117,6 @@ class EntradaCamaraController extends BaseController
 
         return new JsonResponse($result);
 
-    }
-
-    /**
-     *
-     * @param \Doctrine\Persistence\ObjectManager $em
-     * @param PedidoProducto $pedidoProducto
-     * @param EstadoPedidoProducto $estadoProducto
-     */
-    private function cambiarEstado(\Doctrine\Persistence\ObjectManager $em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto) {
-
-        $pedidoProducto->setEstado($estadoProducto);
-        $estadoPedidoProductoHistorico = new EstadoPedidoProductoHistorico();
-        $estadoPedidoProductoHistorico->setPedidoProducto($pedidoProducto);
-        $estadoPedidoProductoHistorico->setFecha(new DateTime());
-        $estadoPedidoProductoHistorico->setEstado($estadoProducto);
-        $estadoPedidoProductoHistorico->setMotivo('Producto en camara.');
-        $pedidoProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
-
-        $em->persist($estadoPedidoProductoHistorico);
     }
 
     /**

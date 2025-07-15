@@ -1,132 +1,16 @@
 
 var init = false;
 
-var $table = $('#table-pedido');
+var $table = $('#table-stock');
 
 $(document).ready(function () {
     initTable();
     initVerHistoricoEstadoHandler();
-    initFiltrosHandler();
-    initColumnsHandler();
     $('#multiple').select2();
-    setSameHeight('.portlet-nivel-1');
     initCancelarButton();
     initClienteSelect2();
-    initEditarMesadaHandler();
-    initSubmitMesada();
-
-
-    initCambiarMesadaHandler();
-
-
-    var table = $table.DataTable();
-
-    table.on('column-reorder', function (e, settings, details) {
-        tableRefresh();
-    });
-
-    let isDraggingColumn = false;
-    let initialOrder = [];
-
-    // Cuando se hace mousedown sobre una cabecera, guardamos el orden actual
-    $table.on('mousedown', 'th', function () {
-        isDraggingColumn = true;
-        initialOrder = table.colReorder.order().slice(); // guardamos el orden original
-    });
-
-    // Cuando se suelta el mouse en cualquier parte del documento
-    $(document).on('mouseup', function () {
-        if (isDraggingColumn) {
-            isDraggingColumn = false;
-
-            let finalOrder = table.colReorder.order();
-            if (JSON.stringify(finalOrder) !== JSON.stringify(initialOrder)) {
-                // Solo si el orden cambió, ejecutamos la lógica
-                console.log('✅ Columna soltada. Orden final:', finalOrder);
-            }
-
-
-        }
-    });
 
 });
-
-
-/**
- *
- * @param {type} target
- * @returns {undefined}
- */
-function setSameHeight(target) {
-
-    var maxHeight = 0;
-
-    $(target).each(function () {
-        $(this).css('min-height', '0px');
-    });
-
-    $(target).each(function () {
-        if ($(this)[0].offsetHeight > maxHeight) {
-            maxHeight = $(this)[0].offsetHeight;
-        }
-    });
-
-    $(target).each(function () {
-        $(this).css('min-height', maxHeight + 'px');
-    });
-}
-
-function initColumnsHandler () {
-    $('#multiple').on('change', function (e) {
-        e.preventDefault();
-        $.ajax({
-            type: 'post',
-            dataType: 'json',
-            data: {
-                columns: JSON.stringify(getTargets())
-            },
-            url: __HOMEPAGE_PATH__ + "pedido/save_columns/",
-            success: function (response) {
-                toastr.success(response.message);
-                location.reload();
-            },
-            error: function () {
-                alert('ah ocurrido un error.');
-            }
-        });
-    });
-}
-
-function getTargets(){
-    let stringArray = $('#multiple').val();
-    let numberArray = [];
-    length = stringArray.length;
-    for (let i = 0; i < length; i++) {
-        numberArray.push(parseInt(stringArray[i]));
-    }
-    return numberArray;
-}
-
-function initFiltrosHandler(){
-    $('.actividad-reciente').hide();
-    $('#filtros').hide();
-    $('.mostrar-filtros').on('click', function (){
-        $('#filtros').toggle();
-        $("#reporte_filtro_cliente").select2();
-        tableRefresh();
-    });
-    $('.mostrar-actividad-reciente').on('click', function (){
-        $('.actividad-reciente').toggle();
-        $('#reporte_filtro_cliente').select2();
-        tableRefresh();
-    });
-}
-
-function tableRefresh(){
-    $('.sorting').first().click();
-    $('.sorting_asc').first().click();
-    console.log('refresh');
-}
 
 /**
  *
@@ -165,7 +49,7 @@ function initDataTable() {
     $table.show();
 
     dataTablesInit($table, {
-        "sAjaxSource": __HOMEPAGE_PATH__ + 'pedido/index_table/',
+        "sAjaxSource": __HOMEPAGE_PATH__ + 'stock/index_table/',
         "fnServerData": function (sSource, aoData, fnCallback, oSettings) {
             oSettings.jqXHR = $.ajax({
                 "dataType": 'json',
@@ -257,14 +141,14 @@ function initDataTable() {
     init = true;
 }
 
-    // Hide/show columns
-    $('input.toggle-vis').on( 'change', function (e) {
-        e.preventDefault();
-        // Get the column API object
-        var column = table.column( $(this).attr('data-column') );
-        // Toggle the visibility
-        column.visible( ! column.visible() );
-    } );
+// Hide/show columns
+$('input.toggle-vis').on( 'change', function (e) {
+    e.preventDefault();
+    // Get the column API object
+    var column = table.column( $(this).attr('data-column') );
+    // Toggle the visibility
+    column.visible( ! column.visible() );
+} );
 
 /**
  *
@@ -290,7 +174,12 @@ function datatablesGetColDef() {
             name: 'id',
             width: '15px',
             className: 'dt-center',
-            type: 'num'
+            render: function (data, type, full, meta) {
+                if (type === 'display') {
+                    return '<a href="' + full[2].path + '" target="_blank">' + data + '</a>';
+                }
+                return data;
+            }
         },
         {
             targets: index++,
@@ -302,18 +191,6 @@ function datatablesGetColDef() {
                     return '<a href="' + data.path + '" target="_blank">' + data.idProducto + '</a>';
                 }
                 return data.idProducto;
-            }
-        },
-        {
-            targets: index++,
-            name: 'fechaCreacion',
-            className: 'dt-center',
-            width: '50px',
-            render: function (data, type, full, meta) {
-                if (type === 'sort') {
-                    return moment(data, 'DD/MM/YYYY').format('YYYYMMDD');
-                }
-                return data;
             }
         },
         {
@@ -348,18 +225,6 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
-            name: 'fechaSiembra',
-            width: '50px',
-            className: 'dt-center',
-            render: function (data, type, full, meta) {
-                if (type === 'sort') {
-                    return moment(data, 'DD/MM/YYYY').format('YYYYMMDD');
-                }
-                return data;
-            }
-        },
-        {
-            targets: index++,
             name: 'fechaEntrega',
             width: '50px',
             className: 'dt-center',
@@ -384,22 +249,6 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
-            name: 'diasEnCamara',
-            className: 'dt-center',
-            searchable: true,
-            width: '50px',
-            type: 'num'
-        },
-        {
-            targets: index++,
-            name: 'diasEnInvernaculo',
-            className: 'dt-center',
-            searchable: true,
-            width: '50px',
-            type: 'num'
-        },
-        {
-            targets: index++,
             name: 'ordenSiembra',
             width: '50px',
             className: 'dt-center font-weight-bold',
@@ -411,23 +260,7 @@ function datatablesGetColDef() {
             className: 'dt-center',
             searchable: true,
             width: '50px',
-            render: function (data, type, full, meta) {
-                if (type === 'display') {
-                    let span = `<span>${data}</span>`;
-                    let icon = '';
-
-                    if (data !== '-') {
-                        icon = `<i class="btn btn-sm fas fa-edit editar-mesada" 
-                            data-bandejas="${full[6]}" 
-                            data-id="${full[2].idProducto}" 
-                            data-mesada="${data}" 
-                            title="Editar mesada"></i>`;
-                    }
-
-                    return span + icon;
-                }
-                return data;
-            }
+            type: 'num'
         },
         {
             targets: -1,
@@ -438,11 +271,6 @@ function datatablesGetColDef() {
             orderable: false,
 
             render: dataTablesActionFormatter
-        },
-        {
-            // hide columns by index number
-            targets: getTargets(),
-            visible: false,
         },
     ];
 }
@@ -567,161 +395,5 @@ function initCancelarButton() {
 function esNumeroWhatsappValido(numero) {
     const regex = /^\+54\d{10}$/;
     return regex.test(numero);
-}
-
-function initEditarMesadaHandler(){
-    $(document).on('click', '.editar-mesada', function (e) {
-        e.preventDefault();
-
-        const id = $(this).data('id');
-        const modalUrl = `pedido/${id}/modal-mesada`;
-        const bandejas = $(this).data('bandejas');
-
-        $.ajax({
-            url: __HOMEPAGE_PATH__ + modalUrl,
-            type: 'GET',
-            success: function (html) {
-                // Si ya hay un modalMesada, lo eliminamos
-                $('#modalMesada').remove();
-
-                // Agregamos el nuevo modal al body
-                $('body').append(html);
-
-                // Mostramos el modal
-                $('#modalMesada').modal('show');
-                // Insertar el número de bandejas disponibles
-                $('#bandejasDisponibles').text(`BANDEJAS DISPONIBLES: ${bandejas}`);
-                initCambiarMesadaHandler();
-                $('#cantidadBandejasReales').val(bandejas);
-                $('.bs-popover-top').hide();
-                $('.modal-dialog').css('width', '80%');
-                $('.modal-dialog').addClass('modal-xl');
-                $('.modal-dialog').addClass('modal-fullscreen-xl-down');
-            },
-            error: function () {
-                alert('Error al cargar el formulario de mesadas');
-            }
-        });
-    });
-}
-
-function initSubmitMesada(){
-    $(document).on('submit', '#formMesada', function (e) {
-        e.preventDefault();
-
-        const $form = $(this);
-
-        if (cantidadDeBandejasValida()) {
-            if ($('#cambiar_mesada_mesadaUno_tipoMesada').val() != '') {
-                if ($('#cambiar_mesada_mesadaDos_cantidadBandejas').val() < 1) {
-                    $("#cambiar_mesada_mesadaDos_cantidadBandejas").attr('disabled', 'disabled');
-                    $("#cambiar_mesada_mesadaDos_tipoMesada").attr('disabled', 'disabled');
-                }
-                //$('form[name="cambiar_mesada"]').submit();
-                $.ajax({
-                    url: $form.attr('action'),
-                    type: $form.attr('method'),
-                    data: $form.serialize(),
-                    success: function (data) {
-                        $('#modalMesada').modal('hide');
-                        $('#table-pedido').DataTable().ajax.reload();
-                    },
-                    error: function () {
-                        alert('Error al guardar las mesadas');
-                    }
-                });
-            } else {
-                Swal.fire({
-                    title: 'Debe compeltar todos los datos.',
-                    icon: "error"
-                });
-                return false;
-            }
-        } else {
-            Swal.fire({
-                title: 'La cantidad de bandejas debe coincidir con las bandejas disponibles.',
-                icon: "error"
-            });
-            return false;
-        }
-    });
-
-}
-
-/**
- *
- * @returns {undefined}
- */
-function initFormValidationCambiarMesada() {
-
-    fv = FormValidation.formValidation($("form[name=cambiar_mesada]")[0], {
-        fields: {
-            requiredFields: {
-                selector: '[required="required"]',
-                validators: {
-                    notEmpty: {
-                        message: 'Este campo es requerido'
-                    }
-                }
-            }
-        },
-        plugins: {
-            trigger: new FormValidation.plugins.Trigger(),
-            bootstrap: new FormValidation.plugins.Bootstrap(),
-            submitButton: new FormValidation.plugins.SubmitButton(),
-            //defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
-        }
-    });
-
-}
-
-function cantidadDeBandejasValida(){
-    let cantidadBandejasMesadaUno = $('#cambiar_mesada_mesadaUno_cantidadBandejas').val() ? parseInt($('#cambiar_mesada_mesadaUno_cantidadBandejas').val()) : 0;
-    let cantidadBandejasMesadaDos = $('#cambiar_mesada_mesadaDos_cantidadBandejas').val() ? parseInt($('#cambiar_mesada_mesadaDos_cantidadBandejas').val()) : 0;
-    let cantidadBandejasReales = parseInt($('#cantidadBandejasReales').val());
-    let cantidadTotalBandejas = cantidadBandejasMesadaUno + cantidadBandejasMesadaDos;
-
-    return (cantidadTotalBandejas === cantidadBandejasReales);
-}
-
-function initCambiarMesadaHandler(){
-    $('#cambiar_mesada_mesadaUno_tipoMesada').select2();
-    $('#cambiar_mesada_mesadaDos_tipoMesada').select2();
-    $('.row-mesada-empty').hide();
-    if ($('#cambiar_mesada_mesadaDos_cantidadBandejas').val() == '') {
-        $('.mesada-dos').hide();
-    }else{
-        $('.add-mesada').hide();
-    }
-    $(document).on('click', '.add-mesada', function (e) {
-        e.preventDefault();
-        disableMesadaDosOptionHandler();
-        removeMesadaHandler();
-        $('#cambiar_mesada_mesadaDos_cantidadBandejas').on('keyup', function(){
-            if ($(this).val() > parseInt($('#cantidadBandejasReales').val())){
-                $(this).val($('#cantidadBandejasReales').val());
-            }
-        });
-        $('.add-mesada').hide();
-        $('.mesada-dos').show();
-        $("#cambiar_mesada_mesadaDos_tipoMesada>option[value="+$('#cambiar_mesada_mesadaUno_tipoMesada').val()+"]").attr('disabled','disabled');
-    });
-}
-
-function disableMesadaDosOptionHandler(){
-    $('#cambiar_mesada_mesadaUno_tipoMesada').on('change', function(){
-        $('#cambiar_mesada_mesadaDos_tipoMesada').val('').select2();
-        $("#cambiar_mesada_mesadaDos_tipoMesada>option").removeAttr('disabled');
-        $("#cambiar_mesada_mesadaDos_tipoMesada>option[value="+$('#cambiar_mesada_mesadaUno_tipoMesada').val()+"]").attr('disabled','disabled');
-    })
-}
-
-function removeMesadaHandler(){
-    $('.remove-mesada').on('click', function(){
-        $('.mesada-dos').hide();
-        $('#cambiar_mesada_mesadaDos_tipoMesada').val('').select2();
-        $('#cambiar_mesada_mesadaDos_cantidadBandejas').val('');
-        $('.add-mesada').show();
-    })
 }
 

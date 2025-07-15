@@ -14,14 +14,6 @@
         td {
             padding: 1px !important;
         }
-
-        .dataTables_wrapper .dataTable th {
-            font-size: 1.2rem !important;
-        }
-
-        .dataTables_wrapper .dataTable td{
-            font-size: 1.5rem !important;
-        }
     </style>
 
 {% endblock %}
@@ -32,15 +24,9 @@
         <div class="card-header">
             <div class="card-title">
                 <span class="card-icon"><i class="flaticon2-layers text-primary"></i></span>
-                <h3 class="card-label">Pedidos registrados</h3>
+                <h3 class="card-label">STOCK</h3>
             </div>
             <div class="card-toolbar">
-                {% if is_granted('ROLE_PEDIDO') %}
-                    <a href="{{ path('pedido_new') }}" class="btn btn-primary font-weight-bolder mr-2">
-                        <i class="la la-plus"></i>
-                        Agregar
-                    </a>
-                {% endif %}
                 <div class="dropdown dropdown-inline">
                     <div class="dropdown dropdown-inline  mr-2">
                         <button type="button" class="btn btn-light-primary font-weight-bolder dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -93,28 +79,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="dropdown dropdown-inline">
-                    <div class="dropdown dropdown-inline ">
-                        <button type="button" class="btn btn-light-primary font-weight-bolder dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Filtros
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right" style="">
-                            <ul class="navi flex-column navi-hover py-2">
-                                <li class="navi-header font-weight-bolder text-uppercase font-size-sm text-primary pb-2">Elija una opci&oacute;n:</li>
-                                <li class="navi-item">
-                                    <a href="#" class="navi-link">
-                                        <span class="navi-text mostrar-filtros">Mostrar Tiles</span>
-                                    </a>
-                                </li>
-                                <li class="navi-item">
-                                    <a href="#" class="navi-link">
-                                        <span class="navi-text mostrar-actividad-reciente">Mostrar Filtros</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -123,30 +87,23 @@
                 {% include 'pedido/index_panel.html.twig' %}
             </div>
             <div class="col-md-6 actividad-reciente">
-                {% include 'pedido/filtros.html.twig' %}
-            </div>
-            <div class="col-md-6 actividad-reciente">
-                {% include 'pedido/index_actividad_reciente.html.twig' %}
+                {% include 'stock/filtros.html.twig' %}
             </div>
         </div>
 
         <div class="card-body padding-top-0 padding-bottom-0">
             <!--begin: Datatable-->
-            <table class="table table-bordered table-hover" id="table-pedido">
+            <table class="table table-bordered table-hover" id="table-stock">
                 <thead>
                 <tr>
                     <th style="width: 5px; padding: 0">ID</th>
                     <th data-type="string" class="text-center">PEDIDO</th>
                     <th data-type="string" class="text-center">PRODUCTO</th>
-                    <th data-type="string" class="text-center">F. PEDIDO</th>
                     <th data-type="string" class="text-center">PRODUCTO</th>
-                    <th data-type="string" class="text-center">CLIENTE</th>
+                    <th data-type="string" class="text-center">STOCK</th>
                     <th data-type="string" class="text-center">B. SEMBRADAS</th>
                     <th data-type="string" class="text-center">F. SIEMBRA</th>
-                    <th data-type="string" class="text-center">F. ENTREGA</th>
                     <th data-type="select" data-select="{{ estadoSelect }}">ESTADO</th>
-                    <th data-type="string" class="text-center">DIAS CAMARA</th>
-                    <th data-type="string" class="text-center">DIAS INVERNACULO</th>
                     <th data-type="string" class="text-center">O. SIEMBRA</th>
                     <th data-type="string" class="text-center">MESADA</th>
                     <th data-type="search" style="width: 5px; padding: 0"></th>
@@ -186,7 +143,7 @@
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}" ></script>
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-datatables.js') }}" ></script>
 
-    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/pedido/index.js') }}" ></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/stock/index.js') }}" ></script>
 
 {% endblock %}
 

@@ -312,11 +312,19 @@ function initPreValidation() {
         e.preventDefault();
         if (cantidadDeBandejasValida()) {
             if ($('#salida_camara_mesadaUno_tipoMesada').val() != '') {
-                if ($('#salida_camara_mesadaDos_cantidadBandejas').val() < 1) {
-                    $("#salida_camara_mesadaDos_cantidadBandejas").attr('disabled', 'disabled');
-                    $("#salida_camara_mesadaDos_tipoMesada").attr('disabled', 'disabled');
+                if ($('#salida_camara_mesadaUno_cantidadBandejas').val() > 0) {
+                    if ($('#salida_camara_mesadaDos_cantidadBandejas').val() < 1) {
+                        $("#salida_camara_mesadaDos_cantidadBandejas").attr('disabled', 'disabled');
+                        $("#salida_camara_mesadaDos_tipoMesada").attr('disabled', 'disabled');
+                    }
+                    $('form[name="salida_camara"]').submit();
+                }else{
+                    Swal.fire({
+                        title: 'Debe ingresar al menos 1 bandeja en la mesada.',
+                        icon: "error"
+                    });
+                    return false;
                 }
-                $('form[name="salida_camara"]').submit();
             } else {
                 Swal.fire({
                     title: 'Debe compeltar todos los datos.',

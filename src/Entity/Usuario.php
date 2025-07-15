@@ -173,7 +173,7 @@ class Usuario implements UserInterface {
     public function __toString(): string {
         $nombre = $this->getApellido(). ' '.$this->getNombre();
         if ($this->getTipoUsuario()->getCodigoInterno() == Constants\ConstanteTipoUsuario::CLIENTE){
-            if ($this->razonSocial != null){
+            if ($this->razonSocial != null and $this->razonSocial != ' '){
                 $nombre.=' ('.$this->getRazonSocial().')';
             }
         }
@@ -590,6 +590,17 @@ class Usuario implements UserInterface {
             $saldo+= $pedido->getCuentaCorrientePedido()->getSaldo();
         }
         return $saldo;
+    }
+
+    public function getTieneMovimientos(){
+        $resultado = false;
+        foreach ($this->getPedidos() as $pedido){
+            if ($pedido->getTieneMovimientos()){
+                $resultado = true;
+            }
+        }
+
+        return $resultado;
     }
 
 

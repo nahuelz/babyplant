@@ -4,11 +4,53 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="initClienteSelect2()">
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="fix entrega y remito">
+      <change afterPath="$PROJECT_DIR$/public/js/app/stock/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Controller/StockController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Form/CambiarMesadaType.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Form/StockType.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Service/EstadoService.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/pedido_producto/_modal_mesada.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/reserva/show.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/stock/filtros.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/stock/index.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/stock/index_table.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Remito.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Remito.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/roles.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/roles.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/pedido/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/pedido/new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/new.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/planificacion/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/planificacion/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/remito/new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/remito/new.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/reserva/new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/reserva/new.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/functions.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/functions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/theme/plugins/custom/datatables/datatables.bundle.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/plugins/custom/datatables/datatables.bundle.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/BaseController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/BaseController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/EntradaCamaraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntradaCamaraController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/EntregaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntregaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PedidoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PedidoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PlanificacionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PlanificacionController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/ReservaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ReservaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SalidaCamaraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SalidaCamaraController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SiembraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SiembraController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/EstadoReserva.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/EstadoReserva.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Pedido.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Pedido.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Reserva.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Reserva.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Usuario.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Usuario.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/ReservaType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/ReservaType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SQLViews/view_planificacion.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLViews/view_planificacion.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/SelectService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/SelectService.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/entrega/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/show.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/remito/datos_remito.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/datos_remito.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/menu/menu_configuracion.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu_configuracion.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/menu/menu_pedido.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu_pedido.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedido/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedido/index_panel.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/index_panel.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedido/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/planificacion/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/planificacion/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/reserva/new.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/reserva/new.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/movimiento_ticket_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/movimiento_ticket_pdf.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show_adelantos.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_adelantos.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -661,55 +703,16 @@
       <workItem from="1751475491960" duration="9000" />
       <workItem from="1751477509591" duration="1993000" />
       <workItem from="1751479524336" duration="1395000" />
-      <workItem from="1751559804337" duration="3448000" />
-    </task>
-    <task id="LOCAL-00133" summary="Docker">
-      <option name="closed" value="true" />
-      <created>1744660976318</created>
-      <option name="number" value="00133" />
-      <option name="presentableId" value="LOCAL-00133" />
-      <option name="project" value="LOCAL" />
-      <updated>1744660976318</updated>
-    </task>
-    <task id="LOCAL-00134" summary="Docker">
-      <option name="closed" value="true" />
-      <created>1744661004009</created>
-      <option name="number" value="00134" />
-      <option name="presentableId" value="LOCAL-00134" />
-      <option name="project" value="LOCAL" />
-      <updated>1744661004009</updated>
-    </task>
-    <task id="LOCAL-00135" summary="docker-co">
-      <option name="closed" value="true" />
-      <created>1744662638201</created>
-      <option name="number" value="00135" />
-      <option name="presentableId" value="LOCAL-00135" />
-      <option name="project" value="LOCAL" />
-      <updated>1744662638201</updated>
-    </task>
-    <task id="LOCAL-00136" summary="docker-co">
-      <option name="closed" value="true" />
-      <created>1744668920221</created>
-      <option name="number" value="00136" />
-      <option name="presentableId" value="LOCAL-00136" />
-      <option name="project" value="LOCAL" />
-      <updated>1744668920221</updated>
-    </task>
-    <task id="LOCAL-00137" summary="docker-co">
-      <option name="closed" value="true" />
-      <created>1744669360913</created>
-      <option name="number" value="00137" />
-      <option name="presentableId" value="LOCAL-00137" />
-      <option name="project" value="LOCAL" />
-      <updated>1744669360913</updated>
-    </task>
-    <task id="LOCAL-00138" summary="docker-co">
-      <option name="closed" value="true" />
-      <created>1744669394442</created>
-      <option name="number" value="00138" />
-      <option name="presentableId" value="LOCAL-00138" />
-      <option name="project" value="LOCAL" />
-      <updated>1744669394442</updated>
+      <workItem from="1751559804337" duration="4838000" />
+      <workItem from="1751896273348" duration="1763000" />
+      <workItem from="1751923338359" duration="1178000" />
+      <workItem from="1751924529402" duration="2188000" />
+      <workItem from="1751991839638" duration="2209000" />
+      <workItem from="1751997807843" duration="4072000" />
+      <workItem from="1752352968003" duration="10124000" />
+      <workItem from="1752510262445" duration="8882000" />
+      <workItem from="1752531102744" duration="6236000" />
+      <workItem from="1752596565296" duration="17020000" />
     </task>
     <task id="LOCAL-00139" summary="docker-co">
       <option name="closed" value="true" />
@@ -1055,15 +1058,73 @@
       <option name="project" value="LOCAL" />
       <updated>1751479550441</updated>
     </task>
-    <option name="localTasksCounter" value="182" />
+    <task id="LOCAL-00182" summary="show Entrega">
+      <option name="closed" value="true" />
+      <created>1751563301676</created>
+      <option name="number" value="00182" />
+      <option name="presentableId" value="LOCAL-00182" />
+      <option name="project" value="LOCAL" />
+      <updated>1751563301676</updated>
+    </task>
+    <task id="LOCAL-00183" summary="show Entrega">
+      <option name="closed" value="true" />
+      <created>1751563438941</created>
+      <option name="number" value="00183" />
+      <option name="presentableId" value="LOCAL-00183" />
+      <option name="project" value="LOCAL" />
+      <updated>1751563438941</updated>
+    </task>
+    <task id="LOCAL-00184" summary="show Entrega">
+      <option name="closed" value="true" />
+      <created>1751563460649</created>
+      <option name="number" value="00184" />
+      <option name="presentableId" value="LOCAL-00184" />
+      <option name="project" value="LOCAL" />
+      <updated>1751563460649</updated>
+    </task>
+    <task id="LOCAL-00185" summary="Saldo debe, Saldo a favor">
+      <option name="closed" value="true" />
+      <created>1751924283505</created>
+      <option name="number" value="00185" />
+      <option name="presentableId" value="LOCAL-00185" />
+      <option name="project" value="LOCAL" />
+      <updated>1751924283505</updated>
+    </task>
+    <task id="LOCAL-00186" summary="Saldo debe, Saldo a favor">
+      <option name="closed" value="true" />
+      <created>1751924427944</created>
+      <option name="number" value="00186" />
+      <option name="presentableId" value="LOCAL-00186" />
+      <option name="project" value="LOCAL" />
+      <updated>1751924427944</updated>
+    </task>
+    <task id="LOCAL-00187" summary="fix entrega y remito">
+      <option name="closed" value="true" />
+      <created>1751925722728</created>
+      <option name="number" value="00187" />
+      <option name="presentableId" value="LOCAL-00187" />
+      <option name="project" value="LOCAL" />
+      <updated>1751925722728</updated>
+    </task>
+    <option name="localTasksCounter" value="188" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="3a89f7e3-0862-4f52-a682-c1df74f29404" value="TOOL_WINDOW" />
+      </map>
+    </option>
     <option name="TAB_STATES">
       <map>
+        <entry key="3a89f7e3-0862-4f52-a682-c1df74f29404">
+          <value>
+            <State />
+          </value>
+        </entry>
         <entry key="MAIN">
           <value>
             <State />
@@ -1073,9 +1134,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="docker-co" />
-    <MESSAGE value="docker configurado" />
-    <MESSAGE value="borro esto" />
     <MESSAGE value=".env" />
     <MESSAGE value=".env.dist" />
     <MESSAGE value="docker-compose.yml" />
@@ -1098,6 +1156,9 @@
     <MESSAGE value="Caja" />
     <MESSAGE value="Caja mostrar modo pago" />
     <MESSAGE value="initClienteSelect2()" />
-    <option name="LAST_COMMIT_MESSAGE" value="initClienteSelect2()" />
+    <MESSAGE value="show Entrega" />
+    <MESSAGE value="Saldo debe, Saldo a favor" />
+    <MESSAGE value="fix entrega y remito" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix entrega y remito" />
   </component>
 </project>

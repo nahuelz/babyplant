@@ -263,18 +263,9 @@ class ReservaController extends BaseController {
             $error = true;
         }
 
-        if ($reserva->getPedidoProducto()->getEstado()->getCodigoInterno() == ConstanteEstadoPedidoProducto::EN_CAMARA){
-            $this->get('session')->getFlashBag()->add('error', "No se puede entregar un producto que se encuentra en estado EN CAMARA.");
-            $error = true;
-        }
-
-        if ($reserva->getPedidoProducto()->getEstado()->getCodigoInterno() == ConstanteEstadoPedidoProducto::PLANIFICADO){
-            $this->get('session')->getFlashBag()->add('error', "No se puede entregar un producto que se encuentra en estado PLANIFICADO.");
-            $error = true;
-        }
-
-        if ($reserva->getPedidoProducto()->getEstado()->getCodigoInterno() == ConstanteEstadoPedidoProducto::SEMBRADO){
-            $this->get('session')->getFlashBag()->add('error', "No se puede entregar un producto que se encuentra en estado SEMBRADO.");
+        if ( in_array($reserva->getPedidoProducto()->getEstado()->getCodigoInterno(), [ConstanteEstadoPedidoProducto::EN_CAMARA,  ConstanteEstadoPedidoProducto::PLANIFICADO, ConstanteEstadoPedidoProducto::SEMBRADO])){
+            $msg = "No se puede entregar un producto que se encuentra en estado ". strtoupper($reserva->getPedidoProducto()->getEstado());
+            $this->get('session')->getFlashBag()->add('error', $msg);
             $error = true;
         }
 
@@ -292,6 +283,7 @@ class ReservaController extends BaseController {
             $entregaService->entregar($em, $entrega);
             $estadoReserva = $em->getRepository(EstadoReserva::class)->findOneByCodigoInterno(ConstanteEstadoReserva::ENTREGADO);
             $this->cambiarEstadoReserva($em, $reserva, $estadoReserva);
+            $reserva->setEntrega($entrega);
             $em->flush();
             $this->get('session')->getFlashBag()->add('success', "Producto entregado.");
         }
@@ -343,12 +335,12 @@ class ReservaController extends BaseController {
         $tipoError = '';
         if ($reserva->getCantidadBandejas() > $reserva->getPedidoProducto()->getCantidadBandejasDisponibles()) {
             $error = true;
-            $tipoError = 'ERROR PEDIDO PRODUCTO N° ' . $reserva->getPedidoProducto()->getId();
+            $tipoError = 'ERROR PEDIDO N° ' . $reserva->getPedidoProducto()->getPedido()->getId();
         }
 
         if ($error){
             $result = array(
-                'html' => '',
+                'html' => $tipoError,
                 'error' => true,
                 'tipo' => $tipoError
             );

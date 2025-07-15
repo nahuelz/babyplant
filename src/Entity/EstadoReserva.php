@@ -27,6 +27,11 @@ class EstadoReserva extends EntidadBasica {
      */
     private $colorIcono;
 
+    public function __toString(): string
+    {
+        return $this->getNombre();
+    }
+
     /**
      * @return mixed
      */

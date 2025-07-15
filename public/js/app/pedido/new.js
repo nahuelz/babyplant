@@ -20,6 +20,7 @@ jQuery(document).ready(function () {
     $('#pedido_pedidoProducto_cantDiasProduccionSelect').val('30');
     $('#pedido_pedidoProducto_cantDiasProduccion').val('30');
     $('#pedido_pedidoProducto_fechaEntregaPedido').val('');
+    initClienteSelect2();
 });
 
 function initDiasProduccionSelectHandler(){

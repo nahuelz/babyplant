@@ -4,7 +4,7 @@ namespace App\Form;
 
 
 use App\Entity\PedidoProducto;
-use App\Entity\Reserva;
+use App\Entity\Stock;
 use App\Entity\Usuario;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -16,7 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ReservaType extends AbstractType {
+class StockType extends AbstractType {
 
     private $entityManager;
 
@@ -112,7 +112,7 @@ class ReservaType extends AbstractType {
 
     public function configureOptions(OptionsResolver $resolver) {
         $resolver->setDefaults([
-            'data_class' => Reserva::class,
+            'data_class' => Stock::class,
         ]);
     }
 

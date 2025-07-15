@@ -2,17 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Constants\ConstanteEstadoMesada;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
-use App\Entity\Constants\ConstanteIP;
 use App\Entity\CuentaCorrientePedido;
+use App\Entity\EstadoMesada;
 use App\Entity\EstadoPedidoProducto;
-use App\Entity\EstadoPedidoProductoHistorico;
 use App\Entity\GlobalConfig;
-use App\Entity\MYPDF;
 use App\Entity\Pedido;
 use App\Entity\PedidoProducto;
 use App\Entity\RazonSocial;
 use App\Entity\Usuario;
+use App\Form\CambiarMesadaType;
 use App\Form\RazonSocialType;
 use App\Form\RegistrationFormType;
 use App\Service\LogAuditoriaService;
@@ -20,7 +20,6 @@ use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
-use Doctrine\Persistence\ObjectManager;
 use Mpdf\Mpdf;
 use Mpdf\MpdfException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -29,41 +28,13 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\EstadoService;
 
 /**
  * @Route("/pedido")
  * @IsGranted("ROLE_PEDIDO")
  */
 class PedidoController extends BaseController {
-
-    /**
-     * @Route("/save_columns/", name="save_columns", methods={"GET","POST"})
-     */
-    public function saveColumns(Request $request) {
-
-        $em = $this->doctrine->getManager();
-
-        /* @var $columnas GlobalConfig */
-        $columnas = $em->getRepository('App\Entity\GlobalConfig')->find($this->getUser()->getId());
-
-        if (!$columnas) {
-            throw $this->createNotFoundException('No se configuraron las columnas visibles en la base de datos.');
-        }
-
-        $columnasOcultas = json_decode($request->request->get('columns'), false);
-        $columnas->setColumnasOcultas(implode(",", $columnasOcultas));
-        $em->flush();
-
-        $message = 'Se guardó la configuración de columnas.';
-        $response = new Response();
-        $response->setContent(json_encode(array(
-            'message' => $message,
-            'statusCode' => 200,
-            'statusText' => 'OK'
-        )));
-
-        return $response;
-    }
 
     /**
      * @Route("/", name="pedido_index", methods={"GET"})
@@ -79,13 +50,13 @@ class PedidoController extends BaseController {
         $em = $this->doctrine->getManager();
         $columnasOcultas = $em->getRepository('App\Entity\GlobalConfig')->find($this->getUser()->getId());
 
-        if (!$columnasOcultas) {
+        /*if (!$columnasOcultas) {
             $columnasOcultas = new GlobalConfig();
             $columnasOcultas->setColumnasOcultas('1,6,10,11,13');
             $columnasOcultas->setUsuario($this->getUser());
             $em->persist($columnasOcultas);
             $em->flush();
-        }
+        }*/
 
         return array(
             'columnasOcultas' => $columnasOcultas->getColumnasOcultas(),
@@ -333,12 +304,12 @@ class PedidoController extends BaseController {
         /** @var Pedido $entity */
         $em = $this->doctrine->getManager();
         $estadoProducto = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::PENDIENTE);
-        $this->cambiarEstado($em, $entity, $estadoProducto);
 
         /** @var PedidoProducto $pedidoProducto */
         foreach ($entity->getPedidosProductos() as $pedidoProducto){
             $pedidoProducto->setPedido($entity);
             $pedidoProducto->setFechaPedido(new DateTime());
+            $this->estadoService->cambiarEstadoPedidoProducto($pedidoProducto, $estadoProducto, 'CREADO.');
         }
 
         $cuentaCorrientePedido = new CuentaCorrientePedido();
@@ -353,29 +324,6 @@ class PedidoController extends BaseController {
         $logAuditoriaService = new LogAuditoriaService($this->getDoctrine());
         $logAuditoriaService->generarLog($entity, 'Crear pedido', 'PEDIDO');
         $em->flush();
-    }
-
-    /**
-     *
-     * @param type $em
-     * @param Pedido $pedido
-     * @param type $estado
-     * @param type $motivo
-     */
-    private function cambiarEstado($em, Pedido $pedido, $estadoProducto) {
-
-        /* SETEO EL ESTADO DE CADA UNO DE LOS PRODUCTOS */
-        foreach ($pedido->getPedidosProductos() as $pedidosProducto) {
-            $pedidosProducto->setEstado($estadoProducto);
-            $estadoPedidoProductoHistorico = new EstadoPedidoProductoHistorico();
-            $estadoPedidoProductoHistorico->setPedidoProducto($pedidosProducto);
-            $estadoPedidoProductoHistorico->setFecha(new DateTime());
-            $estadoPedidoProductoHistorico->setEstado($estadoProducto);
-            $estadoPedidoProductoHistorico->setMotivo('Creacion del pedido.');
-            $pedidosProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
-
-            $em->persist($estadoPedidoProductoHistorico);
-        }
     }
 
     /**
@@ -604,13 +552,8 @@ class PedidoController extends BaseController {
         }
 
         $estadoCancelado = $em->getRepository(EstadoPedidoProducto::class)->find(ConstanteEstadoPedidoProducto::CANCELADO);
-        if (!$estadoCancelado) {
-            throw new \Exception("No se encontró el estado CANCELADO.");
-        }
 
-        $motivo = 'Producto Cancelado.';
-
-        $this->cambiarEstadoPedidoProducto($em, $pedidoProducto, $estadoCancelado, $motivo);
+        $this->estadoService->cambiarEstadoPedidoProducto($pedidoProducto, $estadoCancelado, 'CANCELADO.');
 
         $em->flush();
 
@@ -620,23 +563,79 @@ class PedidoController extends BaseController {
     }
 
     /**
-     *
-     * @param ObjectManager $em
-     * @param PedidoProducto $pedidoProducto
-     * @param EstadoPedidoProducto $estadoProducto
-     * @param $motivo
+     * @Route("/save_columns/", name="save_columns", methods={"GET","POST"})
      */
-    private function cambiarEstadoPedidoProducto(ObjectManager $em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto, $motivo): void
-    {
-        $pedidoProducto->setEstado($estadoProducto);
-        $estadoPedidoProductoHistorico = new EstadoPedidoProductoHistorico();
-        $estadoPedidoProductoHistorico->setPedidoProducto($pedidoProducto);
-        $estadoPedidoProductoHistorico->setFecha(new DateTime());
-        $estadoPedidoProductoHistorico->setEstado($estadoProducto);
-        $estadoPedidoProductoHistorico->setMotivo($motivo);
-        $pedidoProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
+    public function guardarColumnas(Request $request): Response {
 
-        $em->persist($estadoPedidoProductoHistorico);
+        $em = $this->doctrine->getManager();
+
+        /* @var $columnas GlobalConfig */
+        $columnas = $em->getRepository('App\Entity\GlobalConfig')->find($this->getUser()->getId());
+
+        if (!$columnas) {
+            throw $this->createNotFoundException('No se configuraron las columnas visibles en la base de datos.');
+        }
+
+        $columnasOcultas = json_decode($request->request->get('columns'), false);
+        $columnas->setColumnasOcultas(implode(",", $columnasOcultas));
+        $em->flush();
+
+        $message = 'Se guardó la configuración de columnas.';
+        $response = new Response();
+        $response->setContent(json_encode(array(
+            'message' => $message,
+            'statusCode' => 200,
+            'statusText' => 'OK'
+        )));
+
+        return $response;
     }
 
+    /**
+     * @Route("/{id}/modal-mesada", name="modal_mesada", methods={"GET"})
+     */
+    public function modalMesada(PedidoProducto $pedidoProducto): Response
+    {
+        $form = $this->createForm(CambiarMesadaType::class, $pedidoProducto);
+
+        return $this->render('pedido_producto/_modal_mesada.html.twig', [
+            'form' => $form->createView(),
+            'pedidoProducto' => $pedidoProducto,
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/cambiar-mesada", name="cambiar_mesada", methods={"POST"})
+     */
+    public function cambiarMesada(Request $request, PedidoProducto $pedidoProducto, EntityManagerInterface $em): Response {
+        $form = $this->createForm(CambiarMesadaType::class, $pedidoProducto);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $estadoMesada = $em->getRepository(EstadoMesada::class)->findOneByCodigoInterno(ConstanteEstadoMesada::PENDIENTE);
+            if ($pedidoProducto->getMesadaDos() && !$pedidoProducto->getMesadaDos()->getCantidadBandejas()) {
+                $pedidoProducto->setMesadaDos(null); // evitar persistir si no hay datos
+            }else{
+                $pedidoProducto->getMesadaDos()->getTipoMesada()->setTipoProducto($pedidoProducto->getTipoProducto());
+                $this->estadoService->cambiarEstadoMesada($pedidoProducto->getMesadaDos(), $estadoMesada, 'CAMBIO DE MESADA.');
+            }
+            $pedidoProducto->getMesadaUno()->getTipoMesada()->setTipoProducto($pedidoProducto->getTipoProducto());
+            $this->estadoService->cambiarEstadoMesada($pedidoProducto->getMesadaUno(), $estadoMesada, 'CAMBIO DE MESADA.');
+            $em->flush();
+
+            // Si usás AJAX podés retornar JSON, si no, redirigir:
+            if ($request->isXmlHttpRequest()) {
+                return $this->json(['success' => true]);
+            }
+
+            // Redirigir o mostrar mensaje
+            $this->addFlash('success', 'Mesada actualizada correctamente');
+            return $this->redirectToRoute('pedido_index'); // cambiá esta ruta
+        }
+
+        return $this->render('pedido_producto/_modal_mesada.html.twig', [
+            'form' => $form->createView(),
+            'pedidoProducto' => $pedidoProducto,
+        ]);
+    }
 }

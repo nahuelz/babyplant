@@ -353,7 +353,7 @@ function checkTabError() {
 }
 
 function initClienteSelect2(){
-    $('#reporte_filtro_cliente').select2({
+    $("select[id$='_cliente'].select2-hidden-accessible").select2({
         matcher: function (params, data) {
             // Si no hay término de búsqueda, mostrar todo
             if ($.trim(params.term) === '') {

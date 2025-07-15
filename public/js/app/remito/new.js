@@ -10,6 +10,7 @@ jQuery(document).ready(function () {
     tipoDescuentoHandler();
     cantidadDescuentoHandler();
     initEntregas();
+    initClienteSelect2();
 });
 
 function initEntregas() {

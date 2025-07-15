@@ -62,7 +62,7 @@
     </div>
     <div class="datos">
         Fecha: {{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}<br>
-        Cliente: Nahuel Zanelli
+        Cliente: {{ entity.pedido ? entity.pedido.cliente : entity.cuentaCorrienteUsuario.cliente }}
     </div>
 
     <div class="linea"></div>
@@ -70,16 +70,16 @@
     <table class="detalle">
         <thead>
         <tr>
-            <th>Movimiento</th>
+            <th>Tipo</th>
             <th>Modo Pago</th>
             <th>Monto</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            <td width="110">{{ entity.tipoMovimiento }}</td>
-            <td width="20">{{ entity.modoPago  }}</td>
-            <td width="30">{{ entity.monto|money_format  }}</td>
+            <td width="120">{{ entity.tipoMovimiento }}</td>
+            <td>{{ entity.modoPago  }}</td>
+            <td>{{ entity.monto|money_format  }}</td>
         </tr>
         </tbody>
     </table>

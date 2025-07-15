@@ -34,6 +34,19 @@ class SelectService {
 
     }
 
+    public function getClienteFilterStock() {
+
+        $sql = "SELECT x.id, CONCAT(x.apellido, ', ', x.nombre) AS nombre, IF(x.tieneRazonSocial = 1, CONCAT('(',r.razonSocial,')'),'') AS razon_social
+                FROM App\Entity\Usuario x 
+                LEFT JOIN x.razonSocial r
+                WHERE x.fechaBaja IS NULL AND x.tipoUsuario = 1 AND x.apellido LIKE '%STOCK%'
+                ORDER BY x.apellido ASC";
+
+        $query = $this->em->createQuery($sql);
+        return $query->getResult();
+
+    }
+
     /**
      *
      * @return type

@@ -8,6 +8,7 @@ use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
 use App\Entity\PedidoProducto;
 use DateTime;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -55,6 +56,15 @@ class PlanificacionController extends BaseController
         $rsm->addScalarResult('colorBandeja', 'colorBandeja');
         $rsm->addScalarResult('fechaSiembraPlanificacion', 'fechaSiembraPlanificacion');
         $rsm->addScalarResult('className', 'className');
+
+        $rsm->addScalarResult('producto', 'producto');
+        $rsm->addScalarResult('tipoProducto', 'tipoProducto');
+        $rsm->addScalarResult('estado', 'estado');
+        $rsm->addScalarResult('colorEstado', 'colorEstado');
+        $rsm->addScalarResult('idEstado', 'idEstado');
+        $rsm->addScalarResult('cantidadBandejas', 'cantidadBandejas');
+        $rsm->addScalarResult('codigoSobre', 'codigoSobre');
+        $rsm->addScalarResult('cliente', 'cliente');
 
         $renderPage = "planificacion/index_table.html.twig";
         return parent::baseIndexTableAction($request, [], $entityTable, ConstanteTipoConsulta::VIEW, $rsm, $renderPage);
@@ -132,7 +142,7 @@ class PlanificacionController extends BaseController
         if (($pedidoProducto->getEstado()->getCodigoInterno() != ConstanteEstadoPedidoProducto::PLANIFICADO) && ($codSobre != '')) {
             $pedidoProducto->setCodigoSobre($codSobre);
             $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::PLANIFICADO);
-            $this->cambiarEstado($em, $pedidoProducto, $estado);
+            $this->estadoService->cambiarEstadoPedidoProducto($pedidoProducto, $estado, 'PLANIFICADO.');
             $pedidoProducto->setNumeroOrden($this->getDoctrine()->getRepository(PedidoProducto::class)->getSiguienteNumeroOrden($pedidoProducto->getTipoProducto()));
         }
         $em->flush();
@@ -145,25 +155,6 @@ class PlanificacionController extends BaseController
 
         return new JsonResponse($result);
 
-    }
-
-    /**
-     *
-     * @param type $em
-     * @param PedidoProducto $pedidoProducto
-     * @param EstadoPedidoProducto $estadoProducto
-     */
-    private function cambiarEstado($em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto) {
-
-        $pedidoProducto->setEstado($estadoProducto);
-        $estadoPedidoProductoHistorico = new EstadoPedidoProductoHistorico();
-        $estadoPedidoProductoHistorico->setPedidoProducto($pedidoProducto);
-        $estadoPedidoProductoHistorico->setFecha(new DateTime());
-        $estadoPedidoProductoHistorico->setEstado($estadoProducto);
-        $estadoPedidoProductoHistorico->setMotivo('Producto planificado.');
-        $pedidoProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
-
-        $em->persist($estadoPedidoProductoHistorico);
     }
 
     /**

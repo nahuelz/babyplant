@@ -191,7 +191,7 @@ var KTCalendarListView = function() {
                                     </div>\n\
                                     <div class="d-flex flex-column font-weight-bold">\n\
                                         <label class="text-dark text-hover-primary mb-1 font-size-lg">Bandejas</label>\n\
-                                        <span class="text-muted">'+info.event.extendedProps.cantidadTipoBandejabandeja+'</span>\n\
+                                        <span class="text-muted">'+info.event.extendedProps.cantidadBandejas+'</span>\n\
                                     </div>\n\
                                 </div>\n\
                             </div>\n\

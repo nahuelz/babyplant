@@ -187,25 +187,6 @@ class EntregaController extends BaseController {
     }
 
     /**
-     *
-     * @param ObjectManager $em
-     * @param Entrega $entrega
-     * @param EstadoEntrega $estadoEntrega
-     */
-    private function cambiarEstadoEntrega(ObjectManager $em, Entrega $entrega, EstadoEntrega $estadoEntrega): void
-    {
-        $entrega->setEstado($estadoEntrega);
-        $estadoEntregaHistorico = new EstadoEntregaHistorico();
-        $estadoEntregaHistorico->setEntrega($entrega);
-        $estadoEntregaHistorico->setFecha(new DateTime());
-        $estadoEntregaHistorico->setEstado($estadoEntrega);
-        $estadoEntregaHistorico->setMotivo('Entrega de producto');
-        $entrega->addHistoricoEstado($estadoEntregaHistorico);
-
-        $em->persist($estadoEntregaHistorico);
-    }
-
-    /**
      * @Route("/lista/productos", name="entrega_lista_productos")
      */
     public function listaProductosAction(Request $request): JsonResponse
@@ -496,9 +477,9 @@ class EntregaController extends BaseController {
 
         $remito = $entrega->getRemito();
         $estadoRemito = $em->getRepository(EstadoRemito::class)->findOneByCodigoInterno(ConstanteEstadoRemito::PENDIENTE);
-        $this->cambiarEstadoRemito($em, $remito, $estadoRemito);
+        $this->estadoService->cambiarEstadoRemito($remito, $estadoRemito, 'CREADO.');
         $estadoEntrega = $em->getRepository(EstadoEntrega::class)->findOneByCodigoInterno(ConstanteEstadoEntrega::CON_REMITO);
-        $this->cambiarEstadoEntrega($em, $entrega, $estadoEntrega);
+        $this->estadoService->cambiarEstadoEntrega($entrega, $estadoEntrega, 'ENTREGA.');
         $em->persist($remito);
         $em->flush();
 
@@ -507,25 +488,6 @@ class EntregaController extends BaseController {
 
         return $this->getCreateRedirectResponse($request, $entrega);
 
-    }
-
-    /**
-     *
-     * @param ObjectManager $em
-     * @param Remito $remito
-     * @param EstadoRemito $estadoRemito
-     */
-    private function cambiarEstadoRemito(ObjectManager $em, Remito $remito, EstadoRemito $estadoRemito) : void {
-
-        $remito->setEstado($estadoRemito);
-        $estadoRemitoHistorico = new EstadoRemitoHistorico();
-        $estadoRemitoHistorico->setRemito($remito);
-        $estadoRemitoHistorico->setFecha(new DateTime());
-        $estadoRemitoHistorico->setEstado($estadoRemito);
-        $estadoRemitoHistorico->setMotivo('Creacion de remito');
-        $remito->addHistoricoEstado($estadoRemitoHistorico);
-
-        $em->persist($estadoRemitoHistorico);
     }
 
     /**

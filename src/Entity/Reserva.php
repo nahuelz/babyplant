@@ -126,12 +126,12 @@ class Reserva {
         $this->historicoEstados = $historicoEstados;
     }
 
-    public function getEstado(): mixed
+    public function getEstado(): EstadoReserva
     {
         return $this->estado;
     }
 
-    public function setEstado(mixed $estado): void
+    public function setEstado(EstadoReserva $estado): void
     {
         $this->estado = $estado;
     }

@@ -1,3 +1,11 @@
+.dataTables_wrapper .dataTable th {
+  font-size: 1.1rem !important;
+}
+
+.dataTables_wrapper .dataTable td{
+  font-size: 1.2rem !important;
+}
+
 table.dataTable {
   clear: both;
   margin-top: 6px !important;

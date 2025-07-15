@@ -228,4 +228,8 @@ class Pedido {
         return $this->getCuentaCorrientePedido()->getSaldo();
     }
 
+    public function getTieneMovimientos(){
+        return (sizeof($this->getCuentaCorrientePedido()->getMovimientos()) > 0);
+    }
+
 }

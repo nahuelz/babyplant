@@ -3,6 +3,16 @@
     {% for entity in entities %}
         {
         "id": "{{ entity.id }}",
+
+        "producto": "{{ entity.producto }}",
+        "tipoProducto": "{{ entity.tipoProducto }}",
+        "estado": "{{ entity.estado }}",
+        "colorEstado": "{{ entity.colorEstado }}",
+        "idEstado": "{{ entity.idEstado }}",
+        "cantidadBandejas": "{{ entity.cantidadBandejas }}",
+        "codigoSobre": "{{ entity.codigoSobre|default('-') }}",
+        "cliente": "{{ entity.cliente }}",
+
         "colorBandeja": "{{ entity.colorBandeja }}",
         "title": "{{ entity.title|default('-') }}",
         "start": "{{ entity.fechaSiembraPlanificacion is not null ? entity.fechaSiembraPlanificacion|date('Y-m-d') : '-' }}",

@@ -104,13 +104,13 @@ class SalidaCamaraController extends BaseController
 
             if ($entity->getEstado()->getCodigoInterno() != ConstanteEstadoPedidoProducto::EN_INVERNACULO) {
                 $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::EN_INVERNACULO);
-                $this->cambiarEstado($em, $entity, $estado);
+                $this->estadoService->cambiarEstadoPedidoProducto($entity, $estado, 'EN INVERNACULO.');
                 $entity->setFechaSalidaCamaraReal(new \DateTime());
             }
             $estadoMesada = $em->getRepository(EstadoMesada::class)->findOneByCodigoInterno(ConstanteEstadoMesada::PENDIENTE);
-            $this->cambiarEstadoMesada($em, $entity->getMesadaUno(), $estadoMesada);
+            $this->estadoService->cambiarEstadoMesada($entity->getMesadaUno(), $estadoMesada, 'ENVIADO A INVERNACULO.');
             if ($entity->getMesadaDos()->getCantidadBandejas() != null) {
-                $this->cambiarEstadoMesada($em, $entity->getMesadaDos(), $estadoMesada);
+                $this->estadoService->cambiarEstadoMesada($entity->getMesadaDos(), $estadoMesada, 'ENVIADO A INVERNACULO.');
             } else {
                 $entity->setMesadaDos(null);
             }
@@ -142,45 +142,6 @@ class SalidaCamaraController extends BaseController
         return $form;
 
 
-    }
-
-    /**
-     *
-     * @param ObjectManager $em
-     * @param PedidoProducto $pedidoProducto
-     * @param EstadoPedidoProducto $estadoProducto
-     */
-    private function cambiarEstado(ObjectManager $em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto) {
-
-        $pedidoProducto->setEstado($estadoProducto);
-        $estadoPedidoProductoHistorico = new EstadoPedidoProductoHistorico();
-        $estadoPedidoProductoHistorico->setPedidoProducto($pedidoProducto);
-        $estadoPedidoProductoHistorico->setFecha(new DateTime());
-        $estadoPedidoProductoHistorico->setEstado($estadoProducto);
-        $estadoPedidoProductoHistorico->setMotivo('Producto enviado a invernaculo.');
-        $pedidoProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
-
-        $em->persist($estadoPedidoProductoHistorico);
-    }
-
-    /**
-     *
-     * @param ObjectManager $em
-     * @param Mesada $mesada
-     * @param EstadoMesada $estadoMesada
-     */
-    private function cambiarEstadoMesada(ObjectManager $em, Mesada $mesada, EstadoMesada $estadoMesada) {
-
-        $mesada->setEstado($estadoMesada);
-        $estadoMesadaHistorico = new EstadoMesadaHistorico();
-        $estadoMesadaHistorico->setMesada($mesada);
-        $estadoMesadaHistorico->setFecha(new DateTime());
-        $estadoMesadaHistorico->setEstado($estadoMesada);
-        $estadoMesadaHistorico->setCantidadBandejas($mesada->getCantidadBandejas());
-        $estadoMesadaHistorico->setMotivo('Producto enviado a invernaculo.');
-        $mesada->addHistoricoEstado($estadoMesadaHistorico);
-
-        $em->persist($estadoMesadaHistorico);
     }
 
     private function actualizarMesadas(PedidoProducto $entity) {

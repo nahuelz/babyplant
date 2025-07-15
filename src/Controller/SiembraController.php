@@ -86,8 +86,7 @@ class SiembraController extends BaseController
         $pedidoProducto->setFechaEntradaCamara($pedidoProducto->getFechaSiembraReal());
         if ($pedidoProducto->getEstado()->getCodigoInterno() != ConstanteEstadoPedidoProducto::SEMBRADO) {
             $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::SEMBRADO);
-            $motivo = 'Producto sembrado.';
-            $this->cambiarEstado($em, $pedidoProducto, $estado, $motivo);
+            $this->estadoService->cambiarEstadoPedidoProducto($pedidoProducto, $estado, 'SEMBRADO.');
         }
         $em->flush();
 
@@ -124,25 +123,6 @@ class SiembraController extends BaseController
             'message' => $message
         );
         return new JsonResponse($result);
-    }
-
-    /**
-     *
-     * @param type $em
-     * @param PedidoProducto $pedidoProducto
-     * @param EstadoPedidoProducto $estadoProducto
-     */
-    private function cambiarEstado($em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto, $motivo) {
-
-        $pedidoProducto->setEstado($estadoProducto);
-        $estadoPedidoProductoHistorico = new EstadoPedidoProductoHistorico();
-        $estadoPedidoProductoHistorico->setPedidoProducto($pedidoProducto);
-        $estadoPedidoProductoHistorico->setFecha(new DateTime());
-        $estadoPedidoProductoHistorico->setEstado($estadoProducto);
-        $estadoPedidoProductoHistorico->setMotivo($motivo);
-        $pedidoProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
-
-        $em->persist($estadoPedidoProductoHistorico);
     }
 
     /**
