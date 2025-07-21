@@ -39,7 +39,7 @@ class Mesada {
      * @var TipoMesada
      *
      * @ORM\ManyToOne(targetEntity=TipoMesada::class, inversedBy="mesadas", cascade={"all"})
-     * @ORM\JoinColumn(name="id_tipo_mesada", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="id_tipo_mesada", referencedColumnName="id", nullable=true)
      */
     protected $tipoMesada;
 
@@ -110,7 +110,7 @@ class Mesada {
         return $this->tipoMesada;
     }
 
-    public function setTipoMesada(TipoMesada $tipoMesada): void
+    public function setTipoMesada($tipoMesada): void
     {
         $this->tipoMesada = $tipoMesada;
     }

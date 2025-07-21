@@ -19,6 +19,7 @@
         },
         {
         "idPedido": "{{ entity.id }}",
+        "cantidadBandejasDisponibles": "{{ entity.cantidadBandejasDisponibles }}",
         "nombreCliente": "{{ entity.cliente|default('-') }}",
         "path": "{{ path('situacioncliente_show', { "id": entity.idCliente }) }}"
         },

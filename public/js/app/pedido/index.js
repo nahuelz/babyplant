@@ -418,7 +418,7 @@ function datatablesGetColDef() {
 
                     if (data !== '-') {
                         icon = `<i class="btn btn-sm fas fa-edit editar-mesada" 
-                            data-bandejas="${full[6]}" 
+                            data-bandejas="${full[5].cantidadBandejasDisponibles}" 
                             data-id="${full[2].idProducto}" 
                             data-mesada="${data}" 
                             title="Editar mesada"></i>`;
@@ -688,11 +688,12 @@ function initCambiarMesadaHandler(){
     $('#cambiar_mesada_mesadaUno_tipoMesada').select2();
     $('#cambiar_mesada_mesadaDos_tipoMesada').select2();
     $('.row-mesada-empty').hide();
-    if ($('#cambiar_mesada_mesadaDos_cantidadBandejas').val() == '') {
+    if ($('#cambiar_mesada_mesadaDos_cantidadBandejas').val() == '' || $('#cambiar_mesada_mesadaDos_cantidadBandejas').val() == '0') {
         $('.mesada-dos').hide();
     }else{
         $('.add-mesada').hide();
     }
+    removeMesadaHandler();
     $(document).on('click', '.add-mesada', function (e) {
         e.preventDefault();
         disableMesadaDosOptionHandler();

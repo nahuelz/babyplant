@@ -52,17 +52,19 @@
                                 {% for mesada in tipo_mesada.mesadas %}
                                     {% if mesada.estado.codigoInterno != 3 %}
                                         {% if mesada.pedidoProducto != null %}
-                                            <tr>
-                                                <td class="text-center v-middle">{{ mesada.pedidoProducto.id }}</td>
-                                                <td class="text-center v-middle">{{ mesada.pedidoProducto.numeroOrdenCompleto }}</td>
-                                                <td class="text-center v-middle">{{ mesada.pedidoProducto }}</td>
-                                                <td class="text-center v-middle">{{ mesada.cantidadBandejas }}</td>
-                                                <td class="text-center v-middle">
-                                                    <a href="{{ path( "pedido_show", { "id": mesada.pedidoProducto.pedido.id }) }}/#{{ mesada.pedidoProducto.id}}" target="_blank">
-                                                        <button type="button" class="btn btn-sm btn-primary" style="padding: 5px"><i class="fa fa-search" style="padding: 0;"></i></button>
-                                                    </a>
-                                                </td>
-                                            </tr>
+                                            {% if mesada.cantidadBandejas > 0 %}
+                                                <tr>
+                                                    <td class="text-center v-middle">{{ mesada.pedidoProducto.id }}</td>
+                                                    <td class="text-center v-middle">{{ mesada.pedidoProducto.numeroOrdenCompleto }}</td>
+                                                    <td class="text-center v-middle">{{ mesada.pedidoProducto }}</td>
+                                                    <td class="text-center v-middle">{{ mesada.cantidadBandejas }}</td>
+                                                    <td class="text-center v-middle">
+                                                        <a href="{{ path( "pedido_show", { "id": mesada.pedidoProducto.pedido.id }) }}/#{{ mesada.pedidoProducto.id}}" target="_blank">
+                                                            <button type="button" class="btn btn-sm btn-primary" style="padding: 5px"><i class="fa fa-search" style="padding: 0;"></i></button>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
                                         {% endif %}
                                     {% endif %}
                                 {% endfor %}

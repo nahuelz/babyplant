@@ -95,6 +95,7 @@ class PedidoController extends BaseController {
         $rsm->addScalarResult('cliente', 'cliente');
         $rsm->addScalarResult('idCliente', 'idCliente');
         $rsm->addScalarResult('cantidadBandejas', 'cantidadBandejas');
+        $rsm->addScalarResult('cantidadBandejasDisponibles', 'cantidadBandejasDisponibles');
         $rsm->addScalarResult('tipoBandeja', 'tipoBandeja');
         $rsm->addScalarResult('fechaSiembraPedido', 'fechaSiembraPedido');
         $rsm->addScalarResult('fechaEntregaPedido', 'fechaEntregaPedido');
@@ -609,13 +610,23 @@ class PedidoController extends BaseController {
      */
     public function cambiarMesada(Request $request, PedidoProducto $pedidoProducto, EntityManagerInterface $em): Response {
         $form = $this->createForm(CambiarMesadaType::class, $pedidoProducto);
+        if ($pedidoProducto->getMesadaDos()) {
+            $mesadaOriginal = clone $pedidoProducto->getMesadaDos();
+        }
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $estadoMesada = $em->getRepository(EstadoMesada::class)->findOneByCodigoInterno(ConstanteEstadoMesada::PENDIENTE);
-            if ($pedidoProducto->getMesadaDos() && !$pedidoProducto->getMesadaDos()->getCantidadBandejas()) {
-                $pedidoProducto->setMesadaDos(null); // evitar persistir si no hay datos
-            }else{
+            $mesadaDos = $pedidoProducto->getMesadaDos();
+            if (!$mesadaDos->getCantidadBandejas()) {
+                if ($mesadaDos->getId() != null) {
+                    $mesadaDos->setCantidadBandejas(0);
+                    $mesadaDos->setTipoMesada(null);
+                } else {
+                    $pedidoProducto->setMesadaDos(null);
+                }
+            }else if ($mesadaDos && $mesadaDos->getCantidadBandejas()) {
+                $pedidoProducto->getMesadaDos()->setPedidoProducto($pedidoProducto);
                 $pedidoProducto->getMesadaDos()->getTipoMesada()->setTipoProducto($pedidoProducto->getTipoProducto());
                 $this->estadoService->cambiarEstadoMesada($pedidoProducto->getMesadaDos(), $estadoMesada, 'CAMBIO DE MESADA.');
             }
@@ -637,5 +648,26 @@ class PedidoController extends BaseController {
             'form' => $form->createView(),
             'pedidoProducto' => $pedidoProducto,
         ]);
+    }
+
+    public function moverMesada($em, $mesadaOriginal, $mesada): void
+    {
+        $bandejasEnMesadaUno = $mesadaUno != null ? $mesadaUno->getCantidadBandejas() : null;
+        $bandejasEnMesadaDos = $mesadaDos != null ? $mesadaDos->getCantidadBandejas() : null;
+
+        if($bandejasEnMesadaUno >= $bandejasAEntregar){
+            $mesadaUno->entregarBandejas($bandejasAEntregar);
+            $this->cambiarEstadoMesada($em, $mesadaUno, $estadoMesada);
+        }else{
+            $badejasRestantes = $bandejasAEntregar - $bandejasEnMesadaUno;
+            $mesadaUno->entregarBandejas($bandejasEnMesadaUno);
+            $this->cambiarEstadoMesada($em, $mesadaUno, $estadoMesada);
+            // SI QUEDAN MÁS BANDEJAS POR ENTREGAR QUE LAS QUE HAY EN LA MESADA HUBO ERROR, SE DESCUENTAN SOLO LAS QUE HAY
+            if ($badejasRestantes > $bandejasEnMesadaDos){
+                $badejasRestantes = $bandejasEnMesadaDos;
+            }
+            $mesadaDos->entregarBandejas($badejasRestantes);
+            $this->cambiarEstadoMesada($em, $mesadaDos, $estadoMesada);
+        }
     }
 }
