@@ -21,6 +21,9 @@ jQuery(document).ready(function () {
     $('#pedido_pedidoProducto_cantDiasProduccion').val('30');
     $('#pedido_pedidoProducto_fechaEntregaPedido').val('');
     initClienteSelect2();
+
+    $('#pedido_pedidoProducto_tipoOrigenSemilla').select2();
+    $('#pedido_pedidoProducto_tipoBandeja').select2();
 });
 
 function initDiasProduccionSelectHandler(){
@@ -478,3 +481,4 @@ function initTipoUsuario(){
     $('.datos-acceso').hide();
     //$("#registration_form_cuit").inputmask("99-99999999-9");
 }
+
