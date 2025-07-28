@@ -2,24 +2,21 @@
 
 namespace App\Controller;
 
-use Afip;
 use App\Entity\Constants\ConstanteAPI;
 use App\Entity\Constants\ConstanteEstadoEntrega;
+use App\Entity\Constants\ConstanteEstadoEntregaProducto;
 use App\Entity\Constants\ConstanteEstadoRemito;
-use App\Entity\Entrega;
 use App\Entity\EntregaProducto;
 use App\Entity\EstadoEntrega;
-use App\Entity\EstadoEntregaHistorico;
 use App\Entity\EstadoRemito;
-use App\Entity\EstadoRemitoHistorico;
-use App\Entity\Pedido;
 use App\Entity\Remito;
 use App\Entity\Usuario;
 use App\Form\RemitoType;
+use App\Repository\EntregaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
-use Doctrine\Persistence\ObjectManager;
-use Mpdf\Mpdf;
+use Exception;
+use Mpdf\MpdfException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -34,6 +31,7 @@ use DateInterval;
  * @IsGranted("ROLE_REMITO")
  */
 class RemitoController extends BaseController {
+
 
     /**
      * @Route("/", name="remito_index", methods={"GET"})
@@ -104,13 +102,11 @@ class RemitoController extends BaseController {
      */
     public function new(Request $request, EntityManagerInterface $em): Array {
         $entity = new Remito();
-
         if ($request->query->has('id')) {
             $id = $request->query->get('id');
             $usuario = $em->getRepository(Usuario::class)->find($id);
             $entity->setCliente($usuario);
         }
-
         return parent::baseNewAction($entity);
     }
 
@@ -127,20 +123,21 @@ class RemitoController extends BaseController {
         $form->handleRequest($request);
 
         $estadoRemito = $em->getRepository(EstadoRemito::class)->findOneByCodigoInterno(ConstanteEstadoRemito::PENDIENTE);
-        $this->cambiarEstadoRemito($em, $remito, $estadoRemito);
+        $this->estadoService->cambiarEstadoRemito($remito, $estadoRemito, 'REMITO CREADO.');
         $estadoEntrega = $em->getRepository(EstadoEntrega::class)->findOneByCodigoInterno(ConstanteEstadoEntrega::CON_REMITO);
         foreach ($remito->getEntregas() as $entrega) {
-            $this->cambiarEstadoEntrega($em, $entrega, $estadoEntrega);
+            $this->estadoService->cambiarEstadoEntrega($entrega, $estadoEntrega, 'REMITO CREADO.');
+            foreach ($entrega->getEntregasProductos() as $entregaProducto) {
+                $entregaProducto->actualizarMontoPendiente();
+            }
         }
 
         $em->persist($remito);
         $em->flush();
-        $message = $this->getCreateMessage($remito, true);
 
         $response = new Response();
-
         $response->setContent(json_encode(array(
-            'message' => $message,
+            'message' => 'REMITO CREADO.',
             'id' => $remito->getId(),
             'idCliente' => $remito->getCliente()->getId(),
             'statusCode' => Response::HTTP_OK,
@@ -186,49 +183,14 @@ class RemitoController extends BaseController {
     }
 
     /**
-     *
-     * @param ObjectManager $em
-     * @param Remito $remito
-     * @param EstadoRemito $estadoRemito
-     */
-    private function cambiarEstadoRemito(ObjectManager $em, Remito $remito, EstadoRemito $estadoRemito) : void {
-
-        $remito->setEstado($estadoRemito);
-        $estadoRemitoHistorico = new EstadoRemitoHistorico();
-        $estadoRemitoHistorico->setRemito($remito);
-        $estadoRemitoHistorico->setFecha(new DateTime());
-        $estadoRemitoHistorico->setEstado($estadoRemito);
-        $estadoRemitoHistorico->setMotivo('Creacion de remito');
-        $remito->addHistoricoEstado($estadoRemitoHistorico);
-
-        $em->persist($estadoRemitoHistorico);
-    }
-
-    /**
-     *
-     * @param ObjectManager $em
-     * @param Entrega $entrega
-     * @param EstadoEntrega $estadoEntrega
-     */
-    private function cambiarEstadoEntrega(ObjectManager $em, Entrega $entrega, EstadoEntrega $estadoEntrega): void
-    {
-        $entrega->setEstado($estadoEntrega);
-        $estadoEntregaHistorico = new EstadoEntregaHistorico();
-        $estadoEntregaHistorico->setEntrega($entrega);
-        $estadoEntregaHistorico->setFecha(new DateTime());
-        $estadoEntregaHistorico->setEstado($estadoEntrega);
-        $estadoEntregaHistorico->setMotivo('Entrega de producto');
-        $entrega->addHistoricoEstado($estadoEntregaHistorico);
-
-        $em->persist($estadoEntregaHistorico);
-    }
-
-    /**
      * Print a Remito Entity.
      *
      * @Route("/imprimir-remito/{id}", name="imprimir_remito", methods={"GET"})
+     * @throws MpdfException
      */
-    public function imprimirRemitoAction($id) {
+    public function imprimirRemitoAction($id): Response
+    {
+
         $em = $this->doctrine->getManager();
 
         /* @var $remito Remito */
@@ -239,30 +201,10 @@ class RemitoController extends BaseController {
         }
 
         $html = $this->renderView('remito/remito_pdf.html.twig', array('entity' => $remito, 'website' => "http://192.168.0.182/babyplant/public/"));
+        $filename = "Remito.pdf";
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
 
-        $filename = 'remito.pdf';
-
-        $mpdfService = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => 'A4',
-            'default_font_size' => 0,
-            'default_font' => '',
-            'margin_left' => 0,
-            'margin_right' => 0,
-            'margin_top' => 0,
-            'margin_bottom' => 0,
-            'margin_header' => 0,
-            'margin_footer' => 0,
-            'orientation' => 'P',
-        ]);
-
-        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
-
-        $mpdfService->SetTitle($filename);
-
-        $mpdfService->WriteHTML($html);
-
-        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
+        $mpdfOutput = $this->printService->printA4($basePath, $filename, $html);
 
         return new Response($mpdfOutput);
     }
@@ -270,62 +212,9 @@ class RemitoController extends BaseController {
     /**
      *
      * @Route("/imprimir-factura-arca/{id}", name="imprimir_factura_arca", methods={"GET"})
+     * @throws Exception
      */
-    public function imprimirFacturaArcaAction($id) {
-        $em = $this->doctrine->getManager();
-
-        /* @var $remito Remito */
-        $remito = $em->getRepository("App\Entity\Remito")->find($id);
-
-        if (!$remito) {
-            throw $this->createNotFoundException("No se puede encontrar la entidad.");
-        }
-
-        // Certificado (Puede estar guardado en archivos, DB, etc)
-        $cert = file_get_contents('certificado/prueba.crt');
-
-        // Key (Puede estar guardado en archivos, DB, etc)
-        $key = file_get_contents('certificado/prueba');
-
-
-        // Tu CUIT
-        $tax_id = 20382971923;
-        $afip = new Afip(array(
-            'CUIT' => $tax_id,
-            'cert' => $cert,
-            'key' => $key
-        ));
-
-        $html = $this->render('arca/factura.html.twig', array('remito' => $remito))->getContent();
-
-        // Nombre para el archivo (sin .pdf)
-        $name = 'PDF de prueba';
-
-        // Opciones para el archivo
-        $options = array(
-            "width" => 8, // Ancho de pagina en pulgadas. Usar 3.1 para ticket
-            "marginLeft" => 0.4, // Margen izquierdo en pulgadas. Usar 0.1 para ticket
-            "marginRight" => 0.4, // Margen derecho en pulgadas. Usar 0.1 para ticket
-            "marginTop" => 0.4, // Margen superior en pulgadas. Usar 0.1 para ticket
-            "marginBottom" => 0.4 // Margen inferior en pulgadas. Usar 0.1 para ticket
-        );
-
-        // Creamos el PDF
-        $res = $afip->ElectronicBilling->CreatePDF(array(
-            "html" => $html,
-            "file_name" => $name,
-            "options" => $options
-        ));
-
-        // Mostramos la url del archivo creado
-        return $this->redirect($res['file']);
-    }
-
-    /**
-     *
-     * @Route("/imprimir-ticket-arca/{id}", name="imprimir_ticket_arca", methods={"GET"})
-     */
-    public function imprimirTicketArcaAction($id): \Symfony\Component\HttpFoundation\RedirectResponse
+    public function imprimirFacturaArcaAction($id): Response
     {
         $em = $this->doctrine->getManager();
 
@@ -336,52 +225,30 @@ class RemitoController extends BaseController {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
 
-        // Certificado (Puede estar guardado en archivos, DB, etc)
-        $cert = file_get_contents('certificado/prueba.crt');
+        $html = $this->render('arca/factura.html.twig', array('entity' => $remito))->getContent();
 
-        // Key (Puede estar guardado en archivos, DB, etc)
-        $key = file_get_contents('certificado/prueba');
-
-
-        // Tu CUIT
-        $tax_id = 20382971923;
-        $afip = new Afip(array(
-            'CUIT' => $tax_id,
-            'cert' => $cert,
-            'key' => $key
-        ));
-
-        $html = $this->render('arca/ticket.html.twig', array('remito' => $remito))->getContent();
-
-        // Nombre para el archivo (sin .pdf)
-        $name = 'PDF de prueba';
-
-        // Opciones para el archivo
-        $options = array(
-            "width" => 3.1, // Ancho de pagina en pulgadas. Usar 3.1 para ticket
-            "marginLeft" => 0.1, // Margen izquierdo en pulgadas. Usar 0.1 para ticket
-            "marginRight" => 0.1, // Margen derecho en pulgadas. Usar 0.1 para ticket
-            "marginTop" => 0.1, // Margen superior en pulgadas. Usar 0.1 para ticket
-            "marginBottom" => 0.1 // Margen inferior en pulgadas. Usar 0.1 para ticket
-        );
-
-        // Creamos el PDF
-        $res = $afip->ElectronicBilling->CreatePDF(array(
-            "html" => $html,
-            "file_name" => $name,
-            "options" => $options
-        ));
-
-        // Mostramos la url del archivo creado
-        return $this->redirect($res['file']);
+        return $this->printService->printARCA($html, false);
     }
 
     /**
      *
-     * @return string
+     * @Route("/imprimir-ticket-arca/{id}", name="imprimir_ticket_arca", methods={"GET"})
+     * @throws Exception
      */
-    protected function getPrintOutputType() {
-        return "I";
+    public function imprimirTicketArcaAction($id): Response
+    {
+        $em = $this->doctrine->getManager();
+
+        /* @var $remito Remito */
+        $remito = $em->getRepository("App\Entity\Remito")->find($id);
+
+        if (!$remito) {
+            throw $this->createNotFoundException("No se puede encontrar la entidad.");
+        }
+
+        $html = $this->render('arca/ticket.html.twig', array('entity' => $remito))->getContent();
+
+        return $this->printService->printARCA($html);
     }
 
     /**
@@ -410,23 +277,13 @@ class RemitoController extends BaseController {
     /**
      * @Route("/lista/entregas", name="remito_lista_entregas")
      */
-    public function listaEntregasAction(Request $request): JsonResponse
+    public function listaEntregasAction(Request $request, EntregaRepository $entregaRepository): JsonResponse
     {
         $idCliente = $request->request->get('id_entity');
 
-        $repository = $this->getDoctrine()->getRepository(Entrega::class);
+        $result = $entregaRepository->findEntregasSinRemitoPorCliente((int)$idCliente);
 
-        $query = $repository->createQueryBuilder('e')
-            ->select("e.id, concat ('Entrega N° ', e.id) as denominacion")
-            ->where('e.clienteEntrega = :cliente')
-            ->andWhere('e.estado = :estado')
-            ->setParameter('cliente', $idCliente)
-            ->setParameter('estado', ConstanteEstadoEntrega::SIN_REMITO)
-            ->orderBy('e.id', 'ASC')
-            ->groupBy('e.id')
-            ->getQuery();
-
-        return new JsonResponse($query->getResult());
+        return new JsonResponse($result);
     }
 
     /**
@@ -447,7 +304,8 @@ class RemitoController extends BaseController {
         return new JsonResponse($result);
     }
 
-    private function remitoSetData(Request $request){
+    private function remitoSetData(Request $request): Remito
+    {
         $entity = new Remito();
         $em = $this->doctrine->getManager();
         $entregas = $request->request->get('remito')['entregas'];

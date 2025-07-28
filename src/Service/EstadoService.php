@@ -3,8 +3,11 @@
 namespace App\Service;
 
 use App\Entity\Entrega;
+use App\Entity\EntregaProducto;
 use App\Entity\EstadoEntrega;
 use App\Entity\EstadoEntregaHistorico;
+use App\Entity\EstadoEntregaProducto;
+use App\Entity\EstadoEntregaProductoHistorico;
 use App\Entity\EstadoMesada;
 use App\Entity\EstadoMesadaHistorico;
 use App\Entity\EstadoRemito;
@@ -46,6 +49,17 @@ class EstadoService
         $historico = new EstadoEntregaHistorico();
         $historico->setEntrega($entrega);
         $this->crearHistorico($historico, $entrega, $estadoEntrega, $motivo);
+    }
+
+    /**
+     * Cambiar estado de EntregaProducto
+     */
+    public function cambiarEstadoEntregaProducto(EntregaProducto $entregaProducto, EstadoEntregaProducto $estadoEntregaProducto, string $motivo): void
+    {
+        $entregaProducto->setEstado($estadoEntregaProducto);
+        $historico = new EstadoEntregaProductoHistorico();
+        $historico->setEntregaProducto($entregaProducto);
+        $this->crearHistorico($historico, $entregaProducto, $estadoEntregaProducto, $motivo);
     }
 
     /**

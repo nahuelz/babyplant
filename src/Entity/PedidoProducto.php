@@ -605,6 +605,10 @@ class PedidoProducto {
         return $this->getTipoVariedad()->getTipoSubProducto()->getTipoProducto() .' '. $this->getTipoVariedad().' (x'.$this->getTipoBandeja().')';
     }
 
+    public function getProductoBandejaCantidad(){
+        return $this->getTipoVariedad()->getTipoSubProducto()->getTipoProducto() .' '. $this->getTipoVariedad(). ' '. $this->getCantidadBandejasReales() .' (x'.$this->getTipoBandeja().')';
+    }
+
 
     public function getNumeroOrdenCompleto()
     {
@@ -797,6 +801,10 @@ class PedidoProducto {
 
     public function getAdelanto(){
         return $this->getPedido()->getAdelanto();
+    }
+
+    public function getCuentaCorrientePedido(){
+        return $this->getPedido()->getCuentaCorrientePedido();
     }
 
 }

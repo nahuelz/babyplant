@@ -5,6 +5,8 @@ $(document).ready(function () {
     initAgregarPago();
     initAgregarAdelanto();
     initVerHistoricoEstadoRemitoHandler();
+    initAdjudicarAdelanto();
+    initAdjudicarCC();
 });
 
 /**
@@ -240,6 +242,142 @@ function initAgregarSaldo() {
         e.stopPropagation();
         return true;
     })
+}
+
+function initAdjudicarAdelanto() {
+    $('.add-pago-adelanto').on('click', function (e) {
+        e.preventDefault();
+
+        let row = $(this).closest("tr");
+
+        let adelantoTexto = row.find(".monto-adelanto").text();
+
+        // Limpiar el texto para obtener solo el número
+        let adelanto = adelantoTexto.replace(/[^0-9,-]+/g, "").replace(",", ".");
+        adelanto = parseFloat(adelanto);
+
+        if (adelanto === 0) {
+            Swal.fire({
+                title: 'El pedido no posee adelanto.',
+                icon: "warning",
+            });
+            return false;
+        } else {
+
+            let remito = $(this).attr("data-remito");
+            let monto = $(this).attr("data-monto");
+            $.ajax({
+                type: 'POST',
+                url: __HOMEPAGE_PATH__ + "pago/new",
+                data: {
+                    monto: monto,
+                    idRemito: remito,
+                    idCuentaCorrienteUsuario: __ID_CUENTA_CORRIENTE__,
+                },
+            }).done(function (form) {
+                showDialog({
+                    titulo: '<i class="fa fa-list-ul margin-right-10"></i>ADJUDICAR ADELANTO - REMITO N°' + remito,
+                    contenido: form,
+                    labelCancel: 'Cancelar',
+                    labelSuccess: 'Adjudicar Pago',
+                    closeButton: true,
+                    callbackCancel: function () {
+                        return true;
+                    },
+                    callbackSuccess: function () {
+                        $.ajax({
+                            type: 'POST',
+                            url: __HOMEPAGE_PATH__ + "pago/adjudicar",
+                            data: {
+                                idRemito: remito,
+                                modoPago: 'ADELANTO'
+                            },
+                        }).done(function (form) {
+                            Swal.fire({
+                                title: 'Se adjudicó el adelanto.',
+                                icon: "success",
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.reload();
+                                }
+                            });
+                        });
+                    }
+                });
+                let modal = $('.modal-dialog');
+                modal.css('width', '80%');
+                modal.addClass('modal-xl');
+                modal.addClass('modal-fullscreen-xl-down');
+            });
+        }
+    });
+}
+
+function initAdjudicarCC() {
+    $('.add-pago-cc').on('click', function (e) {
+        e.preventDefault();
+
+        let adelantoTexto = $(".saldo-cc").text();
+
+        // Limpiar el texto para obtener solo el número
+        let adelanto = adelantoTexto.replace(/[^0-9,-]+/g, "").replace(",", ".");
+        adelanto = parseFloat(adelanto);
+
+        if (adelanto === 0) {
+            Swal.fire({
+                title: 'El cliente no posee saldo en la Cuenta Corriente.',
+                icon: "warning",
+            });
+            return false;
+        } else {
+            let remito = $(this).attr("data-remito");
+            let monto = $(this).attr("data-monto");
+            $.ajax({
+                type: 'POST',
+                url: __HOMEPAGE_PATH__ + "pago/new",
+                data: {
+                    monto: monto,
+                    idRemito: remito,
+                    modoPago: 'CC',
+                    idCuentaCorrienteUsuario: __ID_CUENTA_CORRIENTE__,
+                },
+            }).done(function (form) {
+                showDialog({
+                    titulo: '<i class="fa fa-list-ul margin-right-10"></i>ADJUDICAR CUENTA CORRIENTE - REMITO N°' + remito,
+                    contenido: form,
+                    labelCancel: 'Cancelar',
+                    labelSuccess: 'Adjudicar Pago',
+                    closeButton: true,
+                    callbackCancel: function () {
+                        return true;
+                    },
+                    callbackSuccess: function () {
+                        $.ajax({
+                            type: 'POST',
+                            url: __HOMEPAGE_PATH__ + "pago/adjudicar",
+                            data: {
+                                idRemito: remito,
+                                modoPago: 'CC'
+                            },
+                        }).done(function (form) {
+                            Swal.fire({
+                                title: 'Se adjudicó el pago.',
+                                icon: "success",
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.reload();
+                                }
+                            });
+                        });
+                    }
+                });
+                let modal = $('.modal-dialog');
+                modal.css('width', '80%');
+                modal.addClass('modal-xl');
+                modal.addClass('modal-fullscreen-xl-down');
+            });
+        }
+    });
 }
 
 function initAgregarPago() {

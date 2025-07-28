@@ -10,6 +10,7 @@ use App\Entity\Usuario;
 use App\Form\RegistrationFormType;
 use App\Service\EntityManagementGuesser;
 use App\Service\EstadoService;
+use App\Service\PrintService;
 use App\Service\SelectService;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -61,6 +62,12 @@ class BaseController extends AbstractController {
 
     /**
      *
+     * @var PrintService
+     */
+    protected $printService;
+
+    /**
+     *
      * @var ParameterBagInterface
      */
     protected $parameterBag;
@@ -96,7 +103,7 @@ class BaseController extends AbstractController {
      * @param AuthorizationCheckerInterface $authChecker
      * @return $this
      */
-    public function __construct(ManagerRegistry $doctrine, EntityManagementGuesser $emg, ContainerInterface $container, SelectService $selectService, EstadoService $estadoService, ParameterBagInterface $parameterBag, AuthorizationCheckerInterface $authChecker, Packages $assets) {
+    public function __construct(ManagerRegistry $doctrine, EntityManagementGuesser $emg, ContainerInterface $container, SelectService $selectService, EstadoService $estadoService, PrintService $printService, ParameterBagInterface $parameterBag, AuthorizationCheckerInterface $authChecker, Packages $assets) {
         $this->container = $container;
 
         $this->guesser = $emg;
@@ -106,6 +113,8 @@ class BaseController extends AbstractController {
         $this->selectService = $selectService;
 
         $this->estadoService = $estadoService;
+
+        $this->printService = $printService;
 
         $this->parameterBag = $parameterBag;
 

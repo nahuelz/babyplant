@@ -342,4 +342,8 @@ class Remito {
         return  ($this->getTipoDescuento() . ' ' . $this->getCantidadDescuento());
     }
 
+    public function getCuentaCorrientePedido(){
+        return $this->getEntregas()->first()->getCuentaCorrientePedido();
+    }
+
 }

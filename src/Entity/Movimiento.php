@@ -81,6 +81,12 @@ class Movimiento {
     private $pago;
 
     /**
+     * @ORM\ManyToOne(targetEntity=PedidoProducto::class)
+     * @ORM\JoinColumn(name="id_producto", referencedColumnName="id", nullable=true)
+     */
+    private $pedidoProducto;
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -159,7 +165,7 @@ class Movimiento {
      */
     public function getPedido()
     {
-        return $this->pedido;
+        return $this->pedido != null ? $this->pedido : ($this->pedidoProducto != null ? $this->pedidoProducto->getPedido() : null);
     }
 
     /**
@@ -260,6 +266,22 @@ class Movimiento {
     public function setCuentaCorrientePedido($cuentaCorrientePedido): void
     {
         $this->cuentaCorrientePedido = $cuentaCorrientePedido;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPedidoProducto()
+    {
+        return $this->pedidoProducto;
+    }
+
+    /**
+     * @param mixed $pedidoProducto
+     */
+    public function setPedidoProducto($pedidoProducto): void
+    {
+        $this->pedidoProducto = $pedidoProducto;
     }
 
 

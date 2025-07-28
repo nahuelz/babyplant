@@ -83,6 +83,9 @@ class Reserva {
         return 'Reserva N° '.$this->getId();
     }
 
+    public function getCodigo(){
+        return str_pad($this->id, 6, "0", STR_PAD_LEFT);
+    }
 
     public function getId()
     {

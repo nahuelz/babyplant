@@ -42,7 +42,7 @@
                                                         <td class="v-middle nowrap text-center">
                                                             {{ remito.pendiente|money_format }}
                                                         </td>
-                                                        <td class="v-middle nowrap text-center">
+                                                        <td class="v-middle nowrap text-center monto-adelanto" style="min-width: 90px;">
                                                             {{ remito.adelanto|money_format }}
                                                         </td>
                                                         <td class="v-middle nowrap text-center">
@@ -65,9 +65,17 @@
                                                                     <a href="{{ path('imprimir_remito',{id: remito.id}) }}" target="_blank" class="dropdown-item">
                                                                         <i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Remito
                                                                     </a>
-                                                                    <a href="#" class="dropdown-item {% if remito.estado.codigoInterno == 3 %}cursor-disable{% else %}add-pago{% endif %}" data-remito="{{ remito.id }}" data-monto="{{remito.totalConDescuento }}">
+                                                                    {% if remito.estado.codigoInterno != 3 %}
+                                                                        <a href="#" class="dropdown-item add-pago-adelanto" data-remito="{{ remito.id }}" data-monto="{{remito.totalConDescuento }}">
+                                                                            <i class="la la-paypal" style="margin-right: 5px;"></i> Adjudicar Adelanto
+                                                                        </a>
+                                                                        <a href="#" class="dropdown-item add-pago-cc" data-remito="{{ remito.id }}" data-monto="{{remito.totalConDescuento }}">
+                                                                            <i class="la la-paypal" style="margin-right: 5px;"></i> Adjudicar CC
+                                                                        </a>
+                                                                    {% endif %}
+                                                                    {# <a href="#" class="dropdown-item {% if remito.estado.codigoInterno == 3 %}cursor-disable{% else %}add-pago{% endif %}" data-remito="{{ remito.id }}" data-monto="{{remito.totalConDescuento }}">
                                                                         <i class="la la-paypal" style="margin-right: 5px;"></i> Ingresar Pago
-                                                                    </a>
+                                                                    </a> #}
                                                                 </div>
                                                             </div>
                                                         </td>

@@ -275,6 +275,7 @@ class ReservaController extends BaseController {
             $entreaProducto = new EntregaProducto();
             $entreaProducto->setCantidadBandejas($reserva->getCantidadBandejas());
             $entreaProducto->setPedidoProducto($reserva->getPedidoProducto());
+            $entreaProducto->setMontoPendiente($entreaProducto->getMontoTotal());
             $entrega->addEntregaProducto($entreaProducto);
             $entrega->setClienteEntrega($reserva->getCliente());
             $entrega->setCliente($reserva->getPedidoProducto()->getPedido()->getCliente());
@@ -427,7 +428,7 @@ class ReservaController extends BaseController {
     /**
      * Print a Pedido Entity.
      *
-     * @Route("/imprimir-reserva-ticket/{id}", name="imprimir_pedido_ticket", methods={"GET"})
+     * @Route("/imprimir-reserva-ticket/{id}", name="imprimir_reserva_ticket", methods={"GET"})
      */
     public function imprimirReservaTicketAction($id) {
         $em = $this->doctrine->getManager();

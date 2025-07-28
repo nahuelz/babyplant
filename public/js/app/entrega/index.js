@@ -129,15 +129,27 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
-            name: 'cliente',
-            width: '250px',
-            className: 'dt-center'
+            name: 'nombreCliente',
+            className: 'nowrap text-center margin-0 ',
+            width: '50px',
+            render: function (data, type, full, meta) {
+                if (type === 'display') {
+                    return '<a href="' + data.path + '" target="_blank">' + data.nombreCliente + '</a>';
+                }
+                return data.nombreCliente;
+            }
         },
         {
             targets: index++,
-            name: 'clienteEntrega',
-            width: '250px',
-            className: 'dt-center'
+            name: 'nombreClienteEntrega',
+            className: 'nowrap text-center margin-0 ',
+            width: '50px',
+            render: function (data, type, full, meta) {
+                if (type === 'display') {
+                    return '<a href="' + data.pathEntrega + '" target="_blank">' + data.nombreClienteEntrega + '</a>';
+                }
+                return data.nombreClienteEntrega;
+            }
         },
         {
             targets: index++,

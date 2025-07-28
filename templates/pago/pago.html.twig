@@ -1,0 +1,51 @@
+<div class="row">
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-6">
+                {% if modoPago == 'CC' %}
+                    <div class="label label-inline font-size-14 font-dark font-weight-bold label-light-success" style="padding: 15px">
+                        CUENTA CORRIENTE: {{ cuentaCorrienteUsuario.saldo|money_format }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-6 text-right">
+                <div class="label label-inline font-size-14 font-dark font-weight-bold label-light-warning" style="padding: 15px">
+                    PENDIENTE: {{ remito.pendiente|money_format }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="modal-body" style="padding-top: 0px;padding-bottom: 0px;">
+        <div class="row">
+            <table class="table" style="text-align: center;">
+                <thead>
+                <tr>
+                    <th scope="col">N° ORDEN</th>
+                    <th scope="col">Producto</th>
+                    <th scope="col">Subtotal</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Monto Pendiente</th>
+                    <th scope="col">Adelanto</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for entrega in remito.entregas %}
+                    {% for entregaProducto in entrega.entregasProductos %}
+                        <tr>
+                            <td>{{ entregaProducto.pedidoProducto.getNumeroOrdenCompleto }}</td>
+                            <td>{{ entregaProducto.pedidoProducto.productoBandeja }}</td>
+                            <td>{{ entregaProducto.precioSubTotal|money_format }}</td>
+                            <td>{{ entregaProducto.estado|default('-') }}</td>
+                            <td>{{ entregaProducto.montoPendiente|money_format }}</td>
+                            <td>{{ entregaProducto.pedidoProducto.adelanto|money_format }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

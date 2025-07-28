@@ -245,9 +245,7 @@ class Entrega {
         return ($entregaProducto->getEntrega()->getPedidoProducto()->getAdelanto());
     }
 
-
-
-
-
-
+    public function getCuentaCorrientePedido(){
+        return $this->getEntregasProductos()->first()->getCuentaCorrientePedido();
+    }
 }

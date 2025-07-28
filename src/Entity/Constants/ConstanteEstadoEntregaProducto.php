@@ -3,10 +3,10 @@
 namespace App\Entity\Constants;
 
 /**
- * Description of ConstanteEstadoRemito
+ * Description of ConstanteEstadoEntregaProducto
  *
  */
-class ConstanteEstadoRemito {
+class ConstanteEstadoEntregaProducto {
 
     /**
      * PENDIENTE

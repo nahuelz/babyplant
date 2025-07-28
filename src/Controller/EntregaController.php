@@ -3,14 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Constants\ConstanteEstadoEntrega;
+use App\Entity\Constants\ConstanteEstadoEntregaProducto;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Constants\ConstanteEstadoRemito;
 use App\Entity\EntregaProducto;
 use App\Entity\EstadoEntrega;
-use App\Entity\EstadoEntregaHistorico;
+use App\Entity\EstadoEntregaProducto;
 use App\Entity\EstadoRemito;
-use App\Entity\EstadoRemitoHistorico;
-use App\Entity\Pedido;
 use App\Entity\PedidoProducto;
 use App\Entity\Entrega;
 use App\Entity\Remito;
@@ -84,6 +83,7 @@ class EntregaController extends BaseController {
         $rsm->addScalarResult('cliente', 'cliente');
         $rsm->addScalarResult('clienteEntrega', 'clienteEntrega');
         $rsm->addScalarResult('idCliente', 'idCliente');
+        $rsm->addScalarResult('idClienteEntrega', 'idClienteEntrega');
         $rsm->addScalarResult('nombreProductoCompleto', 'nombreProductoCompleto');
         $rsm->addScalarResult('nombreProducto', 'nombreProducto');
         $rsm->addScalarResult('cantidadBandejas', 'cantidadBandejas');
@@ -168,9 +168,12 @@ class EntregaController extends BaseController {
     }
 
     function execPrePersistAction($entity, $request): bool {
+        $em = $this->doctrine->getManager();
         /** @var EntregaProducto $entregaProducto */
         foreach ($entity->getEntregasProductos() as $entregaProducto){
             $entregaProducto->setEntrega($entity);
+            $estadoEntregaProducto = $em->getRepository(EstadoEntregaProducto::class)->findOneByCodigoInterno(ConstanteEstadoEntregaProducto::PENDIENTE);
+            $this->estadoService->cambiarEstadoEntregaProducto($entregaProducto, $estadoEntregaProducto, 'PENDIENTE.');
         }
         return true;
     }
@@ -476,10 +479,13 @@ class EntregaController extends BaseController {
         $form->handleRequest($request);
 
         $remito = $entrega->getRemito();
+        foreach ($entrega->getEntregasProductos() as $entregasProducto) {
+            $entregasProducto->actualizarMontoPendiente();
+        }
         $estadoRemito = $em->getRepository(EstadoRemito::class)->findOneByCodigoInterno(ConstanteEstadoRemito::PENDIENTE);
-        $this->estadoService->cambiarEstadoRemito($remito, $estadoRemito, 'CREADO.');
+        $this->estadoService->cambiarEstadoRemito($remito, $estadoRemito, 'REMITO CREADO.');
         $estadoEntrega = $em->getRepository(EstadoEntrega::class)->findOneByCodigoInterno(ConstanteEstadoEntrega::CON_REMITO);
-        $this->estadoService->cambiarEstadoEntrega($entrega, $estadoEntrega, 'ENTREGA.');
+        $this->estadoService->cambiarEstadoEntrega($entrega, $estadoEntrega, 'REMITO CREADO.');
         $em->persist($remito);
         $em->flush();
 

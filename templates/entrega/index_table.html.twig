@@ -11,8 +11,14 @@
         },
         "{{ entity.ordenSiembra }}",
         "{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}",
-        "{{ entity.cliente|default('-') }}",
-        "{{ entity.clienteEntrega|default('-') }}",
+        {
+        "nombreCliente": "{{ entity.cliente|default('-') }}",
+        "path": "{{ path('situacioncliente_show', { "id": entity.idCliente }) }}"
+        },
+        {
+        "nombreClienteEntrega": "{{ entity.clienteEntrega|default('-') }}",
+        "pathEntrega": "{{ path('situacioncliente_show', { "id": entity.idClienteEntrega }) }}"
+        },
         {
         "nombreProductoCompleto": "{{ entity.nombreProductoCompleto|default('default') }}",
         "nombreProducto": "{{ entity.nombreProducto|default('default') }}"

@@ -81,7 +81,7 @@
             <p class="text-center">Codigo 11</p>
             <p>P.V: 00001</p>
             <p>Nro: 00000001</p>
-            <p>Fecha: {{ remito.fechaCreacion is not null ? remito.fechaCreacion|date('d/m/Y') : '-' }}</p>
+            <p>Fecha: {{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}</p>
             <p>Concepto: Productos</p>
         </td>
     </tr>
@@ -94,7 +94,7 @@
         <td class="border-top padding-t-3 padding-b-3">
             <div>
                 <table>
-                    {% for entrega in remito.entregas %}
+                    {% for entrega in entity.entregas %}
                         {% for entregaProducto in entrega.entregasProductos %}
                             <tr>
                                 <td>{{ entregaProducto.cantidadBandejas|number_format(2) }}</td>
@@ -112,20 +112,20 @@
         <td class="border-top padding-t-3 padding-b-3">
             <div>
                 <table>
-                    {% if remito.tipoDescuento != null %}
+                    {% if entity.tipoDescuento != null %}
                         <tr>
                             <td>SUBTOTAL</td>
-                            <td>{{ remito.totalSinDescuento|money_format }}</td>
+                            <td>{{ entity.totalSinDescuento|money_format }}</td>
                         </tr>
                         <tr>
                             <td>DESCUENTO</td>
-                            <td>{{ remito.tipoDescuentoString }} {{ remito.montoDescuento|money_format }}</td>
+                            <td>{{ entity.tipoDescuentoString }} {{ entity.montoDescuento|money_format }}</td>
                         </tr>
                     {% endif %}
 
                     <tr>
                         <td>TOTAL</td>
-                        <td>{{ remito.totalConDescuento|money_format }}</td>
+                        <td>{{ entity.totalConDescuento|money_format }}</td>
                     </tr>
                 </table>
             </div>

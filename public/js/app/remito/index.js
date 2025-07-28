@@ -125,9 +125,15 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
-            name: 'cliente',
-            width: '250px',
-            className: 'dt-center'
+            name: 'nombreCliente',
+            className: 'nowrap text-center margin-0 ',
+            width: '50px',
+            render: function (data, type, full, meta) {
+                if (type === 'display') {
+                    return '<a href="' + data.path + '" target="_blank">' + data.nombreCliente + '</a>';
+                }
+                return data.nombreCliente;
+            }
         },
         {
             targets: index++,

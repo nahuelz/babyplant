@@ -8,7 +8,10 @@
         "{{ entity.idPedidoProducto }}",
         "{{ entity.ordenSiembra }}",
         "{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}",
-        "{{ entity.cliente|default('-') }}",
+        {
+        "nombreCliente": "{{ entity.cliente|default('-') }}",
+        "path": "{{ path('situacioncliente_show', { "id": entity.idCliente }) }}"
+        },
         {
         "nombreProductoCompleto": "{{ entity.nombreProductoCompleto|default('default') }}",
         "nombreProducto": "{{ entity.nombreProducto|default('default') }}"

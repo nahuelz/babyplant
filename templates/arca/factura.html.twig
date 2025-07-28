@@ -179,7 +179,7 @@
                         <strong>Comp. Nro: 000000001</strong>
                     </p>
                 </div>
-                <p><strong>Fecha de Emisión:</strong> {{ remito.fechaCreacion is not null ? remito.fechaCreacion|date('d/m/Y') : '-' }}</p>
+                <p><strong>Fecha de Emisión:</strong> {{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}</p>
                 <p><strong>CUIT:</strong> 33-71230651-9</p>
                 <p><strong>Ingresos Brutos:</strong> 12345432</p>
                 <p><strong>Fecha de Inicio de Actividades:</strong> 01/01/2001</p>
@@ -190,13 +190,13 @@
         <td colspan="2">
             <div class="row">
                 <p class="col-4 margin-b-0">
-                    <strong>Período Facturado Desde: </strong>{{ remito.fechaCreacion is not null ? remito.fechaCreacion|date('d/m/Y') : '-' }}
+                    <strong>Período Facturado Desde: </strong>{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}
                 </p>
                 <p class="col-3 margin-b-0">
-                    <strong>Hasta: </strong>{{ remito.fechaCreacion is not null ? remito.fechaCreacion|date('d/m/Y') : '-' }}
+                    <strong>Hasta: </strong>{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}
                 </p>
                 <p class="col-5 margin-b-0">
-                    <strong>Fecha de Vto. para el pago: </strong>{{ remito.fechaCreacion is not null ? remito.fechaCreacion|date('d/m/Y') : '-' }}
+                    <strong>Fecha de Vto. para el pago: </strong>{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}
                 </p>
             </div>
         </td>
@@ -206,10 +206,10 @@
             <div>
                 <div class="row">
                     <p class="col-4 margin-b-0">
-                        <strong>CUIL/CUIT: </strong>{{ remito.cliente.cuit|default('11-11111111-11') }}
+                        <strong>CUIL/CUIT: </strong>{{ entity.cliente.cuit|default('11-11111111-11') }}
                     </p>
                     <p class="col-8 margin-b-0">
-                        <strong>Apellido y Nombre / Razón social: </strong>{{ remito.cliente.nombreCompleto|default('-') }}
+                        <strong>Apellido y Nombre / Razón social: </strong>{{ entity.cliente.nombreCompleto|default('-') }}
                     </p>
                 </div>
                 <div class="row">
@@ -217,7 +217,7 @@
                         <strong>Condición Frente al IVA: </strong>Consumidor final
                     </p>
                     <p class="col-6 margin-b-0">
-                        <strong>Domicilio: </strong>{{ remito.cliente.domicilio|default('-') }}
+                        <strong>Domicilio: </strong>{{ entity.cliente.domicilio|default('-') }}
                     </p>
                 </div>
                 <p>
@@ -241,7 +241,7 @@
                         <td>Subtotal</td>
                     </tr>
 
-                    {% for entrega in remito.entregas %}
+                    {% for entrega in entity.entregas %}
                         {% for entregaProducto in entrega.entregasProductos %}
                             <tr>
                                 <td>{{ entregaProducto.pedidoProducto.numeroOrdenCompleto }}</td>
@@ -267,7 +267,7 @@
                         <strong>Subtotal: $</strong>
                     </p>
                     <p class="col-2 margin-b-0">
-                        <strong>{{ remito.totalConDescuento|money_format }}</strong>
+                        <strong>{{ entity.totalConDescuento|money_format }}</strong>
                     </p>
                 </div>
                 <div class="row text-right">
@@ -283,7 +283,7 @@
                         <strong>Importe total: $</strong>
                     </p>
                     <p class="col-2 margin-b-0">
-                        <strong>{{ remito.totalConDescuento|money_format }}</strong>
+                        <strong>{{ entity.totalConDescuento|money_format }}</strong>
                     </p>
                 </div>
             </div>

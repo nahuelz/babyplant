@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Constants\ConstanteEstadoEntregaProducto;
 use App\Entity\Constants\ConstanteEstadoRemito;
 use App\Entity\Constants\ConstanteModoPago;
+use App\Entity\Constants\ConstanteTipoMovimiento;
 use App\Entity\CuentaCorrienteUsuario;
 use App\Entity\EstadoRemito;
 use App\Entity\EstadoRemitoHistorico;
@@ -12,9 +14,11 @@ use App\Entity\Movimiento;
 use App\Entity\Pago;
 use App\Entity\Remito;
 use App\Entity\TipoMovimiento;
+use App\Entity\Usuario;
 use DateTime;
 use Doctrine\Persistence\ObjectManager;
 use Mpdf\Mpdf;
+use Mpdf\MpdfException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,105 +54,67 @@ class PagoController extends BaseController {
      * @Route("/new", name="pago_new", methods={"GET","POST"})
      * @IsGranted("ROLE_PAGO")
      */
-    public function new(Request $request) {
+    public function new(Request $request): Response
+    {
 
         $em = $this->doctrine->getManager();
         $idRemito = $request->request->get('idRemito');
+        $modoPago = $request->request->get('modoPago');
         $idCuentaCorrienteUsuario = $request->request->get('idCuentaCorrienteUsuario');
         $remito = $em->getRepository(Remito::class)->find($idRemito);
         $cuentaCorrienteUsuario = $em->getRepository(CuentaCorrienteUsuario::class)->find($idCuentaCorrienteUsuario);
 
-        $pago = new Pago();
-        $pago->setMonto($remito->getPendiente());
-        $pago->setRemito($remito);
-        $form = $this->baseCreateCreateForm($pago);
-
-        return $this->render('pago/pago_form.html.twig', [
-            'form' => $form->createView(),
-            'entity' => $pago,
+        return $this->render('pago/pago.html.twig', [
             'remito' => $remito,
             'cuentaCorrienteUsuario' => $cuentaCorrienteUsuario,
+            'modoPago' => $modoPago,
             'modal' => true
         ]);
     }
 
     /**
-     * @Route("/create", name="pago_create", methods={"GET","POST"})
+     * @Route("/adjudicar", name="pago_create", methods={"GET","POST"})
      * @IsGranted("ROLE_PAGO")
      */
-    public function createAction(Request $request) {
+    public function adjudicarAction(Request $request): Response
+    {
         $em = $this->doctrine->getManager();
-
-        $monto = $request->request->get('monto');
-        $modoPagoValue = $request->request->get('modoPago');
         $idRemito = $request->request->get('idRemito');
-        $idCuentaCorrienteUsuario = $request->request->get('idCuentaCorrienteUsuario');
-        $idPago = '';
+        $modoPago = $request->request->get('modoPago');
 
-        if ((isset($modoPagoValue) and $modoPagoValue !== '') and (isset($monto) and $monto !== '')) {
-            $modoPago = $em->getRepository(ModoPago::class)->findOneByCodigoInterno($modoPagoValue);
+        if ((isset($idRemito)) and ($idRemito !== '')) {
             $remito = $em->getRepository(Remito::class)->find($idRemito);
 
-            if ($monto == $remito->getPendiente()) {
+            if ($modoPago == 'CC'){
+                $this->adjudicarCC($em, $remito);
+            }else{
+                $this->adjudicarAdelanto($em, $remito);
+            }
+
+            if ($remito->getPendiente() == 0) {
                 $estadoRemito = $em->getRepository(EstadoRemito::class)->findOneByCodigoInterno(ConstanteEstadoRemito::PAGO);
             } else {
                 $estadoRemito = $em->getRepository(EstadoRemito::class)->findOneByCodigoInterno(ConstanteEstadoRemito::PAGO_PARCIAL);
             }
 
-            $pago = new Pago();
-            $pago->setMonto($monto);
-            $pago->setModoPago($modoPago);
-            $pago->setRemito($remito);
-            $remito->addPago($pago);
-            $em->persist($pago);
+            $this->estadoService->cambiarEstadoRemito($remito, $estadoRemito, $modoPago);
+
             $em->flush();
 
-            if ($modoPagoValue == ConstanteModoPago::CUENTA_CORRIENTE){
-                $tipoMovimiento = $em->getRepository(TipoMovimiento::class)->findOneByCodigoInterno(2); // 1 = PAGO DE REMITO
-                $cuentaCorrienteUsuario = $em->getRepository(CuentaCorrienteUsuario::class)->find($idCuentaCorrienteUsuario);
+            $response = new Response();
+            $response->setContent(json_encode(array(
+                'message' => 'PAGO REGISTRADO',
+                'statusCode' => 200,
+                'statusText' => 'OK'
+            )));
 
-                $movimiento = new Movimiento();
-                $movimiento->setMonto(-$monto);
-                $movimiento->setModoPago($modoPago);
-                $movimiento->setDescripcion('Pago Remito N° '.$remito->getId());
-                $movimiento->setTipoMovimiento($tipoMovimiento);
-                $movimiento->setRemito($remito);
-                $cuentaCorrienteUsuario->addMovimiento($movimiento);
-                $movimiento->setSaldoCuenta($cuentaCorrienteUsuario->getSaldo());
-                $em->persist($movimiento);
-            }
-
-            if ($modoPagoValue == ConstanteModoPago::ADELANTO){
-                $tipoMovimiento = $em->getRepository(TipoMovimiento::class)->findOneByCodigoInterno(2); // 1 = PAGO DE REMITO
-                $entrega = $remito->getEntregas()->first();
-                $entregaProducto = $entrega->getEntregasProductos()->first();
-                $pedido = $entregaProducto->getPedidoProducto()->getPedido();
-                $cuentaCorrientePedido = $pedido->getCuentaCorrientePedido();
-
-
-                $movimiento = new Movimiento();
-                $movimiento->setMonto(-$monto);
-                $movimiento->setModoPago($modoPago);
-                $movimiento->setDescripcion('Pago Remito N° '.$remito->getId());
-                $movimiento->setTipoMovimiento($tipoMovimiento);
-                $movimiento->setPedido($pedido);
-                $movimiento->setRemito($remito);
-                $cuentaCorrientePedido->addMovimiento($movimiento);
-                $movimiento->setSaldoCuenta($cuentaCorrientePedido->getSaldo());
-                $em->persist($movimiento);
-            }
-            $this->cambiarEstadoRemito($em, $remito, $estadoRemito, $pago);
-            $em->flush();
-
-            $idPago = $pago->getId();
+            return $response;
         }
-
         $response = new Response();
         $response->setContent(json_encode(array(
-            'message' => 'PAGO REGISTRADO',
-            'statusCode' => 200,
-            'statusText' => 'OK',
-            'id' => $idPago
+            'message' => 'NO SE ENCONTRO EL REMITO',
+            'statusCode' => 303,
+            'statusText' => 'ERROR'
         )));
 
         return $response;
@@ -190,29 +156,11 @@ class PagoController extends BaseController {
 
     /**
      *
-     * @param ObjectManager $em
-     * @param Remito $remito
-     * @param EstadoRemito $estadoRemito
-     */
-    private function cambiarEstadoRemito(ObjectManager $em, Remito $remito, EstadoRemito $estadoRemito, Pago $pago): void
-    {
-        $remito->setEstado($estadoRemito);
-        $estadoRemitoHistorico = new EstadoRemitoHistorico();
-        $estadoRemitoHistorico->setRemito($remito);
-        $estadoRemitoHistorico->setFecha(new DateTime());
-        $estadoRemitoHistorico->setEstado($estadoRemito);
-        $estadoRemitoHistorico->setPago($pago);
-        $estadoRemitoHistorico->setMotivo('Registro pago remito');
-        $remito->addHistoricoEstado($estadoRemitoHistorico);
-
-        $em->persist($estadoRemitoHistorico);
-    }
-
-    /**
-     *
      * @Route("/imprimir-comprobante-pago/{id}", name="imprimir_comprobante_pago", methods={"GET"})
+     * @throws MpdfException
      */
-    public function imprimirComprobantePagoAction($id) {
+    public function imprimirComprobantePagoAction($id): Response
+    {
         $em = $this->doctrine->getManager();
 
         /* @var $pago Pago */
@@ -223,40 +171,20 @@ class PagoController extends BaseController {
         }
 
         $html = $this->renderView('pago/comprobante_pdf.html.twig', array('entity' => $pago, 'website' => "http://192.168.0.182/babyplant/public/"));
-
         $filename = 'pago.pdf';
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
 
-        $mpdfService = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => 'A4',
-            'default_font_size' => 0,
-            'default_font' => '',
-            'margin_left' => 0,
-            'margin_right' => 0,
-            'margin_top' => 0,
-            'margin_bottom' => 0,
-            'margin_header' => 0,
-            'margin_footer' => 0,
-            'orientation' => 'P',
-        ]);
-
-        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
-
-        $mpdfService->SetTitle($filename);
-
-        $mpdfService->WriteHTML($html);
-
-        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
-
-        return new Response($mpdfOutput);
+        return new Response($this->printService->printA4($basePath,$filename, $html));
     }
 
     /**
      * Print a Remito Entity.
      *
      * @Route("/imprimir-comprobante-pago-ticket/{id}", name="imprimir_comprobante_pago_ticket", methods={"GET"})
+     * @throws MpdfException
      */
-    public function imprimirComprobantePagoTicketAction($id) {
+    public function imprimirComprobantePagoTicketAction($id): Response
+    {
         $em = $this->doctrine->getManager();
 
         /* @var $pago Pago */
@@ -267,45 +195,20 @@ class PagoController extends BaseController {
         }
 
         $html = $this->renderView('pago/comprobante_ticket_pdf.html.twig', array('entity' => $pago));
+        $filename = 'ticket_pago.pdf';
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
 
-        $filename = 'pago.pdf';
-
-        $mpdfService = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => [80, 1000], // ancho x alto en milímetros
-            'margin_left' => 2,
-            'margin_right' => 2,
-            'margin_top' => 2,
-            'margin_bottom' => 2,
-            'orientation' => 'P',
-        ]);
-        $mpdfService->WriteHTML($html);
-
-        // Obtener altura usada en milímetros
-        $usedHeight = $mpdfService->y; // posición vertical actual (mm)
-        $mpdfService = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => [80, $usedHeight + 20], // ancho x alto en milímetros
-            'margin_left' => 2,
-            'margin_right' => 2,
-            'margin_top' => 2,
-            'margin_bottom' => 2,
-            'orientation' => 'P',
-        ]);
-        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
-        $mpdfService->SetTitle($filename);
-        $mpdfService->WriteHTML($html);
-        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
-
-        return new Response($mpdfOutput);
+        return new Response($this->printService->printTicket($basePath,$filename, $html));
     }
 
     /**
      * Print a Remito Entity.
      *
      * @Route("/imprimir-comprobante-pago-todos/{id}", name="imprimir_comprobante_pago_todos", methods={"GET"})
+     * @throws MpdfException
      */
-    public function imprimirComprobantePagoTodosAction($id) {
+    public function imprimirComprobantePagoTodosAction($id): Response
+    {
         $em = $this->doctrine->getManager();
 
         /* @var $usuario Usuario */
@@ -316,39 +219,108 @@ class PagoController extends BaseController {
         }
 
         $html = $this->renderView('pago/comprobante_todos_pdf.html.twig', array('entity' => $usuario, 'website' => "http://192.168.0.182/babyplant/public/"));
-
         $filename = 'pago.pdf';
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
 
-        $mpdfService = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => 'A4',
-            'default_font_size' => 0,
-            'default_font' => '',
-            'margin_left' => 0,
-            'margin_right' => 0,
-            'margin_top' => 0,
-            'margin_bottom' => 0,
-            'margin_header' => 0,
-            'margin_footer' => 0,
-            'orientation' => 'P',
-        ]);
-
-        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
-
-        $mpdfService->SetTitle($filename);
-
-        $mpdfService->WriteHTML($html);
-
-        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
-
-        return new Response($mpdfOutput);
+        return new Response($this->printService->printA4($basePath,$filename, $html));
     }
 
-    /**
-     *
-     * @return string
-     */
-    protected function getPrintOutputType() {
-        return "I";
+    protected function adjudicarPago($em, $remito, $modoPago, $tipoMovimiento, callable $getMontoDisponible, callable $getCuentaCorriente, string $motivo): bool
+    {
+        foreach ($remito->getEntregas() as $entrega) {
+            foreach ($entrega->getEntregasProductos() as $entregaProducto) {
+                if ($entregaProducto->getMontoPendiente() > 0){
+
+                    $pedidoProducto = $entregaProducto->getPedidoProducto();
+                    $montoDisponible = $getMontoDisponible($entregaProducto);
+
+                    if ($montoDisponible > 0) {
+                        $montoPago = min($montoDisponible, $entregaProducto->getMontoPendiente());
+
+                        $movimiento = $this->crearMovimiento($montoPago, $modoPago, $remito, $tipoMovimiento);
+                        $movimiento->setPedidoProducto($pedidoProducto);
+
+                        $entregaProducto->descontarMontoPendiente($montoPago);
+
+                        $cuentaCorriente = $getCuentaCorriente($entregaProducto);
+                        $cuentaCorriente->addMovimiento($movimiento);
+
+                        $movimiento->setSaldoCuenta($cuentaCorriente->getSaldo());
+
+                        $pago = $this->crearPago($montoPago, $modoPago, $remito);
+
+                        $estadoId = $entregaProducto->getMontoPendiente() == 0
+                            ? ConstanteEstadoEntregaProducto::PAGO
+                            : ConstanteEstadoEntregaProducto::PAGO_PARCIAL;
+
+                        $estado = $em->getRepository("App\Entity\EstadoEntregaProducto")->find($estadoId);
+
+                        $this->estadoService->cambiarEstadoEntregaProducto($entregaProducto, $estado, $motivo);
+
+                        $em->persist($entregaProducto);
+                        $em->persist($pago);
+                        $em->persist($movimiento);
+                        $em->flush();
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    protected function AdjudicarCC($em, $remito): bool
+    {
+        $modoPago = $em->getRepository("App\Entity\ModoPago")->find(ConstanteModoPago::CUENTA_CORRIENTE);
+        $tipoMovimiento = $em->getRepository("App\Entity\TipoMovimiento")->find(ConstanteTipoMovimiento::PAGO_TRAMITE);
+
+        return $this->adjudicarPago(
+            $em,
+            $remito,
+            $modoPago,
+            $tipoMovimiento,
+            fn($entregaProducto) => $entregaProducto->getPedidoProducto()->getPedido()->getCliente()->getCuentaCorrienteUsuario()->getSaldo(),
+            fn($entregaProducto) => $entregaProducto->getPedidoProducto()->getPedido()->getCliente()->getCuentaCorrienteUsuario(),
+            'CUENTA CORRIENTE'
+        );
+    }
+
+    protected function adjudicarAdelanto($em, $remito): bool
+    {
+        $modoPago = $em->getRepository("App\Entity\ModoPago")->find(ConstanteModoPago::ADELANTO);
+        $tipoMovimiento = $em->getRepository("App\Entity\TipoMovimiento")->find(ConstanteTipoMovimiento::PAGO_TRAMITE);
+
+        return $this->adjudicarPago(
+            $em,
+            $remito,
+            $modoPago,
+            $tipoMovimiento,
+            fn($entregaProducto) => $entregaProducto->getPedidoProducto()->getAdelanto(),
+            fn($entregaProducto) => $entregaProducto->getPedidoProducto()->getCuentaCorrientePedido(),
+            'ADELANTO'
+        );
+    }
+
+    protected function crearMovimiento($monto, $modoPago, $remito, $tipoMovimiento): Movimiento
+    {
+        $movimiento = new Movimiento();
+        $movimiento->setMonto(-$monto);
+        $movimiento->setModoPago($modoPago);
+        $movimiento->setDescripcion('Pago Remito N° '.$remito->getId());
+        $movimiento->setTipoMovimiento($tipoMovimiento);
+        $movimiento->setRemito($remito);
+
+        return $movimiento;
+    }
+
+    private function crearPago($monto, $modoPago, $remito): Pago
+    {
+        $pago = new Pago();
+        $pago->setMonto($monto);
+        $pago->setModoPago($modoPago);
+        $pago->setRemito($remito);
+        $remito->addPago($pago);
+
+        return $pago;
     }
 }

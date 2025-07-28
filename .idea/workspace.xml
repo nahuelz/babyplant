@@ -4,10 +4,48 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Fix cambiar mesada">
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Fix error select2 al crear pedido">
+      <change afterPath="$PROJECT_DIR$/src/Entity/Constants/ConstanteEstadoEntregaProducto.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/EstadoEntregaProducto.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/EstadoEntregaProductoHistorico.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Repository/EntregaRepository.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_entrega.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Service/PrintService.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/pago/pago.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/reserva/reserva_pdf.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/pedido/new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/new.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_pedido.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_pedido.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/entrega/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/entrega/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/remito/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/remito/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/reserva/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/reserva/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/situacioncliente/show.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/situacioncliente/show.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/BaseController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/BaseController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/EntregaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntregaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PagoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PagoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PedidoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PedidoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/RemitoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RemitoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/ReservaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ReservaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Constants/ConstanteEstadoRemito.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Constants/ConstanteEstadoRemito.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Entrega.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Entrega.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/EntregaProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/EntregaProducto.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/EstadoRemitoHistorico.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/EstadoRemitoHistorico.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Movimiento.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Movimiento.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Remito.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Remito.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Reserva.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Reserva.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/EstadoService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/EstadoService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/arca/factura.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/arca/factura.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/arca/ticket.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/arca/ticket.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrega/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pago/comprobante_todos_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pago/comprobante_todos_pdf.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pago/pago_form.html.twig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/remito/confirmar_remito.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/confirmar_remito.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/remito/datos_remito.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/datos_remito.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/remito/historico_estados.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/historico_estados.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/remito/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/reserva/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/reserva/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/reserva/reserva_ticket_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/reserva/reserva_ticket_pdf.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show_remitos.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_remitos.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show_tiles.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_tiles.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -333,57 +371,26 @@
       <set>
         <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-PS-243.23654.168" />
         <option value="bundled-php-predefined-a98d8de5180a-4c3855d0ab16-com.jetbrains.php.sharedIndexes-PS-243.23654.168" />
-        <option value="php-doctrine_collections-5543a6ebd44f-f25708bb" />
-        <option value="php-doctrine_common-5543a6ebd44f-efb0421a" />
         <option value="php-doctrine_dbal-5543a6ebd44f-3aaabdbf" />
         <option value="php-doctrine_doctrine_bundle-5543a6ebd44f-2cea98e0" />
         <option value="php-doctrine_inflector-5543a6ebd44f-c145f861" />
         <option value="php-doctrine_orm-5543a6ebd44f-1244442d" />
-        <option value="php-egulias_email_validator-5543a6ebd44f-f8e7eb7f" />
-        <option value="php-friendsofphp_proxy_manager_lts-5543a6ebd44f-c3a938bb" />
-        <option value="php-monolog_monolog-5543a6ebd44f-60d6c1df" />
-        <option value="php-nikic_php_parser-5543a6ebd44f-b657ee4f" />
-        <option value="php-paragonie_random_compat-5543a6ebd44f-6c3ba42c" />
-        <option value="php-phar_io_version-5543a6ebd44f-bf2c7010" />
-        <option value="php-phpdocumentor_reflection_docblock-5543a6ebd44f-c02c5d02" />
         <option value="php-phpunit_php_code_coverage-5543a6ebd44f-dd8f229f" />
         <option value="php-phpunit_phpunit-5543a6ebd44f-2d939331" />
-        <option value="php-sebastian_comparator-5543a6ebd44f-2fefc3d7" />
         <option value="php-sensio_framework_extra_bundle-5543a6ebd44f-c4917a93" />
-        <option value="php-symfony_cache-5543a6ebd44f-280837bb" />
         <option value="php-symfony_config-5543a6ebd44f-9a6add26" />
         <option value="php-symfony_console-5543a6ebd44f-5ce23daf" />
-        <option value="php-symfony_dependency_injection-5543a6ebd44f-7058bc3f" />
-        <option value="php-symfony_dom_crawler-5543a6ebd44f-6096c64c" />
         <option value="php-symfony_error_handler-5543a6ebd44f-334d6960" />
-        <option value="php-symfony_event_dispatcher-5543a6ebd44f-b72d948a" />
-        <option value="php-symfony_expression_language-5543a6ebd44f-4e9f5cd7" />
-        <option value="php-symfony_filesystem-5543a6ebd44f-89ec7074" />
-        <option value="php-symfony_finder-5543a6ebd44f-7b1a1db5" />
-        <option value="php-symfony_flex-5543a6ebd44f-d9b3138a" />
         <option value="php-symfony_framework_bundle-5543a6ebd44f-db35a086" />
         <option value="php-symfony_http_client-5543a6ebd44f-2ccb54e1" />
-        <option value="php-symfony_http_foundation-5543a6ebd44f-870b7b9c" />
         <option value="php-symfony_http_kernel-5543a6ebd44f-859a8986" />
         <option value="php-symfony_intl-5543a6ebd44f-8e6a0a0c" />
         <option value="php-symfony_mailer-5543a6ebd44f-7cbf9da3" />
-        <option value="php-symfony_mime-5543a6ebd44f-5356abc8" />
         <option value="php-symfony_monolog_bridge-5543a6ebd44f-24663cc6" />
         <option value="php-symfony_monolog_bundle-5543a6ebd44f-e25dade4" />
-        <option value="php-symfony_process-5543a6ebd44f-78ef7d72" />
-        <option value="php-symfony_property_access-5543a6ebd44f-db09ca3d" />
         <option value="php-symfony_property_info-5543a6ebd44f-004596c6" />
-        <option value="php-symfony_routing-5543a6ebd44f-8b11e301" />
-        <option value="php-symfony_security_core-5543a6ebd44f-4886ea90" />
-        <option value="php-symfony_serializer-5543a6ebd44f-59b91aed" />
-        <option value="php-symfony_string-5543a6ebd44f-0bf900ec" />
-        <option value="php-symfony_translation-5543a6ebd44f-0ec7883a" />
-        <option value="php-symfony_twig_bridge-5543a6ebd44f-2aa937f4" />
         <option value="php-symfony_twig_bundle-5543a6ebd44f-825a39ce" />
         <option value="php-symfony_validator-5543a6ebd44f-d6e18b9c" />
-        <option value="php-symfony_var_dumper-5543a6ebd44f-083fc93e" />
-        <option value="php-symfony_yaml-5543a6ebd44f-16419819" />
-        <option value="php-twig_twig-5543a6ebd44f-429a3eaa" />
       </set>
     </attachedChunks>
   </component>
@@ -672,15 +679,15 @@
       <workItem from="1752596565296" duration="20974000" />
       <workItem from="1752770521331" duration="1282000" />
       <workItem from="1753113896562" duration="6307000" />
-      <workItem from="1753125011586" duration="3778000" />
-    </task>
-    <task id="LOCAL-00141" summary="docker configurado">
-      <option name="closed" value="true" />
-      <created>1744734827433</created>
-      <option name="number" value="00141" />
-      <option name="presentableId" value="LOCAL-00141" />
-      <option name="project" value="LOCAL" />
-      <updated>1744734827433</updated>
+      <workItem from="1753125011586" duration="5508000" />
+      <workItem from="1753202036475" duration="5277000" />
+      <workItem from="1753229212068" duration="335000" />
+      <workItem from="1753289755836" duration="9920000" />
+      <workItem from="1753373589378" duration="1842000" />
+      <workItem from="1753463900004" duration="3656000" />
+      <workItem from="1753467633476" duration="9674000" />
+      <workItem from="1753709830053" duration="5979000" />
+      <workItem from="1753730390752" duration="5522000" />
     </task>
     <task id="LOCAL-00142" summary="borro esto">
       <option name="closed" value="true" />
@@ -1066,7 +1073,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753128710381</updated>
     </task>
-    <option name="localTasksCounter" value="190" />
+    <task id="LOCAL-00190" summary="Fix error select2 al crear pedido">
+      <option name="closed" value="true" />
+      <created>1753130612229</created>
+      <option name="number" value="00190" />
+      <option name="presentableId" value="LOCAL-00190" />
+      <option name="project" value="LOCAL" />
+      <updated>1753130612229</updated>
+    </task>
+    <option name="localTasksCounter" value="191" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1094,7 +1109,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="docker-compose.yml" />
     <MESSAGE value="roles" />
     <MESSAGE value="docker compose generico" />
     <MESSAGE value="git commit -m &quot;Dejar de rastrear docker-compose.dev.yml&quot;" />
@@ -1119,6 +1133,7 @@
     <MESSAGE value="fix entrega y remito" />
     <MESSAGE value="Stock, cambiar mesada, show reserva" />
     <MESSAGE value="Fix cambiar mesada" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix cambiar mesada" />
+    <MESSAGE value="Fix error select2 al crear pedido" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix error select2 al crear pedido" />
   </component>
 </project>

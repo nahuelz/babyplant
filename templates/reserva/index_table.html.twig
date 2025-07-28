@@ -34,7 +34,8 @@
         "situacion_cliente": "{{ path( "situacioncliente_show", { "id": entity.idClienteReserva }) }}",
         "show": "{{ path('reserva_show',{id: entity.idReserva}) }}",
         "historico_estados": "{{ path('reserva_historico_estado',{id: entity.idReserva}) }}",
-        "print_pdf": "{{ path( "imprimir_reserva", { "id": entity.idReserva }) }}"
+        "print_pdf": "{{ path( "imprimir_reserva", { "id": entity.idReserva }) }}",
+        "print_pdf_ticket": "{{ path( "imprimir_reserva_ticket", { "id": entity.idReserva }) }}"
         }
         ]{{ (loop.last ? '' : ',') }}
     {% endfor %}

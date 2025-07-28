@@ -150,10 +150,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                        {% set adelanto = 0 %}
                         {% for entrega in entity.entregas %}
                             {% for entregaProducto in entrega.entregasProductos %}
-                                {% set adelanto = entregaProducto.pedidoProducto.adelanto %}
                                 <tr>
                                     <td width="170" align="center">{{ entregaProducto.pedidoProducto.numeroOrdenCompleto }}</td>
                                     <td width="395" align="center">{{ entregaProducto.pedidoProducto.productoBandeja }}</td>
@@ -167,7 +165,7 @@
                         <tfoot>
                             <tr>
                                 <th colspan="4" style="text-align: right; font-size: 18px">
-                                    {% if adelanto > 0 %}
+                                    {% if entity.adelanto > 0 %}
                                         ADELANTO<br>
                                     {% endif %}
                                     {% if entity.tipoDescuento != null %}
@@ -177,7 +175,7 @@
                                     TOTAL
                                 </th>
                                 <td align="right" colspan="2">
-                                    {% if adelanto > 0 %}
+                                    {% if entity.adelanto > 0 %}
                                         {{ adelanto|money_format }} <br>
                                     {% endif %}
                                     {% if entity.tipoDescuento != null %}
