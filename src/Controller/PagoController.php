@@ -279,7 +279,7 @@ class PagoController extends BaseController {
             $remito,
             $modoPago,
             $tipoMovimiento,
-            fn($entregaProducto) => $entregaProducto->getPedidoProducto()->getPedido()->getCliente()->getCuentaCorrienteUsuario()->getSaldo(),
+            fn($entregaProducto) => $remito->getCliente()->getCuentaCorrienteUsuario()->getSaldo(),
             fn($entregaProducto) => $entregaProducto->getPedidoProducto()->getPedido()->getCliente()->getCuentaCorrienteUsuario(),
             'CUENTA CORRIENTE'
         );
