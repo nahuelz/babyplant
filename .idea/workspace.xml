@@ -4,12 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="FIX ADJUDICAR CC">
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="role entrega">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/packages/roles.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/roles.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/EntradaCamaraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntradaCamaraController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SalidaCamaraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SalidaCamaraController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/menu/menu.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/menu/menu_pedido.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu_pedido.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -688,15 +689,7 @@
       <workItem from="1753980512720" duration="983000" />
       <workItem from="1754082863152" duration="948000" />
       <workItem from="1754328122175" duration="4281000" />
-      <workItem from="1754333849359" duration="814000" />
-    </task>
-    <task id="LOCAL-00145" summary="docker-compose.yml">
-      <option name="closed" value="true" />
-      <created>1744834252158</created>
-      <option name="number" value="00145" />
-      <option name="presentableId" value="LOCAL-00145" />
-      <option name="project" value="LOCAL" />
-      <updated>1744834252158</updated>
+      <workItem from="1754333849359" duration="1211000" />
     </task>
     <task id="LOCAL-00146" summary=".">
       <option name="closed" value="true" />
@@ -1082,7 +1075,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753814006783</updated>
     </task>
-    <option name="localTasksCounter" value="194" />
+    <task id="LOCAL-00194" summary="role entrega">
+      <option name="closed" value="true" />
+      <created>1754334695089</created>
+      <option name="number" value="00194" />
+      <option name="presentableId" value="LOCAL-00194" />
+      <option name="project" value="LOCAL" />
+      <updated>1754334695089</updated>
+    </task>
+    <option name="localTasksCounter" value="195" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1110,7 +1111,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="git commit -m &quot;Dejar de rastrear docker-compose.dev.yml&quot;" />
     <MESSAGE value="docker base" />
     <MESSAGE value="fix error pedidos sin cuentaCorrientePedido" />
     <MESSAGE value="ACTUALIZAR FECHA ENTREGA REAL.&#10;MENSAJE AL GENERAR RESERVA.&#10;CAMBIOS REGISTRAR CLIENTE.&#10;IMPRIMIR RESERVA TICKET." />
@@ -1135,6 +1135,7 @@
     <MESSAGE value="Fix error select2 al crear pedido" />
     <MESSAGE value="CUENTA CORRIENTE Y ADELANTOS. ADJUDICAR PAGOS." />
     <MESSAGE value="FIX ADJUDICAR CC" />
-    <option name="LAST_COMMIT_MESSAGE" value="FIX ADJUDICAR CC" />
+    <MESSAGE value="role entrega" />
+    <option name="LAST_COMMIT_MESSAGE" value="role entrega" />
   </component>
 </project>

@@ -43,8 +43,12 @@
                     {% endif %}
 
                     {# ORDENES EN CAMARA #}
-                    {% if is_granted("ROLE_CAMARA") %}
+                    {% if is_granted("ROLE_ENTRADA_CAMARA") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-list-ul icon-3x text-dark', 'nombreModulo': 'CAMARA','action': path('entradacamara_index'), 'descripcionModulo': 'Aqui podras ver las ordenes en camara' } %}
+                    {% else %}
+                        {% if is_granted("ROLE_SALIDA_CAMARA") %}
+                            {% include 'modulo.html.twig' with {'iconClass': 'fas fa-list-ul icon-3x text-dark', 'nombreModulo': 'CAMARA','action': path('salidacamara_index'), 'descripcionModulo': 'Aqui podras ver las ordenes en camara' } %}
+                        {% endif %}
                     {% endif %}
 
                     {# PLANIFICACION ENTREGA#}
