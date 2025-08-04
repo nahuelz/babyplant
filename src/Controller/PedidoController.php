@@ -50,6 +50,14 @@ class PedidoController extends BaseController {
         $em = $this->doctrine->getManager();
         $columnasOcultas = $em->getRepository('App\Entity\GlobalConfig')->find($this->getUser()->getId());
 
+        if (!$columnasOcultas) {
+            $columnasOcultas = new GlobalConfig();
+            $columnasOcultas->setColumnasOcultas('1,6,10,11,13');
+            $columnasOcultas->setUsuario($this->getUser());
+            $em->persist($columnasOcultas);
+            $em->flush();
+        }
+
         return array(
             'columnasOcultas' => $columnasOcultas->getColumnasOcultas(),
             'indicadorEstadoData' => $this->getIndicadorEstadoData(),
