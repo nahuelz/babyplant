@@ -1,5 +1,5 @@
 {# MENU CONFIGURACION #}
-{% if is_granted("ROLE_PEDIDO") %}
+{% if is_granted("ROLE_MENU_PEDIDO") %}
     {% include 'menu/menu_pedido.html.twig' %}
 {% endif %}
 {% if is_granted("ROLE_PEDIDO") %}
