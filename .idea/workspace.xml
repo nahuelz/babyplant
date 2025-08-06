@@ -4,18 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="fix error codigo sobre">
-      <change afterPath="$PROJECT_DIR$/public/images/logo/logo_nuevo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/plantilla/plantilla-entrega-old.png" afterDir="false" />
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="plantilla entrega&#10;remito index monto total y pendiente">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/images/plantilla/plantilla-entrega.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/plantilla/plantilla-entrega.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/remito/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/remito/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/EntregaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntregaController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/RemitoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RemitoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_remito.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_remito.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SQLViews/_view_remito_precio_total.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLViews/_view_remito_precio_total.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/entrega/entrega_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/entrega_pdf.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/remito/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/remito/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/index_table.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -696,15 +689,7 @@
       <workItem from="1754328122175" duration="4281000" />
       <workItem from="1754333849359" duration="5719000" />
       <workItem from="1754411645936" duration="8607000" />
-      <workItem from="1754494641215" duration="4515000" />
-    </task>
-    <task id="LOCAL-00149" summary="roles">
-      <option name="closed" value="true" />
-      <created>1745419844221</created>
-      <option name="number" value="00149" />
-      <option name="presentableId" value="LOCAL-00149" />
-      <option name="project" value="LOCAL" />
-      <updated>1745419844221</updated>
+      <workItem from="1754494641215" duration="5022000" />
     </task>
     <task id="LOCAL-00150" summary=".">
       <option name="closed" value="true" />
@@ -1090,7 +1075,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754415487284</updated>
     </task>
-    <option name="localTasksCounter" value="198" />
+    <task id="LOCAL-00198" summary="plantilla entrega&#10;remito index monto total y pendiente">
+      <option name="closed" value="true" />
+      <created>1754499290333</created>
+      <option name="number" value="00198" />
+      <option name="presentableId" value="LOCAL-00198" />
+      <option name="project" value="LOCAL" />
+      <updated>1754499290333</updated>
+    </task>
+    <option name="localTasksCounter" value="199" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1118,7 +1111,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="." />
     <MESSAGE value="Situacion cliente, cambiar boton desplegable, y la busqueda redirecciona automaticamente." />
     <MESSAGE value="Situacion Cliente.&#10;Colores en cantidad bandejas." />
     <MESSAGE value="htaccess" />
@@ -1143,6 +1135,7 @@
     <MESSAGE value="ROLE CAMARA" />
     <MESSAGE value="columnas ocultas" />
     <MESSAGE value="fix error codigo sobre" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix error codigo sobre" />
+    <MESSAGE value="plantilla entrega&#10;remito index monto total y pendiente" />
+    <option name="LAST_COMMIT_MESSAGE" value="plantilla entrega&#10;remito index monto total y pendiente" />
   </component>
 </project>
