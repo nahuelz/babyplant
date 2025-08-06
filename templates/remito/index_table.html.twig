@@ -24,6 +24,11 @@
         "{{ entity.precioUnitario|money_format|default('-') }}",
         "{{ entity.precioSubTotal|money_format|default('-') }}",
         {
+        "tipoDescuento": "{{ entity.tipoDescuento|default('default') }}",
+        "precioTotalConDescuento": "{{ entity.precioTotalConDescuento|default('default') }}",
+        "montoPendiente": "{{ entity.montoPendiente|default('default') }}"
+        },
+        {
         "situacion_cliente": "{{ path( "situacioncliente_show", { "id": entity.idCliente }) }}",
         "show": "{{ path('remito_show',{id: entity.idRemito}) }}",
         "historico_estados": "{{ path('remito_historico_estado',{id: entity.idRemito}) }}",

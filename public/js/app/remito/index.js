@@ -65,7 +65,23 @@ function initDataTable() {
         columnDefs: datatablesGetColDef(),
         order: [[1, 'desc']],
         rowGroup: {
-            dataSrc: 1
+            dataSrc: 1,
+            endRender: function (rows, group) {
+                let precioTotalConDescuento = rows.data()[0][11].precioTotalConDescuento;
+                let montoPendiente = rows.data()[0][11].montoPendiente;
+
+                const formatter = new Intl.NumberFormat('es-AR', {style: 'currency', currency: 'ARS'});
+
+                return $('<tr/>').append(`
+                    <td colspan="11" class="text-right font-weight-bold">
+                        <div>Total Remito con Descuento: ${formatter.format(precioTotalConDescuento)}</div>
+                        ${montoPendiente > 0
+                    ? `<div class="text-warning">Monto Pendiente: ${formatter.format(montoPendiente)}</div>`
+                    : `<div class="text-success">Monto Pendiente: ${formatter.format(montoPendiente)}</div>`}
+                    </td>
+                    <td></td>
+                `);
+            }
         },
         serverSide: false,
     });
@@ -174,6 +190,14 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'precioSubTotal',
             className: 'dt-center'
+        },
+        {
+            targets: index++,
+            name: 'descuento',
+            visible: false, // Podés ocultarla si no querés mostrarla
+            render: function (data, type, full, meta) {
+                return JSON.stringify(data); // guardamos como string para fácil acceso en endRender
+            }
         },
         {
             targets: -1,

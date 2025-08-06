@@ -80,6 +80,9 @@ class RemitoController extends BaseController {
         $rsm->addScalarResult('precioUnitario', 'precioUnitario');
         $rsm->addScalarResult('precioSubTotal', 'precioSubTotal');
         $rsm->addScalarResult('precioTotal', 'precioTotal');
+        $rsm->addScalarResult('tipoDescuento', 'tipoDescuento');
+        $rsm->addScalarResult('precioTotalConDescuento', 'precioTotalConDescuento');
+        $rsm->addScalarResult('montoPendiente', 'montoPendiente');
         $rsm->addScalarResult('estado', 'estado');
         $rsm->addScalarResult('idEstado', 'idEstado');
         $rsm->addScalarResult('colorEstado', 'colorEstado');

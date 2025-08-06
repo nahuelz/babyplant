@@ -296,7 +296,7 @@ class EntregaController extends BaseController {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
 
-        $html = $this->renderView('entrega/remito_pdf.html.twig', array('entity' => $entrega, 'website' => "http://192.168.0.182/babyplant/public/"));
+        $html = $this->renderView('entrega/entrega_pdf.html.twig', array('entity' => $entrega, 'website' => "http://192.168.0.182/babyplant/public/"));
 
         $filename = 'entrega.pdf';
 
