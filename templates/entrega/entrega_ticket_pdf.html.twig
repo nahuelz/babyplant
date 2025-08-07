@@ -1,0 +1,36 @@
+<style>
+    {% include 'PDF/ticket.css.twig' %}
+    .logo-empresa {
+        display: inline-block;
+        background: url({{ asset('images/logo/logo.png') }}) no-repeat center center;
+        background-size: contain;
+        width: 100mm;
+        height: 10mm;
+    }
+</style>
+
+<div class="ticket">
+    {% include 'PDF/header_ticket.html.twig' %}
+
+    <table class="detalle">
+        <thead>
+        <tr>
+            <th>N° ORDEN</th>
+            <th>PRODUCTO</th>
+            <th>CANTIDAD</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for entregaProducto in entity.entregasProductos %}
+            <tr>
+                <td width="20">{{ entregaProducto.pedidoProducto.numeroOrdenCompleto }}</td>
+                <td width="43">{{ entregaProducto.pedidoProducto.productoBandeja }}</td>
+                <td width="15">{{ entregaProducto.cantidadBandejas }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="linea"></div>
+
+    <div>¡Gracias por su compra!</div>
+</div>

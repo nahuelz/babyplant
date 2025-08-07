@@ -395,32 +395,11 @@ class ReservaController extends BaseController {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
 
-        $html = $this->renderView('reserva/reserva_pdf.html.twig', array('entity' => $reserva, 'website' => "http://192.168.0.182/babyplant/public/"));
+        $html = $this->renderView('reserva/reserva_pdf.html.twig', array('entity' => $reserva, 'tipo_pdf' => "RESERVA"));
+        $filename = "Reserva.pdf";
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
 
-        $filename = 'reserva.pdf';
-
-        $mpdfService = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => 'A4',
-            'default_font_size' => 0,
-            'default_font' => '',
-            'margin_left' => 0,
-            'margin_right' => 0,
-            'margin_top' => 0,
-            'margin_bottom' => 0,
-            'margin_header' => 0,
-            'margin_footer' => 0,
-            'orientation' => 'P',
-        ]);
-
-        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
-
-        $mpdfService->SetTitle($filename);
-
-        $mpdfService->WriteHTML($html);
-
-        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
-
+        $mpdfOutput = $this->printService->printA4($basePath, $filename, $html);
 
         return new Response($mpdfOutput);
     }
@@ -433,54 +412,20 @@ class ReservaController extends BaseController {
     public function imprimirReservaTicketAction($id) {
         $em = $this->doctrine->getManager();
 
-        $reserva = $em->getRepository("App\Entity\Reserva")->find($id);
         /* @var $reserva Reserva */
+        $reserva = $em->getRepository("App\Entity\Reserva")->find($id);
 
         if (!$reserva) {
-            throw $this->createNotFoundException("No se puede encontrar la entidad PEDIDO.");
+            throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
 
-        $html = $this->renderView('reserva/reserva_ticket_pdf.html.twig', array('entity' => $reserva));
+        $html = $this->renderView('reserva/reserva_ticket_pdf.html.twig', array('entity' => $reserva, 'tipo_pdf' => "RESERVA"));
+        $filename = "Reserva.pdf";
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
 
-        $filename = 'reserva.pdf';
-
-        $mpdfService = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => [80, 1000], // ancho x alto en milímetros
-            'margin_left' => 2,
-            'margin_right' => 2,
-            'margin_top' => 2,
-            'margin_bottom' => 2,
-            'orientation' => 'P',
-        ]);
-        $mpdfService->WriteHTML($html);
-
-        // Obtener altura usada en milímetros
-        $usedHeight = $mpdfService->y; // posición vertical actual (mm)
-        $mpdfService = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => [80, $usedHeight + 20], // ancho x alto en milímetros
-            'margin_left' => 2,
-            'margin_right' => 2,
-            'margin_top' => 2,
-            'margin_bottom' => 2,
-            'orientation' => 'P',
-        ]);
-        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
-        $mpdfService->SetTitle($filename);
-        $mpdfService->WriteHTML($html);
-        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
+        $mpdfOutput = $this->printService->printTicket($basePath, $filename, $html);
 
         return new Response($mpdfOutput);
-    }
-
-    /**
-     *
-     * @return string
-     */
-    protected function getPrintOutputType(): string
-    {
-        return "I";
     }
 
     /**

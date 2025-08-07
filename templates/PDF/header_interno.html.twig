@@ -1,0 +1,25 @@
+<div class="table-border header">
+    <table width="100%" border="0">
+        <tr>
+            <td>
+                <img src="{{ asset('images/logo/logo.png') }}" width="45mm" height="20mm">
+            </td>
+
+            <td>
+                <table cellpadding="3" cellspacing="10">
+                    <tr>
+                        <td align="center" colspan="2" style="font-size: 30px"><strong>{{ tipo_pdf|default('') }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td align="right"><strong>N°</strong></td>
+                        <td>{{ entity.codigo|default(entity.id) }}</td>
+                    </tr>
+                    <tr>
+                        <td align="right"><strong>FECHA</strong></td>
+                        <td>{{ entity.fechaCreacion|date('d/m/Y') }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>

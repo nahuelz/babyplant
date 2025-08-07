@@ -99,7 +99,7 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'idEntrega',
-            width: '30px',
+            width: '50px',
             className: 'dt-center',
             type: 'num'
         },
@@ -107,6 +107,7 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'idPedidoProducto',
             className: 'nowrap text-center margin-0 ',
+            visible: false,
             render: function (data, type, full, meta) {
                 if (type === 'display') {
                     return '<a href="' + data.path + '" target="_blank">' + data.idPedidoProducto + '</a>';
@@ -117,7 +118,6 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'ordenSiembra',
-            width: '30px',
             className: 'dt-center',
             type: 'num'
         },
@@ -125,13 +125,12 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'fechaCreacion',
             className: 'dt-center',
-            type: 'date'
+            type: 'date',
         },
         {
             targets: index++,
             name: 'nombreCliente',
             className: 'nowrap text-center margin-0 ',
-            width: '50px',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
                     return '<a href="' + data.path + '" target="_blank">' + data.nombreCliente + '</a>';
@@ -143,7 +142,6 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'nombreClienteEntrega',
             className: 'nowrap text-center margin-0 ',
-            width: '50px',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
                     return '<a href="' + data.pathEntrega + '" target="_blank">' + data.nombreClienteEntrega + '</a>';
@@ -165,7 +163,6 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'estado',
-            width: '90',
             className: 'nowrap text-center align-middle',
             render: function (data, type, full, meta) {
                 if (type === 'display') {

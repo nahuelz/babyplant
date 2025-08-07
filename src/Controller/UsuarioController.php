@@ -57,9 +57,6 @@ class UsuarioController extends BaseController {
         $rsm->addScalarResult('celular', 'celular');
         $rsm->addScalarResult('grupos', 'grupos');
         $rsm->addScalarResult('habilitado', 'habilitado');
-        /*$rsm->addScalarResult('last_seen', 'last_seen');
-        $rsm->addScalarResult('logueado', 'logueado');
-        $rsm->addScalarResult('sesiones', 'sesiones');*/
 
         $columnDefinition = [
             ['field' => 'id', 'type' => '', 'searchable' => false, 'sortable' => false],
@@ -68,9 +65,6 @@ class UsuarioController extends BaseController {
             ['field' => 'apellido', 'type' => 'string', 'searchable' => true, 'sortable' => true],
             ['field' => 'celular', 'type' => 'string', 'searchable' => true, 'sortable' => true],
             ['field' => 'grupos', 'type' => 'string', 'searchable' => true, 'sortable' => true],
-            /*['field' => 'last_seen', 'type' => 'string', 'searchable' => true, 'sortable' => true],
-            ['field' => 'logueado', 'type' => 'select', 'searchable' => true, 'sortable' => true],
-            ['field' => 'habilitado', 'type' => 'select', 'searchable' => true, 'sortable' => true],*/
             ['field' => 'acciones', 'type' => '', 'searchable' => false, 'sortable' => false]
         ];
 

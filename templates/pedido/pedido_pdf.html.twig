@@ -1,5 +1,53 @@
 <!DOCTYPE html>
 <html>
+
+<head>
+    <style type="text/css">
+        .table-border {
+            border: 2px solid black;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .datos-productos-table{
+            line-height: 7.5mm;
+        }
+        td{
+            font-size: 15px;
+        }
+    </style>
+</head>
+
+<body>
+{% include 'PDF/header_interno.html.twig' %}
+{% include 'PDF/cliente.html.twig' %}
+<div class="table-border">
+    <table class="datos-productos-table">
+        <thead>
+        <tr>
+            <th class="text-center">PRODUCTO</th>
+            <th class="text-center">CANT. BANDEJAS</th>
+            <th class="text-center">CANT. PLANTAS ESTIMADA</th>
+            <th class="text-center">FECHA SIEMBRA ESTIMADA</th>
+            <th class="text-center">FECHA ENTREGA SOLICITADA</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for pedidoProducto in entity.pedidosProductos %}
+            <tr>
+                <td width="290" align="center">{{ pedidoProducto.productoBandeja }}</td>
+                <td width="115" align="center">{{ pedidoProducto.cantidadBandejasPedidas }}</td>
+                <td width="125" align="center">{{ pedidoProducto.cantSemillas * 0.9 }}</td>
+                <td width="140" align="center">{{ pedidoProducto.fechaSiembraPedido|date('d/m/Y') }}</td>
+                <td width="125" align="center">{{ pedidoProducto.fechaEntregaPedido|date('d/m/Y') }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+</html>
+
+{# <!DOCTYPE html>
+<html>
 <head>
     <style type="text/css">
         .entrega{
@@ -95,4 +143,4 @@
     </div>
 </div>
 </body>
-</html>
+</html>#}

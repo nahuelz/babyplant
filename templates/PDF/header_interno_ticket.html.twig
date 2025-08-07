@@ -1,0 +1,21 @@
+<div class="table-border header">
+    <table width="100%" style="text-align: center;">
+        <tr>
+            <td>
+                <table cellpadding="3" cellspacing="10">
+                    <tr>
+                        <td colspan="2"><strong>{{ tipo_pdf|default('') }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td align="right"><strong>N°</strong></td>
+                        <td align="left">{{ entity.codigo|default(entity.id) }}}</td>
+                    </tr>
+                    <tr>
+                        <td align="right"><strong>FECHA</strong></td>
+                        <td align="left">{{ entity.fechaCreacion|date('d/m/Y') }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>

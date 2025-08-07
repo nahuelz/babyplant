@@ -4,11 +4,39 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="plantilla entrega&#10;remito index monto total y pendiente">
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="plantilla entrega">
+      <change afterPath="$PROJECT_DIR$/templates/PDF/cliente.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/PDF/header.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/PDF/header_interno.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/PDF/header_interno_ticket.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/PDF/header_ticket.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/PDF/ticket.css.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/entrega/entrega_ticket_pdf.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/entrega/interno_interno_pdf.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/plantilla/plantilla-entrega.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/plantilla/plantilla-entrega.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SQLViews/_view_remito_precio_total.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLViews/_view_remito_precio_total.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/logo/logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/logo/logo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/entrega/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/entrega/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/remito/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/remito/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/reserva/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/reserva/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/usuario/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/usuario/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/EntregaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntregaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PedidoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PedidoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/RemitoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RemitoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/ReservaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ReservaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/UsuarioController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UsuarioController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Pedido.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Pedido.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/PrintService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/PrintService.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/entrega/entrega_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/entrega_pdf.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrega/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrega/interno_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/interno_pdf.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrega/remito_pdf.html.twig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrega/remito_ticket_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/remito_ticket_pdf.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedido/pedido_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/pedido_pdf.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedido/pedido_ticket_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/pedido_ticket_pdf.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/remito/remito_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/remito_pdf.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/reserva/reserva_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/reserva/reserva_pdf.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/reserva/reserva_ticket_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/reserva/reserva_ticket_pdf.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -239,7 +267,7 @@
     "database.data.extractors.current.export.id": "SQL Inserts",
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "//wsl$/Ubuntu/home/nahu/babyplant/babyplant/public/images/plantilla",
+    "last_opened_file_path": "//wsl$/Ubuntu/home/nahu/babyplant/babyplant/templates/remito",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -258,11 +286,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="\\wsl$\Ubuntu\home\nahu\babyplant\babyplant\public\images\plantilla" />
+      <recent name="\\wsl$\Ubuntu\home\nahu\babyplant\babyplant\templates\remito" />
       <recent name="\\wsl$\Ubuntu\home\nahu\babyplant\babyplant\public\images\logo" />
+      <recent name="\\wsl$\Ubuntu\home\nahu\babyplant\babyplant\public\images\plantilla" />
       <recent name="C:\xampp81\htdocs\babyplant\public\certificado" />
       <recent name="C:\xampp81\htdocs\babyplant\templates\pedidoproducto" />
-      <recent name="C:\xampp81\htdocs\babyplant\templates" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp81\htdocs\babyplant\nginx\conf" />
@@ -689,15 +717,8 @@
       <workItem from="1754328122175" duration="4281000" />
       <workItem from="1754333849359" duration="5719000" />
       <workItem from="1754411645936" duration="8607000" />
-      <workItem from="1754494641215" duration="5022000" />
-    </task>
-    <task id="LOCAL-00150" summary=".">
-      <option name="closed" value="true" />
-      <created>1745851345501</created>
-      <option name="number" value="00150" />
-      <option name="presentableId" value="LOCAL-00150" />
-      <option name="project" value="LOCAL" />
-      <updated>1745851345501</updated>
+      <workItem from="1754494641215" duration="11915000" />
+      <workItem from="1754588308730" duration="11364000" />
     </task>
     <task id="LOCAL-00151" summary=".">
       <option name="closed" value="true" />
@@ -1083,7 +1104,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754499290333</updated>
     </task>
-    <option name="localTasksCounter" value="199" />
+    <task id="LOCAL-00199" summary="plantilla entrega">
+      <option name="closed" value="true" />
+      <created>1754499764939</created>
+      <option name="number" value="00199" />
+      <option name="presentableId" value="LOCAL-00199" />
+      <option name="project" value="LOCAL" />
+      <updated>1754499764939</updated>
+    </task>
+    <option name="localTasksCounter" value="200" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1111,7 +1140,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Situacion cliente, cambiar boton desplegable, y la busqueda redirecciona automaticamente." />
     <MESSAGE value="Situacion Cliente.&#10;Colores en cantidad bandejas." />
     <MESSAGE value="htaccess" />
     <MESSAGE value="index pedidos" />
@@ -1136,6 +1164,7 @@
     <MESSAGE value="columnas ocultas" />
     <MESSAGE value="fix error codigo sobre" />
     <MESSAGE value="plantilla entrega&#10;remito index monto total y pendiente" />
-    <option name="LAST_COMMIT_MESSAGE" value="plantilla entrega&#10;remito index monto total y pendiente" />
+    <MESSAGE value="plantilla entrega" />
+    <option name="LAST_COMMIT_MESSAGE" value="plantilla entrega" />
   </component>
 </project>

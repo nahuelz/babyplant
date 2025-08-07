@@ -9,6 +9,7 @@ use App\Entity\ModoPago;
 use App\Entity\Movimiento;
 use App\Entity\Pedido;
 use App\Entity\Remito;
+use App\Entity\Reserva;
 use App\Entity\TipoMovimiento;
 use App\Entity\TipoReferencia;
 use App\Entity\Usuario;
@@ -331,38 +332,18 @@ class SituacionClienteController extends BaseController {
     public function imprimirComprobanteMovimientoAction($id) {
         $em = $this->doctrine->getManager();
 
-        /* @var $remito Remito */
-        $remito = $em->getRepository("App\Entity\Movimiento")->find($id);
+        /* @var $movimiento Movimiento */
+        $movimiento = $em->getRepository("App\Entity\Movimiento")->find($id);
 
-        if (!$remito) {
+        if (!$movimiento) {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
 
-        $html = $this->renderView('situacion_cliente/movimiento_pdf.html.twig', array('entity' => $remito, 'website' => "http://192.168.0.182/babyplant/public/"));
+        $html = $this->renderView('situacion_cliente/movimiento_pdf.html.twig', array('entity' => $movimiento, 'tipo_pdf' => "MOVIMIENTO"));
+        $filename = "Movimiento.pdf";
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
 
-        $filename = 'pago.pdf';
-
-        $mpdfService = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => 'A4',
-            'default_font_size' => 0,
-            'default_font' => '',
-            'margin_left' => 0,
-            'margin_right' => 0,
-            'margin_top' => 0,
-            'margin_bottom' => 0,
-            'margin_header' => 0,
-            'margin_footer' => 0,
-            'orientation' => 'P',
-        ]);
-
-        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
-
-        $mpdfService->SetTitle($filename);
-
-        $mpdfService->WriteHTML($html);
-
-        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
+        $mpdfOutput = $this->printService->printA4($basePath, $filename, $html);
 
         return new Response($mpdfOutput);
     }
@@ -375,44 +356,18 @@ class SituacionClienteController extends BaseController {
     public function imprimirComprobanteMovimientoTicketAction($id) {
         $em = $this->doctrine->getManager();
 
-        /* @var $remito Remito */
-        $remito = $em->getRepository("App\Entity\Movimiento")->find($id);
+        /* @var $movimiento Movimiento */
+        $movimiento = $em->getRepository("App\Entity\Movimiento")->find($id);
 
-        if (!$remito) {
+        if (!$movimiento) {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
 
-        $html = $this->renderView('situacion_cliente/movimiento_ticket_pdf.html.twig', array('entity' => $remito, 'website' => "http://192.168.0.182/babyplant/public/"));
+        $html = $this->renderView('situacion_cliente/movimiento_ticket_pdf.html.twig', array('entity' => $movimiento, 'tipo_pdf' => "MOVIMIENTO"));
+        $filename = "Movimiento.pdf";
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
 
-        $filename = 'pago.pdf';
-
-        $mpdfService = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => [80, 1000], // ancho x alto en milímetros
-            'margin_left' => 2,
-            'margin_right' => 2,
-            'margin_top' => 2,
-            'margin_bottom' => 2,
-            'orientation' => 'P',
-        ]);
-        $mpdfService->WriteHTML($html);
-
-        // Obtener altura usada en milímetros
-        $usedHeight = $mpdfService->y; // posición vertical actual (mm)
-
-        $mpdfService = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => [80, $usedHeight + 20], // ancho x alto en milímetros
-            'margin_left' => 2,
-            'margin_right' => 2,
-            'margin_top' => 2,
-            'margin_bottom' => 2,
-            'orientation' => 'P',
-        ]);
-        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
-        $mpdfService->SetTitle($filename);
-        $mpdfService->WriteHTML($html);
-        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
+        $mpdfOutput = $this->printService->printTicket($basePath, $filename, $html);
 
         return new Response($mpdfOutput);
     }
@@ -432,42 +387,13 @@ class SituacionClienteController extends BaseController {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
 
-        $filename = 'pago.pdf';
+        $html = $this->renderView('situacion_cliente/movimiento_todos_pdf.html.twig', array('entity' => $usuario, 'tipo_pdf' => "MOVIMIENTO"));
+        $filename = "Movimientos.pdf";
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
 
-        $mpdfService = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => 'A4',
-            'default_font_size' => 0,
-            'default_font' => '',
-            'margin_left' => 0,
-            'margin_right' => 0,
-            'margin_top' => 0,
-            'margin_bottom' => 0,
-            'margin_header' => 0,
-            'margin_footer' => 0,
-            'orientation' => 'P',
-        ]);
-
-        $html = $this->renderView('situacion_cliente/movimiento_todos_pdf.html.twig', array('entity' => $usuario, 'website' => "http://192.168.0.182/babyplant/public/"));
-
-
-        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
-
-        $mpdfService->SetTitle($filename);
-
-        $mpdfService->WriteHTML($html);
-
-        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
+        $mpdfOutput = $this->printService->printA4($basePath, $filename, $html);
 
         return new Response($mpdfOutput);
-    }
-
-    /**
-     *
-     * @return string
-     */
-    protected function getPrintOutputType() {
-        return "I";
     }
 
 }

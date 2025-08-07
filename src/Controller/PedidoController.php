@@ -445,37 +445,18 @@ class PedidoController extends BaseController {
     public function imprimirPedidoAction($id) {
         $em = $this->doctrine->getManager();
 
-        $pedido = $em->getRepository("App\Entity\Pedido")->find($id);
         /* @var $pedido Pedido */
+        $pedido = $em->getRepository("App\Entity\Pedido")->find($id);
 
         if (!$pedido) {
-            throw $this->createNotFoundException("No se puede encontrar la entidad PEDIDO.");
+            throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
 
-        $html = $this->renderView('pedido/pedido_pdf.html.twig', array('entity' => $pedido));
+        $html = $this->renderView('pedido/pedido_pdf.html.twig', array('entity' => $pedido, 'tipo_pdf' => "PEDIDO"));
+        $filename = "Pedido.pdf";
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
 
-        $filename = 'pedido.pdf';
-
-        $mpdfService = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => 'A4',
-            'default_font_size' => 0,
-            'default_font' => '',
-            'margin_left' => 0,
-            'margin_right' => 0,
-            'margin_top' => 0,
-            'margin_bottom' => 0,
-            'margin_header' => 0,
-            'margin_footer' => 0,
-            'orientation' => 'P',
-        ]);
-
-        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
-        $mpdfService->SetTitle($filename);
-
-        $mpdfService->WriteHTML($html);
-
-        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
+        $mpdfOutput = $this->printService->printA4($basePath, $filename, $html);
 
         return new Response($mpdfOutput);
     }
@@ -488,53 +469,20 @@ class PedidoController extends BaseController {
     public function imprimirPedidoTicketAction($id) {
         $em = $this->doctrine->getManager();
 
-        $pedido = $em->getRepository("App\Entity\Pedido")->find($id);
         /* @var $pedido Pedido */
+        $pedido = $em->getRepository("App\Entity\Pedido")->find($id);
 
         if (!$pedido) {
-            throw $this->createNotFoundException("No se puede encontrar la entidad PEDIDO.");
+            throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
 
-        $html = $this->renderView('pedido/pedido_ticket_pdf.html.twig', array('entity' => $pedido));
+        $html = $this->renderView('pedido/pedido_ticket_pdf.html.twig', array('entity' => $pedido, 'tipo_pdf' => "PEDIDO"));
+        $filename = "Pedido.pdf";
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
 
-        $filename = 'pedido.pdf';
-
-        $mpdfService = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => [80, 1000], // ancho x alto en milímetros
-            'margin_left' => 2,
-            'margin_right' => 2,
-            'margin_top' => 2,
-            'margin_bottom' => 2,
-            'orientation' => 'P',
-        ]);
-        $mpdfService->WriteHTML($html);
-
-        // Obtener altura usada en milímetros
-        $usedHeight = $mpdfService->y; // posición vertical actual (mm)
-        $mpdfService = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => [80, $usedHeight + 20], // ancho x alto en milímetros
-            'margin_left' => 2,
-            'margin_right' => 2,
-            'margin_top' => 2,
-            'margin_bottom' => 2,
-            'orientation' => 'P',
-        ]);
-        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
-        $mpdfService->SetTitle($filename);
-        $mpdfService->WriteHTML($html);
-        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
+        $mpdfOutput = $this->printService->printTicket($basePath, $filename, $html);
 
         return new Response($mpdfOutput);
-    }
-
-    /**
-     *
-     * @return string
-     */
-    protected function getPrintOutputType() {
-        return "I";
     }
 
     /**

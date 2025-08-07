@@ -84,7 +84,13 @@ function initDataTable() {
             }
         },
         serverSide: false,
+        colReorder: false,
+
     });
+
+    setTimeout(function () {
+        $table.DataTable().columns.adjust().draw(false);
+    }, 500);
 
     init = true;
 }
@@ -124,7 +130,8 @@ function datatablesGetColDef() {
             name: 'idPedidoProducto',
             width: '30px',
             className: 'dt-center',
-            type: 'num'
+            type: 'num',
+            visible: false
         },
         {
             targets: index++,
@@ -234,13 +241,13 @@ function dataTablesActionFormatter(data, type, full, meta) {
             (data.historico_estados !== undefined ? '<a class="dropdown-item link-ver-historico-remito" href="#" data-href="' + data.historico_estados + '"><i class="la la-file-alt" style="margin-right: 5px;" data-original-title="Hist&oacute;rico de estados"></i>Hist&oacute;rico de estados</a>' : '')
             +
             (data.print_pdf !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf + '" target="_blank"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Remito</a>' : '')
-            +
+        /*+
             (data.print_factura_arca !== undefined ? '<a class="dropdown-item" href="' + data.print_factura_arca + '" target="_blank"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Factura Arca</a>' : '')
             +
             (data.print_ticket_arca !== undefined ? '<a class="dropdown-item" href="' + data.print_ticket_arca + '" target="_blank"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Ticket Arca</a>' : '')
             +
             (data.delete !== undefined ? '<a class="dropdown-item accion-borrar" href="' + data.delete + '"><i class="la la-remove" style="margin-right: 5px;"></i> Borrar</a>' : '')
-        ;
+        */;
 
         actions = ' <div class="dropdown dropdown-inline">\
                         <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\

@@ -111,6 +111,7 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'idPedidoProducto',
             className: 'nowrap text-center margin-0 ',
+            visible: false,
             render: function (data, type, full, meta) {
                 if (type === 'display') {
                     return '<a href="' + data.path + '" target="_blank">' + data.idPedidoProducto + '</a>';
@@ -171,6 +172,7 @@ function datatablesGetColDef() {
             name: 'estadoPedidoProducto',
             width: '90',
             className: 'nowrap text-center align-middle',
+            visible: false,
             render: function (data, type, full, meta) {
                 if (type === 'display') {
                     return '<span class="label label-inline ' + data.colorEstadoPedidoProducto + ' font-weight-bold p-4" style="width: 120px">' + data.estadoPedidoProducto + '</span>';

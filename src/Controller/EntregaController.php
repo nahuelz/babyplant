@@ -296,31 +296,11 @@ class EntregaController extends BaseController {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
 
-        $html = $this->renderView('entrega/entrega_pdf.html.twig', array('entity' => $entrega, 'website' => "http://192.168.0.182/babyplant/public/"));
+        $html = $this->renderView('entrega/entrega_pdf.html.twig', array('entity' => $entrega, 'tipo_pdf' => "ENTREGA"));
+        $filename = "Entrega_interno.pdf";
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
 
-        $filename = 'entrega.pdf';
-
-        $mpdfService = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => 'A4',
-            'default_font_size' => 0,
-            'default_font' => '',
-            'margin_left' => 0,
-            'margin_right' => 0,
-            'margin_top' => 0,
-            'margin_bottom' => 0,
-            'margin_header' => 0,
-            'margin_footer' => 0,
-            'orientation' => 'P',
-        ]);
-
-        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
-
-        $mpdfService->SetTitle($filename);
-
-        $mpdfService->WriteHTML($html);
-
-        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
+        $mpdfOutput = $this->printService->printA4($basePath, $filename, $html);
 
         return new Response($mpdfOutput);
     }
@@ -342,37 +322,37 @@ class EntregaController extends BaseController {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
 
-        $html = $this->renderView('entrega/remito_ticket_pdf.html.twig', array('entity' => $entrega));
+        $html = $this->renderView('entrega/entrega_ticket_pdf.html.twig', array('entity' => $entrega, 'tipo_pdf' => "ENTREGA"));
+        $filename = "Entrega_ticket.pdf";
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
 
-        $filename = 'pago.pdf';
+        $mpdfOutput = $this->printService->printTicket($basePath, $filename, $html);
 
-        $mpdfService = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => [80, 1000], // ancho x alto en milímetros
-            'margin_left' => 2,
-            'margin_right' => 2,
-            'margin_top' => 2,
-            'margin_bottom' => 2,
-            'orientation' => 'P',
-        ]);
-        $mpdfService->WriteHTML($html);
+        return new Response($mpdfOutput);
+    }
 
-        // Obtener altura usada en milímetros
-        $usedHeight = $mpdfService->y; // posición vertical actual (mm)
+    /**
+     * Print a Entrega Entity.
+     *
+     * @Route("/imprimir-entrega-interno-ticket/{id}", name="imprimir_entrega_interno_ticket", methods={"GET"})
+     * @throws MpdfException
+     */
+    public function imprimirEntregaInternoTicketAction($id): Response
+    {
+        $em = $this->doctrine->getManager();
 
-        $mpdfService = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => [80, $usedHeight + 20], // ancho x alto en milímetros
-            'margin_left' => 2,
-            'margin_right' => 2,
-            'margin_top' => 2,
-            'margin_bottom' => 2,
-            'orientation' => 'P',
-        ]);
-        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
-        $mpdfService->SetTitle($filename);
-        $mpdfService->WriteHTML($html);
-        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
+        /* @var $entrega Entrega */
+        $entrega = $em->getRepository("App\Entity\Entrega")->find($id);
+
+        if (!$entrega) {
+            throw $this->createNotFoundException("No se puede encontrar la entidad.");
+        }
+
+        $html = $this->renderView('entrega/interno_interno_pdf.html.twig', array('entity' => $entrega, 'tipo_pdf' => "ENTREGA"));
+        $filename = "Entrega_ticket.pdf";
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
+
+        $mpdfOutput = $this->printService->printTicket($basePath, $filename, $html);
 
         return new Response($mpdfOutput);
     }
@@ -394,42 +374,13 @@ class EntregaController extends BaseController {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
 
-        $html = $this->renderView('entrega/interno_pdf.html.twig', array('entity' => $entrega, 'website' => "http://192.168.0.182/babyplant/public/"));
+        $html = $this->renderView('entrega/interno_pdf.html.twig', array('entity' => $entrega, 'tipo_pdf' => "ENTREGA INTERNO"));
+        $filename = "Entrega_interno.pdf";
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
 
-        $filename = 'entrega.pdf';
-
-        $mpdfService = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => 'A4',
-            'default_font_size' => 0,
-            'default_font' => '',
-            'margin_left' => 0,
-            'margin_right' => 0,
-            'margin_top' => 0,
-            'margin_bottom' => 0,
-            'margin_header' => 0,
-            'margin_footer' => 0,
-            'orientation' => 'P',
-        ]);
-
-        $mpdfService->SetBasePath($this->getParameter('MPDF_BASE_PATH'));
-
-        $mpdfService->SetTitle($filename);
-
-        $mpdfService->WriteHTML($html);
-
-        $mpdfOutput = $mpdfService->Output($filename, $this->getPrintOutputType());
+        $mpdfOutput = $this->printService->printA4($basePath, $filename, $html);
 
         return new Response($mpdfOutput);
-    }
-
-    /**
-     *
-     * @return string
-     */
-    protected function getPrintOutputType(): string
-    {
-        return "I";
     }
 
     /**

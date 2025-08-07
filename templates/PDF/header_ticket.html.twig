@@ -1,0 +1,10 @@
+<div class="contenedor-logo">
+    <div class="logo-empresa"></div>
+    <div><strong>{{ tipo_pdf }}</strong></div>
+</div>
+<div class="datos">
+    Fecha: {{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}<br>
+    Cliente: {{ entity.cliente.nombreCompleto|default('-') }}
+</div>
+
+<div class="linea"></div>

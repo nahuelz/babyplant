@@ -193,7 +193,6 @@ class RemitoController extends BaseController {
      */
     public function imprimirRemitoAction($id): Response
     {
-
         $em = $this->doctrine->getManager();
 
         /* @var $remito Remito */
@@ -203,7 +202,7 @@ class RemitoController extends BaseController {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
 
-        $html = $this->renderView('remito/remito_pdf.html.twig', array('entity' => $remito, 'website' => "http://192.168.0.182/babyplant/public/"));
+        $html = $this->renderView('remito/remito_pdf.html.twig', array('entity' => $remito, 'tipo_pdf' => "REMITO"));
         $filename = "Remito.pdf";
         $basePath = $this->getParameter('MPDF_BASE_PATH');
 

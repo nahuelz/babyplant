@@ -1,0 +1,50 @@
+body {
+    font-family: sans-serif;
+    font-size: 10pt;
+    margin: 0;
+    padding: 0;
+}
+
+.ticket {
+    width: 100%;
+    text-align: center;
+}
+
+.ticket h1 {
+    font-size: 12pt;
+    margin: 0 0 5px 0;
+}
+
+.ticket .datos {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.linea {
+    border-top: 1px dashed #000;
+    margin: 10px 0;
+}
+
+.detalle {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+}
+
+.detalle th, .detalle td {
+    text-align: left;
+    padding: 3px 0;
+}
+
+.contenedor-logo {
+    text-align: center;
+    margin-bottom: 5mm;
+}
+
+.logo-empresa {
+    display: inline-block;
+    background: url({{ asset('images/logo/logo.png') }}) no-repeat center center;
+    background-size: contain;
+    width: 100mm;
+    height: 10mm;
+}
