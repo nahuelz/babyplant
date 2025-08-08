@@ -8,22 +8,6 @@ jQuery(document).ready(function () {
     order: [[1, 'asc']],
   });
 
-    function debounce(func, delay) {
-        let timer = null;
-        return function (...args) {
-            clearTimeout(timer);
-            timer = setTimeout(() => func.apply(this, args), delay);
-        };
-    }
-
-    $(document).on('input', '.datatable-filter-custom', debounce(function () {
-        const colIndex = $(this).data('col-index');
-        const value = $(this).val();
-        $('#table-usuario').DataTable().column(colIndex).search(value).draw();
-    }, 300));
-
-
-
   $(document).on('click', '.accion-habilitar', function (e) {
     e.preventDefault();
     var msg = (parseInt($(this).attr('habilitar'))) ? 'habilitar' : 'deshabilitar';

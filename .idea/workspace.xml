@@ -4,39 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="plantilla entrega">
-      <change afterPath="$PROJECT_DIR$/templates/PDF/cliente.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/PDF/header.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/PDF/header_interno.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/PDF/header_interno_ticket.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/PDF/header_ticket.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/PDF/ticket.css.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/entrega/entrega_ticket_pdf.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/entrega/interno_interno_pdf.html.twig" afterDir="false" />
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="pdfs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/logo/logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/logo/logo.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/entrega/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/entrega/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/remito/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/remito/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/reserva/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/reserva/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/app/usuario/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/usuario/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/EntregaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntregaController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/PedidoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PedidoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/RemitoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RemitoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/ReservaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ReservaController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/UsuarioController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UsuarioController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Pedido.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Pedido.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/PrintService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/PrintService.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/entrega/entrega_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/entrega_pdf.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/entrega/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/entrega/interno_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/interno_pdf.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/entrega/remito_pdf.html.twig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/entrega/remito_ticket_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/remito_ticket_pdf.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pedido/pedido_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/pedido_pdf.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pedido/pedido_ticket_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/pedido_ticket_pdf.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/remito/remito_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/remito_pdf.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/reserva/reserva_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/reserva/reserva_pdf.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/reserva/reserva_ticket_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/reserva/reserva_ticket_pdf.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -253,37 +223,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Docker.docker-compose.yml.app: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yml.phpmyadmin: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yml: Compose Deployment.executor": "Run",
-    "PHP Script.PedidoController.php.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "database.data.extractors.current.export.id": "SQL Inserts",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "//wsl$/Ubuntu/home/nahu/babyplant/babyplant/templates/remito",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "php.override.implement.member.chooser.php.doc": "NONE",
-    "settings.editor.selected.configurable": "configurable.group.editor",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Docker.docker-compose.yml.app: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yml.phpmyadmin: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yml: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;PHP Script.PedidoController.php.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;database.data.extractors.current.export.id&quot;: &quot;SQL Inserts&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;//wsl$/Ubuntu/home/nahu/babyplant/babyplant/templates/remito&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;php.override.implement.member.chooser.php.doc&quot;: &quot;NONE&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.editor&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql",
-      "mariadb"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;,
+      &quot;mariadb&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="\\wsl$\Ubuntu\home\nahu\babyplant\babyplant\templates\remito" />
@@ -718,15 +688,8 @@
       <workItem from="1754333849359" duration="5719000" />
       <workItem from="1754411645936" duration="8607000" />
       <workItem from="1754494641215" duration="11915000" />
-      <workItem from="1754588308730" duration="11364000" />
-    </task>
-    <task id="LOCAL-00151" summary=".">
-      <option name="closed" value="true" />
-      <created>1745942488668</created>
-      <option name="number" value="00151" />
-      <option name="presentableId" value="LOCAL-00151" />
-      <option name="project" value="LOCAL" />
-      <updated>1745942488668</updated>
+      <workItem from="1754588308730" duration="12296000" />
+      <workItem from="1754672191092" duration="643000" />
     </task>
     <task id="LOCAL-00152" summary=".">
       <option name="closed" value="true" />
@@ -1112,7 +1075,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754499764939</updated>
     </task>
-    <option name="localTasksCounter" value="200" />
+    <task id="LOCAL-00200" summary="pdfs">
+      <option name="closed" value="true" />
+      <created>1754600005061</created>
+      <option name="number" value="00200" />
+      <option name="presentableId" value="LOCAL-00200" />
+      <option name="project" value="LOCAL" />
+      <updated>1754600005061</updated>
+    </task>
+    <option name="localTasksCounter" value="201" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1140,7 +1111,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Situacion Cliente.&#10;Colores en cantidad bandejas." />
     <MESSAGE value="htaccess" />
     <MESSAGE value="index pedidos" />
     <MESSAGE value="Reemplazo telefono por celular.&#10;Optimizacion query view planificacion, siembra y camara." />
@@ -1165,6 +1135,7 @@
     <MESSAGE value="fix error codigo sobre" />
     <MESSAGE value="plantilla entrega&#10;remito index monto total y pendiente" />
     <MESSAGE value="plantilla entrega" />
-    <option name="LAST_COMMIT_MESSAGE" value="plantilla entrega" />
+    <MESSAGE value="pdfs" />
+    <option name="LAST_COMMIT_MESSAGE" value="pdfs" />
   </component>
 </project>
