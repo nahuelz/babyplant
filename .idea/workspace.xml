@@ -4,66 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="fitlro">
-      <change afterPath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_reserva.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_sotck.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/stock/landing.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/stock/modulo.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/entradacamara/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/entradacamara/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/entrega/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/entrega/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/movimiento/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/movimiento/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/pedido/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/planificacion/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/planificacion/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/remito/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/remito/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/reserva/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/reserva/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/siembra/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/siembra/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/situacioncliente/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/situacioncliente/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/stock/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/stock/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/tipoproducto/new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/tipoproducto/new.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/theme/css/colores.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/css/colores.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/theme/css/custom/custom.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/css/custom/custom.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/theme/css/style.bundle.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/css/style.bundle.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/theme/plugins/custom/datatables/datatables.bundle.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/plugins/custom/datatables/datatables.bundle.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/EntradaCamaraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntradaCamaraController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/EntregaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntregaController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/PedidoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PedidoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/PlanificacionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PlanificacionController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/RemitoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RemitoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/ReservaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ReservaController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/SalidaCamaraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SalidaCamaraController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/SiembraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SiembraController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/StockController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/StockController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/TipoBandeja.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/TipoBandeja.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/TipoProductoType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/TipoProductoType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_entrega.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_entrega.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_pedido.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_pedido.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_remito.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_remito.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SQLViews/view_entrada_camara.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLViews/view_entrada_camara.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SQLViews/view_planificacion.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLViews/view_planificacion.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SQLViews/view_siembra.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLViews/view_siembra.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/entrada_camara/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrada_camara/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/entrada_camara/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrada_camara/index_table.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/entrega/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/entrega/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/index_table.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/movimiento/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/movimiento/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/movimiento/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/movimiento/index_table.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pedido/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pedido/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/index_table.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/planificacion/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/planificacion/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/planificacion/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/planificacion/index_table.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/remito/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/remito/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/index_table.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/reserva/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/reserva/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/reserva/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/reserva/index_table.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/salida_camara/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/salida_camara/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/salida_camara/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/salida_camara/index_table.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/siembra/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/siembra/index_table.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/stock/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/stock/index_table.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tipo_producto/_form.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_producto/_form.html.twig" afterDir="false" />
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="Colores, Stock">
+      <change beforePath="$PROJECT_DIR$/templates/menu/menu_pedido.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu_pedido.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -748,15 +690,7 @@
       <workItem from="1754588308730" duration="12296000" />
       <workItem from="1754672191092" duration="11958000" />
       <workItem from="1754930318287" duration="14800000" />
-      <workItem from="1755017944893" duration="7394000" />
-    </task>
-    <task id="LOCAL-00153" summary=".">
-      <option name="closed" value="true" />
-      <created>1747337344542</created>
-      <option name="number" value="00153" />
-      <option name="presentableId" value="LOCAL-00153" />
-      <option name="project" value="LOCAL" />
-      <updated>1747337344542</updated>
+      <workItem from="1755017944893" duration="7773000" />
     </task>
     <task id="LOCAL-00154" summary="docker compose generico">
       <option name="closed" value="true" />
@@ -1142,7 +1076,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754673323990</updated>
     </task>
-    <option name="localTasksCounter" value="202" />
+    <task id="LOCAL-00202" summary="Colores, Stock">
+      <option name="closed" value="true" />
+      <created>1755027145404</created>
+      <option name="number" value="00202" />
+      <option name="presentableId" value="LOCAL-00202" />
+      <option name="project" value="LOCAL" />
+      <updated>1755027145404</updated>
+    </task>
+    <option name="localTasksCounter" value="203" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1170,7 +1112,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="index pedidos" />
     <MESSAGE value="Reemplazo telefono por celular.&#10;Optimizacion query view planificacion, siembra y camara." />
     <MESSAGE value="&#10;Optimizacion query view camara." />
     <MESSAGE value="fix salida camara" />
@@ -1195,6 +1136,7 @@
     <MESSAGE value="plantilla entrega" />
     <MESSAGE value="pdfs" />
     <MESSAGE value="fitlro" />
-    <option name="LAST_COMMIT_MESSAGE" value="fitlro" />
+    <MESSAGE value="Colores, Stock" />
+    <option name="LAST_COMMIT_MESSAGE" value="Colores, Stock" />
   </component>
 </project>
