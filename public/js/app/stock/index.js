@@ -200,7 +200,7 @@ function datatablesGetColDef() {
             width: '150px',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<span class="label label-inline margin-0 ' + data.nombreProducto + ' font-weight-bold p-6" style="width: 220px">' + data.nombreProductoCompleto + '</span>';
+                    return '<span class="label label-inline margin-0 font-weight-bold p-6" style="width: 220px;color: #ffffff !important;background-color: ' + data.colorProducto + '">' + data.nombreProductoCompleto + '</span>';
                 }
                 return data.nombreProductoCompleto;
             }

@@ -210,8 +210,8 @@ function datatablesGetColDef() {
         },
         {
             targets: -1,
-            name: 'acciones',
-            title: 'Acciones',
+            name: '',
+            title: '',
             className: "text-center dt-acciones",
             orderable: false,
 
@@ -239,19 +239,11 @@ function dataTablesActionFormatter(data, type, full, meta) {
     if (jQuery.isEmptyObject(data)) {
         actions = '';
     } else {
-
         actions +=
             (data.show_cliente !== undefined ? '<a class="btn btn-sm btn-light-primary mr-1" href="' + data.show_cliente + '" title="Ver Situación Cliente">' +
                 '<i class="la la-search mr-1"></i> Ver' +
                 '</a>' : '')
         ;
-
-        /*actions = ' <div class="dropdown dropdown-inline">\
-                        <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\
-                            <i class="ki ki-bold-more-hor"></i>\
-                        </button>\
-                        <div class="dropdown-menu">' + actions + '</div>\
-                    </div>';*/
     }
 
     return actions;

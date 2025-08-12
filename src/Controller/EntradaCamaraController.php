@@ -58,6 +58,7 @@ class EntradaCamaraController extends BaseController
         $rsm->addScalarResult('fechaSiembraReal', 'fechaSiembraReal');
         $rsm->addScalarResult('className', 'className');
         $rsm->addScalarResult('colorBandeja', 'colorBandeja');
+        $rsm->addScalarResult('colorProducto', 'colorProducto');
 
         $renderPage = "entrada_camara/index_table.html.twig";
         return parent::baseIndexTableAction($request, [], $entityTable, ConstanteTipoConsulta::VIEW, $rsm, $renderPage);

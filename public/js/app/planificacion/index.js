@@ -118,8 +118,24 @@ var KTCalendarListView = function() {
                     element.attr('data-href', info.event.extendedProps.href);
                     element.find('.fc-title').css('font-size', '1rem');
                     element.find('.tipo-bandeja').attr('style', 'color: ' + info.event.extendedProps.colorBandeja + ' !important;');
+                    info.el.style.borderColor = 'black';
+                    if (info.event.extendedProps.colorProducto) {
+                        // Fondo
+                        info.el.style.backgroundColor = info.event.extendedProps.colorProducto;
+                    }
                 },
                 eventDrop: function(info) {
+                    const fechaNueva = info.event.start.toISOString().substring(0, 10);
+                    const fechaActual = info.event.extendedProps.fechaSiembraPlanificacion;
+
+                    let year, month, day;
+
+                    [year, month, day] = fechaNueva.split('-');
+                    const fechaNuevaFormateada = `${day}/${month}/${year}`;
+
+                    [year, month, day] = fechaActual.split('-');
+                    const fechaActualFormateada = `${day}/${month}/${year}`;
+
                     dialogFinalizarForm = '\
                         <div class="row">\n\
                             <div class="col-md-4">\n\
@@ -133,7 +149,7 @@ var KTCalendarListView = function() {
                                     </div>\n\
                                     <div class="d-flex flex-column font-weight-bold">\n\
                                         <label class="text-dark text-hover-primary mb-1 font-size-lg"><strong>Nueva fecha de siembra</strong></label>\n\
-                                        <span class="text-muted">'+info.event.extendedProps.fechaSiembraPlanificacion+ '<i class="fas fa-arrow-right" style="padding: 0px 10px;"></i>' +info.event.start.toISOString().substring(0, 10)+'</span>\n\
+                                        <span class="text-muted">'+fechaActualFormateada+ '<i class="fas fa-arrow-right" style="padding: 0px 10px;"></i>' +fechaNuevaFormateada+'</span>\n\
                                     </div>\n\
                                 </div>\n\
                             </div>\n\

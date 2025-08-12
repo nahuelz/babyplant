@@ -1,9 +1,20 @@
+.fc-more{
+  color: black !important;
+}
+.fc-day-header {
+  text-transform: uppercase; /* en mayúsculas */
+  font-size: 1.1rem; /* tamaño más grande */
+  font-weight: 600 !important;
+  font-family: 'Arial', sans-serif; /* o la que prefieras */
+  letter-spacing: 1px; /* opcional, separación entre letras */
+}
+
 .dataTables_wrapper .dataTable th {
-  font-size: 1.1rem !important;
+  font-size: 1.2rem !important;
 }
 
 .dataTables_wrapper .dataTable td{
-  font-size: 1.2rem !important;
+  font-size: 1.4rem !important;
 }
 
 table.dataTable {

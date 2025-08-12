@@ -80347,7 +80347,7 @@ fc-unthemed .fc-event.fc-not-start.fc-end .fc-content,
 }
 .fc-unthemed th.fc-day-header > a,
 .fc-unthemed th.fc-day-header > span {
-  color: #B5B5C3;
+  color: black;
 }
 .fc-unthemed .fc-list-heading td {
   background: #EBEDF3;

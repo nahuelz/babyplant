@@ -10,6 +10,10 @@
         .label-light-secondary{
             color:black !important;
         }
+        td {
+            padding-top: 0.4rem !important;
+            padding-bottom: 0.4rem !important;
+        }
     </style>
 
 {% endblock %}
@@ -121,7 +125,7 @@
 
         <div class="card-body">
             <!--begin: Datatable-->
-            <table class="table table-bordered table-condensed table-striped table-hover table-checkable" id="table-movimiento">
+            <table class="table table-bordered table-hover table-checkable" id="table-movimiento">
                 <thead>
                 <tr>
                     <th class="not-in-filter">ID</th>
@@ -131,7 +135,7 @@
                     <th data-type="string" class="text-center">MONTO</th>
                     <th data-type="string" class="text-center">FECHA</th>
                     <th data-type="string" class="text-center">CLIENTE</th>
-                    <th data-type="search">Acciones</th>
+                    <th data-type="search" style="width: 100px;"></th>
                 </tr>
                 </thead>
                 <tfoot>

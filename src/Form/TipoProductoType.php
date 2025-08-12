@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\TipoProducto;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ColorType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -35,6 +36,14 @@ class TipoProductoType extends AbstractType
                         'class' => 'form-control',
                         'tabindex' => '5'))
             )
+            ->add('colorPicker', ColorType::class, [
+                'mapped' => false,
+                'required' => false,
+            ])
+            ->add('color', TextType::class, [
+                'label' => 'O escribí el código hexadecimal',
+                'required' => true,
+            ]);
         ;
     }
 

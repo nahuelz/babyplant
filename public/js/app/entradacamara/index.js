@@ -128,6 +128,12 @@ var KTCalendarListView = function() {
                     element.find('.fc-title').css('font-size', '1.1rem');
                     element.find('.fc-content').css('margin-top', '1%');
                     element.find('.tipo-bandeja').attr('style', 'color: ' + info.event.extendedProps.colorBandeja + ' !important;');
+                    info.el.style.borderColor = 'black';
+
+                    //COLOR FONDO
+                    if (info.event.extendedProps.colorProducto) {
+                        info.el.style.backgroundColor = info.event.extendedProps.colorProducto;
+                    }
                 }
             });
             calendar.render();

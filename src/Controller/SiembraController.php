@@ -56,6 +56,7 @@ class SiembraController extends BaseController
         $rsm->addScalarResult('idPedido', 'idPedido');
         $rsm->addScalarResult('title', 'title');
         $rsm->addScalarResult('colorBandeja', 'colorBandeja');
+        $rsm->addScalarResult('colorProducto', 'colorProducto');
         $rsm->addScalarResult('fechaSiembraPlanificacion', 'fechaSiembraPlanificacion');
         $rsm->addScalarResult('className', 'className');
 

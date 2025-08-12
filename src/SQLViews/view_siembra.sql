@@ -3,6 +3,7 @@ select
     pp.id                                                                                   AS id,
     p.id                                                                                    AS idPedido,
     tb.color                                                                                AS colorBandeja,
+    tp.color                                                                                AS colorProducto,
     concat(epp.class_name, ' ', tp.nombre, ' ', epp.nombre)                                 AS className,
     pp.fecha_siembra_planificacion                                                          AS fechaSiembraPlanificacion,
     concat(pp.numero_orden, ' ', substr(tp.nombre, 1, 3), ' - ',

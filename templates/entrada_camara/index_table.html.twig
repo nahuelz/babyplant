@@ -6,6 +6,7 @@
         "title": "{{ entity.title|html_format|raw|default('-') }}",
         "start": "{{ entity.fechaSiembraReal is not null ? entity.fechaSiembraReal|date('Y-m-d') : '-' }}",
         "colorBandeja": "{{ entity.colorBandeja|default('-') }}",
+        "colorProducto": "{{ entity.colorProducto|default('-') }}",
         "href":  "{{ path( "pedido_producto_entrada_camara", { 'id': entity.id }) }}",
         "className": "{{ entity.className|default('fc-event-danger fc-event-solid-danger') }}"
         }

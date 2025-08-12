@@ -11,11 +11,18 @@
         },
         "{{ entity.ordenSiembra|default('-') }}",
         "{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}",
-        "{{ entity.cliente|default('-') }}",
-        "{{ entity.clienteReserva|default('-') }}",
+        {
+        "nombreCliente": "{{ entity.cliente|default('-') }}",
+        "path": "{{ path('situacioncliente_show', { "id": entity.idCliente }) }}"
+        },
+        {
+        "nombreClienteReserva": "{{ entity.clienteReserva|default('-') }}",
+        "pathClienteReserva": "{{ path('situacioncliente_show', { "id": entity.idClienteReserva }) }}"
+        },
         {
         "nombreProductoCompleto": "{{ entity.nombreProductoCompleto|default('default') }}",
-        "nombreProducto": "{{ entity.nombreProducto|default('default') }}"
+        "nombreProducto": "{{ entity.nombreProducto|default('default') }}",
+        "colorProducto": "{{ entity.colorProducto|default('default') }}"
         },
         {
         "estado": "{{ entity.estado|default('Sin estado') }}",

@@ -117,6 +117,12 @@ var KTCalendarListView = function() {
                     element.css('min-height', '40px');
                     element.find('.fc-title').css('font-size', '1rem');
                     element.find('.tipo-bandeja').attr('style', 'color: ' + info.event.extendedProps.colorBandeja + ' !important;');
+                    info.el.style.borderColor = 'black';
+
+                    //COLOR FONDO
+                    if (info.event.extendedProps.colorProducto) {
+                        info.el.style.backgroundColor = info.event.extendedProps.colorProducto;
+                    }
                 },
                 eventDrop: function(info) {
                     dialogFinalizarForm = '\

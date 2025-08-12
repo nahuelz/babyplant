@@ -3,20 +3,21 @@ definer = root@`%` procedure sp_index_entrega(IN _fechaDesde datetime, IN _fecha
     reads sql data
 BEGIN
 SELECT DISTINCT
-    `e`.`id`                                                       AS `idEntrega`,
-    `pp`.`id`                                                      AS `idPedidoProducto`,
-    CONCAT(pp.numero_orden,' ',substr(`tp`.`nombre`, 1, 3))        AS ordenSiembra,
-    `e`.`fecha_creacion`                                           AS `fechaCreacion`,
-    concat(`u`.`nombre`, ', ', `u`.`apellido`)                     AS `cliente`,
-    concat(`ue`.`nombre`, ', ', `ue`.`apellido`)                   AS `clienteEntrega`,
-    u.id                                                           AS `idCliente`,
-    ue.id                                                          AS idClienteEntrega,
-    concat(`tp`.`nombre`, ' ', `tsp`.`nombre`, ' ', `tv`.`nombre`) AS `nombreProductoCompleto`,
-    `tp`.`nombre`                                                  AS `nombreProducto`,
-    `ep`.`cantidad_bandejas`                                       AS `cantidadBandejas`,
-    ee.nombre                                                      AS estado,
-    ee.color                                                       AS colorEstado,
-    ee.id                                                          AS idEstado
+    e.id                                                        AS idEntrega,
+    pp.id                                                       AS idPedidoProducto,
+    CONCAT(pp.numero_orden,' ',substr(tp.nombre, 1, 3))         AS ordenSiembra,
+    e.fecha_creacion                                            AS fechaCreacion,
+    concat(u.nombre, ', ', u.apellido)                          AS cliente,
+    concat(ue.nombre, ', ', ue.apellido)                        AS clienteEntrega,
+    u.id                                                        AS idCliente,
+    ue.id                                                       AS idClienteEntrega,
+    concat(tp.nombre, ' ', tsp.nombre, ' ', tv.nombre)          AS nombreProductoCompleto,
+    tp.nombre                                                   AS nombreProducto,
+    ep.cantidad_bandejas                                        AS cantidadBandejas,
+    ee.nombre                                                   AS estado,
+    ee.color                                                    AS colorEstado,
+    tp.color                                                    AS colorProducto,
+    ee.id                                                       AS idEstado
 FROM entrega e
          LEFT JOIN entrega_producto ep ON ep.id_entrega = e.id
          LEFT JOIN pedido_producto pp ON pp.id = ep.id_pedido_producto

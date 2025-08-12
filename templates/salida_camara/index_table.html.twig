@@ -7,6 +7,7 @@
         "start": "{{ entity.fechaSalidaCamara is not null ? entity.fechaSalidaCamara|date('Y-m-d') : '-' }}",
         "description": "{{ entity.descripcion|default('-') }}",
         "colorBandeja": "{{ entity.colorBandeja|default('-') }}",
+        "colorProducto": "{{ entity.colorProducto|default('-') }}",
         "cliente": "{{ entity.cliente|default('-') }}",
         "producto": "{{ entity.nombreCompleto|default('-') }}",
         "idProducto": "{{ entity.idProducto|default('-') }}",

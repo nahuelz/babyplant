@@ -86,6 +86,7 @@ class RemitoController extends BaseController {
         $rsm->addScalarResult('estado', 'estado');
         $rsm->addScalarResult('idEstado', 'idEstado');
         $rsm->addScalarResult('colorEstado', 'colorEstado');
+        $rsm->addScalarResult('colorProducto', 'colorProducto');
 
         $nativeQuery = $em->createNativeQuery('call sp_index_remito(?,?,?)', $rsm);
 

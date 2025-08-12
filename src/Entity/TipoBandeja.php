@@ -20,7 +20,6 @@ class TipoBandeja extends EntidadBasica {
     protected $estandar;
 
     /**
-     * @var boolean
      *
      * @ORM\Column(name="color", type="string", nullable=true)
      */

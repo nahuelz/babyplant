@@ -19,6 +19,7 @@ BEGIN
         pp.fecha_entrega_pedido                                     AS fechaEntregaPedido,
         epp.nombre                                                  AS estado,
         epp.color                                                   AS colorEstado,
+        tp.color                                                    AS colorProducto,
         epp.id                                                      AS idEstado,
         u.celular                                                   AS celular,
         if(pp.fecha_salida_camara_real is null, (to_days(curdate()) - to_days(cast(`pp`.`fecha_entrada_camara` as date))),

@@ -7,13 +7,16 @@
         "tipoProducto": "{{ entity.tipoProducto }}",
         "estado": "{{ entity.estado }}",
         "colorEstado": "{{ entity.colorEstado }}",
+        "colorProducto": "{{ entity.colorProducto }}",
         "idEstado": "{{ entity.idEstado }}",
         "cantidadBandejas": "{{ entity.cantidadBandejas }}",
         "codigoSobre": "{{ entity.codigoSobre|escape_json|default('-')|raw|default('-') }}",
         "cliente": "{{ entity.cliente }}",
         "colorBandeja": "{{ entity.colorBandeja }}",
+        "colorProducto": "{{ entity.colorProducto }}",
         "title": "{{ entity.title|default('-') }}",
         "start": "{{ entity.fechaSiembraPlanificacion is not null ? entity.fechaSiembraPlanificacion|date('Y-m-d') : '-' }}",
+        "fechaSiembraPlanificacion": "{{ entity.fechaSiembraPlanificacion is not null ? entity.fechaSiembraPlanificacion|date('Y-m-d') : '-' }}",
         "href":  "{{ path( "planificacion_producto_show", { 'id': entity.id }) }}",
         "className": "{{ entity.className|default('fc-event-danger fc-event-solid-danger') }}"
         }

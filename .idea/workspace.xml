@@ -4,9 +4,66 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="pdfs">
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="fitlro">
+      <change afterPath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_reserva.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_sotck.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/stock/landing.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/stock/modulo.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/usuario/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/usuario/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/entradacamara/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/entradacamara/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/entrega/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/entrega/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/movimiento/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/movimiento/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/pedido/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/planificacion/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/planificacion/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/remito/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/remito/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/reserva/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/reserva/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/siembra/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/siembra/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/situacioncliente/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/situacioncliente/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/stock/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/stock/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/tipoproducto/new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/tipoproducto/new.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/theme/css/colores.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/css/colores.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/theme/css/custom/custom.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/css/custom/custom.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/theme/css/style.bundle.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/css/style.bundle.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/theme/plugins/custom/datatables/datatables.bundle.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/plugins/custom/datatables/datatables.bundle.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/EntradaCamaraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntradaCamaraController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/EntregaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntregaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PedidoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PedidoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PlanificacionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PlanificacionController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/RemitoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RemitoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/ReservaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ReservaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SalidaCamaraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SalidaCamaraController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SiembraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SiembraController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/StockController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/StockController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/TipoBandeja.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/TipoBandeja.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/TipoProductoType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/TipoProductoType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_entrega.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_entrega.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_pedido.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_pedido.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_remito.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLViews/routines/sp_index_remito.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SQLViews/view_entrada_camara.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLViews/view_entrada_camara.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SQLViews/view_planificacion.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLViews/view_planificacion.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SQLViews/view_siembra.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLViews/view_siembra.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrada_camara/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrada_camara/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrada_camara/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrada_camara/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrega/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrega/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/movimiento/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/movimiento/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/movimiento/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/movimiento/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedido/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedido/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/planificacion/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/planificacion/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/planificacion/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/planificacion/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/remito/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/remito/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/reserva/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/reserva/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/reserva/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/reserva/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/salida_camara/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/salida_camara/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/salida_camara/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/salida_camara/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/siembra/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/siembra/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/stock/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/stock/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/tipo_producto/_form.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tipo_producto/_form.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -237,7 +294,7 @@
     &quot;database.data.extractors.current.export.id&quot;: &quot;SQL Inserts&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;//wsl$/Ubuntu/home/nahu/babyplant/babyplant/templates/remito&quot;,
+    &quot;last_opened_file_path&quot;: &quot;//wsl$/Ubuntu/home/nahu/babyplant/babyplant/public/images/logo&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -256,8 +313,8 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="\\wsl$\Ubuntu\home\nahu\babyplant\babyplant\templates\remito" />
       <recent name="\\wsl$\Ubuntu\home\nahu\babyplant\babyplant\public\images\logo" />
+      <recent name="\\wsl$\Ubuntu\home\nahu\babyplant\babyplant\templates\remito" />
       <recent name="\\wsl$\Ubuntu\home\nahu\babyplant\babyplant\public\images\plantilla" />
       <recent name="C:\xampp81\htdocs\babyplant\public\certificado" />
       <recent name="C:\xampp81\htdocs\babyplant\templates\pedidoproducto" />
@@ -689,15 +746,9 @@
       <workItem from="1754411645936" duration="8607000" />
       <workItem from="1754494641215" duration="11915000" />
       <workItem from="1754588308730" duration="12296000" />
-      <workItem from="1754672191092" duration="643000" />
-    </task>
-    <task id="LOCAL-00152" summary=".">
-      <option name="closed" value="true" />
-      <created>1745943641793</created>
-      <option name="number" value="00152" />
-      <option name="presentableId" value="LOCAL-00152" />
-      <option name="project" value="LOCAL" />
-      <updated>1745943641793</updated>
+      <workItem from="1754672191092" duration="11958000" />
+      <workItem from="1754930318287" duration="14800000" />
+      <workItem from="1755017944893" duration="7394000" />
     </task>
     <task id="LOCAL-00153" summary=".">
       <option name="closed" value="true" />
@@ -1083,7 +1134,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754600005061</updated>
     </task>
-    <option name="localTasksCounter" value="201" />
+    <task id="LOCAL-00201" summary="fitlro">
+      <option name="closed" value="true" />
+      <created>1754673323990</created>
+      <option name="number" value="00201" />
+      <option name="presentableId" value="LOCAL-00201" />
+      <option name="project" value="LOCAL" />
+      <updated>1754673323990</updated>
+    </task>
+    <option name="localTasksCounter" value="202" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1111,7 +1170,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="htaccess" />
     <MESSAGE value="index pedidos" />
     <MESSAGE value="Reemplazo telefono por celular.&#10;Optimizacion query view planificacion, siembra y camara." />
     <MESSAGE value="&#10;Optimizacion query view camara." />
@@ -1136,6 +1194,7 @@
     <MESSAGE value="plantilla entrega&#10;remito index monto total y pendiente" />
     <MESSAGE value="plantilla entrega" />
     <MESSAGE value="pdfs" />
-    <option name="LAST_COMMIT_MESSAGE" value="pdfs" />
+    <MESSAGE value="fitlro" />
+    <option name="LAST_COMMIT_MESSAGE" value="fitlro" />
   </component>
 </project>

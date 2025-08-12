@@ -11,7 +11,7 @@
         "{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}",
         "{{ entity.nombreCliente }}",
         {
-        "situacion_cliente": "{{ path( "situacioncliente_show", { "id": entity.idCliente }) }}"
+        "show_cliente": "{{ path( "situacioncliente_show", { "id": entity.idCliente }) }}"
         }
         ]{{ (loop.last ? '' : ',') }}
     {% endfor %}

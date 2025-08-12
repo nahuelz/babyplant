@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% import 'app/_macro_form.html.twig' as macro_form %}
+
+{% block title %}
+    STOCK
+{% endblock %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="mb-3">
+                <input type="text" id="searchInput" placeholder="Buscar por nombre..." class="form-control"/>
+            </div>
+            {% include 'stock/modulo.html.twig' %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const cards = document.querySelectorAll('#cardsContainer .card-wrapper');
+
+        searchInput.addEventListener('input', () => {
+            const filter = searchInput.value.toUpperCase();
+
+            cards.forEach(cardWrapper => {
+                const nameSpan = cardWrapper.querySelector('a.font-weight-bolder');
+                const text = nameSpan.textContent.toUpperCase();
+
+                if (text.includes(filter)) {
+                    cardWrapper.style.display = '';
+                } else {
+                    cardWrapper.style.display = 'none';
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+    a.text-hover-primary:hover, a.text-hover-primary:hover i{
+
+        color:black !important;
+    }
+    </style>
+{% endblock %}

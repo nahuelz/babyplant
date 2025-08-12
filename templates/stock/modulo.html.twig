@@ -1,0 +1,47 @@
+{% import _self as panel %}
+<div class="row">
+    {% for data in indicadorEstadoData %}
+        <div id="cardsContainer" class="col-md-12">
+            <div class="card-wrapper">
+                {{ panel._panel(data) }}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{% macro _panel(data) %}
+    <div class="card card-custom card-stretch gutter-b bg-light-red" style="flex-direction: row !important;">
+        <div class="card-body d-flex align-items-center py-0 col-md-3">
+            <div class="d-flex flex-column flex-grow-1 py-2 py-lg-5">
+                {# <a href="#" class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-2 text-hover-primary"><i class="fas fa-leaf text-dark"></i> {{ data.nombre }}</a>#}
+                <a href="#"
+                   class="card-title label margin-0 font-weight-bolder text-dark-75 font-size-h4 p-10 d-flex flex-column"
+                   style="width:250px; background-color: {{ data.color }}; text-decoration:none;border-radius: 0.42rem;">
+                    <span>{{ data.nombre }}</span>
+                    <span class="font-weight-bold text-dark font-size-lg mt-2">{{ data.cantidad }} BANDEJAS</span>
+                </a>
+
+            </span>
+
+            </div>
+        </div>
+        <div class="card-body d-flex align-items-center py-0 col-md-3">
+            <div class="d-flex flex-column flex-grow-1 py-2 py-lg-5">
+                <a href="#" class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-2 text-hover-primary">{{ "now"|date("d/m/Y") }}</a>
+                <span class="font-weight-bold text-dark  font-size-lg"><i class="fas fa-th text-dark"></i> {{ data.cantidad_hoy }} </span>
+            </div>
+        </div>
+        <div class="card-body d-flex align-items-center py-0 col-md-3">
+            <div class="d-flex flex-column flex-grow-1 py-2 py-lg-5">
+                <a href="#" class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-2 text-hover-primary">{{ "+7 days"|date("d/m/Y") }}</a>
+                <span class="font-weight-bold text-dark  font-size-lg"><i class="fas fa-th text-dark"></i> {{ data.cantidad_en_7_dias }} </span>
+            </div>
+        </div>
+        <div class="card-body d-flex align-items-center py-0 col-md-3">
+            <div class="d-flex flex-column flex-grow-1 py-2 py-lg-5">
+                <a href="#" class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-2 text-hover-primary">{{ "+14 days"|date("d/m/Y") }}</a>
+                <span class="font-weight-bold text-dark  font-size-lg"><i class="fas fa-th text-dark"></i> {{ data.cantidad_en_14_dias }} </span>
+            </div>
+        </div>
+    </div>
+{% endmacro %}

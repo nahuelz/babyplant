@@ -71,6 +71,7 @@ class SalidaCamaraController extends BaseController
         $rsm->addScalarResult('estado', 'estado');
         $rsm->addScalarResult('idEstado', 'idEstado');
         $rsm->addScalarResult('colorEstado', 'colorEstado');
+        $rsm->addScalarResult('colorProducto', 'colorProducto');
         $rsm->addScalarResult('colorIcono', 'colorIcono');
         $rsm->addScalarResult('fechaSalidaCamara', 'fechaSalidaCamara');
         $rsm->addScalarResult('fechaSalidaCamaraReal', 'fechaSalidaCamaraReal');

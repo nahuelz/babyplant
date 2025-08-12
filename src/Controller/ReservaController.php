@@ -86,6 +86,7 @@ class ReservaController extends BaseController {
         $rsm->addScalarResult('estado', 'estado');
         $rsm->addScalarResult('idEstado', 'idEstado');
         $rsm->addScalarResult('colorEstado', 'colorEstado');
+        $rsm->addScalarResult('colorProducto', 'colorProducto');
         $rsm->addScalarResult('estadoPedidoProducto', 'estadoPedidoProducto');
         $rsm->addScalarResult('idEstadoPedidoProducto', 'idEstadoPedidoProducto');
         $rsm->addScalarResult('colorEstadoPedidoProducto', 'colorEstadoPedidoProducto');

@@ -21,34 +21,6 @@ $(document).ready(function () {
 
     var table = $table.DataTable();
 
-    table.on('column-reorder', function (e, settings, details) {
-        tableRefresh();
-    });
-
-    let isDraggingColumn = false;
-    let initialOrder = [];
-
-    // Cuando se hace mousedown sobre una cabecera, guardamos el orden actual
-    $table.on('mousedown', 'th', function () {
-        isDraggingColumn = true;
-        initialOrder = table.colReorder.order().slice(); // guardamos el orden original
-    });
-
-    // Cuando se suelta el mouse en cualquier parte del documento
-    $(document).on('mouseup', function () {
-        if (isDraggingColumn) {
-            isDraggingColumn = false;
-
-            let finalOrder = table.colReorder.order();
-            if (JSON.stringify(finalOrder) !== JSON.stringify(initialOrder)) {
-                // Solo si el orden cambió, ejecutamos la lógica
-                console.log('✅ Columna soltada. Orden final:', finalOrder);
-            }
-
-
-        }
-    });
-
 });
 
 
@@ -123,8 +95,7 @@ function initFiltrosHandler(){
 }
 
 function tableRefresh(){
-    $('.sorting').first().click();
-    $('.sorting_asc').first().click();
+    $table.DataTable().ajax.reload();
     console.log('refresh');
 }
 
@@ -252,6 +223,7 @@ function initDataTable() {
             dataSrc: 1
         },
         serverSide: false,
+        colReorder: false,
     });
 
     init = true;
@@ -323,7 +295,7 @@ function datatablesGetColDef() {
             width: '150px',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<span class="label label-inline margin-0 ' + data.nombreProducto + ' font-weight-bold p-6" style="width: 220px">' + data.nombreProductoCompleto + '</span>';
+                    return '<span class="label label-inline margin-0 font-weight-bold p-6" style="width: 220px;color: #ffffff !important;background-color: ' + data.colorProducto + '">' + data.nombreProductoCompleto + '</span>';
                 }
                 return data.nombreProductoCompleto;
             }

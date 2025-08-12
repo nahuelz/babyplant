@@ -134,15 +134,25 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
-            name: 'cliente',
-            width: '250px',
-            className: 'dt-center'
+            name: 'nombreCliente',
+            className: 'nowrap text-center margin-0 ',
+            render: function (data, type, full, meta) {
+                if (type === 'display') {
+                    return '<a href="' + data.path + '" target="_blank">' + data.nombreCliente + '</a>';
+                }
+                return data.nombreCliente;
+            }
         },
         {
             targets: index++,
-            name: 'clienteReserva',
-            width: '250px',
-            className: 'dt-center'
+            name: 'nombreClienteReserva',
+            className: 'nowrap text-center margin-0 ',
+            render: function (data, type, full, meta) {
+                if (type === 'display') {
+                    return '<a href="' + data.pathClienteReserva + '" target="_blank">' + data.nombreClienteReserva + '</a>';
+                }
+                return data.nombreClienteReserva;
+            }
         },
         {
             targets: index++,
@@ -150,7 +160,7 @@ function datatablesGetColDef() {
             className: 'nowrap text-center margin-0 ',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<span class="label label-inline margin-0 ' + data.nombreProducto + ' font-weight-bold p-6" style="width: 220px">' + data.nombreProductoCompleto + '</span>';
+                    return '<span class="label label-inline margin-0 font-weight-bold p-6" style="width: 220px;color: #ffffff !important;background-color: ' + data.colorProducto + '">' + data.nombreProductoCompleto + '</span>';
                 }
                 return data.nombreProductoCompleto;
             }
@@ -158,7 +168,6 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'estado',
-            width: '90',
             className: 'nowrap text-center align-middle',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
@@ -170,7 +179,6 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'estadoPedidoProducto',
-            width: '90',
             className: 'nowrap text-center align-middle',
             visible: false,
             render: function (data, type, full, meta) {
@@ -189,8 +197,8 @@ function datatablesGetColDef() {
         },
         {
             targets: -1,
-            name: 'acciones',
-            title: 'Acciones',
+            name: '',
+            title: '',
             className: "text-center dt-acciones",
             orderable: false,
 

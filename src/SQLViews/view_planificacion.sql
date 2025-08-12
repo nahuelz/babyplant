@@ -2,6 +2,7 @@ CREATE DEFINER = root@`%` VIEW view_planificacion AS
 SELECT
     pp.id                                                               AS id,
     tb.color                                                            AS colorBandeja,
+    tp.color                                                            AS colorProducto,
     CONCAT(pp.id, ' - ', tv.nombre,
            ' (', pp.cantidad_bandejas_pedidas, ' x', tb.nombre, ')')    AS title,
     CONCAT(epp.class_name, ' ', tp.nombre, ' ', epp.nombre)             AS className,
