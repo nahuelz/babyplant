@@ -14,6 +14,12 @@
         td {
             padding: 1px !important;
         }
+        a.card-title span:first-child {
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     </style>
 
 {% endblock %}
@@ -101,8 +107,8 @@
                     <th data-type="string" class="text-center">PRODUCTO</th>
                     <th data-type="string" class="text-center">PRODUCTO</th>
                     <th data-type="string" class="text-center">STOCK</th>
-                    <th data-type="string" class="text-center">B. SEMBRADAS</th>
-                    <th data-type="string" class="text-center">F. SIEMBRA</th>
+                    <th data-type="string" class="text-center">B. DISPONIBLES</th>
+                    <th data-type="string" class="text-center">F. ENTREGA</th>
                     <th data-type="select" data-select="{{ estadoSelect }}">ESTADO</th>
                     <th data-type="string" class="text-center">O. SIEMBRA</th>
                     <th data-type="string" class="text-center">MESADA</th>

@@ -1,51 +1,38 @@
 create
-definer = root@`%` procedure sp_index_stock(IN _fechaDesde datetime, IN _fechaHasta datetime, IN _idCliente int)
+definer = root@`%` procedure sp_index_entrega(IN _fechaDesde datetime, IN _fechaHasta datetime, IN _idCliente int)
     reads sql data
 BEGIN
 SELECT DISTINCT
-    p.id                                                        AS id,
-    pp.id                                                       AS idProducto,
-    p.fecha_creacion                                            AS fechaCreacion,
-    tv.nombre                                                   AS nombreVariedad,
-    tp.nombre                                                   AS nombreProducto,
-    tsp.nombre                                                  AS nombreSubProducto,
-    CONCAT(tp.nombre,' ',tsp.nombre,' ',tv.nombre,' (x',tb.nombre,')') AS nombreProductoCompleto,
-    CONCAT(u.nombre,', ',u.apellido)                            AS cliente,
+    e.id                                                        AS idEntrega,
+    pp.id                                                       AS idPedidoProducto,
+    CONCAT(pp.numero_orden,' ',substr(tp.nombre, 1, 3))         AS ordenSiembra,
+    e.fecha_creacion                                            AS fechaCreacion,
+    concat(u.nombre, ', ', u.apellido)                          AS cliente,
+    concat(ue.nombre, ', ', ue.apellido)                        AS clienteEntrega,
     u.id                                                        AS idCliente,
-    pp.cantidad_bandejas_pedidas                                AS cantidadBandejas,
-    tb.nombre                                                   AS tipoBandeja,
-    pp.fecha_siembra_pedido                                     AS fechaSiembraPedido,
-    pp.fecha_entrega_pedido                                     AS fechaEntregaPedido,
-    epp.nombre                                                  AS estado,
-    epp.color                                                   AS colorEstado,
+    ue.id                                                       AS idClienteEntrega,
+    concat(tp.nombre, ' ', tsp.nombre, ' ', tv.nombre)          AS nombreProductoCompleto,
+    tp.nombre                                                   AS nombreProducto,
+    ep.cantidad_bandejas                                        AS cantidadBandejas,
+    ee.nombre                                                   AS estado,
+    ee.color                                                    AS colorEstado,
     tp.color                                                    AS colorProducto,
-    epp.id                                                      AS idEstado,
-    u.celular                                                   AS celular,
-    if(pp.fecha_salida_camara_real is null, (to_days(curdate()) - to_days(cast(`pp`.`fecha_entrada_camara` as date))),
-       (to_days(pp.fecha_salida_camara_real) - to_days(pp.fecha_entrada_camara))) AS `diasEnCamara`,
-    if(epp.id in (5,6,7,8), (
-        if(pp.fecha_entrega_pedido_real is null, (to_days(curdate()) - to_days(cast(`pp`.`fecha_salida_camara_real` as date))),
-           (to_days(pp.fecha_entrega_pedido_real) - to_days(pp.fecha_salida_camara_real)))
-        ), '-') AS `diasEnInvernaculo`,
-    CONCAT(pp.numero_orden,' ',substr(`tp`.`nombre`, 1, 3))  AS ordenSiembra,
-    if(tm2.numero is null, tm1.numero, CONCAT(tm1.numero,' / ',tm2.numero)) AS mesada
-FROM pedido p
-         LEFT JOIN pedido_producto pp ON pp.id_pedido = p.id
-         LEFT JOIN tipo_variedad tv on tv.id = pp.id_tipo_variedad
-         LEFT JOIN tipo_sub_producto tsp on tsp.id = tv.id_tipo_sub_producto
-         LEFT JOIN tipo_producto tp on tp.id = tsp.id_tipo_producto
-         LEFT JOIN tipo_bandeja tb on (tb.id = pp.id_tipo_bandeja)
-         LEFT JOIN usuario u ON (u.id = p.id_cliente)
-         LEFT JOIN estado_pedido_producto epp ON (epp.id = pp.id_estado_pedido_producto)
-         LEFT JOIN mesada m1 on (m1.id = pp.id_mesada_uno)
-         LEFT JOIN tipo_mesada tm1 on (tm1.id = m1.id_tipo_mesada)
-         LEFT JOIN mesada m2 on (m2.id = pp.id_mesada_dos)
-         LEFT JOIN tipo_mesada tm2 on (tm2.id = m2.id_tipo_mesada)
-WHERE p.fecha_baja IS NULL
-  AND (p.fecha_creacion >= _fechaDesde AND p.fecha_creacion <= _fechaHasta)
-  AND (_idCliente IS NULL OR (_idCliente IS NOT NULL AND p.id_cliente = _idCliente))
-  AND u.apellido LIKE '%STOCK%'
-ORDER BY p.id DESC
+    ee.id                                                       AS idEstado
+FROM entrega e
+         LEFT JOIN entrega_producto ep ON ep.id_entrega = e.id
+         LEFT JOIN pedido_producto pp ON pp.id = ep.id_pedido_producto
+         LEFT JOIN usuario u ON e.id_cliente = u.id
+         LEFT JOIN usuario ue ON e.id_cliente_entrega = ue.id
+         LEFT JOIN tipo_variedad tv ON tv.id = pp.id_tipo_variedad
+         LEFT JOIN tipo_sub_producto tsp ON tsp.id = tv.id_tipo_sub_producto
+         LEFT JOIN tipo_producto tp ON tp.id = tsp.id_tipo_producto
+         LEFT JOIN estado_entrega ee ON ee.id = e.id_estado
+WHERE e.fecha_baja IS NULL
+  AND (e.fecha_creacion >= _fechaDesde AND e.fecha_creacion <= _fechaHasta)
+  AND ((_idCliente IS NULL OR (_idCliente IS NOT NULL AND e.id_cliente = _idCliente)) OR (_idCliente IS NULL OR (_idCliente IS NOT NULL AND e.id_cliente_entrega = _idCliente)))
+  AND pp.id_estado_pedido_producto NOT IN (8,9)
+  AND pp.cantidad_bandejas_disponibles > 0
+ORDER BY e.id DESC
 ;
 END;
 

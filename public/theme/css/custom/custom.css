@@ -1,3 +1,11 @@
+.tipo-bandeja{
+    text-shadow: 0px 0px 10px gray;
+}
+
+.PENDIENTE{
+    filter: opacity(0.5);
+}
+
 .disabled.day {
     color: gainsboro !important;
 }

@@ -115,7 +115,9 @@ class EntregaController extends BaseController {
             $id = $request->query->get('id');
             $usuario = $em->getRepository(Usuario::class)->find($id);
             $entity->setCliente($usuario);
-            $entity->setClienteEntrega($usuario);
+            if (!str_contains($usuario->getNombreCompleto(), 'STOCK')) {
+                $entity->setClienteEntrega($usuario);
+            }
         }
 
         return parent::baseNewAction($entity);

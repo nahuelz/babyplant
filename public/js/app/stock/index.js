@@ -7,7 +7,6 @@ $(document).ready(function () {
     initTable();
     initVerHistoricoEstadoHandler();
     $('#multiple').select2();
-    initCancelarButton();
     initClienteSelect2();
 
 });
@@ -219,13 +218,13 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
-            name: 'cantidadBandejas',
+            name: 'cantidadBandejasDisponibles',
             className: 'dt-center',
             width: '50px',
         },
         {
             targets: index++,
-            name: 'fechaEntrega',
+            name: 'fechaEntregaReal',
             width: '50px',
             className: 'dt-center',
             render: function (data, type, full, meta) {
@@ -284,44 +283,22 @@ function datatablesGetColDef() {
  * @returns {String}
  */
 function dataTablesActionFormatter(data, type, full, meta) {
+
     let actions = '';
 
-    if (!jQuery.isEmptyObject(data)) {
-
-        // Generar botón de WhatsApp si el número es válido
-        let botonWhatsapp = '';
-        if (data.celular !== undefined) {
-            let celularLimpio = data.celular.replace(/\D+/g, '');
-            let celularConPrefijo = '54' + celularLimpio;
-
-            if (esNumeroWhatsappValido('+' + celularConPrefijo)) {
-                let mensaje =
-                    `Hola *${full[5].nombreCliente}*,%0A` +
-                    `Te informamos que tu pedido N° *${full[5].idPedido}* fue registrado correctamente.%0A` +
-                    `Podés ver el detalle y estado de tu pedido en el siguiente enlace:%0A` +
-                    `https://dev.babyplant.com.ar${full[14].print}%0A%0A` +
-                    `¡Gracias por tu compra! 🪴🌿%0A` +
-                    `- *Vivero Babyplant*`;
-                botonWhatsapp =
-                    '<a class="dropdown-item" href="https://api.whatsapp.com/send?phone='
-                    + celularConPrefijo
-                    + '&text='
-                    + mensaje
-                    + '" target="_blank">'
-                    + '<i class="la la-whatsapp" style="margin-right: 5px; color: green;"></i> Enviar WhatsApp</a>';
-            }
-        }
-
+    if (jQuery.isEmptyObject(data)) {
+        actions = '';
+    } else {
         actions +=
             (data.show_pedido !== undefined ? '<a class="dropdown-item" href="' + data.show_pedido + '"><i class="la la-search" style="margin-right: 5px;"></i> Ver Pedido</a>' : '') +
+            (data.nueva_entrega !== undefined ? '<a class="dropdown-item" href="' + data.nueva_entrega + '"><i class="la la-truck" style="margin-right: 5px;"></i> Nueva Entrega</a>' : '') +
             (data.show_producto !== undefined ? '<a class="dropdown-item" href="' + data.show_producto + '"><i class="la la-search" style="margin-right: 5px;"></i> Ver Producto</a>' : '') +
             (data.edit !== undefined ? '<a class="dropdown-item" href="' + data.edit + '"><i class="la la-edit" style="margin-right: 5px;"></i> Editar</a>' : '') +
             (data.historico_estado !== undefined ? '<a class="dropdown-item link-ver-historico-pedido" href="#" data-href="' + data.historico_estado + '"><i class="la la-file-alt" style="margin-right: 5px;" data-original-title="Hist&oacute;rico de estados"></i>Hist&oacute;rico de estados</a>' : '') +
             (data.print !== undefined ? '<a class="dropdown-item" href="' + data.print + '"><i class="la la-edit" style="margin-right: 5px;"></i> Print</a>' : '') +
             (data.situacion_cliente !== undefined ? '<a class="dropdown-item" href="' + data.situacion_cliente + '"><i class="la la-user" style="margin-right: 5px;"></i> Situacion Cliente</a>' : '') +
-            (data.remito !== undefined ? '<a class="dropdown-item" href="' + data.remito + '"><i class="la la-edit" style="margin-right: 5px;"></i> Remito</a>' : '') +
-            (data.cancelar !== undefined ? '<a class="dropdown-item accion-cancelar" href="' + data.cancelar + '"><i class="la la-remove" style="margin-right: 5px;"></i> Cancelar</a>' : '') +
-            botonWhatsapp;
+            (data.remito !== undefined ? '<a class="dropdown-item" href="' + data.remito + '"><i class="la la-edit" style="margin-right: 5px;"></i> Remito</a>' : '')
+        ;
 
         actions = ' <div class="dropdown dropdown-inline">\
                         <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\
@@ -375,25 +352,3 @@ function initVerHistoricoEstadoHandler() {
         });
     });
 }
-
-function initCancelarButton() {
-    $(document).on('click', '.accion-cancelar', function (e) {
-        e.preventDefault();
-        var a_href = $(this).attr('href');
-        show_confirm({
-            title: 'Confirmar',
-            type: 'warning',
-            msg: '¿Desea cancelar este producto?',
-            callbackOK: function () {
-                location.href = a_href;
-            }
-        });
-        e.stopPropagation();
-    });
-}
-
-function esNumeroWhatsappValido(numero) {
-    const regex = /^\+54\d{10}$/;
-    return regex.test(numero);
-}
-

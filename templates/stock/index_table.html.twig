@@ -22,8 +22,8 @@
         "nombreCliente": "{{ entity.cliente|default('-') }}",
         "path": "{{ path('situacioncliente_show', { "id": entity.idCliente }) }}"
         },
-        "{{ entity.cantidadBandejas|default('-') }}",
-        "{{ entity.fechaSiembraPedido is not null ? entity.fechaSiembraPedido|date('d/m/Y') : '-' }}",
+        "{{ entity.cantidadBandejasDisponibles|default('-') }}",
+        "{{ entity.fechaEntregaPedidoReal is not null ? entity.fechaEntregaPedidoReal|date('d/m/Y') : entity.fechaEntregaPedido|date('d/m/Y') }}",
         {
         "estado" : "{{ entity.estado|default('Sin estado') }}",
         "colorEstado" : "{{ entity.colorEstado|default('default') }}"
@@ -31,7 +31,9 @@
         "{{ entity.ordenSiembra|default('-') }}",
         "{{ entity.mesada|default('-') }}",
         {
-        "show_pedido" : " {{ path( "pedido_show", { "id": entity.id }) }}",
+        "show_pedido": " {{ path( "pedido_show", { "id": entity.id }) }}",
+        "nueva_entrega": "{{ path('entrega_new', {'id': entity.idCliente}) }}",
+        "nueva_reserva": "{{ path('reserva_new', {'id': entity.idCliente}) }}",
         "historico_estado": "{{ path( "pedido_historico_estado", { 'id': entity.idProducto }) }}"
         }]{{ (loop.last ? '' : ',') }}
     {% endfor %}

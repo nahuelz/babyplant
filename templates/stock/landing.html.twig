@@ -1,7 +1,5 @@
 {% extends 'base.html.twig' %}
 
-{% import 'app/_macro_form.html.twig' as macro_form %}
-
 {% block title %}
     STOCK
 {% endblock %}
@@ -13,31 +11,129 @@
             <div class="mb-3">
                 <input type="text" id="searchInput" placeholder="Buscar por nombre..." class="form-control"/>
             </div>
-            {% include 'stock/modulo.html.twig' %}
         </div>
-    </div>
+
+        {% for producto in productos %}
+            <div class="col-md-2" id="cards-container">
+                <div class="card-wrapper">
+                    <div class="card card-custom card-stretch gutter-b" style="flex-direction: row !important;">
+                        <div class="card-body d-flex align-items-center py-0 col-md-3">
+                            <div class="d-flex flex-column flex-grow-1 py-2 py-lg-5">
+                                <a href="#"
+                                   class="card-title label margin-0 font-weight-bolder text-dark-75 font-size-h4 p-10 d-flex flex-column producto-link"
+                                   data-id="{{ producto.id }}"
+                                   style="width:250px; background-color: {{ producto.color }}; text-decoration:none;border-radius: 0.42rem;">
+                                    <span>{{ producto.nombre }}</span>
+                                    <span class="font-weight-bold text-dark font-size-lg mt-2">{{ producto.cantidad_total }} BANDEJAS</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body d-flex align-items-center py-0 col-md-3 oculto">
+                            <div class="d-flex flex-column flex-grow-1 py-2 py-lg-5">
+                                <a href="#" class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-2 text-hover-primary">{{ "now"|date("d/m/Y") }}</a>
+                                <span class="font-weight-bold text-dark  font-size-lg"><i class="fas fa-th text-dark"></i> {{ producto.cantidad_hoy }} </span>
+                            </div>
+                        </div>
+                        <div class="card-body d-flex align-items-center py-0 col-md-3 oculto">
+                            <div class="d-flex flex-column flex-grow-1 py-2 py-lg-5">
+                                <a href="#" class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-2 text-hover-primary">{{ "+7 days"|date("d/m/Y") }}</a>
+                                <span class="font-weight-bold text-dark  font-size-lg"><i class="fas fa-th text-dark"></i> {{ producto.cantidad_en_7_dias }} </span>
+                            </div>
+                        </div>
+                        <div class="card-body d-flex align-items-center py-0 col-md-3 oculto">
+                            <div class="d-flex flex-column flex-grow-1 py-2 py-lg-5">
+                                <a href="#" class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-2 text-hover-primary">{{ "+14 days"|date("d/m/Y") }}</a>
+                                <span class="font-weight-bold text-dark  font-size-lg"><i class="fas fa-th text-dark"></i> {{ producto.cantidad_en_14_dias }} </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contenedor para detalle -->
+                <div id="detalle-{{ producto.id }}" class="col-md-12">
+                    <!-- Aquí se cargará el detalle por AJAX -->
+                </div>
+            </div>
+        {% endfor %}
+        </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script>
+        $(".producto-link").on("click", function(e) {
+            e.preventDefault();
+
+            var productoId = $(this).data("id");
+            var detalleContainer = $("#detalle-" + productoId);
+            var cardContainer = $(this).closest('#cards-container');
+
+            var estaAbierto = detalleContainer.data('abierto') || false;
+
+            if (estaAbierto) {
+                detalleContainer.slideUp();
+                cardContainer.removeClass('col-md-12').addClass('col-md-2');
+                cardContainer.find('.card-body.d-flex.align-items-center.col-md-3').not(':first').addClass('oculto');
+                detalleContainer.data('abierto', false);
+                return;
+            }
+
+            // Expandir la card
+            cardContainer.removeClass('col-md-2').addClass('col-md-12');
+
+            // Mostrar los card-body ocultos
+            cardContainer.find('.card-body.d-flex.align-items-center.col-md-3').not(':first').removeClass('oculto');
+
+            // Cargar detalle por AJAX
+            $.ajax({
+                url: "{{ path('detalle_producto') }}",
+                method: "GET",
+                data: { id_producto: productoId },
+                success: function(response) {
+                    var html = '<div class="card-wrapper"><div class="card card-custom card-stretch gutter-b"><div class="card-body d-flex align-items-center col-md-12">';
+                    html += '<table class="table table-bordered">';
+                    html += '<thead><tr><th>Variedad</th><th>{{ "now"|date("d/m/Y") }}</th><th>{{ "+7 days"|date("d/m/Y") }}</th><th>{{ "+14 days"|date("d/m/Y") }}</th><th>Acciones</th></tr></thead><tbody>';
+
+                    $.each(response, function(i, variedad) {
+                        html += '<tr>' +
+                            '<td class="col-md-3">' + variedad.nombre + ' (' + variedad.cantidad_total +' BANDEJAS)</td>' +
+                            '<td class="col-md-2">' + variedad.cantidad_hoy + '</td>' +
+                            '<td class="col-md-2">' + variedad.cantidad_en_7_dias + '</td>' +
+                            '<td class="col-md-2">' + variedad.cantidad_en_14_dias + '</td>' +
+                            '<td class="col-md-2">...</td>' +
+                            '</tr>';
+                    });
+
+                    html += '</tbody></table></div></div></div>';
+
+                    detalleContainer.html(html).slideDown();
+                    detalleContainer.data('abierto', true); // marcar como abierto
+                },
+                error: function(xhr) {
+                    detalleContainer.html("<div class='alert alert-danger'>Error al cargar el detalle.</div>").slideDown();
+                    detalleContainer.data('abierto', true);
+                }
+            });
+        });
+
         const searchInput = document.getElementById('searchInput');
-        const cards = document.querySelectorAll('#cardsContainer .card-wrapper');
+        const cardsContainers = document.querySelectorAll('#cards-container');
 
         searchInput.addEventListener('input', () => {
             const filter = searchInput.value.toUpperCase();
 
-            cards.forEach(cardWrapper => {
-                const nameSpan = cardWrapper.querySelector('a.font-weight-bolder');
+            cardsContainers.forEach(cardContainer => {
+                const nameSpan = cardContainer.querySelector('a.font-weight-bolder');
                 const text = nameSpan.textContent.toUpperCase();
 
                 if (text.includes(filter)) {
-                    cardWrapper.style.display = '';
+                    cardContainer.style.display = 'block'; // mostrar todo el contenedor
                 } else {
-                    cardWrapper.style.display = 'none';
+                    cardContainer.style.display = 'none';  // ocultar todo el contenedor
                 }
             });
         });
+
     </script>
 {% endblock %}
 
@@ -48,5 +144,9 @@
 
         color:black !important;
     }
+    .oculto {
+        display: none !important;
+    }
+
     </style>
 {% endblock %}

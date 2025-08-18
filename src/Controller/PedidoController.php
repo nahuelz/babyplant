@@ -80,7 +80,6 @@ class PedidoController extends BaseController {
 
         $fechaDesde = $request->get('fechaDesde') ? DateTime::createFromFormat('d/m/Y H:i:s', $request->get('fechaDesde') . ' 00:00:00') : (new DateTime())->sub(new DateInterval('P7D'));
         $fechaHasta = $request->get('fechaHasta') ? DateTime::createFromFormat('d/m/Y H:i:s', $request->get('fechaHasta') . ' 23:59:59') : new DateTime();
-
         $cliente = $request->get('idCliente') ?: NULL;
 
         $rsm = new ResultSetMapping();
