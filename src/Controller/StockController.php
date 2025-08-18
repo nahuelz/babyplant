@@ -233,26 +233,27 @@ class StockController extends BaseController {
             ConstanteEstadoPedidoProducto::PLANIFICADO,
             ConstanteEstadoPedidoProducto::SEMBRADO,
             ConstanteEstadoPedidoProducto::EN_CAMARA,
-            ConstanteEstadoPedidoProducto::EN_INVERNACULO
+            ConstanteEstadoPedidoProducto::EN_INVERNACULO,
+            ConstanteEstadoPedidoProducto::ENTREGADO_PARCIAL
         ];
 
         $sql = "SELECT
                     v.id AS id,
                     v.nombre AS nombre,
-                    SUM(pp.cantidad_bandejas_reales) AS cantidad_total,
+                    SUM(pp.cantidad_bandejas_disponibles) AS cantidad_total,
                     SUM(CASE 
                             WHEN DATE(pp.fecha_entrega_pedido_real) <= CURDATE() 
-                            THEN pp.cantidad_bandejas_reales 
+                            THEN pp.cantidad_bandejas_disponibles 
                             ELSE 0 
                         END) AS cantidad_hoy,
                     SUM(CASE 
                             WHEN DATE(pp.fecha_entrega_pedido_real) <= CURDATE() + INTERVAL 7 DAY
-                            THEN pp.cantidad_bandejas_reales 
+                            THEN pp.cantidad_bandejas_disponibles 
                             ELSE 0 
                         END) AS cantidad_en_7_dias,
                     SUM(CASE 
                             WHEN DATE(pp.fecha_entrega_pedido_real) <= CURDATE() + INTERVAL 14 DAY
-                            THEN pp.cantidad_bandejas_reales 
+                            THEN pp.cantidad_bandejas_disponibles 
                             ELSE 0 
                         END) AS cantidad_en_14_dias
                 FROM pedido_producto AS pp
@@ -296,7 +297,9 @@ class StockController extends BaseController {
             ConstanteEstadoPedidoProducto::PLANIFICADO,
             ConstanteEstadoPedidoProducto::SEMBRADO,
             ConstanteEstadoPedidoProducto::EN_CAMARA,
-            ConstanteEstadoPedidoProducto::EN_INVERNACULO
+            ConstanteEstadoPedidoProducto::EN_INVERNACULO,
+            ConstanteEstadoPedidoProducto::ENTREGADO_PARCIAL
+
         ];
 
         $sql = "
@@ -304,20 +307,20 @@ class StockController extends BaseController {
                 tp.id AS id,
                 tp.nombre AS nombre,
                 tp.color AS color,
-                SUM(pp.cantidad_bandejas_reales) AS cantidad_total,
+                SUM(pp.cantidad_bandejas_disponibles) AS cantidad_total,
                 SUM(CASE 
                         WHEN DATE(pp.fecha_entrega_pedido_real) <= CURDATE() 
-                        THEN pp.cantidad_bandejas_reales 
+                        THEN pp.cantidad_bandejas_disponibles 
                         ELSE 0 
                     END) AS cantidad_hoy,
                 SUM(CASE 
                         WHEN DATE(pp.fecha_entrega_pedido_real) <= CURDATE() + INTERVAL 7 DAY
-                        THEN pp.cantidad_bandejas_reales 
+                        THEN pp.cantidad_bandejas_disponibles 
                         ELSE 0 
                     END) AS cantidad_en_7_dias,
                 SUM(CASE 
                         WHEN DATE(pp.fecha_entrega_pedido_real) <= CURDATE() + INTERVAL 14 DAY
-                        THEN pp.cantidad_bandejas_reales 
+                        THEN pp.cantidad_bandejas_disponibles 
                         ELSE 0 
                     END) AS cantidad_en_14_dias
             FROM pedido_producto AS pp
