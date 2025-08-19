@@ -204,70 +204,91 @@ function showFlashMessage(type, message, delay, className) {
  * @returns {undefined}
  */
 function initChainedSelect($sourceSelect, $targetSelect, ajaxURL, preserve_values) {
-
     var isEdit = $('[name=_method]').length > 0;
-
-    var targetArray = [];
-
     var selectedElement = null;
+    var lastXHR = null;
 
-    if (isEdit || (typeof preserve_values !== "undefined" && (preserve_values === true || preserve_values === "true"))) {
-
+    if (isEdit || (preserve_values === true || preserve_values === "true")) {
         selectedElement = $targetSelect.val();
-
-        $sourceSelect.each(function (index) {
-            targetArray[index] = $targetSelect.val();
-        });
     }
 
     $sourceSelect.on("change", function () {
+        var sourceVal = $(this).val();
+
+        // Limpio y deshabilito mientras cargo (y quito cualquier readonly que te quede de resetSelect)
+        $targetSelect.empty()
+            .append(new Option('Seleccione...', '', true, false))
+            .prop('disabled', true)
+            .removeAttr('readonly')
+            .trigger('change'); // refresca UI si ya está con Select2
 
         var data = {
-            id_entity: $(this).val(),
-            extra_data: getExtraDataChainedSelect()
+            id_entity: sourceVal,
+            extra_data: (typeof getExtraDataChainedSelect === 'function') ? getExtraDataChainedSelect() : {}
         };
 
-        if (customChainedSelect($sourceSelect, $targetSelect, data)) {
-
-            resetSelect($targetSelect);
-
-            if ($(this).val() !== "") {
-
-                $.ajax({
-                    type: 'post',
-                    url: ajaxURL,
-                    data: data,
-                    success: function (data) {
-                        if (data.length === 0) {
-
-                            $targetSelect.attr('readonly', true);
-                        } //
-                        else {
-
-                            $targetSelect.attr('readonly', false);
-
-                            for (var i = 0, total = data.length; i < total; i++) {
-                                $targetSelect.append('<option id="' + data[i].id + '" value="' + data[i].id + '">' + data[i].denominacion + '</option>');
-                            }
-
-                            if (null !== selectedElement) {
-                                $targetSelect.val(selectedElement);
-                            } else {
-                                $targetSelect.val(null);
-                            }
-                        }
-
-                        selectedElement = null;
-
-                        $targetSelect.select2();
-
-                        customAfterChainedSelect();
-                    }
-                });
-            }
+        if (!customChainedSelect($sourceSelect, $targetSelect, data)) {
+            return;
         }
+
+        if (!sourceVal) {
+            return; // nada seleccionado en el origen
+        }
+
+        // Evitar respuestas viejas
+        if (lastXHR && lastXHR.readyState !== 4) {
+            try { lastXHR.abort(); } catch (e) {}
+        }
+
+        lastXHR = $.ajax({
+            type: 'POST',
+            url: ajaxURL,
+            data: data,
+            dataType: 'json',
+            success: function (rows) {
+                $targetSelect.empty(); // limpio de nuevo para cargar datos reales
+
+                if (!Array.isArray(rows) || rows.length === 0) {
+                    $targetSelect.prop('disabled', true).removeAttr('readonly').trigger('change');
+                    return;
+                }
+
+                // Cargar opciones
+                for (var i = 0; i < rows.length; i++) {
+                    $targetSelect.append(new Option(rows[i].denominacion, rows[i].id));
+                }
+
+                // Habilitar y setear valor preservado si corresponde
+                $targetSelect.prop('disabled', false).removeAttr('readonly');
+
+                if (selectedElement) {
+                    $targetSelect.val(selectedElement);
+                } else {
+                    $targetSelect.val(null);
+                }
+                $targetSelect.trigger('change'); // importante para refrescar el widget
+
+                selectedElement = null;
+
+                // Si resetSelect destruyó el Select2, lo re-inicializo.
+                // (Select2 v4 marca el select con la clase "select2-hidden-accessible" cuando está activo)
+                if (!$targetSelect.hasClass('select2-hidden-accessible')) {
+                    $targetSelect.select2();
+                }
+
+                if (typeof customAfterChainedSelect === 'function') {
+                    customAfterChainedSelect();
+                }
+            },
+            error: function () {
+                // En error, mantengo deshabilitado
+                $targetSelect.prop('disabled', true).removeAttr('readonly').trigger('change');
+            }
+        });
     }).trigger('change');
 }
+
+
 
 /**
  * 
@@ -355,7 +376,7 @@ function checkTabError() {
 function initClienteSelect2(){
     $("select[id$='_cliente'].select2-hidden-accessible").select2({
         matcher: function (params, data) {
-            // Si no hay término de búsqueda, mostrar todo
+            // Si no hay término de búsqueda, mostrar toodo
             if ($.trim(params.term) === '') {
                 return data;
             }

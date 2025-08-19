@@ -123,71 +123,79 @@ function initSelects() {
 
         $.fn.select2.defaults.set('language', 'es');
 
-        // Init select con la clase "choice"
         $('select.choice').each(function () {
 
-            if (!$('#s2id_' + $(this).attr('id')).length) {
-                var select2_options = {
-                    allowClear: typeof $(this).data('not-allow-clear') == 'undefined',
-                    dropdownAutoWidth: true,
-                    theme: "default"
-                };
+            // Evitar reinicializar si ya está con Select2
+            if ($(this).data('select2')) {
+                return;
+            }
 
-                var parent = $(this).closest('.modal');
+            var select2_options = {
+                allowClear: typeof $(this).data('not-allow-clear') == 'undefined',
+                dropdownAutoWidth: true,
+                theme: "default"
+            };
 
-                if (parent.length) {
-                    select2_options.dropdownParent = parent;
-                }
+            // Si está dentro de un modal → forzar dropdownParent
+            var parent = $(this).closest('.modal');
+            if (parent.length) {
+                select2_options.dropdownParent = parent;
+            }
 
-                $(this).select2(select2_options);
+            // Opciones adicionales para selects múltiples
+            if ($(this).prop('multiple')) {
 
-                if ($(this).attr('multiple')) {
-
-                    if (!$(this).hasClass('hide-select-all')) {
-                        var optionAll = new Option("-- Seleccionar todos --", "all");
-                        var optionClear = new Option("-- Limpiar selección --", "clear");
-
-                        $(this).prepend(optionClear);
-                        $(this).prepend(optionAll);
+                if (!$(this).hasClass('hide-select-all')) {
+                    if ($(this).find('option[value="all"]').length === 0) {
+                        $(this).prepend(new Option("-- Seleccionar todos --", "all"));
                     }
-
-                    $(this).select2({
-                        escapeMarkup: function (m) {
-                            return m;
-                        },
-                        templateResult: function (object, container, query) {
-                            if (object.id == 'all' || object.id == 'clear')
-                                return '<span class="toggle-highlight" style="color:#31708F;font-size:13px;font-weight:bold;"> ' + object.text + '</span>';
-                            return object.text;
-                        }
-                    });
-
-                    $(this).on("change", function (e) {
-
-                        if ($.inArray('all', $(this).val()) !== -1) {
-                            var selected = [];
-                            $(this).find("option").each(function (i, e) {
-                                if ($(e).attr("value") == 'all' || $(e).attr("value") == 'clear')
-                                    return true;
-
-                                selected[selected.length] = $(e).attr("value");
-                            });
-                            $(this).val(selected).trigger("change");
-                        } else if ($.inArray('clear', $(this).val()) !== -1) {
-                            $(this).val(null).trigger("change");
-                        }
-                    });
+                    if ($(this).find('option[value="clear"]').length === 0) {
+                        $(this).prepend(new Option("-- Limpiar selección --", "clear"));
+                    }
                 }
 
+                $.extend(select2_options, {
+                    escapeMarkup: function (m) { return m; },
+                    templateResult: function (object) {
+                        if (object.id === 'all' || object.id === 'clear') {
+                            return '<span class="toggle-highlight" style="color:#31708F;font-size:13px;font-weight:bold;"> ' + object.text + '</span>';
+                        }
+                        return object.text;
+                    }
+                });
 
-                // Select2 Opening Callback
-                $(this).on("select2-opening", function () {
-                    closeActiveSelect2();
+                // Lógica de selección especial
+                $(this).on("change", function () {
+                    var values = $(this).val() || [];
+
+                    if (values.includes('all')) {
+                        var selected = [];
+                        $(this).find("option").each(function () {
+                            var val = $(this).val();
+                            if (val !== 'all' && val !== 'clear') {
+                                selected.push(val);
+                            }
+                        });
+                        $(this).val(selected).trigger("change");
+                    } else if (values.includes('clear')) {
+                        $(this).val(null).trigger("change");
+                    }
                 });
             }
+
+            // Inicializar con todas las opciones
+            $(this).select2(select2_options);
+
+            // Evento de apertura (v4 usa "select2:opening")
+            $(this).on("select2:opening", function () {
+                if (typeof closeActiveSelect2 === "function") {
+                    closeActiveSelect2();
+                }
+            });
         });
     }
 }
+
 
 /**
  *

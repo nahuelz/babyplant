@@ -11,6 +11,7 @@ jQuery(document).ready(function () {
     $('.submit-button').html('Guardar');
     initPreValidation();
     initClienteEntregaHandler();
+    initClienteSelect2();
 });
 
 function initClienteEntregaHandler() {

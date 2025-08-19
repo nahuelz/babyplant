@@ -44,4 +44,39 @@
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ '../plugins/jquery-validation/dist/jquery.validate.js') }}" ></script>
     <script src="{{ asset(plugins_path ~ 'custom/fullcalendar/fullcalendar.bundle.js') }}"></script>
 
+    <script>
+        $('#btn-fscreen').on('click', function(){
+            /*var elem = document.getElementById("kt_body");
+            req = elem.requestFullScreen || elem.webkitRequestFullScreen || elem.mozRequestFullScreen;
+            req.call(elem);
+             */
+            toggleFullScreen();
+        });
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement &&    // alternative standard method
+                !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {  // current working methods
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.msRequestFullscreen) {
+                    document.documentElement.msRequestFullscreen();
+                } else if (document.documentElement.mozRequestFullScreen) {
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullscreen) {
+                    document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+            }
+        }
+    </script>
+
 {% endblock %}
