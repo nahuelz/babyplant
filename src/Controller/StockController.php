@@ -224,9 +224,9 @@ class StockController extends BaseController {
         $rsm->addScalarResult('nombre', 'nombre');
         $rsm->addScalarResult('color', 'color');
         $rsm->addScalarResult('cantidad_total', 'cantidad_total');
-        $rsm->addScalarResult('cantidad_hoy', 'cantidad_hoy');
-        $rsm->addScalarResult('cantidad_en_7_dias', 'cantidad_en_7_dias');
-        $rsm->addScalarResult('cantidad_en_14_dias', 'cantidad_en_14_dias');
+        $rsm->addScalarResult('cantidad_semana_actual', 'cantidad_semana_actual');
+        $rsm->addScalarResult('cantidad_semana_siguiente', 'cantidad_semana_siguiente');
+        $rsm->addScalarResult('cantidad_semana_en_2', 'cantidad_semana_en_2');
 
         $estadosValidos = [
             ConstanteEstadoPedidoProducto::PENDIENTE,
@@ -241,21 +241,30 @@ class StockController extends BaseController {
                     v.id AS id,
                     v.nombre AS nombre,
                     SUM(pp.cantidad_bandejas_disponibles) AS cantidad_total,
-                    SUM(CASE 
-                            WHEN DATE(pp.fecha_entrega_pedido_real) <= CURDATE() 
+                    SUM(CASE WHEN DATE(pp.fecha_entrega_pedido_real) <= DATE_ADD(CURDATE(), INTERVAL (7 - DAYOFWEEK(CURDATE())) DAY) THEN pp.cantidad_bandejas_disponibles ELSE 0 END) AS cantidad_semana_actual,
+                
+                    -- Semana siguiente
+                    SUM(
+                        CASE 
+                            WHEN DATE(pp.fecha_entrega_pedido_real) 
+                                 BETWEEN DATE_ADD(DATE_SUB(CURDATE(), INTERVAL (DAYOFWEEK(CURDATE()) - 1) DAY), INTERVAL 7 DAY)
+                                     AND DATE_ADD(CURDATE(), INTERVAL (14 - DAYOFWEEK(CURDATE())) DAY)
                             THEN pp.cantidad_bandejas_disponibles 
                             ELSE 0 
-                        END) AS cantidad_hoy,
-                    SUM(CASE 
-                            WHEN DATE(pp.fecha_entrega_pedido_real) <= CURDATE() + INTERVAL 7 DAY
+                        END
+                    ) AS cantidad_semana_siguiente,
+                
+                    -- Semana en 2 semanas
+                    SUM(
+                        CASE 
+                            WHEN DATE(pp.fecha_entrega_pedido_real) 
+                                 BETWEEN DATE_ADD(DATE_SUB(CURDATE(), INTERVAL (DAYOFWEEK(CURDATE()) - 1) DAY), INTERVAL 14 DAY)
+                                     AND DATE_ADD(CURDATE(), INTERVAL (21 - DAYOFWEEK(CURDATE())) DAY)
                             THEN pp.cantidad_bandejas_disponibles 
                             ELSE 0 
-                        END) AS cantidad_en_7_dias,
-                    SUM(CASE 
-                            WHEN DATE(pp.fecha_entrega_pedido_real) <= CURDATE() + INTERVAL 14 DAY
-                            THEN pp.cantidad_bandejas_disponibles 
-                            ELSE 0 
-                        END) AS cantidad_en_14_dias
+                        END
+                    ) AS cantidad_semana_en_2
+                
                 FROM pedido_producto AS pp
                 INNER JOIN estado_pedido_producto AS est  ON pp.id_estado_pedido_producto = est.id
                 LEFT JOIN pedido AS p  ON pp.id_pedido = p.id
@@ -287,10 +296,6 @@ class StockController extends BaseController {
         $rsm->addScalarResult('id', 'id');
         $rsm->addScalarResult('nombre', 'nombre');
         $rsm->addScalarResult('color', 'color');
-        $rsm->addScalarResult('cantidad_total', 'cantidad_total');
-        $rsm->addScalarResult('cantidad_hoy', 'cantidad_hoy');
-        $rsm->addScalarResult('cantidad_en_7_dias', 'cantidad_en_7_dias');
-        $rsm->addScalarResult('cantidad_en_14_dias', 'cantidad_en_14_dias');
 
         $estadosValidos = [
             ConstanteEstadoPedidoProducto::PENDIENTE,
@@ -306,23 +311,7 @@ class StockController extends BaseController {
             SELECT
                 tp.id AS id,
                 tp.nombre AS nombre,
-                tp.color AS color,
-                SUM(pp.cantidad_bandejas_disponibles) AS cantidad_total,
-                SUM(CASE 
-                        WHEN DATE(pp.fecha_entrega_pedido_real) <= CURDATE() 
-                        THEN pp.cantidad_bandejas_disponibles 
-                        ELSE 0 
-                    END) AS cantidad_hoy,
-                SUM(CASE 
-                        WHEN DATE(pp.fecha_entrega_pedido_real) <= CURDATE() + INTERVAL 7 DAY
-                        THEN pp.cantidad_bandejas_disponibles 
-                        ELSE 0 
-                    END) AS cantidad_en_7_dias,
-                SUM(CASE 
-                        WHEN DATE(pp.fecha_entrega_pedido_real) <= CURDATE() + INTERVAL 14 DAY
-                        THEN pp.cantidad_bandejas_disponibles 
-                        ELSE 0 
-                    END) AS cantidad_en_14_dias
+                tp.color AS color
             FROM pedido_producto AS pp
             INNER JOIN estado_pedido_producto AS est  ON pp.id_estado_pedido_producto = est.id
             LEFT JOIN pedido AS p  ON pp.id_pedido = p.id

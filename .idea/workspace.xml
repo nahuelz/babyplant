@@ -4,16 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="detalle stock">
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="fix select2">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/entrega/new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/entrega/new.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/config/config-form.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/config/config-form.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/functions.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/functions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/entrada_camara/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrada_camara/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/planificacion/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/planificacion/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/salida_camara/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/salida_camara/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/siembra/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/siembra/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/StockController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/StockController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/stock/landing.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/stock/landing.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -702,15 +696,7 @@
       <workItem from="1755105838464" duration="6191000" />
       <workItem from="1755202577892" duration="2742000" />
       <workItem from="1755537632009" duration="12260000" />
-      <workItem from="1755619790009" duration="1442000" />
-    </task>
-    <task id="LOCAL-00157" summary="docker base">
-      <option name="closed" value="true" />
-      <created>1747414601672</created>
-      <option name="number" value="00157" />
-      <option name="presentableId" value="LOCAL-00157" />
-      <option name="project" value="LOCAL" />
-      <updated>1747414601672</updated>
+      <workItem from="1755619790009" duration="3679000" />
     </task>
     <task id="LOCAL-00158" summary="docker base">
       <option name="closed" value="true" />
@@ -1096,7 +1082,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755549450065</updated>
     </task>
-    <option name="localTasksCounter" value="206" />
+    <task id="LOCAL-00206" summary="fix select2">
+      <option name="closed" value="true" />
+      <created>1755625814672</created>
+      <option name="number" value="00206" />
+      <option name="presentableId" value="LOCAL-00206" />
+      <option name="project" value="LOCAL" />
+      <updated>1755625814672</updated>
+    </task>
+    <option name="localTasksCounter" value="207" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1124,7 +1118,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix salida camara" />
     <MESSAGE value="se deshabilito la vista de &quot;lista&quot; para planificacion y salida camara" />
     <MESSAGE value="Situacion cliente agregar saldo cuenta corriente." />
     <MESSAGE value="Caja" />
@@ -1149,6 +1142,7 @@
     <MESSAGE value="Colores, Stock" />
     <MESSAGE value="menu stock" />
     <MESSAGE value="detalle stock" />
-    <option name="LAST_COMMIT_MESSAGE" value="detalle stock" />
+    <MESSAGE value="fix select2" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix select2" />
   </component>
 </project>
