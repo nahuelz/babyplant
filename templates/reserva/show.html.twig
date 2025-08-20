@@ -44,7 +44,7 @@
                                 <label class="control-label d-block">
                                     Estado Reserva
                                 </label>
-                                <span class="label label-inline font-weight-bold {{ entity.estado.color }}" style="padding: 20px;">{{ entity.estado.nombre }}</span>
+                                <span class="label label-inline font-weight-bold {{ entity.estado.color|default('') }}" style="padding: 20px;">{{ entity.estado.nombre|default('') }}</span>
                             </div>
                         </div>
                     </div>

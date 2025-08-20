@@ -4,10 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="fix select2">
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="fix entregar reserva">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/StockController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/StockController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/stock/landing.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/stock/landing.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/ReservaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ReservaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Reserva.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Reserva.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/EstadoService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/EstadoService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/entrega/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/show.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedidoproducto/show/planificacion_show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedidoproducto/show/planificacion_show.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedidoproducto/show/salida_camara_show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedidoproducto/show/salida_camara_show.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/planificacion/producto_show_old.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/planificacion/producto_show_old.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/reserva/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/reserva/show.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -696,15 +702,8 @@
       <workItem from="1755105838464" duration="6191000" />
       <workItem from="1755202577892" duration="2742000" />
       <workItem from="1755537632009" duration="12260000" />
-      <workItem from="1755619790009" duration="3679000" />
-    </task>
-    <task id="LOCAL-00158" summary="docker base">
-      <option name="closed" value="true" />
-      <created>1747414611089</created>
-      <option name="number" value="00158" />
-      <option name="presentableId" value="LOCAL-00158" />
-      <option name="project" value="LOCAL" />
-      <updated>1747414611089</updated>
+      <workItem from="1755619790009" duration="5124000" />
+      <workItem from="1755710529323" duration="1227000" />
     </task>
     <task id="LOCAL-00159" summary="docker base">
       <option name="closed" value="true" />
@@ -1090,7 +1089,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755625814672</updated>
     </task>
-    <option name="localTasksCounter" value="207" />
+    <task id="LOCAL-00207" summary="stock semanal">
+      <option name="closed" value="true" />
+      <created>1755627964149</created>
+      <option name="number" value="00207" />
+      <option name="presentableId" value="LOCAL-00207" />
+      <option name="project" value="LOCAL" />
+      <updated>1755627964149</updated>
+    </task>
+    <option name="localTasksCounter" value="208" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1118,8 +1125,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="se deshabilito la vista de &quot;lista&quot; para planificacion y salida camara" />
-    <MESSAGE value="Situacion cliente agregar saldo cuenta corriente." />
     <MESSAGE value="Caja" />
     <MESSAGE value="Caja mostrar modo pago" />
     <MESSAGE value="initClienteSelect2()" />
@@ -1143,6 +1148,8 @@
     <MESSAGE value="menu stock" />
     <MESSAGE value="detalle stock" />
     <MESSAGE value="fix select2" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix select2" />
+    <MESSAGE value="stock semanal" />
+    <MESSAGE value="fix entregar reserva" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix entregar reserva" />
   </component>
 </project>

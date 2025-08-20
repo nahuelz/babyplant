@@ -12,8 +12,10 @@ use App\Entity\EstadoMesada;
 use App\Entity\EstadoMesadaHistorico;
 use App\Entity\EstadoRemito;
 use App\Entity\EstadoRemitoHistorico;
+use App\Entity\EstadoReservaHistorico;
 use App\Entity\Mesada;
 use App\Entity\Remito;
+use App\Entity\Reserva;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\PedidoProducto;
 use App\Entity\EstadoPedidoProducto;
@@ -92,5 +94,13 @@ class EstadoService
         $historico->setMotivo($motivo);
         $entidad->addHistoricoEstado($historico);
         $this->em->persist($historico);
+    }
+
+    public function cambiarEstadoReserva(Reserva $reserva, $estadoReserva, string $motivo): void
+    {
+        $reserva->setEstado($estadoReserva);
+        $estadoReservaHistorico = new EstadoReservaHistorico();
+        $estadoReservaHistorico->setReserva($reserva);
+        $this->crearHistorico($estadoReservaHistorico, $reserva, $estadoReserva, $motivo);
     }
 }

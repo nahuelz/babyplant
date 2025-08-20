@@ -6,6 +6,7 @@ use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Constants\ConstanteEstadoReserva;
 use App\Entity\Entrega;
 use App\Entity\EntregaProducto;
+use App\Entity\EstadoEntregaProducto;
 use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
 use App\Entity\EstadoReserva;
@@ -175,38 +176,9 @@ class ReservaController extends BaseController {
     function execPostPersistAction($em, $entity, $request): void
     {
         $estadoReserva = $em->getRepository(EstadoReserva::class)->findOneByCodigoInterno(ConstanteEstadoReserva::SIN_ENTREGAR);
-        $this->cambiarEstadoReserva($em, $entity, $estadoReserva);
-        $this->generarHistoricoReserva($em, $entity);
+        $this->estadoService->cambiarEstadoReserva($entity, $estadoReserva,'RESERVA CREADA.');
         $entity->getPedidoProducto()->setCantidadBandejasDisponibles();
         $em->flush();
-    }
-
-    /**
-     *
-     * @param ObjectManager $em
-     * @param Reserva $reserva
-     * @param EstadoReserva $estadoReserva
-     */
-    private function cambiarEstadoReserva(ObjectManager $em, Reserva $reserva, EstadoReserva $estadoReserva): void
-    {
-        $reserva->setEstado($estadoReserva);
-        $estadoReservaHistorico = new EstadoReservaHistorico();
-        $estadoReservaHistorico->setReserva($reserva);
-        $estadoReservaHistorico->setFecha(new DateTime());
-        $estadoReservaHistorico->setEstado($estadoReserva);
-        $estadoReservaHistorico->setMotivo('Reserva de producto');
-        $reserva->addHistoricoEstado($estadoReservaHistorico);
-    }
-
-    private function generarHistoricoReserva(ObjectManager $em, Reserva $reserva){
-        $estadoPedidoProducto = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::RESERVADO);
-        $estadoPedidoProductoHistorico = new EstadoPedidoProductoHistorico();
-        $estadoPedidoProductoHistorico->setReserva($reserva);
-        $estadoPedidoProductoHistorico->setFecha(new DateTime());
-        $estadoPedidoProductoHistorico->setEstado($estadoPedidoProducto);
-        $estadoPedidoProductoHistorico->setMotivo('Reserva de producto');
-        $reserva->getPedidoProducto()->addHistoricoEstado($estadoPedidoProductoHistorico);
-        $em->persist($estadoPedidoProductoHistorico);
     }
 
     /**
@@ -277,6 +249,8 @@ class ReservaController extends BaseController {
             $entreaProducto->setCantidadBandejas($reserva->getCantidadBandejas());
             $entreaProducto->setPedidoProducto($reserva->getPedidoProducto());
             $entreaProducto->setMontoPendiente($entreaProducto->getMontoTotal());
+            $estadoEntregaProducto = $em->getRepository(EstadoEntregaProducto::class)->findOneByCodigoInterno(ConstanteEstadoReserva::ENTREGADO);
+            $this->estadoService->cambiarEstadoEntregaProducto($entreaProducto, $estadoEntregaProducto, 'ENTREGA');
             $entrega->addEntregaProducto($entreaProducto);
             $entrega->setClienteEntrega($reserva->getCliente());
             $entrega->setCliente($reserva->getPedidoProducto()->getPedido()->getCliente());
@@ -284,7 +258,7 @@ class ReservaController extends BaseController {
             $em->flush();
             $entregaService->entregar($em, $entrega);
             $estadoReserva = $em->getRepository(EstadoReserva::class)->findOneByCodigoInterno(ConstanteEstadoReserva::ENTREGADO);
-            $this->cambiarEstadoReserva($em, $reserva, $estadoReserva);
+            $this->estadoService->cambiarEstadoReserva($reserva, $estadoReserva, 'ENTREGA');
             $reserva->setEntrega($entrega);
             $em->flush();
             $this->get('session')->getFlashBag()->add('success', "Producto entregado.");
