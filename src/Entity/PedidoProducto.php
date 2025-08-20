@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Constants\ConstanteEstadoReserva;
 use App\Entity\Traits\Auditoria;
 use App\Repository\PedidoProductoRepository;
@@ -779,6 +780,9 @@ class PedidoProducto {
 
     public function getCantidadBandejasDisponibles(){
         // Disponible = bandejasReasles - (bandejasEntregadas + bandejasReservadas)
+        if ($this->getEstado()->getCodigoInterno() == ConstanteEstadoPedidoProducto::CANCELADO){
+            return 0;
+        }
         return ($this->getCantidadBandejasReales() - ($this->getCantidadBandejasEntregadas() + $this->getCantidadBandejasReservadasSinEntregar()));
     }
 
