@@ -2,183 +2,20 @@
 <html>
 <head>
     <style type="text/css">
-        .entrega{
-            font-size: 14px;
-            font-family: monospace;
-        }
-        .datos-header{
-            max-width: 100%;
-        }
-        .logo-empresa{
-            margin-top: 40px;
-            margin-left: 10px;
-        }
-        .header-entrega-left{
-            border: 2px solid;
-            border-radius: 5px;
-        }
-        .header-entrega-right{
-            border: 2px solid;
-            border-radius: 5px;
-        }
-        .datos-empresa{
-            margin-top: 16px;
-            line-height: 3mm;
-        }
-        .datos-entrega{
-            margin-top: 24px;
-            line-height: 7.3mm;
-            font-size: 20px;
-        }
-        .entrega-title{
-            text-align: center;
-        }
-        .entrega-datos{
-            text-align: right;
-        }
-        .datos-cliente{
-            border: 2px solid;
-            border-radius: 5px;
-            margin-top: 10px;
-            max-width: 100%;
-            font-size: 18px;
-        }
-        .datos-productos{
-            margin-top: 10px;
-            padding: 0px;
-        }
-
-        .datos-productos-table{
-            margin: 0px;
-            font-size: 18px;
-            width: 98%;
-        }
+        {% include 'PDF/confirmar.css.twig' %}
     </style>
 </head>
 
 <body>
-<div class="entrega">
-    <div class="row datos-header">
-        <div class="col-md-8 header-entrega-left">
-            <div class="row">
-                <div class="col-md-5 logo-empresa"><img src="{{ asset('images/logo/logo.png') }}" alt="logo" width="200" height="100"></div>
-                <div class="col-md-6 datos-empresa">
-                    <div class="row">
-                        <div class="col-md-5">
-                            <p><strong>RAZÓN SOCIAL</strong></p>
-                            <p><strong>CUIT</strong> </p>
-                            <p><strong>WEB</strong> </p>
-                            <p><strong>DIRECCIÓN</strong></p>
-                            <p><strong>LOCALIDAD</strong></p>
-                            <p><strong>TELÉFONO</strong></p>
-                        </div>
-                        <div class="col-md-6">
-                            <p> Baby Plant srl</p>
-                            <p> 33-71230651-9</p>
-                            <p> www.babyplant.com.ar</p>
-                            <p> 44 4303</p>
-                            <p> Lis. Olmos la Plata</p>
-                            <p> 0221 15-669-0199</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="offset-md-1 col-md-3 header-entrega-right">
-            <div class="col-md-12 datos-entrega">
-                <div class="row">
-                    <div class="col-md-12">
-                        <h1 class="entrega-title">REMITO</h1>
-                    </div>
-                    <div class="col-md-5 entrega-datos">
-                        <p><strong>N°</strong></p>
-                        <p><strong>FECHA</strong> </p>
-                    </div>
-                    <div class="col-md-6">
-                        <p>{{ entity.codigo }}</p>
-                        <p>{{ entity.fechaCreacion|date('d/m/Y') }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row datos-cliente">
-        <div class="col-md-12" style="padding-top: 10px;">
-            <div class="row">
-                <div class="offset-md-1 col-md-5">
-                    <div class="row">
-                        <div class="col-md-6" style="text-align: right">
-                            <p><strong>CLIENTE</strong></p>
-                            <p><strong>CUIT</strong> </p>
-                        </div>
-                        <div class="col-md-6">
-                            <p>{{ entity.remito.cliente.nombreCompleto|default('-') }}</p>
-                            <p>{{ entity.remito.cliente.cuit|default('-') }}</p>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="col-md-5">
-                    <div class="row">
-                        <div class="col-md-6" style="text-align: right">
-                            <p><strong>TELÉFONO</strong></p>
-                            <p><strong>DIRECCION</strong></p>
-                        </div>
-                        <div class="col-md-6">
-                            <p>{{ entity.cliente.celular|default('') }}</p>
-                            <p>{{ entity.remito.cliente.domicilio|default('-') }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12 datos-productos">
-            <table class="datos-productos-table" border="2" cellpadding="5" cellspacing="0" align="center">
-                <thead>
-                <tr style="background-color: gainsboro;">
-                    <th class="text-center">N° ORDEN</th>
-                    <th class="text-center">PRODUCTO</th>
-                    <th class="text-center">CANTIDAD</th>
-                    <th class="text-center">PRECIO U.</th>
-                    <th class="text-center">SUBTOTAL</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for entregaProducto in entity.entregasProductos %}
-                    <tr>
-                        <td width="170" align="center">{{ entregaProducto.pedidoProducto.numeroOrdenCompleto }}</td>
-                        <td width="395" align="center">{{ entregaProducto.pedidoProducto.productoBandeja }}</td>
-                        <td width="144" align="center">{{ entregaProducto.cantidadBandejas }}</td>
-                        <td width="157" align="center">{{ entregaProducto.precioUnitario|money_format }}</td>
-                        <td width="183" align="right">{{ entregaProducto.precioSubTotal|money_format }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-                <tfoot>
-                <tr>
-                    <th colspan="3" style="text-align: right; font-size: 18px">
-                        {% if entity.remito.tipoDescuento != null %}
-                            Subtotal <br>
-                            Descuento <br>
-                        {% endif %}
-                        TOTAL
-                    </th>
-                    <td align="right" colspan="2">
-                        {% if entity.remito.tipoDescuento != null %}
-                            {{ entity.totalSinDescuento|money_format }}<br>
-                            {{ entity.remito.tipoDescuentoString }}{{ entity.remito.montoDescuento|money_format }} <br>
-                        {% endif %}
-                        {{ entity.totalConDescuento|money_format }}
-                    </td>
-                </tr>
-                </tfoot>
-            </table>
-        </div>
-    </div>
+<div class="remito">
+    {% include 'PDF/confirmar_header.html.twig' with {remito: entity.remito } %}
+    {% include 'PDF/confirmar_body.html.twig' with
+        {
+            remito: entity.remito,
+            entrega: [entity],
+            totalSinDescuento: entity.totalSinDescuento,
+            total: entity.totalConDescuento
+        } %}
 </div>
 </body>
 </html>

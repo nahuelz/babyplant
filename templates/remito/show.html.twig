@@ -28,9 +28,11 @@
             </div>
         </div>
 
-        {% include 'remito/datos_cliente.html.twig' %}
-        {% include 'remito/datos_remito.html.twig' %}
-        {% include 'remito/pagos.html.twig' %}
+        <div class="card-body">
+            {% include 'remito/datos_cliente.html.twig' with {cliente: entity.cliente } %}
+            {% include 'remito/datos_remito.html.twig' %}
+            {% include 'remito/pagos.html.twig' %}
+        </div>
 
 
         <div class="card-footer d-flex justify-content-between">

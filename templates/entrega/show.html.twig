@@ -25,6 +25,8 @@
         </div>
         <div class="card-body">
 
+            {% include 'remito/datos_cliente.html.twig' with {cliente: entity.cliente } %}
+
             <div class="card card-detail">
                 <div class="card-header">
                     <div class="row">
@@ -79,68 +81,7 @@
             </div>
 
             {% if entity.remito %}
-                {% set remito = entity.remito %}
-                    <div class="card card-detail">
-                        <h4 class="card-header">Remito</h4>
-                        <div class="card-body">
-                            <div class="row">
-                                {{ macro_show._show_detail('Remito', remito, 'col-md-3') }}
-                                {{ macro_show._show_detail('Fecha', remito.fechaCreacion is not null ? remito.fechaCreacion|date('d/m/Y') : '-', 'col-md-3') }}
-                                {{ macro_show._show_detail('Total', remito.totalConDescuento|money_format|default('-'), 'col-md-3') }}
-                                {{ macro_show._show_detail('Estado', remito.estado|default('-'), 'col-md-3') }}
-                            </div>
-                            <div class="row mt-10">
-                                <div class="col">
-                                    <div class="d-flex">
-                                        <div class="mt-3"><h4>Productos del Remito</h4></div>
-                                    </div>
-                                    <hr>
-                                    <table class="table" style="text-align: center;">
-                                        <thead>
-                                        <tr>
-                                            <th scope="col">N° Entrega</th>
-                                            <th scope="col">N° Orden</th>
-                                            <th scope="col">Producto</th>
-                                            <th scope="col">Cantidad</th>
-                                            <th scope="col">Precio U.</th>
-                                            <th scope="col">Subtotal</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        {% for entrega in remito.entregas %}
-                                            {% for entregaProducto in entrega.entregasProductos %}
-                                                <tr>
-                                                    <td>{{ entrega.id }}</td>
-                                                    <td>{{ entregaProducto.pedidoProducto.numeroOrdenCompleto }}</td>
-                                                    <td>{{ entregaProducto.pedidoProducto.productoBandeja }}</td>
-                                                    <td>{{ entregaProducto.cantidadBandejas }}</td>
-                                                    <td>{{ entregaProducto.precioUnitario|money_format }}</td>
-                                                    <td>{{ entregaProducto.precioSubTotal|money_format }}</td>
-                                                </tr>
-                                            {% endfor %}
-                                        {% endfor %}
-                                        <tr>
-                                            <th colspan="5" style="text-align: right; font-size: 16px; padding-right: 5px;">
-                                                {% if remito.tipoDescuento != null %}
-                                                    Subtotal <br>
-                                                    Descuento <br>
-                                                {% endif %}
-                                                TOTAL
-                                            </th>
-                                            <th colspan="1" style="text-align: center;font-size: 16px">
-                                                {% if remito.tipoDescuento != null %}
-                                                    {{ remito.totalSinDescuento|money_format }}<br>
-                                                    {{ remito.tipoDescuentoString }} {{ remito.montoDescuento|money_format }} <br>
-                                                {% endif %}
-                                                {{ remito.totalConDescuento|money_format }}
-                                            </th>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                {% include 'remito/datos_remito.html.twig' with {entity: entity.remito } %}
             {% else %}
             <div class="card card-detail">
                 <h4 class="card-header">Remito</h4>

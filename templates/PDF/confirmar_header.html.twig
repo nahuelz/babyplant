@@ -1,0 +1,76 @@
+<div class="row datos-header">
+    <div class="col-md-8 header-entrega-left">
+        <div class="row">
+            <div class="col-md-5 logo-empresa"><img src="{{ asset('images/logo/logo.png') }}" alt="logo" width="200" height="100"></div>
+            <div class="col-md-6 datos-empresa">
+                <div class="row">
+                    <div class="col-md-5">
+                        <p><strong>RAZÓN SOCIAL</strong></p>
+                        <p><strong>CUIT</strong> </p>
+                        <p><strong>WEB</strong> </p>
+                        <p><strong>DIRECCIÓN</strong></p>
+                        <p><strong>LOCALIDAD</strong></p>
+                        <p><strong>TELÉFONO</strong></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p> Baby Plant srl</p>
+                        <p> 33-71230651-9</p>
+                        <p> www.babyplant.com.ar</p>
+                        <p> 44 4303</p>
+                        <p> Lis. Olmos la Plata</p>
+                        <p> 0221 15-669-0199</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="offset-md-1 col-md-3 header-entrega-right">
+        <div class="col-md-12 datos-entrega">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="entrega-title">REMITO</h1>
+                </div>
+                <div class="col-md-5 entrega-datos">
+                    <p><strong>N°</strong></p>
+                    <p><strong>FECHA</strong> </p>
+                </div>
+                <div class="col-md-6">
+                    <p>{{ remito.codigo }}</p>
+                    <p>{{ remito.fechaCreacion|date('d/m/Y') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row datos-cliente">
+    <div class="col-md-12" style="padding-top: 10px;">
+        <div class="row">
+            <div class="offset-md-1 col-md-5">
+                <div class="row">
+                    <div class="col-md-6" style="text-align: right">
+                        <p><strong>CLIENTE</strong></p>
+                        <p><strong>CUIT</strong> </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p>{{ remito.cliente.nombreCompleto|default('-') }}</p>
+                        <p>{{ remito.cliente.cuit|default('-') }}</p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-5">
+                <div class="row">
+                    <div class="col-md-6" style="text-align: right">
+                        <p><strong>TELÉFONO</strong></p>
+                        <p><strong>DIRECCION</strong></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p>{{ remito.cliente.celular|default('') }}</p>
+                        <p>{{ remito.cliente.domicilio|default('-') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
