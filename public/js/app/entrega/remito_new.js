@@ -3,14 +3,6 @@ var fvCliente;
 var total = 0;
 
 jQuery(document).ready(function () {
-    //initFormValidation();
-    //initRemitoProductoHandler();
-    //initProductos();
-    //$('.row-entrega-producto-empty').hide();
-    //initBaseSubmitButton();
-    //$('.submit-button').html('Guardar');
-    //initPreValidation();
-    //calcularDescuento();
     $('#entrega_remito_cantidadDescuento').attr('readonly', true);
     tipoDescuentoHandler();
     cantidadDescuentoHandler();
@@ -21,7 +13,7 @@ function initSubTotalHandler() {
     $('.precio-unitario').on('keyup', function () {
         if( $('.precio-unitario').val() !== '') {
             let cantidadBandejas = $(this).parent().siblings('.cantidad-bandejas').text();
-            $(this).parent().siblings('.subtotal').text(formatCurrency((parseInt($(this).val()) * parseInt(cantidadBandejas))));
+            $(this).parent().siblings('.subtotal').text(formatCurrency((parseFloat($(this).val()) * parseFloat(cantidadBandejas))));
         }else{
             $(this).parent().siblings('.subtotal').text(formatCurrency(0));
         }
