@@ -43,6 +43,22 @@
                 </tr>
             {% endfor %}
         {% endfor %}
+        <tr>
+            <th colspan="3" style="text-align: right; font-size: 16px; padding-right: 5px;">
+                {% if entity.tipoDescuento != null %}
+                    Subtotal <br>
+                    Descuento <br>
+                {% endif %}
+                TOTAL
+            </th>
+            <td align="right" colspan="2" style="padding-right: 25px;">
+                {% if entity.tipoDescuento != null %}
+                    {{ entity.totalSinDescuento|money_format }}<br>
+                    {{ entity.tipoDescuentoString }} {{ entity.montoDescuento|money_format }} <br>
+                {% endif %}
+                {{ entity.totalConDescuento|money_format }}
+            </td>
+        </tr>
     </table>
 </div>
 </body>
