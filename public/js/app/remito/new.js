@@ -21,7 +21,7 @@ function initSubTotalHandler() {
     $('.precio-unitario').on('keyup', function () {
         if( $('.precio-unitario').val() !== '') {
             let cantidadBandejas = $(this).parent().siblings('.cantidad-bandejas').text();
-            $(this).parent().siblings('.subtotal').text(formatCurrency((parseInt($(this).val()) * parseInt(cantidadBandejas))));
+            $(this).parent().siblings('.subtotal').text(formatCurrency((parseFloat($(this).val()) * parseFloat(cantidadBandejas))));
         }else{
             $(this).parent().siblings('.subtotal').text(formatCurrency(0));
         }

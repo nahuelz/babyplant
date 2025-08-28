@@ -8,6 +8,7 @@
                 <th class="text-center">CANTIDAD</th>
                 <th class="text-center">PRECIO U.</th>
                 <th class="text-center">SUBTOTAL</th>
+                <th class="text-center">DESCUENTO</th>
             </tr>
             </thead>
             <tbody>
@@ -19,6 +20,7 @@
                             <td width="144" align="center">{{ entregaProducto.cantidadBandejas }}</td>
                             <td width="157" align="center">{{ entregaProducto.precioUnitario|money_format }}</td>
                             <td width="183" align="right">{{ entregaProducto.precioSubTotal|money_format }}</td>
+                            <td width="183" align="right">{{ entregaProducto.montoDescuento(entregaProducto.precioSubTotal, remito)|money_format|default('-') }}</td>
                         </tr>
                     {% endfor %}
                 {% endfor %}
@@ -41,7 +43,7 @@
                     {% endif %}
                     {% if remito.tipoDescuento != null %}
                         {{ totalSinDescuento|money_format }}<br>
-                        {{ remito.tipoDescuentoString }}{{ remito.montoDescuento|money_format }} <br>
+                        {{ remito.tipoDescuentoString }}{{ remito.montoDescuento(totalSinDescuento)|money_format }} <br>
                     {% endif %}
                     {{ total|money_format }}
                 </td>

@@ -132,7 +132,7 @@ class RemitoController extends BaseController {
         foreach ($remito->getEntregas() as $entrega) {
             $this->estadoService->cambiarEstadoEntrega($entrega, $estadoEntrega, 'REMITO CREADO.');
             foreach ($entrega->getEntregasProductos() as $entregaProducto) {
-                $entregaProducto->actualizarMontoPendiente();
+                $entregaProducto->setMontoPendiente($entregaProducto->getMontoTotalConDescuento());
             }
         }
 

@@ -127,7 +127,7 @@ class Remito {
                 $total += $entregaProducto->getPrecioSubTotal();
             }
         }
-        return ($total);
+        return $total;
     }
 
     public function getTotalConDescuento(){
@@ -145,7 +145,8 @@ class Remito {
         return $total;
     }
 
-    public function getMontoDescuento(){
+    public function getMontoDescuento($totalSinDescuento = null){
+        $totalSinDescuento = ($totalSinDescuento == null ? $this->getTotalSinDescuento() : $totalSinDescuento);
         $descuento = '';
         if ($this->getTipoDescuento() != null) {
             switch ($this->getTipoDescuento()->getCodigoInterno()) {
@@ -153,7 +154,7 @@ class Remito {
                     $descuento = $this->getCantidadDescuento();
                     break;
                 case 2:
-                    $descuento = (($this->getTotalSinDescuento() * $this->getCantidadDescuento()) / 100);
+                    $descuento = (($totalSinDescuento * $this->getCantidadDescuento()) / 100);
                     break;
             }
         }
@@ -207,6 +208,19 @@ class Remito {
     public function setCantidadDescuento($cantidadDescuento): void
     {
         $this->cantidadDescuento = $cantidadDescuento;
+
+        if  ($this->getTipoDescuento()->getCodigoInterno() == 1) {
+            $cantidadDescuento = $this->getCantidadDescuento();
+            foreach ($this->getEntregas() as $entrega) {
+                foreach ($entrega->getEntregasProductos() as $entregaProducto) {
+                    if ($cantidadDescuento > 0){
+                        $descontar = $cantidadDescuento >= $entregaProducto->getPrecioSubTotal() ? $entregaProducto->getPrecioSubTotal() : $cantidadDescuento;
+                        $entregaProducto->setCantidadDescuentoFijo($descontar);
+                        $cantidadDescuento-=$descontar;
+                    }
+                }
+            }
+        }
     }
 
     /**

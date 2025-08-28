@@ -53,10 +53,11 @@
                                 <input type="hidden" name="remito[entrega][{{ entrega.id }}][precioUnitario]" value="{{ entregaProducto.precioUnitario }}">
                             </td>
 
-                            <td class="v-middle text-center">{{ entregaProducto.pedidoProducto }}</td>
-                            <td class="v-middle text-center">${{ entregaProducto.pedidoProducto.adelanto }}</td>
+                            <td class="v-middle text-center">{{ entrega }}</td>
+                            <td class="v-middle text-center">${{ entregaProducto.pedidoProducto }}</td>
                             <td class="v-middle text-center">{{ entregaProducto.cantidadBandejas }}</td>
                             <td class="v-middle text-center">{{ entregaProducto.precioUnitario }}</td>
+                            <td class="v-middle text-center">{{ entregaProducto.montoTotal }}</td>
                             <td class="text-center v-middle">
                                 <a href="#" class="btn btn-sm delete-link-inline link-delete-remito-producto remito-producto-borrar tooltips"
                                    data-placement="top" data-original-title="Eliminar">

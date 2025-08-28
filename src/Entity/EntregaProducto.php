@@ -55,6 +55,11 @@ class EntregaProducto {
     private $montoPendiente;
 
     /**
+     * @ORM\Column(name="cantidad_descuento_fijo", type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $cantidadDescuentoFijo;
+
+    /**
      * @ORM\OneToMany(targetEntity=EstadoEntregaProductoHistorico::class, mappedBy="entregaProducto", cascade={"all"})
      * @ORM\OrderBy({"fecha" = "DESC", "id" = "DESC"})
      */
@@ -139,8 +144,52 @@ class EntregaProducto {
         return $this->getPedidoProducto()->getCuentaCorrientePedido();
     }
 
-    public function getMontoTotal(){
+    public function getMontoTotalSinDescuento(){
         return $this->precioUnitario * $this->cantidadBandejas;
+    }
+
+    public function setCantidadDescuentoFijo($cantidadDescuentoFijo){
+        $this->cantidadDescuentoFijo = $cantidadDescuentoFijo;
+    }
+
+    public function getCantidadDescuentoFijo(){
+        return $this->cantidadDescuentoFijo;
+    }
+
+    public function getMontoTotalConDescuento(){
+        $remito = $this->getEntrega()->getRemito();
+        $total = $this->getMontoTotalSinDescuento();
+        if ($remito) {
+            if ($remito->getTipoDescuento() != null) {
+                switch ($remito->getTipoDescuento()->getCodigoInterno()) {
+                    case 1:
+                        $total -= $this->getCantidadDescuentoFijo();
+                        break;
+                    case 2:
+                        $total -= (($total * $remito->getCantidadDescuento()) / 100);
+                        break;
+                }
+            }
+        }
+        return $total;
+    }
+
+    public function getMontoDescuento($totalSinDescuento = null, $remito = null){
+        $totalSinDescuento = ($totalSinDescuento == null ? $this->getMontoTotalSinDescuento() : $totalSinDescuento);
+        $remito = ($remito == null ? $this->getEntrega()->getRemito() : $remito);
+        $descuento = '';
+        if ($remito->getTipoDescuento() != null) {
+            switch ($remito->getTipoDescuento()->getCodigoInterno()) {
+                case 1:
+                    $descuento = $this->getCantidadDescuentoFijo();
+                    break;
+                case 2:
+                    $descuento = (($totalSinDescuento * $remito->getCantidadDescuento()) / 100);
+                    break;
+            }
+        }
+
+        return $descuento;
     }
 
     /**
@@ -159,9 +208,6 @@ class EntregaProducto {
         $this->montoPendiente = $montoPendiente;
     }
 
-    public function actualizarMontoPendiente(){
-        $this->montoPendiente = $this->getCantidadBandejas() * $this->getPrecioUnitario();
-    }
     public function descontarMontoPendiente($monto){
         $this->montoPendiente -= $monto;
     }

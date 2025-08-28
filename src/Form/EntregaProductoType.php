@@ -40,7 +40,7 @@ class EntregaProductoType extends AbstractType {
                         'class' => 'form-control',
                         'tabindex' => '5'))
             )
-            ->add('cantidadBandejas', IntegerType::class, array(
+            ->add('cantidadBandejas', null, array(
                     'required' => true,
                     'label' => 'CANTIDAD DE BANDEJAS A ENTREGAR',
                     'attr' => array(

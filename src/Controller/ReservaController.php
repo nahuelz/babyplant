@@ -248,7 +248,7 @@ class ReservaController extends BaseController {
             $entreaProducto = new EntregaProducto();
             $entreaProducto->setCantidadBandejas($reserva->getCantidadBandejas());
             $entreaProducto->setPedidoProducto($reserva->getPedidoProducto());
-            $entreaProducto->setMontoPendiente($entreaProducto->getMontoTotal());
+            $entreaProducto->setMontoPendiente($entreaProducto->getMontoTotalConDescuento());
             $estadoEntregaProducto = $em->getRepository(EstadoEntregaProducto::class)->findOneByCodigoInterno(ConstanteEstadoReserva::ENTREGADO);
             $this->estadoService->cambiarEstadoEntregaProducto($entreaProducto, $estadoEntregaProducto, 'ENTREGA');
             $entrega->addEntregaProducto($entreaProducto);

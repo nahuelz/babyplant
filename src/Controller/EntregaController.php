@@ -433,13 +433,24 @@ class EntregaController extends BaseController {
         $form->handleRequest($request);
 
         $remito = $entrega->getRemito();
-        foreach ($entrega->getEntregasProductos() as $entregasProducto) {
-            $entregasProducto->actualizarMontoPendiente();
+        if  ($remito->getTipoDescuento()->getCodigoInterno() == 1) {
+            $cantidadDescuento = $remito->getCantidadDescuento();
+            foreach ($entrega->getEntregasProductos() as $entregaProducto) {
+                if ($cantidadDescuento > 0){
+                    $descontar = $cantidadDescuento >= $entregaProducto->getPrecioSubTotal() ? $entregaProducto->getPrecioSubTotal() : $cantidadDescuento;
+                    $entregaProducto->setCantidadDescuentoFijo($descontar);
+                    $cantidadDescuento-=$descontar;
+                }
+            }
         }
+        $remito->setCantidadDescuento($remito->getCantidadDescuento());
         $estadoRemito = $em->getRepository(EstadoRemito::class)->findOneByCodigoInterno(ConstanteEstadoRemito::PENDIENTE);
         $this->estadoService->cambiarEstadoRemito($remito, $estadoRemito, 'REMITO CREADO.');
         $estadoEntrega = $em->getRepository(EstadoEntrega::class)->findOneByCodigoInterno(ConstanteEstadoEntrega::CON_REMITO);
         $this->estadoService->cambiarEstadoEntrega($entrega, $estadoEntrega, 'REMITO CREADO.');
+        foreach ($entrega->getEntregasProductos() as $entregaProducto) {
+            $entregaProducto->setMontoPendiente($entregaProducto->getMontoTotalConDescuento());
+        }
         $em->persist($remito);
         $em->flush();
 
@@ -470,6 +481,15 @@ class EntregaController extends BaseController {
         $entity = new Entrega();
         $form = $this->createForm(EntregaType::class, $entity);
         $form->handleRequest($request);
+        $remito=$entity->getRemito();
+        $cantidadDescuento = $remito->getCantidadDescuento();
+        foreach ($entity->getEntregasProductos() as $entregaProducto) {
+            if ($cantidadDescuento > 0) {
+                $descontar = $cantidadDescuento >= $entregaProducto->getPrecioSubTotal() ? $entregaProducto->getPrecioSubTotal() : $cantidadDescuento;
+                $entregaProducto->setCantidadDescuentoFijo($descontar);
+                $cantidadDescuento -= $descontar;
+            }
+        }
         $result = array(
             'html' => $this->renderView('entrega/remito/confirmar_remito.html.twig', array('entity' => $entity)),
             'error' => false

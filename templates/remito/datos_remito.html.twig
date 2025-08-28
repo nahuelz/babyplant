@@ -25,6 +25,7 @@
                             <th scope="col">Cantidad</th>
                             <th scope="col">Precio U.</th>
                             <th scope="col">Subtotal</th>
+                            <th scope="col">Descuento</th>
                             <th scope="col">Estado</th>
                             <th scope="col">Monto Pendiente</th>
                             <th scope="col">Adelanto</th>
@@ -41,6 +42,7 @@
                                 <td>{{ entregaProducto.cantidadBandejas }}</td>
                                 <td>{{ entregaProducto.precioUnitario|money_format }}</td>
                                 <td>{{ entregaProducto.precioSubTotal|money_format }}</td>
+                                <td>{{ entregaProducto.montoDescuento|money_format }}</td>
                                 <td>{{ entregaProducto.estado|default('-') }}</td>
                                 <td>{{ entregaProducto.montoPendiente|money_format }}</td>
                                 <td>{{ entregaProducto.pedidoProducto.adelanto|money_format }}</td>
