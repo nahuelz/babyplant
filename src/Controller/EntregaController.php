@@ -433,13 +433,15 @@ class EntregaController extends BaseController {
         $form->handleRequest($request);
 
         $remito = $entrega->getRemito();
-        if  ($remito->getTipoDescuento()->getCodigoInterno() == 1) {
-            $cantidadDescuento = $remito->getCantidadDescuento();
-            foreach ($entrega->getEntregasProductos() as $entregaProducto) {
-                if ($cantidadDescuento > 0){
-                    $descontar = $cantidadDescuento >= $entregaProducto->getPrecioSubTotal() ? $entregaProducto->getPrecioSubTotal() : $cantidadDescuento;
-                    $entregaProducto->setCantidadDescuentoFijo($descontar);
-                    $cantidadDescuento-=$descontar;
+        if  ($remito->getTipoDescuento() != null) {
+            if ($remito->getTipoDescuento()->getCodigoInterno() == 1) {
+                $cantidadDescuento = $remito->getCantidadDescuento();
+                foreach ($entrega->getEntregasProductos() as $entregaProducto) {
+                    if ($cantidadDescuento > 0) {
+                        $descontar = $cantidadDescuento >= $entregaProducto->getPrecioSubTotal() ? $entregaProducto->getPrecioSubTotal() : $cantidadDescuento;
+                        $entregaProducto->setCantidadDescuentoFijo($descontar);
+                        $cantidadDescuento -= $descontar;
+                    }
                 }
             }
         }
