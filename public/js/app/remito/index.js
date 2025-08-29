@@ -7,7 +7,25 @@ $(document).ready(function () {
     initTable();
     initVerHistoricoEstadoRemitoHandler();
     initClienteSelect2();
+    initCancelarButton();
 });
+
+function initCancelarButton() {
+    $(document).on('click', '.accion-cancelar', function (e) {
+        e.preventDefault();
+        var a_href = $(this).attr('href');
+        show_confirm({
+            title: 'Confirmar',
+            type: 'warning',
+            msg: '¿Desea cancelar este remito?',
+            callbackOK: function () {
+                location.href = a_href;
+            }
+        });
+        e.stopPropagation();
+    });
+}
+
 /**
  *
  * @returns {undefined}
@@ -241,6 +259,8 @@ function dataTablesActionFormatter(data, type, full, meta) {
             (data.historico_estados !== undefined ? '<a class="dropdown-item link-ver-historico-remito" href="#" data-href="' + data.historico_estados + '"><i class="la la-file-alt" style="margin-right: 5px;" data-original-title="Hist&oacute;rico de estados"></i>Hist&oacute;rico de estados</a>' : '')
             +
             (data.print_pdf !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf + '" target="_blank"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Remito</a>' : '')
+            +
+            (data.cancelar !== undefined ? '<a class="dropdown-item accion-cancelar" href="' + data.cancelar + '"><i class="la la-remove" style="margin-right: 5px;"></i> Cancelar</a>' : '')
         /*+
             (data.print_factura_arca !== undefined ? '<a class="dropdown-item" href="' + data.print_factura_arca + '" target="_blank"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Factura Arca</a>' : '')
             +

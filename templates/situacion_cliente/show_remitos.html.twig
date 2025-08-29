@@ -65,7 +65,7 @@
                                                                     <a href="{{ path('imprimir_remito',{id: remito.id}) }}" target="_blank" class="dropdown-item">
                                                                         <i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Remito
                                                                     </a>
-                                                                    {% if remito.estado.codigoInterno != 3 %}
+                                                                    {% if remito.estado.codigoInterno != 3 and remito.estado.codigoInterno != 4 %}
                                                                         <a href="#" class="dropdown-item add-pago-adelanto" data-remito="{{ remito.id }}" data-monto="{{remito.totalConDescuento }}">
                                                                             <i class="la la-paypal" style="margin-right: 5px;"></i> Adjudicar Adelanto
                                                                         </a>

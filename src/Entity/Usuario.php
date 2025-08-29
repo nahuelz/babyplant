@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Constants\ConstanteEstadoRemito;
 use App\Entity\Traits\Auditoria;
 use App\Entity\Traits\Habilitado;
 use App\Repository\UsuarioRepository;
@@ -546,7 +547,9 @@ class Usuario implements UserInterface {
     public function getPendiente(){
         $pendiente = 0;
         foreach ($this->getRemitos() as $remito){
-            $pendiente+=$remito->getPendiente();
+            if ($remito->getEstado()->getCodigoInterno() != ConstanteEstadoRemito::CANCELADO) {
+                $pendiente += $remito->getPendiente();
+            }
         }
         return $pendiente;
     }

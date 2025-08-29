@@ -307,6 +307,32 @@ class RemitoController extends BaseController {
         return new JsonResponse($result);
     }
 
+    /**
+     * @Route("/{id}/cancelar", name="remito_cancelar", methods={"GET"})
+     * @IsGranted("ROLE_REMITO")
+     */
+    public function cancelarRemito(int $id): Response
+    {
+        $em = $this->doctrine->getManager();
+
+        /** @var Remito|null $remito */
+        $remito = $em->getRepository(Remito::class)->find($id);
+
+        if (!$remito) {
+            throw $this->createNotFoundException("No se encontró el Remito con ID $id.");
+        }
+
+        $estadoCancelado = $em->getRepository(EstadoRemito::class)->find(ConstanteEstadoRemito::CANCELADO);
+
+        $this->estadoService->cambiarEstadoRemito($remito, $estadoCancelado, 'CANCELADO.');
+
+        $em->flush();
+
+        $this->addFlash('success', 'El remito fue cancelado correctamente.');
+
+        return $this->redirectToRoute('remito_index');
+    }
+
     private function remitoSetData(Request $request): Remito
     {
         $entity = new Remito();

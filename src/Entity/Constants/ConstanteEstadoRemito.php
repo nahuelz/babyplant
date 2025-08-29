@@ -23,4 +23,9 @@ class ConstanteEstadoRemito {
      */
     const PAGO = 3;
 
+    /**
+     * CANCELADO
+     */
+    const CANCELADO = 4;
+
 }
