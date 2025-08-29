@@ -268,7 +268,7 @@ function customAfterChainedSelect(){
                 return data.text;
             }
             var palabraResaltar = "DISPONIBLES: "; // Palabras a resaltar
-            var regex = new RegExp('(' + palabraResaltar + '\\d+\\s?)', 'gi');
+            var regex = new RegExp('(' + palabraResaltar + '\\d+(?:\\.\\d+)?\\s?)', 'gi');
             var highlightedText = data.text.replace(regex, '<span class="highlight">$1</span>');
 
             return $('<span>').html(highlightedText);
