@@ -62,7 +62,7 @@ class PedidoProducto {
     private mixed $cantidadBandejasReales;
 
     /**
-     * @ORM\Column(name="cantidad_bandejas_disponibles", type="integer", nullable=true)
+     * @ORM\Column(name="cantidad_bandejas_disponibles", type="decimal", precision=5, scale=1, nullable=true)
      */
     private mixed $cantidadBandejasDisponibles;
 
