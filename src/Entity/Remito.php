@@ -208,15 +208,16 @@ class Remito {
     public function setCantidadDescuento($cantidadDescuento): void
     {
         $this->cantidadDescuento = $cantidadDescuento;
-
-        if  ($this->getTipoDescuento()->getCodigoInterno() == 1) {
-            $cantidadDescuento = $this->getCantidadDescuento();
-            foreach ($this->getEntregas() as $entrega) {
-                foreach ($entrega->getEntregasProductos() as $entregaProducto) {
-                    if ($cantidadDescuento > 0){
-                        $descontar = $cantidadDescuento >= $entregaProducto->getPrecioSubTotal() ? $entregaProducto->getPrecioSubTotal() : $cantidadDescuento;
-                        $entregaProducto->setCantidadDescuentoFijo($descontar);
-                        $cantidadDescuento-=$descontar;
+        if ($this->getTipoDescuento() != null) {
+            if ($this->getTipoDescuento()->getCodigoInterno() == 1) {
+                $cantidadDescuento = $this->getCantidadDescuento();
+                foreach ($this->getEntregas() as $entrega) {
+                    foreach ($entrega->getEntregasProductos() as $entregaProducto) {
+                        if ($cantidadDescuento > 0) {
+                            $descontar = $cantidadDescuento >= $entregaProducto->getPrecioSubTotal() ? $entregaProducto->getPrecioSubTotal() : $cantidadDescuento;
+                            $entregaProducto->setCantidadDescuentoFijo($descontar);
+                            $cantidadDescuento -= $descontar;
+                        }
                     }
                 }
             }
