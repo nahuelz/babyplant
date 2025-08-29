@@ -26,12 +26,12 @@ class Mesada {
     private $id;
 
     /**
-     * @ORM\Column(name="cantidad_bandejas", type="integer", nullable=false)
+     * @ORM\Column(name="cantidad_bandejas", type="decimal", precision=6, scale=1, nullable=false)
      */
     private $cantidadBandejas;
 
     /**
-     * @ORM\Column(name="cantidad_bandejas_entregadas", type="integer", nullable=true, options={"default": 0})
+     * @ORM\Column(name="cantidad_bandejas_entregadas", type="decimal", precision=5, scale=1, nullable=true, options={"default": 0})
      */
     private $cantidadBandejasEntregadas;
 
