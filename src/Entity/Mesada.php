@@ -31,7 +31,7 @@ class Mesada {
     private $cantidadBandejas;
 
     /**
-     * @ORM\Column(name="cantidad_bandejas_entregadas", type="decimal", precision=6, scale=1, nullable=true, options={"default": 0})
+     * @ORM\Column(name="cantidad_bandejas_entregadas", type="decimal", precision=10, scale=1, nullable=true, options={"default": 0})
      */
     private $cantidadBandejasEntregadas;
 
