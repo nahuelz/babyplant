@@ -432,4 +432,29 @@ class ReservaController extends BaseController {
     public function getCreateMessage($entity, $useDecode = false):string{
         return $entity->getId();
     }
+
+    /**
+     * @Route("/{id}/cancelar", name="reserva_cancelar", methods={"GET"})
+     */
+    public function cancelarReserva(int $id): Response
+    {
+        $em = $this->doctrine->getManager();
+
+        /** @var Reserva|null $reserva */
+        $reserva = $em->getRepository(Reserva::class)->find($id);
+
+        if (!$reserva) {
+            throw $this->createNotFoundException("No se encontró la reserva con ID $id.");
+        }
+
+        $estadoCancelado = $em->getRepository(EstadoReserva::class)->find(ConstanteEstadoReserva::CANCELADO);
+
+        $this->estadoService->cambiarEstadoReserva($reserva, $estadoCancelado, 'CANCELADO.');
+
+        $em->flush();
+
+        $this->addFlash('success', 'La reserva fue cancelada correctamente.');
+
+        return $this->redirectToRoute('reserva_index');
+    }
 }

@@ -10,7 +10,24 @@ $(document).ready(function () {
     initVerHistoricoEstadoReservaHandler();
     initReservaEntregar();
     initClienteSelect2();
+    initCancelarButton();
 });
+
+function initCancelarButton() {
+    $(document).on('click', '.accion-cancelar', function (e) {
+        e.preventDefault();
+        var a_href = $(this).attr('href');
+        show_confirm({
+            title: 'Confirmar',
+            type: 'warning',
+            msg: '¿Desea cancelar esta reserva?',
+            callbackOK: function () {
+                location.href = a_href;
+            }
+        });
+        e.stopPropagation();
+    });
+}
 
 /**
  *
@@ -234,6 +251,8 @@ function dataTablesActionFormatter(data, type, full, meta) {
             (data.print_pdf !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf + '" target="_blank"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Reserva A4</a>' : '')
             +
             (data.print_pdf_ticket !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf_ticket + '" target="_blank"><i class="la la-receipt" style="margin-right: 5px;"></i> Imprimir Reserva TICKET</a>' : '')
+            +
+            (data.cancelar !== undefined ? '<a class="dropdown-item accion-cancelar" href="' + data.cancelar + '"><i class="la la-remove" style="margin-right: 5px;"></i> Cancelar</a>' : '')
             +
             (data.delete !== undefined ? '<a class="dropdown-item accion-borrar" href="' + data.delete + '"><i class="la la-remove" style="margin-right: 5px;"></i> Borrar</a>' : '')
         ;

@@ -51,10 +51,10 @@
                                                                 {{ movimiento.fechaCreacion is not null ? movimiento.fechaCreacion|date('d/m/Y') : '-' }}
                                                             </td>
                                                             <td class="v-middle nowrap text-center">
-                                                                <a href="{{ path('imprimir_comprobante_movimiento',{id: movimiento.id}) }}" target="_blank"
+                                                                {# <a href="{{ path('imprimir_comprobante_movimiento',{id: movimiento.id}) }}" target="_blank"
                                                                    class="btn btn-light-primary btn-icon btn-sm blue" title="Imprimir a4" style="height: 25px;width: 25px;">
                                                                     <i class="fa fa-file-pdf text-white"></i>
-                                                                </a>
+                                                                </a>#}
                                                                 <a href="{{ path('imprimir_comprobante_movimiento_ticket',{id: movimiento.id}) }}" target="_blank"
                                                                    class="btn btn-light-primary btn-icon btn-sm blue" title="Imprimir ticket" style="height: 25px;width: 25px;">
                                                                     <i class="fa fa-receipt text-white"></i>

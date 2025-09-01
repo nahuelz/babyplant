@@ -1,3 +1,5 @@
+{% set EstadoReserva = 'App\\Entity\\Constants\\ConstanteEstadoReserva' %}
+{% set SIN_ENTREGAR = constant(EstadoReserva ~ '::SIN_ENTREGAR') %}
 {% autoescape false %}
     {
     "data": [
@@ -34,15 +36,16 @@
         },
         "{{ entity.cantidadBandejas|default('-') }}",
         {
-        {% if entity.idEstado != 2 %}
+        {% if entity.idEstado == SIN_ENTREGAR %}
             "entregar": "{{ path( "reserva_confirmar_entrega", { id: entity.idReserva }) }}",
-            "idReserva": "{{ entity.idReserva }}",
+            "cancelar" : " {{ path( "reserva_cancelar", { "id": entity.idReserva }) }}",
         {% endif %}
-        "situacion_cliente": "{{ path( "situacioncliente_show", { "id": entity.idClienteReserva }) }}",
-        "show": "{{ path('reserva_show',{id: entity.idReserva}) }}",
         "historico_estados": "{{ path('reserva_historico_estado',{id: entity.idReserva}) }}",
         "print_pdf": "{{ path( "imprimir_reserva", { "id": entity.idReserva }) }}",
-        "print_pdf_ticket": "{{ path( "imprimir_reserva_ticket", { "id": entity.idReserva }) }}"
+        "situacion_cliente": "{{ path( "situacioncliente_show", { "id": entity.idClienteReserva }) }}",
+        "show": "{{ path('reserva_show',{id: entity.idReserva}) }}"
+        {#"print_pdf_ticket": "{{ path( "imprimir_reserva_ticket", { "id": entity.idReserva }) }}"
+        #}
         }
         ]{{ (loop.last ? '' : ',') }}
     {% endfor %}
