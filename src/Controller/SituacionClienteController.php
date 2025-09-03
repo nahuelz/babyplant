@@ -387,20 +387,11 @@ class SituacionClienteController extends BaseController {
         if (!$usuario) {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
-        $movimientos = $usuario->getCuentaCorrienteUsuario()->getMovimientos();
+
         $remitos = $usuario->getRemitos();
 
         $items = [];
 
-        /*foreach ($movimientos as $m) {
-            $items[] = [
-                'fechaCreacion' => $m->getFechaCreacion(),
-                'tipoMovimiento' => $m->getTipoMovimiento(),
-                'monto' => $m->getMonto(),
-                'modoPago' => $m->getModoPago(),
-                'saldoCuenta' => $m->getSaldoCuenta(),
-            ];
-        }*/
         foreach ($remitos as $remito) {
 
             $items[] = [
@@ -434,7 +425,7 @@ class SituacionClienteController extends BaseController {
         }
 
 
-        $html = $this->renderView('situacion_cliente/movimiento_todos_pdf.html.twig', array('entity' => array_reverse($items), 'tipo_pdf' => "MOVIMIENTO"));
+        $html = $this->renderView('situacion_cliente/movimiento_todos_pdf.html.twig', array('usuario' => $usuario, 'entity' => array_reverse($items), 'tipo_pdf' => "MOVIMIENTO"));
         $filename = "Movimientos.pdf";
         $basePath = $this->getParameter('MPDF_BASE_PATH');
 
