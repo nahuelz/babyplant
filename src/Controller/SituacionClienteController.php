@@ -432,9 +432,6 @@ class SituacionClienteController extends BaseController {
             $items[$index] = $item;
         }
 
-        // Ordenar por fecha DESC
-        usort($items, fn($a, $b) => $b['fechaCreacion'] <=> $a['fechaCreacion']);
-
 
         $html = $this->renderView('situacion_cliente/movimiento_todos_pdf.html.twig', array('entity' => $items, 'tipo_pdf' => "MOVIMIENTO"));
         $filename = "Movimientos.pdf";
