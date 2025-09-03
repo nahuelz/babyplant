@@ -377,7 +377,8 @@ class SituacionClienteController extends BaseController {
      *
      * @Route("/imprimir-comprobante-movimiento-todos/{id}", name="imprimir_comprobante_movimiento_todos", methods={"GET"})
      */
-    public function imprimirComprobanteMovimientoTodosAction($id) {
+    public function imprimirComprobanteMovimientoTodosAction($id)
+    {
         $em = $this->doctrine->getManager();
 
         /* @var $usuario Usuario */
@@ -386,8 +387,56 @@ class SituacionClienteController extends BaseController {
         if (!$usuario) {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
+        $movimientos = $usuario->getCuentaCorrienteUsuario()->getMovimientos();
+        $remitos = $usuario->getRemitos();
 
-        $html = $this->renderView('situacion_cliente/movimiento_todos_pdf.html.twig', array('entity' => $usuario, 'tipo_pdf' => "MOVIMIENTO"));
+        $items = [];
+
+        /*foreach ($movimientos as $m) {
+            $items[] = [
+                'fechaCreacion' => $m->getFechaCreacion(),
+                'tipoMovimiento' => $m->getTipoMovimiento(),
+                'monto' => $m->getMonto(),
+                'modoPago' => $m->getModoPago(),
+                'saldoCuenta' => $m->getSaldoCuenta(),
+            ];
+        }*/
+        foreach ($remitos as $remito) {
+
+            $items[] = [
+                'fechaCreacion' => $remito->getFechaCreacion(),
+                'tipoMovimiento' => 'REMITO N° ' . $remito->getId(),
+                'monto' => -$remito->getTotalConDescuento(),
+                'modoPago' => null,
+                'saldoCuenta' => null,
+            ];
+
+            foreach ($remito->getPagos() as $pagos) {
+                $items[] = [
+                    'fechaCreacion' => $pagos->getFechaCreacion(),
+                    'tipoMovimiento' => 'PAGO REMITO N° ' . $pagos->getRemito()->getId(),
+                    'monto' => $pagos->getMonto(),
+                    'modoPago' => $pagos->getModoPago(),
+                    'saldoCuenta' => null,
+                ];
+            }
+        }
+
+        // Ordenar por fecha ASC
+        usort($items, fn($a, $b) => $a['fechaCreacion'] <=> $b['fechaCreacion']);
+
+        $saldo = 0;
+        foreach ($items as $index => $item) {
+            $saldo = $saldo + $item['monto'];
+            $item['saldo'] = $saldo;
+            $items[$index] = $item;
+        }
+
+        // Ordenar por fecha DESC
+        usort($items, fn($a, $b) => $b['fechaCreacion'] <=> $a['fechaCreacion']);
+
+
+        $html = $this->renderView('situacion_cliente/movimiento_todos_pdf.html.twig', array('entity' => $items, 'tipo_pdf' => "MOVIMIENTO"));
         $filename = "Movimientos.pdf";
         $basePath = $this->getParameter('MPDF_BASE_PATH');
 

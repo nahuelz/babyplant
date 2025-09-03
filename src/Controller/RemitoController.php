@@ -213,6 +213,32 @@ class RemitoController extends BaseController {
     }
 
     /**
+     * Print a Remito Entity.
+     *
+     * @Route("/imprimir-remito-todos/{id}", name="imprimir_remito_todos", methods={"GET"})
+     * @throws MpdfException
+     */
+    public function imprimirRemitoTodosAction($id): Response
+    {
+        $em = $this->doctrine->getManager();
+
+        /* @var $usuario Usuario */
+        $usuario = $em->getRepository("App\Entity\Usuario")->find($id);
+
+        if (!$usuario) {
+            throw $this->createNotFoundException("No se puede encontrar la entidad.");
+        }
+
+        $html = $this->renderView('remito/remito_todos_pdf.html.twig', array('entity' => $usuario, 'tipo_pdf' => "REMITO"));
+        $filename = "Remitos.pdf";
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
+
+        $mpdfOutput = $this->printService->printA4($basePath, $filename, $html);
+
+        return new Response($mpdfOutput);
+    }
+
+    /**
      *
      * @Route("/imprimir-factura-arca/{id}", name="imprimir_factura_arca", methods={"GET"})
      * @throws Exception

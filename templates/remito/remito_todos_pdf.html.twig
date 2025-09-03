@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style type="text/css">
+        .table-border {
+
+            margin-bottom: 10px;
+        }
+        .datos-productos-table{
+            line-height: 7.5mm;
+        }
+        td{
+            font-size: 15px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="table-border header">
+    <table width="100%" border="0">
+        <tr>
+            <td>
+                <table cellpadding="5" cellspacing="5" style="padding: 0;">
+                    <tr>
+                        <td><strong>{{ entity.nombreCompleto|default('-') }}</strong></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="table-border">
+    <table class="datos-productos-table">
+        <thead>
+        <tr>
+            <th class="text-center">REMITO</th>
+            <th class="text-center">FECHA</th>
+            <th class="text-center">ESPECIE</th>
+            <th class="text-center">CANT</th>
+            <th class="text-center">PRECIO U.</th>
+            <th class="text-center">MONTO</th>
+            <th class="text-center">ESTADO</th>
+            <th class="text-center">PENDIENTE</th>
+        </tr>
+        </thead>
+        {% for remito in entity.remitos %}
+        <tbody style="page-break-inside: avoid;">
+            <tr>
+                <td colspan="8" style="border-bottom: 1px solid;"></td>
+            </tr>
+            {% for entrega in remito.entregas %}
+                {% for entregaProducto in entrega.entregasProductos %}
+                    <tr>
+                        <td width="103" align="center">{{ remito.id }}</td>
+                        <td width="103" align="center">{{ remito.fechaCreacion|date('d/m')  }}</td>
+                        <td width="103" align="center">{{ entregaProducto.pedidoProducto.tipoProducto }}</td>
+                        <td width="50" align="center">{{ entregaProducto.cantidadBandejas }}</td>
+                        <td width="107" align="center">{{ entregaProducto.precioUnitario|money_format }}</td>
+                        <td width="133" align="center">{{ entregaProducto.precioSubTotal|money_format }}</td>
+                        <td width="50" align="center">{{ remito.estado }}</td>
+                        <td width="133" align="center">{{ entregaProducto.montoPendiente }}</td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+            <tr>
+                <th colspan="5" style="text-align: right; font-size: 16px; padding-right: 5px;">
+                    {% if remito.tipoDescuento != null %}
+                        Subtotal <br>
+                        Descuento <br>
+                    {% endif %}
+                    TOTAL
+                </th>
+                <th colspan="1" style="text-align: right; font-size: 16px; padding-right: 5px;">
+                    {% if remito.tipoDescuento != null %}
+                        {{ remito.totalSinDescuento|money_format }}<br>
+                        {{ remito.tipoDescuentoString }} {{ remito.montoDescuento|money_format }} <br>
+                    {% endif %}
+                    {{ remito.totalConDescuento|money_format }}
+                </th>
+                {% if remito.estado.id == 2 %}
+                    <th colspan="2" style="text-align: right; font-size: 16px; padding-right: 5px;">
+                        {{ remito.pendiente|money_format }}
+                    </th>
+                {% endif %}
+            </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+</div>
+</body>
+</html>
+
+{#
+<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+        .table-border { margin-bottom: 10px; }
+        .datos-productos-table { line-height: 7.5mm; border-collapse: collapse; width: 100%; }
+        td, th { font-size: 15px; }
+        .remito { page-break-inside: avoid; margin-bottom: 6mm; table-layout: fixed; }
+        /* columnas fijas para que todas las tablas de remito alineen igual */
+        .text-center { text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="table-border header">
+    <table width="100%" border="0">
+        <tr>
+            <td>
+                <table cellpadding="5" cellspacing="5" style="padding: 0;">
+                    <tr>
+                        <td><strong>{{ entity.nombreCompleto|default('-') }}</strong></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+
+{# --- Una tabla por remito ---
+{% for remito in entity.remitos %}
+
+    <table class="datos-productos-table remito">
+        <colgroup>
+            <col style="width:103px" />
+            <col style="width:103px" />
+            <col style="width:103px" />
+            <col style="width:50px" />
+            <col style="width:107px" />
+            <col style="width:133px" />
+            <col style="width:50px" />
+            <col style="width:133px" />
+        </colgroup>
+
+        <thead>
+        <tr>
+            <th class="text-center">REMITO</th>
+            <th class="text-center">FECHA</th>
+            <th class="text-center">ESPECIE</th>
+            <th class="text-center">CANT</th>
+            <th class="text-center">PRECIO U.</th>
+            <th class="text-center">MONTO</th>
+            <th class="text-center">ESTADO</th>
+            <th class="text-center">PENDIENTE</th>
+        </tr>
+        <tr>
+            <td colspan="8" style="border-bottom: 2px solid black;"></td>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for entrega in remito.entregas %}
+            {% for entregaProducto in entrega.entregasProductos %}
+                <tr>
+                    <td class="text-center">{{ remito.id }}</td>
+                    <td class="text-center">{{ remito.fechaCreacion|date('d/m') }}</td>
+                    <td class="text-center">{{ entregaProducto.pedidoProducto.tipoProducto }}</td>
+                    <td class="text-center">{{ entregaProducto.cantidadBandejas }}</td>
+                    <td class="text-center">{{ entregaProducto.precioUnitario|money_format }}</td>
+                    <td class="text-center">{{ entregaProducto.precioSubTotal|money_format }}</td>
+                    <td class="text-center">{{ remito.estado }}</td>
+                    <td class="text-center">{{ entregaProducto.montoPendiente }}</td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+
+        <tr>
+            <th colspan="5" style="text-align: right; font-size: 16px; padding-right: 5px;">
+                {% if remito.tipoDescuento != null %}
+                    Subtotal <br>
+                    Descuento <br>
+                {% endif %}
+                TOTAL
+            </th>
+            <th colspan="1" style="text-align: right; font-size: 16px; padding-right: 5px;">
+                {% if remito.tipoDescuento != null %}
+                    {{ remito.totalSinDescuento|money_format }}<br>
+                    {{ remito.tipoDescuentoString }} {{ remito.montoDescuento|money_format }} <br>
+                {% endif %}
+                {{ remito.totalConDescuento|money_format }}
+            </th>
+            {% if remito.estado.id == 2 %}
+                <th colspan="2" style="text-align: right; font-size: 16px; padding-right: 5px;">
+                    {{ remito.pendiente|money_format }}
+                </th>
+            {% endif %}
+        </tr>
+        </tbody>
+    </table>
+
+{% endfor %}
+
+</body>
+</html>
+
+#}
