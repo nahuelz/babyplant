@@ -426,6 +426,7 @@ class SituacionClienteController extends BaseController {
         usort($items, fn($a, $b) => $a['fechaCreacion'] <=> $b['fechaCreacion']);
 
         $saldo = 0;
+
         foreach ($items as $index => $item) {
             $saldo = $saldo + $item['monto'];
             $item['saldo'] = $saldo;
@@ -433,7 +434,7 @@ class SituacionClienteController extends BaseController {
         }
 
 
-        $html = $this->renderView('situacion_cliente/movimiento_todos_pdf.html.twig', array('entity' => $items, 'tipo_pdf' => "MOVIMIENTO"));
+        $html = $this->renderView('situacion_cliente/movimiento_todos_pdf.html.twig', array('entity' => array_reverse($items), 'tipo_pdf' => "MOVIMIENTO"));
         $filename = "Movimientos.pdf";
         $basePath = $this->getParameter('MPDF_BASE_PATH');
 
