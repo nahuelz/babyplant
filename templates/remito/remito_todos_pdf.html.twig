@@ -180,11 +180,11 @@
                     {{ remito.totalSinDescuento|money_format }}<br>
                     {{ remito.tipoDescuentoString }} {{ remito.montoDescuento|money_format }} <br>
                 {% endif %}
-                {{ remito.totalConDescuento|money_format }}
+                {{ remito.totalConDescuento|number_format(0, ',', '.') }}
             </th>
             {% if remito.estado.id == 2 %}
                 <th colspan="2" style="text-align: right; font-size: 16px; padding-right: 5px;">
-                    {{ remito.pendiente|money_format }}
+                    {{ remito.pendiente|number_format(0, ',', '.') }}
                 </th>
             {% endif %}
         </tr>
