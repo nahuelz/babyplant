@@ -182,7 +182,7 @@
                 {% endif %}
                 {{ remito.totalConDescuento|money_format }}
             </th>
-            {% if remito.estado.id == 2 or remito.estado.id = 1%}
+            {% if remito.estado.id == 2 or remito.estado.id == 1%}
                 <th colspan="2" style="text-align: right; font-size: 16px; padding-right: 5px;">
                     {{ remito.pendiente|money_format }}
                 </th>
