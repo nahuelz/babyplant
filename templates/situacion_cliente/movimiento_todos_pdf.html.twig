@@ -46,7 +46,7 @@
                 {% for movimiento in entity %}
                     <tr>
                         <td width="110" align="center">{{ movimiento.fechaCreacion is not null ? movimiento.fechaCreacion|date('d/m/Y') : '-' }}</td>
-                        <td width="160" align="center">{{ movimiento.tipoMovimiento }}</td>
+                        <td width="200" align="center">{{ movimiento.tipoMovimiento }}</td>
                         <td width="110" align="center">{{ movimiento.monto|money_format  }}</td>
                         <td width="160" align="center">{{ movimiento.modoPago  }}</td>
                         <td width="110" align="center">{{ movimiento.saldo|money_format  }}</td>
