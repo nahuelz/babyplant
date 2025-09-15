@@ -1,117 +1,70 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <style type="text/css">
-        .remito{
-            background: url({{ asset('images/plantilla/plantilla-pago.png') }});
-            background-repeat: no-repeat;
-            background-image-resize: 1;
-            font-size: 16px;
-            font-family: monospace;
-        }
-        .logo-empresa{
-            background: url({{ asset('images/logo/logo.png') }});
-            float:left;
-            background-repeat: no-repeat;
-            width: 40mm;
-            height: 50.98mm;
-            background-image-resize: 3;
-            overflow: hidden;
-            margin-left: 20px;
-            margin-top: 30px;
-        }
-        .datos-empresa{
-            margin-left: 290px;
-            margin-top: -37px;
-            line-height: 5.7mm;
-            width: 200px;
-        }
-        .datos-remito{
-            margin-left: 630px;
-            margin-top: -197px;
-            line-height: 12mm;
-            width: 110px;
-            font-size: 18px;
-            height: 90px;
-        }
-        .datos-cliente-left{
-            margin-top: 36px;
-            line-height: 6.3mm;
-            margin-left: 170px;
-        }
-        .datos-cliente-right{
-            margin-top: -49px;
-            margin-left: 570px;
-            line-height: 6.3mm;
-        }
-        .datos-productos{
-            margin-top: 45px;
-            height: 300px;
+        .table-border {
+
+            margin-bottom: 10px;
         }
         .datos-productos-table{
-            margin-left: -173px;
             line-height: 7.5mm;
-            margin-top: -20px;
         }
         td{
-            font-size: 16px;
-            margin-bottom: 50px;
-        }
-        .total{
-            height: 100px;
-            margin-left: 600px;
-            margin-top: -75px;
+            font-size: 15px;
         }
     </style>
 </head>
+
 <body>
-
-<div class="remito">
-    <br>
-    <div class="logo-empresa" ></div>
-    <div class="datos-empresa">
-        <div>Baby Plant srl</div>
-        <div>33-71230651-9</div>
-        <div>www.babyplant.com.ar</div>
-        <div> 44 4303 </div>
-        <div> Lis. Olmos la Plata </div>
-        <div>  0221 15-669-0199 </div>
-    </div>
-
-    <div class="datos-remito">
-        <div>{{ entity.fechaCreacion|date('d/m/Y') }}</div>
-    </div>
-    <div class="datos-cliente-left">
-        <div>{{ entity.nombreCompleto|default('-') }}</div>
-        <div>{{ entity.cuit|default('-') }}</div>
-    </div>
-    <div class="datos-cliente-right">
-        <div>{{ entity.celular }}</div>
-        <div>{{ entity.domicilio|default('-') }}</div>
-    </div>
-    <br>
+{% include 'PDF/header_reporte.html.twig' %}
+<div class="table-border header">
+    <table width="100%" border="0">
+        <tr>
+            <td>
+                <table cellpadding="5" cellspacing="5" style="padding: 0;">
+                    <tr>
+                        <td align="right"><strong>NOMBRE</strong></td>
+                        <td>{{ entity.nombreCompleto|default('-') }}</td>
+                        <td align="right"><strong>CUIT</strong></td>
+                        <td>{{ entity.cuit|default('-') }}</td>
+                    </tr>
+                    <tr>
+                        <td align="right"><strong>CELULAR</strong></td>
+                        <td>{{ entity.celular|default('-') }}</td>
+                        <td align="right"><strong>DOMICILIO</strong></td>
+                        <td>{{ entity.domicilio|default('-') }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
     <div class="datos-productos">
-        <table class="datos-productos-table" border="1" cellpadding="0" cellspacing="0" align="center">
+        <table class="datos-productos-table" border="0" cellpadding="0" cellspacing="0" align="center">
             <thead>
             <tr>
                 <th class="text-center">FECHA</th>
                 <th class="text-center">REMITO</th>
                 <th class="text-center">MONTO</th>
-                <th class="text-center">MODO PAGO</th>
+                {# <th class="text-center">MODO PAGO</th> #}
+                <th class="text-center">PENDIENTE REMITO</th>
+                <th class="text-center">DEUDA TOTAL</th>
+                <th class="text-center">SALDO</th>
             </tr>
             </thead>
             <tbody>
-            {% for remito in entity.remitos %}
-                {% for pago in remito.pagos %}
-                    <tr>
-                        <td width="130" align="center">{{ pago.fechaCreacion is not null ? pago.fechaCreacion|date('d/m/Y') : '-' }}</td>
-                        <td width="200" align="center">{{ pago.remito }}</td>
-                        <td width="200" align="center">{{ pago.monto|money_format  }}</td>
-                        <td width="250" align="center">{{ pago.modoPago  }}</td>
-                    </tr>
-                {% endfor %}
+            {% for pago in pagos %}
+                <tr>
+                    <td width="130" align="center">{{ pago.fechaCreacion is not null ? pago.fechaCreacion|date('d/m/Y') : '-' }}</td>
+                    <td width="130" align="center">{{ pago.remito }}</td>
+                    <td width="130" align="center">{{ pago.monto|money_format  }}</td>
+                    {# <td width="130" align="center">{{ pago.modoPago  }}</td> #}
+                    <td width="130" align="center">{{ pago.montoPendiente|money_format|default('-')  }}</td>
+                    <td width="130" align="center">{{ pago.totalDeuda|money_format|default('-')  }}</td>
+                    <td width="130" align="center">{{ pago.saldoCuentaCorriente|money_format|default('-')  }}</td>
+                </tr>
             {% endfor %}
-
             </tbody>
             <tfoot>
 

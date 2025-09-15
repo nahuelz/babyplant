@@ -218,7 +218,17 @@ class PagoController extends BaseController {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
 
-        $html = $this->renderView('pago/comprobante_todos_pdf.html.twig', array('entity' => $usuario, 'website' => "http://192.168.0.182/babyplant/public/"));
+        $pagos = $em->createQueryBuilder()
+            ->select('p')
+            ->from(\App\Entity\Pago::class, 'p')
+            ->join('p.remito', 'r')
+            ->where('IDENTITY(r.cliente) = :idCliente')
+            ->setParameter('idCliente', $id)
+            ->orderBy('p.fechaCreacion', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        $html = $this->renderView('pago/comprobante_todos_pdf.html.twig', array('entity' => $usuario, 'pagos'=>$pagos, 'website' => "https://dev.babyplant.com.ar"));
         $filename = 'pago.pdf';
         $basePath = $this->getParameter('MPDF_BASE_PATH');
 
@@ -319,6 +329,11 @@ class PagoController extends BaseController {
         $pago->setMonto($monto);
         $pago->setModoPago($modoPago);
         $pago->setRemito($remito);
+        $montoPendiente = $remito->getPendiente() - $monto;
+        $pago->setMontoPendiente($montoPendiente);
+        $pago->setSaldoCuentaCorriente($remito->getCliente()->getCuentaCorrienteUsuario()->getSaldo());
+        $totalDeuda = $remito->getCliente()->getCuentaCorrienteUsuario()->getPendiente() - $monto;
+        $pago->setTotalDeuda($totalDeuda);
         $remito->addPago($pago);
 
         return $pago;

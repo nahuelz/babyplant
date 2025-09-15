@@ -38,6 +38,22 @@ class Pago {
     private $remito;
 
     /**
+     * @ORM\Column(name="monto_pendiente", type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $montoPendiente;
+
+    /**
+     * @ORM\Column(name="saldo_cuenta_corriente", type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $saldoCuentaCorriente;
+
+    /**
+     * @ORM\Column(name="total_deuda", type="decimal", precision=10, scale=2, nullable=false)
+     */
+    private $totalDeuda;
+
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -100,6 +116,56 @@ class Pago {
     {
         $this->remito = $remito;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getMontoPendiente()
+    {
+        return $this->montoPendiente;
+    }
+
+    /**
+     * @param mixed $montoPendiente
+     */
+    public function setMontoPendiente($montoPendiente): void
+    {
+        $this->montoPendiente = $montoPendiente;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSaldoCuentaCorriente()
+    {
+        return $this->saldoCuentaCorriente;
+    }
+
+    /**
+     * @param mixed $saldoCuentaCorriente
+     */
+    public function setSaldoCuentaCorriente($saldoCuentaCorriente): void
+    {
+        $this->saldoCuentaCorriente = $saldoCuentaCorriente;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTotalDeuda()
+    {
+        return $this->totalDeuda;
+    }
+
+    /**
+     * @param mixed $totalDeuda
+     */
+    public function setTotalDeuda($totalDeuda): void
+    {
+        $this->totalDeuda = $totalDeuda;
+    }
+
+
 
 
 

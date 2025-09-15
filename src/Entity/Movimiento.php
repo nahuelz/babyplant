@@ -31,11 +31,15 @@ class Movimiento {
      */
     private $monto;
 
-
     /**
-     * @ORM\Column(name="monto_cuenta", type="decimal", precision=10, scale=2, nullable=false)
+     * @ORM\Column(name="saldo_cuenta", type="decimal", precision=10, scale=2, nullable=false)
      */
     private $saldoCuenta;
+
+    /**
+     * @ORM\Column(name="monto_deuda", type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $montoDeuda;
 
     /**
      * @var string
@@ -283,6 +287,23 @@ class Movimiento {
     {
         $this->pedidoProducto = $pedidoProducto;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getMontoDeuda()
+    {
+        return $this->montoDeuda;
+    }
+
+    /**
+     * @param mixed $montoDeuda
+     */
+    public function setMontoDeuda($montoDeuda): void
+    {
+        $this->montoDeuda = $montoDeuda;
+    }
+
 
 
 

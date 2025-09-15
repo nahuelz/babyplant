@@ -4,7 +4,7 @@
             <h4 class="card-label mb-0">Cuenta Corriente</h4>
         </div>
         <div class="card-toolbar">
-            <a href="{{ path('imprimir_comprobante_movimiento_todos',{id: entity.id}) }}" target="_blank"
+            <a href="{{ path('imprimir_reporte_cc',{id: entity.id}) }}" target="_blank"
                class="btn btn-light-primary btn-icon btn-sm blue" title="Imprimir comprobante" style="width: 150px; float: right">
                 <i class="fa fa-file-pdf text-white">&nbsp;</i> Imprimir reporte
             </a>
@@ -44,15 +44,23 @@
                                                     <td class="v-middle nowrap text-center">
                                                         {{ movimiento.fechaCreacion is not null ? movimiento.fechaCreacion|date('d/m/Y') : '-' }}
                                                     </td>
-                                                    <td class="v-middle nowrap text-center">
-                                                        <a href="{{ path('imprimir_comprobante_movimiento',{id: movimiento.id}) }}" target="_blank"
-                                                           class="btn btn-light-primary btn-icon btn-sm blue" title="Imprimir a4" style="height: 25px;width: 25px;">
-                                                            <i class="fa fa-file-pdf text-white"></i>
-                                                        </a>
-                                                        <a href="{{ path('imprimir_comprobante_movimiento_ticket',{id: movimiento.id}) }}" target="_blank"
-                                                           class="btn btn-light-primary btn-icon btn-sm blue" title="Imprimir ticket" style="height: 25px;width: 25px;">
-                                                            <i class="fa fa-receipt text-white"></i>
-                                                        </a>
+                                                    <td class="text-center dt-acciones">
+                                                        <div class="dropdown dropdown-inline">
+                                                            <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <i class="ki ki-bold-more-hor"></i>
+                                                            </button>
+                                                            <div class="dropdown-menu">
+                                                                <a href="{{ path('imprimir_comprobante_movimiento',{id: movimiento.id}) }}" target="_blank" class="dropdown-item">
+                                                                    <i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir A4
+                                                                </a>
+                                                                <a href="{{ path('imprimir_comprobante_movimiento_ticket',{id: movimiento.id}) }}" target="_blank" class="dropdown-item">
+                                                                    <i class="la la-receipt" style="margin-right: 5px;"></i> Imprimir Ticket
+                                                                </a>
+                                                                <a href="{{ path('imprimir_reporte_cc_from',{id: entity.id, fecha: movimiento.fechaCreacion|date('Y-m-d H:i')}) }}" target="_blank" class="dropdown-item">
+                                                                    <i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Reporte
+                                                                </a>
+                                                            </div>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             {% endfor %}

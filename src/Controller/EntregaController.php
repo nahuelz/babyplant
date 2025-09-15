@@ -433,6 +433,7 @@ class EntregaController extends BaseController {
         $form->handleRequest($request);
 
         $remito = $entrega->getRemito();
+        $remito->addEntrega($entrega);
         if  ($remito->getTipoDescuento() != null) {
             if ($remito->getTipoDescuento()->getCodigoInterno() == 1) {
                 $cantidadDescuento = $remito->getCantidadDescuento();
@@ -453,6 +454,11 @@ class EntregaController extends BaseController {
         foreach ($entrega->getEntregasProductos() as $entregaProducto) {
             $entregaProducto->setMontoPendiente($entregaProducto->getMontoTotalConDescuento());
         }
+
+        $totalDeuda = $remito->getCliente()->getCuentaCorrienteUsuario()->getPendiente() + $remito->getTotalConDescuento();
+        $remito->setTotalDeuda($totalDeuda);
+        $remito->setSaldoCuentaCorriente($remito->getCliente()->getCuentaCorrienteUsuario()->getSaldo());
+
         $em->persist($remito);
         $em->flush();
 

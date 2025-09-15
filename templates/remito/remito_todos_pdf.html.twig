@@ -112,7 +112,16 @@
             <td>
                 <table cellpadding="5" cellspacing="5" style="padding: 0;">
                     <tr>
-                        <td><strong>{{ entity.nombreCompleto|default('-') }}</strong></td>
+                        <td><strong>CLIENTE: {{ entity.nombreCompleto|default('-') }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>ADELANTOS: {{ entity.saldoAdelantos|money_format }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TOTAL DEUDA: {{ entity.cuentaCorrienteUsuario.getPendiente|money_format }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>A FAVOR: {{ entity.cuentaCorrienteUsuario.saldo|money_format }}</strong></td>
                     </tr>
                 </table>
             </td>

@@ -8,10 +8,7 @@ use App\Entity\CuentaCorrienteUsuario;
 use App\Entity\ModoPago;
 use App\Entity\Movimiento;
 use App\Entity\Pedido;
-use App\Entity\Remito;
-use App\Entity\Reserva;
 use App\Entity\TipoMovimiento;
-use App\Entity\TipoReferencia;
 use App\Entity\Usuario;
 use App\Form\MovimientoType;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -124,10 +121,21 @@ class SituacionClienteController extends BaseController {
             }
         }
 
+        $pagos = $em->createQueryBuilder()
+            ->select('p')
+            ->from(\App\Entity\Pago::class, 'p')
+            ->join('p.remito', 'r')
+            ->where('IDENTITY(r.cliente) = :idCliente')
+            ->setParameter('idCliente', $id)
+            ->orderBy('p.fechaCreacion', 'DESC')
+            ->getQuery()
+            ->getResult();
+
         $breadcrumbs = $this->getShowBaseBreadcrumbs($entity);
 
         $parametros = array(
             'entity' => $entity,
+            'pagos' => $pagos,
             'breadcrumbs' => $breadcrumbs,
             'page_title' => 'Detalle ' . $this->getEntityRenderName()
         );
@@ -232,6 +240,7 @@ class SituacionClienteController extends BaseController {
             $movimiento->setTipoMovimiento($tipoMovimiento);
             $cuentaCorrienteUsuario->addMovimiento($movimiento);
             $movimiento->setSaldoCuenta($cuentaCorrienteUsuario->getSaldo());
+            $movimiento->setMontoDeuda($cuentaCorrienteUsuario->getPendiente());
             $em->persist($movimiento);
             $em->flush();
             $idMovimiento = $movimiento->getId();
@@ -433,5 +442,178 @@ class SituacionClienteController extends BaseController {
 
         return new Response($mpdfOutput);
     }
+
+    /**
+     * Print a Remito Entity.
+     *
+     * @Route("/imprimir-reporte-cc/{id}", name="imprimir_reporte_cc", methods={"GET"})
+     */
+    public function imprimirReporteCCAction($id): Response
+    {
+        $em = $this->doctrine->getManager();
+
+        /* @var $usuario Usuario */
+        $usuario = $em->getRepository("App\Entity\Usuario")->find($id);
+
+        if (!$usuario) {
+            throw $this->createNotFoundException("No se puede encontrar la entidad.");
+        }
+
+        // Obtenemos ambas colecciones
+        $movimientos = $usuario->getCuentaCorrienteUsuario()->getMovimientos();
+        $remitos = $usuario->getRemitos();
+
+        $resultado = [];
+
+        // Adaptamos movimientos
+        foreach ($movimientos as $movimiento) {
+            if ($movimiento->getTipoMovimiento() != 'PAGO DE TRAMITE') {
+                $resultado[] = [
+                    'fechaCreacion' => $movimiento->getFechaCreacion(),
+                    'tipoMovimiento' => 'INGRESO DINERO',
+                    'monto' => $movimiento->getMonto(),
+                    'modoPago' => $movimiento->getModoPago(),
+                    'saldoCuenta' => $movimiento->getSaldoCuenta(),
+                    'montoDeuda' => $movimiento->getMontoDeuda(),
+                    'remito' => $movimiento->getRemito(),
+                ];
+            }
+        }
+
+        // Adaptamos remitos
+        foreach ($remitos as $remito) {
+            $resultado[] = [
+                'fechaCreacion' => $remito->getFechaCreacion(),
+                'tipoMovimiento' => 'GENERÓ REMITO N° ' . $remito->getId(),
+                'monto' => $remito->getTotalConDescuento(),
+                'modoPago' => '-',
+                'saldoCuenta' => $remito->getSaldoCuentaCorriente(),
+                'montoDeuda' => $remito->getTotalDeuda(),
+                'remito' =>  $remito,
+            ];
+        }
+
+        foreach ($remitos as $remito) {
+            foreach ($remito->getPagos() as $pagos) {
+                $resultado[] = [
+                    'fechaCreacion' => $pagos->getFechaCreacion(),
+                    'tipoMovimiento' => 'PAGO REMITO N° ' . $pagos->getRemito()->getId(),
+                    'monto' => $pagos->getMonto(),
+                    'modoPago' => $pagos->getModoPago(),
+                    'saldoCuenta' => $pagos->getSaldoCuentaCorriente(),
+                    'montoDeuda' => $pagos->getTotalDeuda(),
+                    'remito' => $pagos->getRemito(),
+                ];
+            }
+        }
+
+        // Ordenamos por fechaCreacion descendente
+        usort($resultado, function($a, $b) {
+            return $b['fechaCreacion'] <=> $a['fechaCreacion'];
+        });
+
+
+        $html = $this->renderView('situacion_cliente/reporte.html.twig', array('usuario' => $usuario,'movimientos' => $resultado, 'tipo_pdf' => "MOVIMIENTO"));
+        $filename = "Movimientos.pdf";
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
+
+        $mpdfOutput = $this->printService->printA4($basePath, $filename, $html);
+
+        return new Response($mpdfOutput);
+    }
+
+    /**
+     * Print a Remito Entity.
+     *
+     * @Route("/imprimir-reporte-cc-from/{id}/{fecha}", name="imprimir_reporte_cc_from", methods={"GET"})
+     */
+    public function imprimirReporteCCFromAction($id, $fecha): Response
+    {
+        $em = $this->doctrine->getManager();
+
+        /* @var $usuario Usuario */
+        $usuario = $em->getRepository("App\Entity\Usuario")->find($id);
+
+        if (!$usuario) {
+            throw $this->createNotFoundException("No se puede encontrar la entidad.");
+        }
+
+        // Convertimos el parámetro recibido en DateTime
+        try {
+            $fechaFiltro = new \DateTime($fecha);
+        } catch (\Exception $e) {
+            throw $this->createNotFoundException("Formato de fecha inválido: " . $fecha);
+        }
+
+        // Obtenemos ambas colecciones
+        $movimientos = $usuario->getCuentaCorrienteUsuario()->getMovimientos();
+        $remitos = $usuario->getRemitos();
+
+        $resultado = [];
+
+        // Adaptamos movimientos
+        foreach ($movimientos as $movimiento) {
+            if ($movimiento->getTipoMovimiento() != 'PAGO DE TRAMITE'
+                && $movimiento->getFechaCreacion() >= $fechaFiltro) {
+
+                $resultado[] = [
+                    'fechaCreacion' => $movimiento->getFechaCreacion(),
+                    'tipoMovimiento' => 'INGRESO DINERO',
+                    'monto' => $movimiento->getMonto(),
+                    'modoPago' => $movimiento->getModoPago(),
+                    'saldoCuenta' => $movimiento->getSaldoCuenta(),
+                    'montoDeuda' => $movimiento->getMontoDeuda(),
+                    'remito' => $movimiento->getRemito(),
+                ];
+            }
+        }
+
+        // Adaptamos remitos
+        foreach ($remitos as $remito) {
+            if ($remito->getFechaCreacion() >= $fechaFiltro) {
+                $resultado[] = [
+                    'fechaCreacion' => $remito->getFechaCreacion(),
+                    'tipoMovimiento' => 'GENERÓ REMITO N° ' . $remito->getId(),
+                    'monto' => $remito->getTotalConDescuento(),
+                    'modoPago' => '-',
+                    'saldoCuenta' => $remito->getSaldoCuentaCorriente(),
+                    'montoDeuda' => $remito->getTotalDeuda(),
+                    'remito' =>  $remito,
+                ];
+            }
+
+            foreach ($remito->getPagos() as $pagos) {
+                if ($pagos->getFechaCreacion() >= $fechaFiltro) {
+                    $resultado[] = [
+                        'fechaCreacion' => $pagos->getFechaCreacion(),
+                        'tipoMovimiento' => 'PAGO REMITO N° ' . $pagos->getRemito()->getId(),
+                        'monto' => $pagos->getMonto(),
+                        'modoPago' => $pagos->getModoPago(),
+                        'saldoCuenta' => $pagos->getSaldoCuentaCorriente(),
+                        'montoDeuda' => $pagos->getTotalDeuda(),
+                        'remito' => $pagos->getRemito(),
+                    ];
+                }
+            }
+        }
+
+        // Ordenamos por fechaCreacion descendente
+        usort($resultado, function($a, $b) {
+            return $b['fechaCreacion'] <=> $a['fechaCreacion'];
+        });
+
+        $html = $this->renderView('situacion_cliente/reporte.html.twig', [
+            'usuario' => $usuario,
+            'movimientos' => $resultado,
+            'tipo_pdf' => "MOVIMIENTO"
+        ]);
+        $filename = "Movimientos.pdf";
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
+
+        $mpdfOutput = $this->printService->printA4($basePath, $filename, $html);
+
+        return new Response($mpdfOutput);
+    }
+
 
 }

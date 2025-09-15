@@ -135,7 +135,9 @@ class RemitoController extends BaseController {
                 $entregaProducto->setMontoPendiente($entregaProducto->getMontoTotalConDescuento());
             }
         }
-
+        $totalDeuda = $remito->getCliente()->getCuentaCorrienteUsuario()->getPendiente() + $remito->getTotalConDescuento();
+        $remito->setTotalDeuda($totalDeuda);
+        $remito->setSaldoCuentaCorriente($remito->getCliente()->getCuentaCorrienteUsuario()->getSaldo());
         $em->persist($remito);
         $em->flush();
 
@@ -230,6 +232,32 @@ class RemitoController extends BaseController {
         }
 
         $html = $this->renderView('remito/remito_todos_pdf.html.twig', array('entity' => $usuario, 'tipo_pdf' => "REMITO"));
+        $filename = "Remitos.pdf";
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
+
+        $mpdfOutput = $this->printService->printA4($basePath, $filename, $html);
+
+        return new Response($mpdfOutput);
+    }
+
+    /**
+     * Print a Remito Entity.
+     *
+     * @Route("/imprimir-remito-pendientes/{id}", name="imprimir_remito_pendientes", methods={"GET"})
+     * @throws MpdfException
+     */
+    public function imprimirRemitoPendientesAction($id): Response
+    {
+        $em = $this->doctrine->getManager();
+
+        /* @var $usuario Usuario */
+        $usuario = $em->getRepository("App\Entity\Usuario")->find($id);
+
+        if (!$usuario) {
+            throw $this->createNotFoundException("No se puede encontrar la entidad.");
+        }
+
+        $html = $this->renderView('remito/remito_pendientes_pdf.html.twig', array('entity' => $usuario, 'tipo_pdf' => "REMITO"));
         $filename = "Remitos.pdf";
         $basePath = $this->getParameter('MPDF_BASE_PATH');
 

@@ -55,7 +55,7 @@ class Remito {
 
     /**
      * @ORM\OneToMany(targetEntity=Pago::class, mappedBy="remito", cascade={"all"})
-     * @ORM\OrderBy({"id" = "DESC"})
+     * @ORM\OrderBy({"fechaCreacion" = "DESC"})
      */
     private $pagos;
 
@@ -70,6 +70,16 @@ class Remito {
      * @ORM\JoinColumn(name="id_cliente", referencedColumnName="id", nullable=false)
      */
     private $cliente;
+
+    /**
+     * @ORM\Column(name="saldo_cuenta_corriente", type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $saldoCuentaCorriente;
+
+    /**
+     * @ORM\Column(name="total_deuda", type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $totalDeuda;
 
     public function __construct()
     {
@@ -360,5 +370,39 @@ class Remito {
     public function getCuentaCorrientePedido(){
         return $this->getEntregas()->first()->getCuentaCorrientePedido();
     }
+
+    /**
+     * @return mixed
+     */
+    public function getSaldoCuentaCorriente()
+    {
+        return $this->saldoCuentaCorriente;
+    }
+
+    /**
+     * @param mixed $saldoCuentaCorriente
+     */
+    public function setSaldoCuentaCorriente($saldoCuentaCorriente): void
+    {
+        $this->saldoCuentaCorriente = $saldoCuentaCorriente;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTotalDeuda()
+    {
+        return $this->totalDeuda;
+    }
+
+    /**
+     * @param mixed $totalDeuda
+     */
+    public function setTotalDeuda($totalDeuda): void
+    {
+        $this->totalDeuda = $totalDeuda;
+    }
+
+
 
 }

@@ -4,9 +4,13 @@
             <h4 class="card-label mb-0">Remitos</h4>
         </div>
         <div class="card-toolbar">
+            <a href="{{ path('imprimir_remito_pendientes',{id: entity.id}) }}" target="_blank"
+               class="btn btn-light-primary btn-icon btn-sm blue" title="Imprimir reporte" style="width: 150px;margin-right: 10px;">
+                <i class="fa fa-file-pdf text-white">&nbsp;</i> Imprimir Pendinetes
+            </a>
             <a href="{{ path('imprimir_remito_todos',{id: entity.id}) }}" target="_blank"
                class="btn btn-light-primary btn-icon btn-sm blue" title="Imprimir reporte" style="width: 150px;margin-right: 10px;">
-                <i class="fa fa-file-pdf text-white">&nbsp;</i> Imprimir todos
+                <i class="fa fa-file-pdf text-white">&nbsp;</i> Imprimir Todos
             </a>
             <a href="{{ path('remito_new', {'id': entity.id}) }}" class="btn btn-primary btn-sm">
                 <i class="la la-plus"></i>

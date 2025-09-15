@@ -30,8 +30,8 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            {% for remito in entity.remitos %}
-                                                {% for pago in remito.pagos %}
+
+                                                {% for pago in pagos %}
                                                     <tr>
                                                         <td class="v-middle nowrap text-center">
                                                             {{ pago.remito|default('-') }}
@@ -57,7 +57,7 @@
                                                         </td>
                                                     </tr>
                                                 {% endfor %}
-                                            {% endfor %}
+
                                             </tbody>
                                         </table>
                                     </div>
