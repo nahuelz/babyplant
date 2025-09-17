@@ -243,9 +243,9 @@ class ReservaController extends BaseController {
         }
 
         if (!$error) {
-            $entregaService = new EntregaService();
             $entrega = new Entrega();
             $entreaProducto = new EntregaProducto();
+            $entreaProducto->setEntrega($entrega);
             $entreaProducto->setCantidadBandejas($reserva->getCantidadBandejas());
             $entreaProducto->setPedidoProducto($reserva->getPedidoProducto());
             $entreaProducto->setMontoPendiente($entreaProducto->getMontoTotalConDescuento());
@@ -254,8 +254,11 @@ class ReservaController extends BaseController {
             $entrega->addEntregaProducto($entreaProducto);
             $entrega->setClienteEntrega($reserva->getCliente());
             $entrega->setCliente($reserva->getPedidoProducto()->getPedido()->getCliente());
+            $entreaProducto->setEntrega($entrega);
+            $em->persist($entreaProducto);
             $em->persist($entrega);
             $em->flush();
+            $entregaService = new EntregaService();
             $entregaService->entregar($em, $entrega);
             $estadoReserva = $em->getRepository(EstadoReserva::class)->findOneByCodigoInterno(ConstanteEstadoReserva::ENTREGADO);
             $this->estadoService->cambiarEstadoReserva($reserva, $estadoReserva, 'ENTREGA');
