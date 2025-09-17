@@ -38,6 +38,7 @@
         {
         {% if entity.idEstado == SIN_ENTREGAR %}
             "entregar": "{{ path( "reserva_confirmar_entrega", { id: entity.idReserva }) }}",
+            "idReserva": "{{ entity.idReserva }}",
             "cancelar" : " {{ path( "reserva_cancelar", { "id": entity.idReserva }) }}",
         {% endif %}
         "historico_estados": "{{ path('reserva_historico_estado',{id: entity.idReserva}) }}",
