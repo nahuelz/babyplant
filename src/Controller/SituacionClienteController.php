@@ -564,6 +564,7 @@ class SituacionClienteController extends BaseController {
                     'saldoCuenta' => $movimiento->getSaldoCuenta(),
                     'montoDeuda' => $movimiento->getMontoDeuda(),
                     'remito' => $movimiento->getRemito(),
+                    'id' => $movimiento->getId(),
                 ];
             }
         }
@@ -579,6 +580,7 @@ class SituacionClienteController extends BaseController {
                     'saldoCuenta' => $remito->getSaldoCuentaCorriente(),
                     'montoDeuda' => $remito->getTotalDeuda(),
                     'remito' =>  $remito,
+                    'id' => $remito->getId(),
                 ];
             }
 
@@ -592,6 +594,7 @@ class SituacionClienteController extends BaseController {
                         'saldoCuenta' => $pagos->getSaldoCuentaCorriente(),
                         'montoDeuda' => $pagos->getTotalDeuda(),
                         'remito' => $pagos->getRemito(),
+                        'id' => $pagos->getId(),
                     ];
                 }
             }
@@ -599,10 +602,9 @@ class SituacionClienteController extends BaseController {
 
         // Ordenamos por fechaCreacion descendente
         usort($resultado, function($a, $b) {
-            $cmp = $a['fechaCreacion'] <=> $b['fechaCreacion'];
+            $cmp = $b['fechaCreacion'] <=> $a['fechaCreacion'];
             if ($cmp === 0) {
-                // si las fechas son iguales, ordenar por id
-                return $a['remito']->getId() <=> $b['remito']->getId();
+                return $a['id'] <=> $b['id'];
             }
             return $cmp;
         });
