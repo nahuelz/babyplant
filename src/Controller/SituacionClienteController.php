@@ -476,6 +476,7 @@ class SituacionClienteController extends BaseController {
                     'saldoCuenta' => $movimiento->getSaldoCuenta(),
                     'montoDeuda' => $movimiento->getMontoDeuda(),
                     'remito' => $movimiento->getRemito(),
+                    'id' => $movimiento->getId(),
                 ];
             }
         }
@@ -490,6 +491,7 @@ class SituacionClienteController extends BaseController {
                 'saldoCuenta' => $remito->getSaldoCuentaCorriente(),
                 'montoDeuda' => $remito->getTotalDeuda(),
                 'remito' =>  $remito,
+                'id' => $remito->getId(),
             ];
         }
 
@@ -503,13 +505,18 @@ class SituacionClienteController extends BaseController {
                     'saldoCuenta' => $pagos->getSaldoCuentaCorriente(),
                     'montoDeuda' => $pagos->getTotalDeuda(),
                     'remito' => $pagos->getRemito(),
+                    'id' => $pagos->getId(),
                 ];
             }
         }
 
         // Ordenamos por fechaCreacion descendente
         usort($resultado, function($a, $b) {
-            return $b['fechaCreacion'] <=> $a['fechaCreacion'];
+            $cmp = $b['fechaCreacion'] <=> $a['fechaCreacion']; // descendente por fecha
+            if ($cmp === 0) {
+                return $a['id'] <=> $b['id']; // ascendente por id
+            }
+            return $cmp;
         });
 
 
