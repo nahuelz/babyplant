@@ -602,9 +602,9 @@ class SituacionClienteController extends BaseController {
 
         // Ordenamos por fechaCreacion descendente
         usort($resultado, function($a, $b) {
-            $cmp = $b['fechaCreacion'] <=> $a['fechaCreacion'];
+            $cmp = $b['fechaCreacion'] <=> $a['fechaCreacion']; // descendente por fecha
             if ($cmp === 0) {
-                return $b['id'] <=> $a['id'];
+                return $a['id'] <=> $b['id']; // ascendente por id
             }
             return $cmp;
         });
