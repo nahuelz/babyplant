@@ -599,7 +599,12 @@ class SituacionClienteController extends BaseController {
 
         // Ordenamos por fechaCreacion descendente
         usort($resultado, function($a, $b) {
-            return $a['fechaCreacion'] <=> $b['fechaCreacion'];
+            $cmp = $a['fechaCreacion'] <=> $b['fechaCreacion'];
+            if ($cmp === 0) {
+                // si las fechas son iguales, ordenar por id
+                return $a['remito']->getId() <=> $b['remito']->getId();
+            }
+            return $cmp;
         });
 
         $html = $this->renderView('situacion_cliente/reporte.html.twig', [
