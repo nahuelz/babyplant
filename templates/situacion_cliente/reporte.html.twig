@@ -21,13 +21,13 @@
 <div class="table-border header">
     <table width="100%" border="0">
         <tr>
-            <td>
+            <td width="50%" valign="top">
                 <table cellpadding="5" cellspacing="5" style="padding: 0;">
                     <tr>
                         <td><strong>CLIENTE: {{ usuario.nombreCompleto|default('-') }}</strong></td>
                     </tr>
                     <tr>
-                        <td><strong>ADELANTOS: {{ usuario.saldoAdelantos|money_format }}</strong></td>
+                        <td><strong>ADELANTO: {{ usuario.saldoAdelantos|money_format }}</strong></td>
                     </tr>
                     <tr>
                         <td><strong>TOTAL DEUDA: {{ usuario.cuentaCorrienteUsuario.getPendiente|money_format }}</strong></td>
@@ -37,9 +37,25 @@
                     </tr>
                 </table>
             </td>
+
+            <td width="50%" valign="top" align="right">
+                <table cellpadding="5" cellspacing="5" style="padding: 0;">
+                    <tr>
+                        <td><strong>RESUMEN DE PAGO</strong></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>
+                                {{ "now"|date("d/m/Y") }}
+                            </strong>
+                        </td>
+                    </tr>
+                </table>
+            </td>
         </tr>
     </table>
 </div>
+
 <div class="table-border">
     <table class="datos-productos-table" >
         <thead>
@@ -47,7 +63,7 @@
             <th class="text-center">FECHA</th>
             <th class="text-center">MOVIMIENTO</th>
             <th class="text-center">MONTO</th>
-            <th class="text-center">MODO PAGO</th>
+            {# <th class="text-center">MODO PAGO</th>#}
             <th class="text-center">A FAVOR</th>
             <th class="text-center">DEUDA</th>
         </tr>
@@ -58,7 +74,7 @@
                 <td width="110" align="center">{{ movimiento.fechaCreacion is not null ? movimiento.fechaCreacion|date('d/m/Y') : '-' }}</td>
                 <td width="200" align="center">{{  movimiento.tipoMovimiento }}</td>
                 <td width="110" align="center">{{ movimiento.monto|money_format  }}</td>
-                <td width="200" align="center">{{ movimiento.modoPago  }}</td>
+                {#<td width="200" align="center">{{ movimiento.modoPago  }}</td>#}
                 <td width="120" align="center">{{ movimiento.saldoCuenta|money_format  }}</td>
                 <td width="120" align="center">{{ movimiento.montoDeuda|money_format|default('-')  }}</td>
             </tr>
