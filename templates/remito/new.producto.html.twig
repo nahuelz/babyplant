@@ -33,7 +33,9 @@
                         <th class="text-center">ENTREGA</th>
                         <th class="text-center">PRODUCTO</th>
                         <th class="text-center">CANTIDAD DE BANDEJAS A ENTREGAR</th>
+                        <th class="text-center">ADELANTO</th>
                         <th class="text-center">PRECIO UNITARIO</th>
+                        <th class="text-center">MONTO DESCUENTO</th>
                         <th class="text-center">SUBTOTAL</th>
                         <th class="nowrap text-center"></th>
                     </tr>
@@ -56,8 +58,19 @@
                             <td class="v-middle text-center">{{ entrega }}</td>
                             <td class="v-middle text-center">${{ entregaProducto.pedidoProducto }}</td>
                             <td class="v-middle text-center">{{ entregaProducto.cantidadBandejas }}</td>
+                            <td class="v-middle text-center">{{ entregaProducto.pedidoProducto.adelanto|money_format }}</td>
                             <td class="v-middle text-center">{{ entregaProducto.precioUnitario }}</td>
-                            <td class="v-middle text-center">{{ entregaProducto.montoTotal }}</td>
+                            <td class="v-middle text-center">
+                                <input type="number" 
+                                       class="form-control monto-descuento" 
+                                       name="remito[entrega][{{ entrega.id }}][montoDescuento]" 
+                                       value="0.00" 
+                                       step="0.01" 
+                                       min="0" 
+                                       style="width: 100px; margin: 0 auto;"
+                                       disabled>
+                            </td>
+                            <td class="v-middle text-center subtotal">{{ entregaProducto.montoTotal }}</td>
                             <td class="text-center v-middle">
                                 <a href="#" class="btn btn-sm delete-link-inline link-delete-remito-producto remito-producto-borrar tooltips"
                                    data-placement="top" data-original-title="Eliminar">
@@ -71,27 +84,38 @@
                 <tfoot style="background-color: aliceblue;">
                 <tr>
                     <td style="border:none;"></td>
-                    <td style="border:none;">
+                    <td style="border:none;" colspan="2">
                         <div class="d-flex flex-row">
                             <h6 style="padding-top: 10px;">APLICAR DESCUENTO:</h6>
                             <div class="col-md-5">
                                 <div class="form-group margin-0">
                                     <div class="form_field">
-                                        {{ form_widget(form.tipoDescuento) }}
+                                        {{ form_widget(form.tipoDescuento, {'attr': {'class': 'select-tipo-descuento'}}) }}
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
-                                <div class="form-group margin-0">
-                                    <div class="form_field">
-                                        {{ form_widget(form.cantidadDescuento) }}
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-6 cantidadDescuento">  <!-- Cambiado de col-md-5 a col-md-6 -->
+                                        <div class="form-group margin-0">
+                                            <div class="form_field">
+                                                {{ form_widget(form.cantidadDescuento) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 motivoDescuento">  <!-- Cambiado de col-md-5 a col-md-6 -->
+                                        <div class="form-group margin-0">
+                                            <div class="form_field">
+                                                {{ form_widget(form.motivoDescuento) }}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </td>
-                    <td style="border:none;"></td>
+                    <td style="border:none;" colspan="2"></td>
                     <th style="float: right;font-weight: bold;font-size: 18px;border: none;">TOTAL</th>
                     <td class="v-middle text-center total" style="font-weight: bold; font-size: 18px;border: none;"></td>
                     <td style="border:none;"></td>

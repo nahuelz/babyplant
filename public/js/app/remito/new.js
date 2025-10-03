@@ -2,11 +2,18 @@ var fv;
 var fvCliente;
 var total = 0;
 var indexEntrega = 0;
+const DESCUENTO_FIJO = '1';
+const DESCUENTO_PORCENTAJE = '2';
 
 jQuery(document).ready(function () {
     calcularDescuento();
     initRemitoProductoHandler();
-    $('#remito_cantidadDescuento').attr('readonly', true);
+    
+    // Inicializar Select2 para tipo de descuento
+    $('#remito_tipoDescuento').select2();
+    $('.cantidadDescuento').hide();
+    $('.motivoDescuento').hide();
+    
     tipoDescuentoHandler();
     cantidadDescuentoHandler();
     initEntregas();
@@ -18,42 +25,97 @@ function initEntregas() {
 }
 
 function initSubTotalHandler() {
-    $('.precio-unitario').on('keyup', function () {
-        if( $('.precio-unitario').val() !== '') {
-            let cantidadBandejas = $(this).parent().siblings('.cantidad-bandejas').text();
-            $(this).parent().siblings('.subtotal').text(formatCurrency((parseFloat($(this).val()) * parseFloat(cantidadBandejas))));
-        }else{
-            $(this).parent().siblings('.subtotal').text(formatCurrency(0));
-        }
+    $('.precio-unitario, .monto-descuento').on('change keyup', function () {
+        calcularSubTotal();
+    });
+}
+
+function calcularSubTotal(){
+    $('.tr-remito-producto').each(function() {
+        const precioUnitario = parseFloat($(this).find('.precio-unitario').val()) || 0;
+        const cantidadBandejas = parseFloat($(this).find('.cantidad-bandejas').text()) || 0;
+        const montoDescuento = parseFloat($(this).find('.monto-descuento').val()) || 0;
+
+        // Calcular el subtotal (precio * cantidad - descuento)
+        const subtotal = (precioUnitario * cantidadBandejas) - montoDescuento;
+
+        // Actualizar el subtotal mostrado
+        $(this).find('.subtotal').text(formatCurrency(subtotal));
+
+        // Recalcular el total
         calcularTotal();
-    })
+    });
+
 }
 
-function tipoDescuentoHandler() {
-    $('#remito_tipoDescuento').on('change', function () {
-        if ($(this).val() !== ''){
-            $('#remito_cantidadDescuento').attr('readonly', false);
-        }else{
-            $('#remito_cantidadDescuento').val('');
-            $('#remito_cantidadDescuento').attr('readonly', true);
+function clearMontoDescuento(){
+    const $montosDescuento = $('.monto-descuento');
+    const $tipoDescuento =  $('#remito_tipoDescuento').val();
+    $('#remito_cantidadDescuento').val('');
+
+    if ($tipoDescuento !== '') {
+        $('.cantidadDescuento').show();
+        $('.motivoDescuento').show();
+        if ($tipoDescuento === DESCUENTO_FIJO) {
+            $montosDescuento.prop('disabled', false).val('0.00');
+            $('.cantidadDescuento').hide();
+        } else {
+            $montosDescuento.prop('disabled', true).val('0.00');
         }
-        calcularDescuento();
-    })
+    } else {
+        $('.cantidadDescuento').hide();
+        $('.motivoDescuento').hide();
+    }
 }
 
-function cantidadDescuentoHandler() {
-    $('#remito_cantidadDescuento').on('keyup', function () {
-        calcularDescuento();
-    })
+    function tipoDescuentoHandler() {
+        $('#remito_tipoDescuento').on('change', function () {
 
-    $('#remito_cantidadDescuento').on('paste', function () {
-        calcularDescuento();
-    })
-}
-/**
- *
- * @returns {undefined}
- */
+            // CUANDO CAMBIA EL TIPO DESCUENTO, DEBE PONER EN 0 EN EL CAMPO MONTO DESCUENTO Y VOLVER A CALCULAR EL TOTAL
+            clearMontoDescuento();
+            calcularSubTotal();
+
+            /*const tipoDescuento = $(this).val();
+            const $cantidadDescuento = $('#remito_cantidadDescuento');
+            const $montosDescuento = $('.monto-descuento');
+            const $cantidadDescuentoCol = $('.cantidadDescuento');
+            const $motivoDescuento = $('.motivoDescuento');
+            $cantidadDescuentoCol.hide();
+            $motivoDescuento.hide();
+
+            if (tipoDescuento !== '') {
+                $motivoDescuento.show();
+                // Mostrar y habilitar el campo de cantidad solo para descuento porcentual
+                if (tipoDescuento === DESCUENTO_PORCENTAJE) {
+                    $cantidadDescuentoCol.show();
+                    $cantidadDescuento.show().prop('readonly', false);
+                    $montosDescuento.prop('disabled', true);
+                }
+                // Para descuento fijo, mostrar solo los campos de monto por producto
+                else if (tipoDescuento === DESCUENTO_FIJO) {
+                    $cantidadDescuento.hide().val('').prop('readonly', true);
+                    $montosDescuento.prop('disabled', false).val('0.00');
+                }
+            } else {
+                $cantidadDescuento.hide().val('').prop('readonly', true);
+                $montosDescuento.prop('disabled', true).val('0.00');
+            }*/
+        });
+    }
+
+    function cantidadDescuentoHandler() {
+        $('#remito_cantidadDescuento').on('keyup', function () {
+            calcularDescuento();
+        })
+
+        $('#remito_cantidadDescuento').on('paste', function () {
+            calcularDescuento();
+        })
+    }
+    /**
+     *
+     * @returns {undefined}
+     */
 function initFormValidation() {
     fv = FormValidation.formValidation($("form[name=entrega]")[0], {
         fields: {
@@ -119,8 +181,9 @@ function agregarEntregaProducto(producto, indexEntrega) {
     var idPedidoProducto = producto['idProducto']
     var textPedidoProducto = producto['textProducto']
     var cantidadBandejas = producto['cantidadBandejas']
-    //var adelanto = producto['adelanto']
+    var adelanto = producto['adelanto']
     var precioUnitario = 0;
+    var montoDescuento = 0;
 
 
     var index = $('.tbody-remito-producto').data('index');
@@ -137,14 +200,16 @@ function agregarEntregaProducto(producto, indexEntrega) {
                         <td class="hidden"><input type="hidden" class="pedidoProductoId" name="remito[entregas][' + indexEntrega + '][entrega][entregasProductos][' + index + '][entrega]" value="' + idEntrega + '"></td>\n\
                         <td class="hidden"><input type="hidden" class="pedidoProductoId" name="remito[entregas][' + indexEntrega + '][entrega][entregasProductos][' + index + '][pedidoProducto]" value="' + idPedidoProducto + '"></td>\n\
                         <td class="hidden"><input type="hidden" name="remito[entregas][' + indexEntrega + '][entrega][entregasProductos][' + index + '][cantidadBandejas]" value="' + cantidadBandejas + '"></td>\n\
+                        <td class="hidden"><input type="hidden" name="remito[entregas][' + indexEntrega + '][entrega][entregasProductos][' + index + '][montoDescuento]" value="' + montoDescuento + '"></td>\n\
                         \n\
                         <td class="text-center v-middle">Entrega N° ' + idEntrega  + '</td>\n\
                         <td class="text-center v-middle">' + textPedidoProducto  + '</td>\n\
                         <td class="text-center v-middle cantidad-bandejas">' + cantidadBandejas + '</td>\n\
-                        <td class="text-center v-middle"><input class="precio-unitario" type="number" name="remito[entregas][' + indexEntrega + '][entrega][entregasProductos][' + index + '][precioUnitario]" value="' + precioUnitario + '"></td>\n\
+                        <td class="text-center v-middle">' + adelanto + '</td>\n\
+                        <td class="text-center v-middle"><input class="precio-unitario form-control" type="number" name="remito[entregas][' + indexEntrega + '][entrega][entregasProductos][' + index + '][precioUnitario]" value="' + precioUnitario + '" style="width: 100px; margin: 0 auto;"></td>\n\
+                        <td class="text-center v-middle">\n                            <input type="number" class="form-control monto-descuento" name="remito[entregas][' + indexEntrega + '][entrega][entregasProductos][' + index + '][montoDescuento]" value="0.00" step="0.01" min="0" style="width: 100px; margin: 0 auto;" disabled>\n                        </td>\n\
                         <td class="text-center v-middle subtotal">'+formatCurrency((parseInt(precioUnitario) * parseInt(cantidadBandejas)))+ '</td>\n\
-                        <td class="text-center v-middle">' + removeLink + '</td>\n\
-                    </tr>';
+                        <td class="text-center v-middle">' + removeLink + '</td>\n                    </tr>';
 
     $('.tbody-remito-producto').append(item);
     $('.tbody-remito-producto').data('index', index + 1);
@@ -221,9 +286,9 @@ function updateDeleteLinkRemitoProducto(deleteLink, closestClassName) {
             }
 
             e.stopPropagation();
-
         });
     });
+    calcularTotal();
 }
 
 function initProductos() {
@@ -321,23 +386,32 @@ function initBaseSubmitButton() {
     });
 }
 
-function calcularDescuento(objeto) {
-    let DESCUENTO_PORCENTAJE = '2';
+function calcularDescuento() {
     let totalAux = total;
+    const $cantidadDescuento = $('#remito_cantidadDescuento');
     const tipodescuento = $('#remito_tipoDescuento').val();
-    let valordescuento = parseInt($('#remito_cantidadDescuento').val().trim());
+    let valordescuento = parseInt($cantidadDescuento.val().trim());
     if (isNaN(valordescuento)){
         valordescuento = 0;
     }
     if (tipodescuento === DESCUENTO_PORCENTAJE && valordescuento < 100) {
         totalAux -= ((total * valordescuento) / 100);
+        // Calcular y establecer el monto de descuento para cada fila
+        const porcentaje = parseFloat($cantidadDescuento.val()) || 0;
+        $('.tr-remito-producto').each(function() {
+            const $fila = $(this);
+            const cantidad = $fila.find('.cantidad-bandejas').text();
+            const precioUnitario = $fila.find('.precio-unitario').val();
+            const subtotal = cantidad * precioUnitario;
+            const montoDescuento = (subtotal * porcentaje) / 100;
+            $fila.find('.monto-descuento').val(montoDescuento.toFixed(2));
+        });
     } else{
         totalAux -= valordescuento;
     }
     if (!isNaN(totalAux)) {
         $('.total').html(formatCurrency(totalAux));
     }
-
 }
 
 function formatCurrency(total) {

@@ -81,9 +81,13 @@
                                                                             <i class="la la-paypal" style="margin-right: 5px;"></i> Adjudicar CC
                                                                         </a>
                                                                     {% endif %}
-                                                                    {# <a href="#" class="dropdown-item {% if remito.estado.codigoInterno == 3 %}cursor-disable{% else %}add-pago{% endif %}" data-remito="{{ remito.id }}" data-monto="{{remito.totalConDescuento }}">
-                                                                        <i class="la la-paypal" style="margin-right: 5px;"></i> Ingresar Pago
-                                                                    </a> #}
+                                                                    {#
+                                                                    {% if remito.adelanto > 0 %}
+                                                                        <a href="#" class="dropdown-item enviar-cc" data-remito="{{ remito.id }}" data-monto="{{ remito.adelanto }}">
+                                                                            <i class="la la-paypal" style="margin-right: 5px;"></i> Enviar adelanto a cuenta corriente.
+                                                                        </a>
+                                                                    {% endif %}
+                                                                    #}
                                                                 </div>
                                                             </div>
                                                         </td>

@@ -14,7 +14,9 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Validator\Constraints\LessThanOrEqual;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -84,10 +86,31 @@ class RemitoType extends AbstractType {
                     },
                 )
             )
-            ->add('cantidadDescuento', TextType::class, array(
+            ->add('cantidadDescuento', IntegerType::class, array(
+                    'required' => false,
+                    'constraints' => [
+                        new LessThanOrEqual([
+                            'value' => 100,
+                            'message' => 'El porcentaje debe ser menor o igual a 100',
+                        ]),
+                        new GreaterThanOrEqual([
+                            'value' => 1,
+                            'message' => 'El porcentaje debe ser mayor o igual a 1',
+                        ]),
+                    ],
+                    'attr' => array(
+                        'placeholder' => 'Ingrese el porcentaje',
+                        'class' => 'form-control',
+                        'tabindex' => '5',
+                        'min' => '1',
+                        'max' => '100',
+                        'oninput' => 'this.value = this.value.replace(/[^0-9]/g, "").slice(0, 3)'))
+            )
+            ->add('motivoDescuento', TextareaType::class, array(
                     'required' => false,
                     'attr' => array(
-                        'placeholder' => 'Cantidad',
+                        'rows' => 1,
+                        'placeholder' => 'Descripción',
                         'class' => 'form-control',
                         'tabindex' => '5'))
             )

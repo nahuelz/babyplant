@@ -73,6 +73,39 @@ class PagoController extends BaseController {
     }
 
     /**
+     * @Route("/enviarCC", name="enviar_cc", methods={"GET","POST"})
+     * @IsGranted("ROLE_PAGO")
+     */
+    public function enviarCCAction(Request $request): Response
+    {
+        $em = $this->doctrine->getManager();
+        $idRemito = $request->request->get('idRemito');
+
+        if ((isset($idRemito)) and ($idRemito !== '')) {
+            $remito = $em->getRepository(Remito::class)->find($idRemito);
+
+            $montoAdelanto = $remito->getAdelanto();
+
+            $response = new Response();
+            $response->setContent(json_encode(array(
+                'message' => 'Se enviaron $'.$montoAdelanto.' a la cuenta corriente',
+                'statusCode' => 200,
+                'statusText' => 'OK'
+            )));
+
+            return $response;
+        }
+        $response = new Response();
+        $response->setContent(json_encode(array(
+            'message' => 'NO SE ENCONTRO EL REMITO',
+            'statusCode' => 303,
+            'statusText' => 'ERROR'
+        )));
+
+        return $response;
+    }
+
+    /**
      * @Route("/adjudicar", name="pago_create", methods={"GET","POST"})
      * @IsGranted("ROLE_PAGO")
      */

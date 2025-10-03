@@ -41,6 +41,11 @@ class Remito {
     private $cantidadDescuento;
 
     /**
+     * @ORM\Column(name="motivo_descuento", type="string", length=255, nullable=true)
+     */
+    private $motivoDescuento;
+
+    /**
      * @ORM\OneToMany(targetEntity=EstadoRemitoHistorico::class, mappedBy="remito", cascade={"all"})
      * @ORM\OrderBy({"fecha" = "DESC", "id" = "DESC"})
      */
@@ -55,7 +60,7 @@ class Remito {
 
     /**
      * @ORM\OneToMany(targetEntity=Pago::class, mappedBy="remito", cascade={"all"})
-     * @ORM\OrderBy({"fechaCreacion" = "DESC"})
+     * @ORM\OrderBy({"fechaCreacion" = "ASC"})
      */
     private $pagos;
 
@@ -218,7 +223,7 @@ class Remito {
     public function setCantidadDescuento($cantidadDescuento): void
     {
         $this->cantidadDescuento = $cantidadDescuento;
-        if ($this->getTipoDescuento() != null) {
+        /*if ($this->getTipoDescuento() != null) {
             if ($this->getTipoDescuento()->getCodigoInterno() == 1) {
                 $cantidadDescuento = $this->getCantidadDescuento();
                 foreach ($this->getEntregas() as $entrega) {
@@ -231,13 +236,31 @@ class Remito {
                     }
                 }
             }
-        }
+        }*/
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getHistoricoEstados()
+    public function getMotivoDescuento(): ?string
+    {
+        return $this->motivoDescuento;
+    }
+
+    /**
+     * @param string|null $motivoDescuento
+     * @return $this
+     */
+    public function setMotivoDescuento(?string $motivoDescuento): self
+    {
+        $this->motivoDescuento = $motivoDescuento;
+        return $this;
+    }
+
+    /**
+     * @return Collection|EstadoRemitoHistorico[]
+     */
+    public function getHistoricoEstados(): Collection
     {
         return $this->historicoEstados;
     }

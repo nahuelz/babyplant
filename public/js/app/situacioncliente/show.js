@@ -7,6 +7,7 @@ $(document).ready(function () {
     initVerHistoricoEstadoRemitoHandler();
     initAdjudicarAdelanto();
     initAdjudicarCC();
+    enviarCC();
 });
 
 /**
@@ -313,17 +314,71 @@ function initAdjudicarAdelanto() {
     });
 }
 
+function enviarCC() {
+    $('.enviar-cc').on('click', function (e) {
+        e.preventDefault();
+        let remito = $(this).data("remito");
+
+        Swal.fire({
+            title: '¿Está seguro?',
+            text: 'Se enviará el adelanto a la cuenta corriente.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Aceptar',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'POST',
+                    url: __HOMEPAGE_PATH__ + "pago/enviarCC",
+                    data: { idRemito: remito },
+                    dataType: 'json'  // <--- esto es clave
+                }).done(function (result) {
+                    console.log(result);
+                    //{"message":"Se enviaron $2000 a la cuenta corriente","statusCode":200,"statusText":"OK"}
+                    Swal.fire({
+                        title: 'Envío exitoso',
+                        text: result.message,
+                        icon: 'success',
+                        confirmButtonText: 'Ok'
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                });
+            }
+        });
+    });
+}
+
+
 function initAdjudicarCC() {
     $('.add-pago-cc').on('click', function (e) {
         e.preventDefault();
 
-        let adelantoTexto = $(".saldo-cc").text();
+        let row = $(this).closest("tr");
+
+        let adelantoTexto = row.find(".monto-adelanto").text();
 
         // Limpiar el texto para obtener solo el número
         let adelanto = adelantoTexto.replace(/[^0-9,-]+/g, "").replace(",", ".");
         adelanto = parseFloat(adelanto);
 
-        if (adelanto === 0) {
+        if (adelanto > 0) {
+            Swal.fire({
+                title: 'Primero debe adjudicar el adelanto.',
+                icon: "warning",
+            });
+            return false;
+        }
+
+        let ccTexto = $(".saldo-cc").text();
+
+        // Limpiar el texto para obtener solo el número
+        let cc = ccTexto.replace(/[^0-9,-]+/g, "").replace(",", ".");
+        cc = parseFloat(cc);
+
+        if (cc === 0) {
             Swal.fire({
                 title: 'El cliente no posee saldo en la Cuenta Corriente.',
                 icon: "warning",

@@ -576,34 +576,28 @@ class SituacionClienteController extends BaseController {
             }
         }
 
-        // Adaptamos remitos
         foreach ($remitos as $remito) {
-            if ($remito->getFechaCreacion() >= $fechaFiltro) {
-                $resultado[] = [
-                    'fechaCreacion' => $remito->getFechaCreacion(),
-                    'tipoMovimiento' => 'GENERÓ REMITO N° ' . $remito->getId(),
-                    'monto' => $remito->getTotalConDescuento(),
-                    'modoPago' => '-',
-                    'saldoCuenta' => $remito->getSaldoCuentaCorriente(),
-                    'montoDeuda' => $remito->getTotalDeuda(),
-                    'remito' =>  $remito,
-                    'id' => $remito->getId(),
-                ];
+            $montoTotal = 0;
+            $pagoReferencia = null; // guardo un pago para tomar datos
+
+            foreach ($remito->getPagos() as $pago) {
+                if ($pago->getFechaCreacion() >= $fechaFiltro) {
+                    $montoTotal += $pago->getMonto();
+                    $pagoReferencia = $pago; // me quedo con el último válido
+                }
             }
 
-            foreach ($remito->getPagos() as $pagos) {
-                if ($pagos->getFechaCreacion() >= $fechaFiltro) {
-                    $resultado[] = [
-                        'fechaCreacion' => $pagos->getFechaCreacion(),
-                        'tipoMovimiento' => 'PAGO REMITO N° ' . $pagos->getRemito()->getId(),
-                        'monto' => $pagos->getMonto(),
-                        'modoPago' => $pagos->getModoPago(),
-                        'saldoCuenta' => $pagos->getSaldoCuentaCorriente(),
-                        'montoDeuda' => $pagos->getTotalDeuda(),
-                        'remito' => $pagos->getRemito(),
-                        'id' => $pagos->getId(),
-                    ];
-                }
+            if ($pagoReferencia !== null) {
+                $resultado[] = [
+                    'fechaCreacion'  => $pagoReferencia->getFechaCreacion(),
+                    'tipoMovimiento' => 'PAGO REMITO N° ' . $pagoReferencia->getRemito()->getId(),
+                    'monto'          => $montoTotal, // 👈 total acumulado
+                    'modoPago'       => $pagoReferencia->getModoPago(),
+                    'saldoCuenta'    => $pagoReferencia->getSaldoCuentaCorriente(),
+                    'montoDeuda'     => $pagoReferencia->getTotalDeuda(),
+                    'remito'         => $pagoReferencia->getRemito(),
+                    'id'             => $pagoReferencia->getId(),
+                ];
             }
         }
 

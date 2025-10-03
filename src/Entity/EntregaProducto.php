@@ -57,7 +57,7 @@ class EntregaProducto {
     /**
      * @ORM\Column(name="cantidad_descuento_fijo", type="decimal", precision=10, scale=2, nullable=true)
      */
-    private $cantidadDescuentoFijo;
+    private $cantidadDescuento;
 
     /**
      * @ORM\OneToMany(targetEntity=EstadoEntregaProductoHistorico::class, mappedBy="entregaProducto", cascade={"all"})
@@ -148,12 +148,12 @@ class EntregaProducto {
         return $this->precioUnitario * $this->cantidadBandejas;
     }
 
-    public function setCantidadDescuentoFijo($cantidadDescuentoFijo){
-        $this->cantidadDescuentoFijo = $cantidadDescuentoFijo;
+    public function setCantidadDescuento($cantidadDescuento){
+        $this->cantidadDescuento = $cantidadDescuento;
     }
 
-    public function getCantidadDescuentoFijo(){
-        return $this->cantidadDescuentoFijo;
+    public function getCantidadDescuento(){
+        return $this->cantidadDescuento;
     }
 
     public function getMontoTotalConDescuento(){
@@ -163,7 +163,7 @@ class EntregaProducto {
             if ($remito->getTipoDescuento() != null) {
                 switch ($remito->getTipoDescuento()->getCodigoInterno()) {
                     case 1:
-                        $total -= $this->getCantidadDescuentoFijo();
+                        $total -= $this->getcantidadDescuento();
                         break;
                     case 2:
                         $total -= (($total * $remito->getCantidadDescuento()) / 100);
@@ -181,7 +181,7 @@ class EntregaProducto {
         if ($remito->getTipoDescuento() != null) {
             switch ($remito->getTipoDescuento()->getCodigoInterno()) {
                 case 1:
-                    $descuento = $this->getCantidadDescuentoFijo();
+                    $descuento = $this->getcantidadDescuento();
                     break;
                 case 2:
                     $descuento = (($totalSinDescuento * $remito->getCantidadDescuento()) / 100);

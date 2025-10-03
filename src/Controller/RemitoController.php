@@ -6,8 +6,10 @@ use App\Entity\Constants\ConstanteAPI;
 use App\Entity\Constants\ConstanteEstadoEntrega;
 use App\Entity\Constants\ConstanteEstadoEntregaProducto;
 use App\Entity\Constants\ConstanteEstadoRemito;
+use App\Entity\Constants\ConstanteTipoDescuento;
 use App\Entity\EntregaProducto;
 use App\Entity\EstadoEntrega;
+use App\Entity\EstadoEntregaProducto;
 use App\Entity\EstadoRemito;
 use App\Entity\Remito;
 use App\Entity\Usuario;
@@ -113,6 +115,16 @@ class RemitoController extends BaseController {
         }
         return parent::baseNewAction($entity);
     }
+    
+    /**
+     * @inheritDoc
+     */
+    protected function getExtraParametersNewAction($entity): array
+    {
+        return [
+            'entregas' => [] // Inicializamos entregas como un array vacío
+        ];
+    }
 
     /**
      * @Route("/insertar", name="remito_create", methods={"GET","POST"})
@@ -121,11 +133,10 @@ class RemitoController extends BaseController {
      */
     public function createAction(Request $request) {
         $em = $this->doctrine->getManager();
-        $remito = $this->remitoSetData($request);
-
+        $remito = new Remito();
         $form = $this->createForm(RemitoType::class, $remito);
         $form->handleRequest($request);
-
+        $remito = $this->remitoSetData($request, $remito, $em);
         $estadoRemito = $em->getRepository(EstadoRemito::class)->findOneByCodigoInterno(ConstanteEstadoRemito::PENDIENTE);
         $this->estadoService->cambiarEstadoRemito($remito, $estadoRemito, 'REMITO CREADO.');
         $estadoEntrega = $em->getRepository(EstadoEntrega::class)->findOneByCodigoInterno(ConstanteEstadoEntrega::CON_REMITO);
@@ -133,11 +144,19 @@ class RemitoController extends BaseController {
             $this->estadoService->cambiarEstadoEntrega($entrega, $estadoEntrega, 'REMITO CREADO.');
             foreach ($entrega->getEntregasProductos() as $entregaProducto) {
                 $entregaProducto->setMontoPendiente($entregaProducto->getMontoTotalConDescuento());
+                if ($entregaProducto->getMontoPendiente() == 0){
+                    $estadoEntregaProducto = $em->getRepository(EstadoEntregaProducto::class)->findOneByCodigoInterno(ConstanteEstadoEntregaProducto::PAGO);
+                    $this->estadoService->cambiarEstadoEntregaProducto($entregaProducto, $estadoEntregaProducto, 'PAGO.');
+                }
             }
         }
         $totalDeuda = $remito->getCliente()->getCuentaCorrienteUsuario()->getPendiente() + $remito->getTotalConDescuento();
         $remito->setTotalDeuda($totalDeuda);
         $remito->setSaldoCuentaCorriente($remito->getCliente()->getCuentaCorrienteUsuario()->getSaldo());
+        if ($remito->getTotalConDescuento() == 0){
+            $estadoRemito = $em->getRepository(EstadoRemito::class)->findOneByCodigoInterno(ConstanteEstadoRemito::PAGO);
+            $this->estadoService->cambiarEstadoRemito($remito, $estadoRemito, 'REMITO MONTO 0.');
+        }
         $em->persist($remito);
         $em->flush();
 
@@ -349,10 +368,11 @@ class RemitoController extends BaseController {
      */
     public function confirmarRemito(Request $request): JsonResponse
     {
-        $entity = $this->remitoSetData($request);
-
+        $em = $this->doctrine->getManager();
+        $entity = new Remito();
         $form = $this->createForm(RemitoType::class, $entity);
         $form->handleRequest($request);
+        $entity = $this->remitoSetData($request, $entity, $em);
         $result = array(
             'html' => $this->renderView('remito/confirmar_remito.html.twig', array('entity' => $entity)),
             'error' => false
@@ -387,11 +407,11 @@ class RemitoController extends BaseController {
         return $this->redirectToRoute('remito_index');
     }
 
-    private function remitoSetData(Request $request): Remito
+    private function remitoSetData(Request $request, $entity, $em): Remito
     {
-        $entity = new Remito();
-        $em = $this->doctrine->getManager();
         $entregas = $request->request->get('remito')['entregas'];
+        $tipoDescuento = $request->request->get('remito')['tipoDescuento'];
+        $cantidadDescuento = 0;
         for($i = 0; $i < count($entregas); ++$i) {
             $entrega = $entregas[$i]['entrega'];
             $entregasProductos = $entrega['entregasProductos'];
@@ -399,8 +419,13 @@ class RemitoController extends BaseController {
                 /* @var EntregaProducto $entregaProductoEntity */
                 $entregaProductoEntity = $em->getRepository('App\Entity\EntregaProducto')->find($entregasProductos[$x]['entregaProducto']);
                 $entregaProductoEntity->setPrecioUnitario($entregasProductos[$x]['precioUnitario']);
+                $entregaProductoEntity->setCantidadDescuento($entregasProductos[$x]['montoDescuento']);
                 $entity->addEntrega($entregaProductoEntity->getEntrega());
+                $cantidadDescuento+=$entregaProductoEntity->getCantidadDescuento();
             }
+        }
+        if ($tipoDescuento == ConstanteTipoDescuento::DESCUENTO_FIJO){
+            $entity->setCantidadDescuento($cantidadDescuento);
         }
 
         return $entity;
