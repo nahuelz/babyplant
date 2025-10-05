@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\PedidoProducto;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -50,7 +51,7 @@ class PedidoProductoRepository extends ServiceEntityRepository {
         return $this->createQueryBuilder('pp')
             ->select([
                 'tv.nombre as producto',
-                'SUM(pp.cantidadBandejasPedidas) as cantidad',
+                'SUM(pp.cantidadBandejasEntregadas) as cantidad',
                 'COUNT(DISTINCT p.id) as total_ventas',
                 'tv.id as tipo_variedad_id'
             ])
@@ -58,10 +59,10 @@ class PedidoProductoRepository extends ServiceEntityRepository {
             ->join('pp.tipoVariedad', 'tv')
             ->join('pp.estado', 'e')
             ->where('pp.fechaEntregaPedidoReal BETWEEN :fechaInicio AND :fechaFin')
-            ->andWhere('e.nombre = :estado')
+            ->andWhere('e.id IN (:estados)')
             ->setParameter('fechaInicio', $fechaInicio->format('Y-m-d 00:00:00'))
             ->setParameter('fechaFin', $fechaFin->format('Y-m-d 23:59:59'))
-            ->setParameter('estado', 'ENTREGADO')
+            ->setParameter('estados', [ConstanteEstadoPedidoProducto::ENTREGADO, ConstanteEstadoPedidoProducto::ENTREGADO_PARCIAL])
             ->groupBy('tv.id, tv.nombre')
             ->orderBy('cantidad', 'DESC')
             ->setMaxResults($limite)

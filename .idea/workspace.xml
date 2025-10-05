@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="descuentos remito">
-      <change beforePath="$PROJECT_DIR$/.idea/babyplant.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/babyplant.iml" afterDir="false" />
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="estadisticas">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/doctrine.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/doctrine.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/roles.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/roles.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Repository/PedidoProductoRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/PedidoProductoRepository.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -731,23 +728,7 @@
       <workItem from="1759421329230" duration="10929000" />
       <workItem from="1759454165537" duration="614000" />
       <workItem from="1759509684595" duration="994000" />
-      <workItem from="1759684580886" duration="2133000" />
-    </task>
-    <task id="LOCAL-00207" summary="stock semanal">
-      <option name="closed" value="true" />
-      <created>1755627964149</created>
-      <option name="number" value="00207" />
-      <option name="presentableId" value="LOCAL-00207" />
-      <option name="project" value="LOCAL" />
-      <updated>1755627964149</updated>
-    </task>
-    <task id="LOCAL-00208" summary="fix entregar reserva">
-      <option name="closed" value="true" />
-      <created>1755711774327</created>
-      <option name="number" value="00208" />
-      <option name="presentableId" value="LOCAL-00208" />
-      <option name="project" value="LOCAL" />
-      <updated>1755711774328</updated>
+      <workItem from="1759684580886" duration="2662000" />
     </task>
     <task id="LOCAL-00209" summary="confirmar_remito">
       <option name="closed" value="true" />
@@ -1125,7 +1106,23 @@
       <option name="project" value="LOCAL" />
       <updated>1759167164106</updated>
     </task>
-    <option name="localTasksCounter" value="256" />
+    <task id="LOCAL-00256" summary="estadisticas">
+      <option name="closed" value="true" />
+      <created>1759686917213</created>
+      <option name="number" value="00256" />
+      <option name="presentableId" value="LOCAL-00256" />
+      <option name="project" value="LOCAL" />
+      <updated>1759686917213</updated>
+    </task>
+    <task id="LOCAL-00257" summary="estadisticas">
+      <option name="closed" value="true" />
+      <created>1759686957053</created>
+      <option name="number" value="00257" />
+      <option name="presentableId" value="LOCAL-00257" />
+      <option name="project" value="LOCAL" />
+      <updated>1759686957053</updated>
+    </task>
+    <option name="localTasksCounter" value="258" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1153,7 +1150,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="ROLE CAMARA" />
     <MESSAGE value="columnas ocultas" />
     <MESSAGE value="fix error codigo sobre" />
     <MESSAGE value="plantilla entrega&#10;remito index monto total y pendiente" />
@@ -1178,6 +1174,7 @@
     <MESSAGE value="fix error entrega de reserva" />
     <MESSAGE value="fix error reporte" />
     <MESSAGE value="fix error generar remito" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix error generar remito" />
+    <MESSAGE value="estadisticas" />
+    <option name="LAST_COMMIT_MESSAGE" value="estadisticas" />
   </component>
 </project>
