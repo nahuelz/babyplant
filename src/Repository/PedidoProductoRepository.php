@@ -50,7 +50,7 @@ class PedidoProductoRepository extends ServiceEntityRepository {
     {
         $queryBuilder = $this->createQueryBuilder('pp')
             ->select([
-                'CONCAT(tp.nombre," ",tsp.nombre," ",tv.nombre) as producto',
+                "CONCAT(tp.nombre,' ',tsp.nombre,' ',tv.nombre) as producto",
                 'SUM(ep.cantidadBandejas) as cantidad',
                 'COUNT(DISTINCT ep.id) as total_ventas',
                 'tv.id as tipo_variedad_id'
