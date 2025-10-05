@@ -73,7 +73,7 @@
                             </div>
                             {{ macro_show._show_detail('Numero Orden', producto.getNumeroOrdenCompleto|default('-'), 'col-md-2') }}
                             {{ macro_show._show_detail('Bandejas Entregadas', entregaProducto.cantidadBandejas|default('-'), 'col-md-2') }}
-                            {% if  entregaProducto.precioUnitario %}
+                            {% if entregaProducto.precioUnitario != null %}
                                 {{ macro_show._show_detail('Precio Unitario', entregaProducto.precioUnitario|money_format|default('-'), 'col-md-2') }}
                                 {{ macro_show._show_detail('Subtotal', entregaProducto.getPrecioSubTotal|money_format|default('-'), 'col-md-2') }}
                             {% endif %}
