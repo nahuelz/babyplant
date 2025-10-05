@@ -51,13 +51,14 @@ class PedidoProductoRepository extends ServiceEntityRepository {
         return $this->createQueryBuilder('pp')
             ->select([
                 'tv.nombre as producto',
-                'SUM(pp.cantidadBandejasEntregadas) as cantidad',
+                'SUM(ep.cantidadBandejas) as cantidad',
                 'COUNT(DISTINCT p.id) as total_ventas',
                 'tv.id as tipo_variedad_id'
             ])
             ->join('pp.pedido', 'p')
             ->join('pp.tipoVariedad', 'tv')
             ->join('pp.estado', 'e')
+            ->leftJoin('pp.entregasProductos', 'ep')
             ->where('pp.fechaEntregaPedidoReal BETWEEN :fechaInicio AND :fechaFin')
             ->andWhere('e.id IN (:estados)')
             ->setParameter('fechaInicio', $fechaInicio->format('Y-m-d 00:00:00'))
