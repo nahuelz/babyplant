@@ -61,7 +61,7 @@ class PedidoProductoRepository extends ServiceEntityRepository {
             ->leftJoin('pp.entregasProductos', 'ep')
             ->where('pp.fechaEntregaPedidoReal BETWEEN :fechaInicio AND :fechaFin')
             ->andWhere('e.id IN (:estados)')
-            ->andWhere('p.fechaBaja IS NOT NULL' AND 'pp.fechaBaja IS NOT NULL')
+            ->andWhere('p.fechaBaja IS NOT NULL AND pp.fechaBaja IS NOT NULL')
             ->setParameter('fechaInicio', $fechaInicio->format('Y-m-d 00:00:00'))
             ->setParameter('fechaFin', $fechaFin->format('Y-m-d 23:59:59'))
             ->setParameter('estados', [ConstanteEstadoPedidoProducto::ENTREGADO, ConstanteEstadoPedidoProducto::ENTREGADO_PARCIAL])
