@@ -52,7 +52,7 @@ class PedidoProductoRepository extends ServiceEntityRepository {
             ->select([
                 'tv.nombre as producto',
                 'SUM(ep.cantidadBandejas) as cantidad',
-                'COUNT(DISTINCT p.id) as total_ventas',
+                'COUNT(DISTINCT ep.id) as total_ventas',
                 'tv.id as tipo_variedad_id'
             ])
             ->join('pp.pedido', 'p')
@@ -72,9 +72,10 @@ class PedidoProductoRepository extends ServiceEntityRepository {
         // Obtener la consulta SQL para depuración
         $query = $queryBuilder->getQuery();
         dump($query->getResult());
-        dump($query->getSQL()); die();
+        die();
         // Ejecutar y obtener resultados
         return $query->getResult();
+
     }
 
     public function getPedidosAtrasados($idEstado) {
