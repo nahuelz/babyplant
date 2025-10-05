@@ -61,33 +61,6 @@ class EstadisticasController extends AbstractController
             50 // Límite de resultados
         );
 
-        // Depuración: Mostrar consulta SQL generada
-        $query = $pedidoProductoRepository->createQueryBuilder('pp')
-            ->select([
-                'tv.nombre as producto',
-                'SUM(pp.cantidadBandejasPedidas) as cantidad',
-                'COUNT(DISTINCT p.id) as total_ventas',
-                'tv.id as tipo_variedad_id'
-            ])
-            ->join('pp.pedido', 'p')
-            ->join('pp.tipoVariedad', 'tv')
-            ->join('pp.estado', 'e')
-            ->where('p.fechaCreacion BETWEEN :fechaInicio AND :fechaFin')
-            ->andWhere('e.nombre = :estado')
-            ->setParameter('fechaInicio', $fechaInicio->format('Y-m-d 00:00:00'))
-            ->setParameter('fechaFin', $fechaFin->format('Y-m-d 23:59:59'))
-            ->setParameter('estado', 'ENTREGADO')
-            ->groupBy('tv.id, tv.nombre')
-            ->orderBy('cantidad', 'DESC')
-            ->setMaxResults(50)
-            ->getQuery();
-
-        dump('Consulta SQL generada:', $query->getSQL());
-        dump('Parámetros de la consulta:', $query->getParameters());
-        
-        // Depuración: Mostrar resultados obtenidos
-        dump('Productos encontrados:', $productos);
-
         return $this->render('estadisticas/index.html.twig', [
             'productos' => $productos,
             'fecha_inicio' => $fechaInicio,

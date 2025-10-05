@@ -72,15 +72,8 @@ class PedidoProductoRepository extends ServiceEntityRepository {
         // Obtener la consulta SQL para depuración
         $query = $queryBuilder->getQuery();
         
-        // Mostrar la consulta SQL y los parámetros
-        dump('SQL:', $query->getSQL());
-        dump('Parámetros:', $query->getParameters());
-        
         // Ejecutar y obtener resultados
-        $resultados = $query->getResult();
-        dump('Resultados:', $resultados);
-        
-        return $resultados;
+        return $query->getResult();
     }
 
     public function getPedidosAtrasados($idEstado) {
