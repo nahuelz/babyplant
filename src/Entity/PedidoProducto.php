@@ -194,6 +194,7 @@ class PedidoProducto {
         $this->reservas = new ArrayCollection();
         $this->entregasProductos = new ArrayCollection();
         $this->historicoEstados = new ArrayCollection();
+        $this->cantidadBandejasEntregadas = 0;
     }
 
     public function __toString()
