@@ -59,7 +59,7 @@ class PedidoProductoRepository extends ServiceEntityRepository {
             ->join('pp.tipoVariedad', 'tv')
             ->join('pp.estado', 'e')
             ->leftJoin('pp.entregasProductos', 'ep')
-            ->where('pp.fechaEntregaPedidoReal BETWEEN :fechaInicio AND :fechaFin')
+            ->where('ep.fechaCreacion BETWEEN :fechaInicio AND :fechaFin')
             ->andWhere('e.id IN (:estados)')
             ->andWhere('p.fechaBaja IS NULL AND pp.fechaBaja IS NULL') // Cambiado a IS NULL para registros activos
             ->setParameter('fechaInicio', $fechaInicio->format('Y-m-d 00:00:00'))
