@@ -4,23 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="fix error generar remito">
-      <change afterPath="$PROJECT_DIR$/src/Entity/Constants/ConstanteTipoDescuento.php" afterDir="false" />
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="descuentos remito">
+      <change beforePath="$PROJECT_DIR$/.idea/babyplant.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/babyplant.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/remito/new.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/remito/new.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/situacioncliente/show.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/situacioncliente/show.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/EntregaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntregaController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/PagoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PagoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/RemitoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RemitoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SituacionClienteController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/EntregaProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/EntregaProducto.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Remito.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Remito.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/RemitoType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/RemitoType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/entrega/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/index_table.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/remito/new.producto.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/remito/new.producto.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/movimiento_ticket_pdf.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/movimiento_ticket_pdf.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show_movimientos.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_movimientos.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/situacion_cliente/show_remitos.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/situacion_cliente/show_remitos.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/doctrine.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/doctrine.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/roles.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/roles.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/PedidoProductoRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/PedidoProductoRepository.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -742,6 +731,7 @@
       <workItem from="1759421329230" duration="10929000" />
       <workItem from="1759454165537" duration="614000" />
       <workItem from="1759509684595" duration="994000" />
+      <workItem from="1759684580886" duration="2133000" />
     </task>
     <task id="LOCAL-00207" summary="stock semanal">
       <option name="closed" value="true" />

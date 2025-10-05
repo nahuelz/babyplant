@@ -32,4 +32,4 @@ doctrine:
                 LPAD: App\DQL\Lpad
                 IF: App\DQL\IfElse
             datetime_functions:
-                DATE_FORMAT: App\DateFormat
+                DATE_FORMAT: App\DQL\DateFormat

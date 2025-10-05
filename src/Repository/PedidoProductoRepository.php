@@ -45,6 +45,30 @@ class PedidoProductoRepository extends ServiceEntityRepository {
         return $siguienteNumero + 1;
     }
 
+    public function getProductosMasVendidos(\DateTimeInterface $fechaInicio, \DateTimeInterface $fechaFin, int $limite = 10): array
+    {
+        return $this->createQueryBuilder('pp')
+            ->select([
+                'tv.nombre as producto',
+                'SUM(pp.cantidadBandejasPedidas) as cantidad',
+                'COUNT(DISTINCT p.id) as total_ventas',
+                'tv.id as tipo_variedad_id'
+            ])
+            ->join('pp.pedido', 'p')
+            ->join('pp.tipoVariedad', 'tv')
+            ->join('pp.estado', 'e')
+            ->where('pp.fechaEntregaPedidoReal BETWEEN :fechaInicio AND :fechaFin')
+            ->andWhere('e.nombre = :estado')
+            ->setParameter('fechaInicio', $fechaInicio->format('Y-m-d 00:00:00'))
+            ->setParameter('fechaFin', $fechaFin->format('Y-m-d 23:59:59'))
+            ->setParameter('estado', 'ENTREGADO')
+            ->groupBy('tv.id, tv.nombre')
+            ->orderBy('cantidad', 'DESC')
+            ->setMaxResults($limite)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function getPedidosAtrasados($idEstado) {
 
         $hoy = date('Ymd');
