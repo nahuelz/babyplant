@@ -48,7 +48,7 @@ class PedidoProductoRepository extends ServiceEntityRepository {
 
     public function getProductosMasVendidos(\DateTimeInterface $fechaInicio, \DateTimeInterface $fechaFin, int $limite = 10): array
     {
-        return $this->createQueryBuilder('pp')
+        $queryBuilder = $this->createQueryBuilder('pp')
             ->select([
                 'tv.nombre as producto',
                 'SUM(ep.cantidadBandejas) as cantidad',
@@ -61,15 +61,26 @@ class PedidoProductoRepository extends ServiceEntityRepository {
             ->leftJoin('pp.entregasProductos', 'ep')
             ->where('pp.fechaEntregaPedidoReal BETWEEN :fechaInicio AND :fechaFin')
             ->andWhere('e.id IN (:estados)')
-            ->andWhere('p.fechaBaja IS NOT NULL AND pp.fechaBaja IS NOT NULL')
+            ->andWhere('p.fechaBaja IS NULL AND pp.fechaBaja IS NULL') // Cambiado a IS NULL para registros activos
             ->setParameter('fechaInicio', $fechaInicio->format('Y-m-d 00:00:00'))
             ->setParameter('fechaFin', $fechaFin->format('Y-m-d 23:59:59'))
             ->setParameter('estados', [ConstanteEstadoPedidoProducto::ENTREGADO, ConstanteEstadoPedidoProducto::ENTREGADO_PARCIAL])
             ->groupBy('tv.id, tv.nombre')
             ->orderBy('cantidad', 'DESC')
-            ->setMaxResults($limite)
-            ->getQuery()
-            ->getResult();
+            ->setMaxResults($limite);
+
+        // Obtener la consulta SQL para depuración
+        $query = $queryBuilder->getQuery();
+        
+        // Mostrar la consulta SQL y los parámetros
+        dump('SQL:', $query->getSQL());
+        dump('Parámetros:', $query->getParameters());
+        
+        // Ejecutar y obtener resultados
+        $resultados = $query->getResult();
+        dump('Resultados:', $resultados);
+        
+        return $resultados;
     }
 
     public function getPedidosAtrasados($idEstado) {
