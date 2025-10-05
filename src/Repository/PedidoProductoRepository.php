@@ -71,7 +71,8 @@ class PedidoProductoRepository extends ServiceEntityRepository {
 
         // Obtener la consulta SQL para depuración
         $query = $queryBuilder->getQuery();
-        
+        dump($query->getResult());
+        dump($query->getSQL()); die();
         // Ejecutar y obtener resultados
         return $query->getResult();
     }
