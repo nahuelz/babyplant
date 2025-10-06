@@ -5,13 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="fix estadisticas">
-      <change afterPath="$PROJECT_DIR$/templates/estadisticas/_grafico_torta.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/menu/menu_estadisticas.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/estadisticas/remitos.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/EstadisticasController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EstadisticasController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/PedidoProductoRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/PedidoProductoRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/estadisticas/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/estadisticas/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/menu/menu.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/estadisticas/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/estadisticas/entregas.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/menu/menu_estadisticas.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu_estadisticas.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -734,15 +732,7 @@
       <workItem from="1759454165537" duration="614000" />
       <workItem from="1759509684595" duration="994000" />
       <workItem from="1759684580886" duration="6011000" />
-      <workItem from="1759767833900" duration="1187000" />
-    </task>
-    <task id="LOCAL-00231" summary="reporte cuenta corriente">
-      <option name="closed" value="true" />
-      <created>1756924439373</created>
-      <option name="number" value="00231" />
-      <option name="presentableId" value="LOCAL-00231" />
-      <option name="project" value="LOCAL" />
-      <updated>1756924439373</updated>
+      <workItem from="1759767833900" duration="4847000" />
     </task>
     <task id="LOCAL-00232" summary="reporte cuenta corriente">
       <option name="closed" value="true" />
@@ -1128,7 +1118,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759689742285</updated>
     </task>
-    <option name="localTasksCounter" value="280" />
+    <task id="LOCAL-00280" summary="fix estadisticas">
+      <option name="closed" value="true" />
+      <created>1759769843103</created>
+      <option name="number" value="00280" />
+      <option name="presentableId" value="LOCAL-00280" />
+      <option name="project" value="LOCAL" />
+      <updated>1759769843103</updated>
+    </task>
+    <option name="localTasksCounter" value="281" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

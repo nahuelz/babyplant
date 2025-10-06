@@ -1,0 +1,394 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Estadísticas de Remitos{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .stats-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1.5rem;
+        }
+        .stats-table thead th {
+            background-color: #f3f6f9;
+            color: #3f4254;
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid #ebedf3;
+        }
+        .stats-table tbody td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #ebedf3;
+            vertical-align: middle;
+        }
+        .stats-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .stats-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        .text-end {
+            text-align: right !important;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="mb-4">Estadísticas de Remitos</h1>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Filtros</h5>
+            </div>
+            <div class="card-body">
+                <form method="get" action="{{ path('estadisticas_remitos') }}" class="form" id="rangoFechasForm">
+                    <div class="form-group row">
+                        <div class="col-md-8">
+                            <label>Rango de Fechas</label>
+                            <div class="input-daterange input-group" id="kt_datepicker">
+                                <input type="text"
+                                       class="form-control datepicker"
+                                       id="fecha_inicio"
+                                       name="fecha_inicio_display"
+                                       placeholder="Desde"
+                                       value="{{ app.request.query.get('fecha_inicio', fecha_inicio|date('d/m/Y')) }}"
+                                       autocomplete="off" />
+                                <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="la la-ellipsis-h"></i>
+                                            </span>
+                                </div>
+                                <input type="text"
+                                       class="form-control datepicker"
+                                       id="fecha_fin"
+                                       name="fecha_fin_display"
+                                       placeholder="Hasta"
+                                       value="{{ app.request.query.get('fecha_fin', fecha_fin is defined ? fecha_fin|date('d/m/Y') : 'now'|date('d/m/Y')) }}"
+                                       autocomplete="off" />
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary font-weight-bold w-100">
+                                <i class="la la-search"></i> Buscar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="mb-0">Resumen</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="card bg-light mb-3">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">Total Remitos</h6>
+                                        <h3 class="mb-0">{{ total_remitos|number_format(0, ',', '.') }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="card bg-light mb-3">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">Monto Total</h6>
+                                        <h3 class="mb-0">$ {{ monto_total|number_format(2, ',', '.') }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="mb-0">Promedio por Día</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="card bg-light mb-3">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">Remitos por Día</h6>
+                                        <h3 class="mb-0">
+                                            {% set dias = (fecha_fin.diff(fecha_inicio).days) + 1 %}
+                                            {{ (total_remitos / (dias > 0 ? dias : 1))|number_format(2, ',', '.') }}
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="card bg-light mb-3">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">Monto Promedio</h6>
+                                        <h3 class="mb-0">
+                                            $ {{ (monto_total / (dias > 0 ? dias : 1))|number_format(2, ',', '.') }}
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Gráfico de Remitos por Fecha</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="graficoRemitos" height="100"></canvas>
+            </div>
+        </div>
+
+        {# <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Detalle por Fecha</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Fecha</th>
+                            <th class="text-end">Cantidad de Remitos</th>
+                            <th class="text-end">Monto Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for estadistica in estadisticas|reverse %}
+                            <tr>
+                                <td>{{ estadistica.fecha|date('d/m/Y') }}</td>
+                                <td class="text-end">{{ estadistica.cantidad|number_format(0, ',', '.') }}</td>
+                                <td class="text-end">$ {{ estadistica.monto_total|number_format(2, ',', '.') }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="3" class="text-center">No se encontraron remitos en el período seleccionado</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    {% if estadisticas|length > 0 %}
+                        <tfoot class="table-light">
+                            <tr>
+                                <th>Total</th>
+                                <th class="text-end">{{ total_remitos|number_format(0, ',', '.') }}</th>
+                                <th class="text-end">$ {{ monto_total|number_format(2, ',', '.') }}</th>
+                            </tr>
+                        </tfoot>
+                    {% endif %}
+                </table>
+            </div>
+        </div>#}
+        <div class="card h-100">
+            <div class="mb-4">
+                <div class="card-header">
+                    <h4 class="text-dark font-weight-bold mb-3">
+                        Del {{ fecha_inicio|date('d/m/Y') }} al {{ fecha_fin|date('d/m/Y') }}
+                    </h4>
+                    <div class="text-muted font-weight-bold">
+                        Mostrando los remitos en el rango de fechas seleccionado
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body pt-0">
+            {% if estadisticas is not empty %}
+                <div class="table-responsive">
+                    <table class="table stats-table">
+                        <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th class="text-end">Cantidad de Remitos</th>
+                            <th class="text-end">Monto Total</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for estadistica in estadisticas|reverse %}
+                            <tr>
+                                <td>{{ estadistica.fecha|date('d/m/Y') }}</td>
+                                <td class="text-end">{{ estadistica.cantidad|number_format(0, ',', '.') }}</td>
+                                <td class="text-end">$ {{ estadistica.monto_total|number_format(2, ',', '.') }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-custom alert-light-primary fade show" role="alert">
+                    <div class="alert-text">No se encontraron ventas en el rango de fechas seleccionado.</div>
+                </div>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    
+    <script>
+        $(document).ready(function() {
+            // Inicializar datepickers
+            $('#fecha_inicio, #fecha_fin').datepicker({
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+                todayHighlight: true,
+                language: 'es',
+                orientation: 'bottom auto',
+                clearBtn: true
+            });
+
+            // Establecer fechas por defecto
+            var fechaFin = new Date();
+            var fechaInicio = new Date();
+            fechaInicio.setMonth(fechaInicio.getMonth() - 1); // Un mes atrás por defecto
+
+            // Formatear fechas
+            var fechaInicioStr = ('0' + fechaInicio.getDate()).slice(-2) + '/' +
+                ('0' + (fechaInicio.getMonth() + 1)).slice(-2) + '/' +
+                fechaInicio.getFullYear();
+
+            var fechaFinStr = ('0' + fechaFin.getDate()).slice(-2) + '/' +
+                ('0' + (fechaFin.getMonth() + 1)).slice(-2) + '/' +
+                fechaFin.getFullYear();
+
+            // Establecer valores iniciales si no están definidos
+            if (!$('#fecha_inicio').val()) {
+                $('#fecha_inicio').val(fechaInicioStr);
+            }
+
+            if (!$('#fecha_fin').val()) {
+                $('#fecha_fin').val(fechaFinStr);
+            }
+
+            // Validar que la fecha de inicio no sea mayor a la fecha fin
+            document.getElementById('rangoFechasForm').addEventListener('submit', function(e) {
+                var fechaInicioStr = $('#fecha_inicio').val().split('/');
+                var fechaFinStr = $('#fecha_fin').val().split('/');
+
+                // Convertir a objeto Date (año, mes-1, día)
+                var fechaInicio = new Date(fechaInicioStr[2], fechaInicioStr[1] - 1, fechaInicioStr[0]);
+                var fechaFin = new Date(fechaFinStr[2], fechaFinStr[1] - 1, fechaFinStr[0]);
+
+                if (fechaInicio > fechaFin) {
+                    e.preventDefault();
+                    alert('La fecha de inicio no puede ser mayor a la fecha fin');
+                    return false;
+                }
+
+                // Formatear fechas a YYYY-MM-DD para el envío
+                function formatDate(date) {
+                    var d = new Date(date),
+                        month = '' + (d.getMonth() + 1),
+                        day = '' + d.getDate(),
+                        year = d.getFullYear();
+
+                    if (month.length < 2) month = '0' + month;
+                    if (day.length < 2) day = '0' + day;
+
+                    return [year, month, day].join('-');
+                }
+
+                // Asegurar que las fechas se envíen en el formato correcto
+                var form = this;
+
+                // Crear inputs ocultos con el formato correcto
+                var fechaInicioInput = document.createElement('input');
+                fechaInicioInput.type = 'hidden';
+                fechaInicioInput.name = 'fecha_inicio';
+                fechaInicioInput.value = formatDate(fechaInicio);
+
+                var fechaFinInput = document.createElement('input');
+                fechaFinInput.type = 'hidden';
+                fechaFinInput.name = 'fecha_fin';
+                fechaFinInput.value = formatDate(fechaFin);
+
+                // Eliminar cualquier input oculto previo
+                $('input[type="hidden"][name^="fecha_"]').remove();
+
+                // Agregar los nuevos inputs
+                form.appendChild(fechaInicioInput);
+                form.appendChild(fechaFinInput);
+
+                return true;
+            });
+        });
+
+        // Inicializar datepickers
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configuración común para los datepickers
+
+            // Gráfico de remitos
+            const ctx = document.getElementById('graficoRemitos').getContext('2d');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: {{ datos_grafico.fechas|json_encode|raw }},
+                        datasets: [{
+                            label: 'Cantidad de Remitos',
+                            data: {{ datos_grafico.cantidades|json_encode|raw }},
+                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1,
+                            yAxisID: 'y'
+                        }, {
+                            label: 'Monto Total ($)',
+                            data: {{ datos_grafico.montos|json_encode|raw }},
+                            type: 'line',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+                            yAxisID: 'y1'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: 'Cantidad de Remitos'
+                                }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Monto Total ($)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}
