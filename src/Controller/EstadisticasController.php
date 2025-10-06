@@ -9,11 +9,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
+/**
+ * @Route("/estadisticas")
+ * @IsGranted("ROLE_ESTADISTICAS")
+ */
+
 class EstadisticasController extends AbstractController
 {
     /**
-     * @Route("/estadisticas", name="app_estadisticas")
-     * @IsGranted("ROLE_ESTADISTICAS")
+     * @Route("/entregas", name="estadisticas_entregas")
      */
     public function index(PedidoProductoRepository $pedidoProductoRepository, Request $request): Response
     {

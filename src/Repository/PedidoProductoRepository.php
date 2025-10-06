@@ -53,6 +53,7 @@ class PedidoProductoRepository extends ServiceEntityRepository {
                 "CONCAT(tp.nombre,' ',tsp.nombre,' ',tv.nombre) as producto",
                 'SUM(ep.cantidadBandejas) as cantidad',
                 'COUNT(DISTINCT ep.id) as total_ventas',
+                'tp.color as color',
                 'tv.id as tipo_variedad_id'
             ])
             ->join('pp.pedido', 'p')

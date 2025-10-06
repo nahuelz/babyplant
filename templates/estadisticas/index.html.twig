@@ -145,7 +145,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form method="get" action="{{ path('app_estadisticas') }}" class="form" id="rangoFechasForm">
+                        <form method="get" action="{{ path('estadisticas_entregas') }}" class="form" id="rangoFechasForm">
                             <div class="form-group row">
                                 <div class="col-md-8">
                                     <label>Rango de Fechas</label>
@@ -179,6 +179,9 @@
                             </div>
                         </form>
 
+                        {# Incluir el gráfico de torta #}
+                        {% include 'estadisticas/_grafico_torta.html.twig' %}
+
                         <div class="mb-4">
                             <h4 class="text-dark font-weight-bold mb-3">
                                 Del {{ fecha_inicio|date('d/m/Y') }} al {{ fecha_fin|date('d/m/Y') }}
@@ -195,7 +198,7 @@
                                     <tr>
                                         <th>Producto</th>
                                         <th class="text-end">Cantidad de Bandejas</th>
-                                        <th class="text-end">N° de Entregas</th>
+                                        <th class="text-end">Cantidad de entregas</th>
                                     </tr>
                                     </thead>
                                     <tbody>

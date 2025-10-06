@@ -4,9 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="estadisticas">
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="fix estadisticas">
+      <change afterPath="$PROJECT_DIR$/templates/estadisticas/_grafico_torta.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/menu/menu_estadisticas.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/EstadisticasController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EstadisticasController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Repository/PedidoProductoRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/PedidoProductoRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/estadisticas/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/estadisticas/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/menu/menu.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -728,63 +733,8 @@
       <workItem from="1759421329230" duration="10929000" />
       <workItem from="1759454165537" duration="614000" />
       <workItem from="1759509684595" duration="994000" />
-      <workItem from="1759684580886" duration="4459000" />
-    </task>
-    <task id="LOCAL-00224" summary="reporte cuenta corriente">
-      <option name="closed" value="true" />
-      <created>1756922901021</created>
-      <option name="number" value="00224" />
-      <option name="presentableId" value="LOCAL-00224" />
-      <option name="project" value="LOCAL" />
-      <updated>1756922901021</updated>
-    </task>
-    <task id="LOCAL-00225" summary="reporte cuenta corriente">
-      <option name="closed" value="true" />
-      <created>1756922932665</created>
-      <option name="number" value="00225" />
-      <option name="presentableId" value="LOCAL-00225" />
-      <option name="project" value="LOCAL" />
-      <updated>1756922932666</updated>
-    </task>
-    <task id="LOCAL-00226" summary="reporte cuenta corriente">
-      <option name="closed" value="true" />
-      <created>1756923052767</created>
-      <option name="number" value="00226" />
-      <option name="presentableId" value="LOCAL-00226" />
-      <option name="project" value="LOCAL" />
-      <updated>1756923052768</updated>
-    </task>
-    <task id="LOCAL-00227" summary="reporte cuenta corriente">
-      <option name="closed" value="true" />
-      <created>1756923988617</created>
-      <option name="number" value="00227" />
-      <option name="presentableId" value="LOCAL-00227" />
-      <option name="project" value="LOCAL" />
-      <updated>1756923988617</updated>
-    </task>
-    <task id="LOCAL-00228" summary="reporte cuenta corriente">
-      <option name="closed" value="true" />
-      <created>1756924150812</created>
-      <option name="number" value="00228" />
-      <option name="presentableId" value="LOCAL-00228" />
-      <option name="project" value="LOCAL" />
-      <updated>1756924150812</updated>
-    </task>
-    <task id="LOCAL-00229" summary="reporte cuenta corriente">
-      <option name="closed" value="true" />
-      <created>1756924263887</created>
-      <option name="number" value="00229" />
-      <option name="presentableId" value="LOCAL-00229" />
-      <option name="project" value="LOCAL" />
-      <updated>1756924263887</updated>
-    </task>
-    <task id="LOCAL-00230" summary="reporte cuenta corriente">
-      <option name="closed" value="true" />
-      <created>1756924287065</created>
-      <option name="number" value="00230" />
-      <option name="presentableId" value="LOCAL-00230" />
-      <option name="project" value="LOCAL" />
-      <updated>1756924287065</updated>
+      <workItem from="1759684580886" duration="6011000" />
+      <workItem from="1759767833900" duration="1187000" />
     </task>
     <task id="LOCAL-00231" summary="reporte cuenta corriente">
       <option name="closed" value="true" />
@@ -1122,7 +1072,63 @@
       <option name="project" value="LOCAL" />
       <updated>1759688912806</updated>
     </task>
-    <option name="localTasksCounter" value="273" />
+    <task id="LOCAL-00273" summary="estadisticas">
+      <option name="closed" value="true" />
+      <created>1759689069795</created>
+      <option name="number" value="00273" />
+      <option name="presentableId" value="LOCAL-00273" />
+      <option name="project" value="LOCAL" />
+      <updated>1759689069796</updated>
+    </task>
+    <task id="LOCAL-00274" summary="estadisticas">
+      <option name="closed" value="true" />
+      <created>1759689187299</created>
+      <option name="number" value="00274" />
+      <option name="presentableId" value="LOCAL-00274" />
+      <option name="project" value="LOCAL" />
+      <updated>1759689187299</updated>
+    </task>
+    <task id="LOCAL-00275" summary="estadisticas">
+      <option name="closed" value="true" />
+      <created>1759689294529</created>
+      <option name="number" value="00275" />
+      <option name="presentableId" value="LOCAL-00275" />
+      <option name="project" value="LOCAL" />
+      <updated>1759689294529</updated>
+    </task>
+    <task id="LOCAL-00276" summary="entrega fix generar remito">
+      <option name="closed" value="true" />
+      <created>1759689516699</created>
+      <option name="number" value="00276" />
+      <option name="presentableId" value="LOCAL-00276" />
+      <option name="project" value="LOCAL" />
+      <updated>1759689516699</updated>
+    </task>
+    <task id="LOCAL-00277" summary="entrega fix generar remito">
+      <option name="closed" value="true" />
+      <created>1759689678411</created>
+      <option name="number" value="00277" />
+      <option name="presentableId" value="LOCAL-00277" />
+      <option name="project" value="LOCAL" />
+      <updated>1759689678411</updated>
+    </task>
+    <task id="LOCAL-00278" summary="fix estadisticas">
+      <option name="closed" value="true" />
+      <created>1759689712649</created>
+      <option name="number" value="00278" />
+      <option name="presentableId" value="LOCAL-00278" />
+      <option name="project" value="LOCAL" />
+      <updated>1759689712649</updated>
+    </task>
+    <task id="LOCAL-00279" summary="fix estadisticas">
+      <option name="closed" value="true" />
+      <created>1759689742285</created>
+      <option name="number" value="00279" />
+      <option name="presentableId" value="LOCAL-00279" />
+      <option name="project" value="LOCAL" />
+      <updated>1759689742285</updated>
+    </task>
+    <option name="localTasksCounter" value="280" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1150,8 +1156,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix error codigo sobre" />
-    <MESSAGE value="plantilla entrega&#10;remito index monto total y pendiente" />
     <MESSAGE value="plantilla entrega" />
     <MESSAGE value="pdfs" />
     <MESSAGE value="fitlro" />
@@ -1175,6 +1179,8 @@
     <MESSAGE value="fix error generar remito" />
     <MESSAGE value="fix show entrega" />
     <MESSAGE value="estadisticas" />
-    <option name="LAST_COMMIT_MESSAGE" value="estadisticas" />
+    <MESSAGE value="entrega fix generar remito" />
+    <MESSAGE value="fix estadisticas" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix estadisticas" />
   </component>
 </project>

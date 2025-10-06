@@ -1,0 +1,97 @@
+{# templates/estadisticas/_grafico_torta.html.twig #}
+<div class="card card-custom gutter-b">
+    <div class="card-header">
+        <div class="card-title">
+            <h3 class="card-label">Distribución de Productos Entregados</h3>
+        </div>
+    </div>
+    <div class="card-body">
+        <div id="graficoTorta" style="height: 400px;"></div>
+    </div>
+</div>
+
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var chartDom = document.getElementById('graficoTorta');
+            var myChart = echarts.init(chartDom);
+
+            // Preparar datos para el gráfico
+            var data = [
+                {% for producto in productos %}
+                {
+                    value: {{ producto.cantidad }},
+                    name: '{{ producto.producto }}',
+                    itemStyle: {
+                        color: '{{ producto.color }}',
+                    }
+                }{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ];
+
+            // Opciones del gráfico
+            var option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b}: {c} ({d}%)'
+                },
+                legend: {
+                    type: 'scroll',
+                    orient: 'vertical',
+                    right: 10,
+                    top: 'center',
+                    data: data.map(function (item) {
+                        return item.name;
+                    })
+                },
+                series: [
+                    {
+                        name: '',
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        avoidLabelOverlap: false,
+                        itemStyle: {
+                            borderRadius: 10,
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        },
+                        label: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                fontSize: '18',
+                                fontWeight: 'bold'
+                            }
+                        },
+                        labelLine: {
+                            show: false
+                        },
+                        data: data
+                    }
+                ]
+            };
+
+            // Función para generar colores aleatorios
+            function getRandomColor() {
+                var letters = '0123456789ABCDEF';
+                var color = '#';
+                for (var i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+
+            // Aplicar opciones
+            option && myChart.setOption(option);
+
+            // Redimensionar el gráfico cuando cambie el tamaño de la ventana
+            window.addEventListener('resize', function() {
+                myChart.resize();
+            });
+        });
+    </script>
+{% endblock %}
