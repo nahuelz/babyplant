@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Repository\TipoMesadaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -71,7 +72,9 @@ class TipoMesada extends EntidadBasica {
     {
         $ocupado = 0;
         foreach ($this->mesadas as $mesada) {
-            $ocupado +=$mesada->getCantidadBandejas();
+            if ($mesada->getPedidoProducto() != null and $mesada->getPedidoProducto()->getEstado()->getCodigoInterno() == ConstanteEstadoPedidoProducto::EN_INVERNACULO) {
+                $ocupado += $mesada->getCantidadBandejas();
+            }
         }
         return $ocupado;
     }
