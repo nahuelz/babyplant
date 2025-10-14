@@ -260,18 +260,9 @@
     {# Bootbox #}
     <script src="{{ asset('plugins/bootbox/bootbox.js') }}" type="text/javascript"></script>
 
-    {# Función para detectar dispositivos móviles #}
-    {% set isMobile = false %}
-    {% if app.request.headers.get('User-Agent') matches '/(Mobile|Android|iP(hone|od|ad)|BlackBerry|IEMobile|Opera Mini)/i' %}
-        {% set isMobile = true %}
-    {% endif %}
 
-    {# ... resto del template ... #}
-
-    {# Cargar kt-util.js solo si es móvil #}
-    {% if isMobile %}
     <script src="{{ asset('js/kt-util.js') }}"></script>
-    {% endif %}
+
 
     {# Select2 ES #}
     <script src="{{ asset('plugins/select2/dist/js/i18n/es.js') }}"
