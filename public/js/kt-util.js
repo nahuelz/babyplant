@@ -529,28 +529,26 @@ var KTUtil = function() {
 
         children: function(el, selector, log) {
             if (!el || !el.childNodes) {
-                return null;
+                return;
             }
 
-            var result = [], i = 0, l = el.childNodes.length;
+            var result = [],
+                i = 0,
+                l = el.childNodes.length;
 
             for (var i; i < l; ++i) {
-                var child = el.childNodes[i];
-                child = child.nodeType ? el.childNodes[i] : null;
-
-                if (child) {
-                    if (!selector || (selector && child.matches(selector))) {
-                        result.push(child);
-                    }
+                if (el.childNodes[i].nodeType == 1 && KTUtil.matches(el.childNodes[i], selector, log)) {
+                    result.push(el.childNodes[i]);
                 }
             }
 
             return result;
         },
 
-        child: function(el, selector, index) {
-            var children = KTUtil.children(el, selector);
-            return children ? children[index] : null;
+        child: function(el, selector, log) {
+            var children = KTUtil.children(el, selector, log);
+
+            return children ? children[0] : null;
         },
 
         matches: function(el, selector) {
