@@ -14,9 +14,12 @@ jQuery(document).ready(function () {
 function initAuditoriaTable() {
     auditoria_table = $('#table-auditoria');
     auditoria_table.on('xhr.dt', function (e, settings, json, xhr) {
-        draw = xhr.responseJSON.draw;
+        if (xhr && xhr.responseJSON && xhr.responseJSON.draw) {
+            draw = xhr.responseJSON.draw;
+        }
         KTApp.unblockPage();
     });
+
     dataTablesInit(auditoria_table, {
         ajax: {
             url: __HOMEPAGE_PATH__ + 'auditoria_interna/index_table/',
