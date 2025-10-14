@@ -9,7 +9,7 @@ var KTCalendarGoogle = function() {
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list', 'googleCalendar' ],
 
-                isRTL: KTUtil.isRTL(),
+                //isRTL: KTUtil.isRTL(),
                 header: {
                     left: 'prev,next today',
                     center: 'title',

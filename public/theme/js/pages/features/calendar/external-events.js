@@ -36,7 +36,7 @@ var KTCalendarExternalEvents = function() {
         var calendar = new FullCalendar.Calendar(calendarEl, {
             plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
 
-            isRTL: KTUtil.isRTL(),
+            //isRTL: KTUtil.isRTL(),
             header: {
                 left: 'prev,next today',
                 center: 'title',

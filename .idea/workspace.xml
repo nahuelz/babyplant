@@ -4,25 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="cancelar pedido planificado">
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="FIX PARPADEA PANTALLA">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/app/entradacamara/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/entradacamara/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/pedido/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/planificacion/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/planificacion/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/salidacamara/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/app/siembra/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/siembra/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/EntradaCamaraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EntradaCamaraController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/SalidaCamaraController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SalidaCamaraController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Mesada.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Mesada.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/PedidoProducto.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/SalidaCamaraType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/SalidaCamaraType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/entrada_camara/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrada_camara/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/entrada_camara/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrada_camara/index_table.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/entrega/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/entrega/show.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pedido/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pedidoproducto/show/entrada_camara_show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedidoproducto/show/entrada_camara_show.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pedidoproducto/show/salida_camara_show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedidoproducto/show/salida_camara_show.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/salida_camara/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/salida_camara/index_table.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/theme/js/pages/custom/education/school/calendar.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/js/pages/custom/education/school/calendar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/theme/js/pages/custom/education/student/calendar.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/js/pages/custom/education/student/calendar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/theme/js/pages/features/calendar/background-events.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/js/pages/features/calendar/background-events.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/theme/js/pages/features/calendar/basic.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/js/pages/features/calendar/basic.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/theme/js/pages/features/calendar/external-events.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/js/pages/features/calendar/external-events.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/theme/js/pages/features/calendar/google.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/js/pages/features/calendar/google.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/theme/js/pages/features/calendar/list-view.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/theme/js/pages/features/calendar/list-view.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -280,11 +274,11 @@
       <recent name="C:\xampp81\htdocs\babyplant\templates\pedidoproducto" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="\\wsl$\Ubuntu\home\nahu\babyplant\babyplant\public\theme\js" />
       <recent name="C:\xampp81\htdocs\babyplant\nginx\conf" />
       <recent name="C:\xampp81\htdocs\babyplant" />
       <recent name="C:\xampp81\htdocs\babyplant\templates" />
       <recent name="C:\xampp81\htdocs\babyplant\public\theme\css" />
-      <recent name="C:\xampp81\htdocs\babyplant\public\images\plantilla" />
     </key>
   </component>
   <component name="RunManager" selected="Docker.docker-compose.dev.yml: Compose Deployment">
@@ -767,31 +761,7 @@
       <workItem from="1760371508523" duration="2568000" />
       <workItem from="1760404886400" duration="657000" />
       <workItem from="1760407351598" duration="327000" />
-      <workItem from="1760441277407" duration="391000" />
-    </task>
-    <task id="LOCAL-00232" summary="reporte cuenta corriente">
-      <option name="closed" value="true" />
-      <created>1756924526692</created>
-      <option name="number" value="00232" />
-      <option name="presentableId" value="LOCAL-00232" />
-      <option name="project" value="LOCAL" />
-      <updated>1756924526692</updated>
-    </task>
-    <task id="LOCAL-00233" summary="reporte cuenta corriente">
-      <option name="closed" value="true" />
-      <created>1756924567633</created>
-      <option name="number" value="00233" />
-      <option name="presentableId" value="LOCAL-00233" />
-      <option name="project" value="LOCAL" />
-      <updated>1756924567633</updated>
-    </task>
-    <task id="LOCAL-00234" summary="reporte cuenta corriente">
-      <option name="closed" value="true" />
-      <created>1756924624395</created>
-      <option name="number" value="00234" />
-      <option name="presentableId" value="LOCAL-00234" />
-      <option name="project" value="LOCAL" />
-      <updated>1756924624395</updated>
+      <workItem from="1760441277407" duration="8749000" />
     </task>
     <task id="LOCAL-00235" summary="reporte cuenta corriente">
       <option name="closed" value="true" />
@@ -1161,7 +1131,31 @@
       <option name="project" value="LOCAL" />
       <updated>1759769843103</updated>
     </task>
-    <option name="localTasksCounter" value="281" />
+    <task id="LOCAL-00281" summary="varios">
+      <option name="closed" value="true" />
+      <created>1760441861605</created>
+      <option name="number" value="00281" />
+      <option name="presentableId" value="LOCAL-00281" />
+      <option name="project" value="LOCAL" />
+      <updated>1760441861605</updated>
+    </task>
+    <task id="LOCAL-00282" summary="kt-util">
+      <option name="closed" value="true" />
+      <created>1760453288825</created>
+      <option name="number" value="00282" />
+      <option name="presentableId" value="LOCAL-00282" />
+      <option name="project" value="LOCAL" />
+      <updated>1760453288825</updated>
+    </task>
+    <task id="LOCAL-00283" summary="FIX PARPADEA PANTALLA">
+      <option name="closed" value="true" />
+      <created>1760455913322</created>
+      <option name="number" value="00283" />
+      <option name="presentableId" value="LOCAL-00283" />
+      <option name="project" value="LOCAL" />
+      <updated>1760455913322</updated>
+    </task>
+    <option name="localTasksCounter" value="284" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1189,9 +1183,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="plantilla entrega" />
-    <MESSAGE value="pdfs" />
-    <MESSAGE value="fitlro" />
     <MESSAGE value="Colores, Stock" />
     <MESSAGE value="menu stock" />
     <MESSAGE value="detalle stock" />
@@ -1214,6 +1205,9 @@
     <MESSAGE value="estadisticas" />
     <MESSAGE value="entrega fix generar remito" />
     <MESSAGE value="fix estadisticas" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix estadisticas" />
+    <MESSAGE value="varios" />
+    <MESSAGE value="kt-util" />
+    <MESSAGE value="FIX PARPADEA PANTALLA" />
+    <option name="LAST_COMMIT_MESSAGE" value="FIX PARPADEA PANTALLA" />
   </component>
 </project>

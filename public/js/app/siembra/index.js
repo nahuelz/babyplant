@@ -12,7 +12,7 @@ var KTCalendarListView = function() {
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 locale: 'es',
                 plugins: ['dayGrid'],
-                isRTL: KTUtil.isRTL(),
+                //isRTL: KTUtil.isRTL(),
                 header: {
                     left: 'prev,next today',
                     center: 'title',

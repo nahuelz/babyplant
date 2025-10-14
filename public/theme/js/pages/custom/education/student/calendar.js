@@ -16,7 +16,7 @@ var KTAppsEducationStudentCalendar = function() {
                 plugins: [ 'bootstrap', 'interaction', 'dayGrid', 'timeGrid', 'list' ],
                 themeSystem: 'bootstrap',
 
-                isRTL: KTUtil.isRTL(),
+                //isRTL: KTUtil.isRTL(),
 
                 header: {
                     left: 'prev,next today',
