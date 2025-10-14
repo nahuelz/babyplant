@@ -1052,3 +1052,4 @@ var KTUtil = function() {
 
 // Inicializar KTUtil
 KTUtil.init();
+
