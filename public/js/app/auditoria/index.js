@@ -13,11 +13,16 @@ jQuery(document).ready(function () {
  */
 function initAuditoriaTable() {
     auditoria_table = $('#table-auditoria');
-    auditoria_table.on('xhr.dt', function (e, settings, json, xhr) {
-        draw = xhr.responseJSON.draw;
-        console.log(draw);
+    auditoria_table.on('xhr.dt', function (e, settings, json) {
+        if (json && json.draw) {
+            draw = json.draw;
+            console.log(draw);
+        } else {
+            console.error('No se recibió draw en la respuesta:', json);
+        }
         KTApp.unblockPage();
     });
+
     dataTablesInit(auditoria_table, {
         ajax: {
             url: __HOMEPAGE_PATH__ + 'auditoria_interna/index_table/',
