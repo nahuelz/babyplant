@@ -13,14 +13,10 @@ jQuery(document).ready(function () {
  */
 function initAuditoriaTable() {
     auditoria_table = $('#table-auditoria');
-    auditoria_table.on('xhr.dt', function (e, settings, json) {
-        if (json && json.draw) {
-            draw = json.draw;
-        }
+    auditoria_table.on('xhr.dt', function (e, settings, json, xhr) {
+        draw = 2;
         KTApp.unblockPage();
     });
-
-
     dataTablesInit(auditoria_table, {
         ajax: {
             url: __HOMEPAGE_PATH__ + 'auditoria_interna/index_table/',
