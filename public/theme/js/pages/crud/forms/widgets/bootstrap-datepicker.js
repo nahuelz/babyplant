@@ -3,7 +3,7 @@
 var KTBootstrapDatepicker = function () {
 
     var arrows;
-    if (KTUtil.isRTL()) {
+    /*if (KTUtil.isRTL()) {
         arrows = {
             leftArrow: '<i class="la la-angle-right"></i>',
             rightArrow: '<i class="la la-angle-left"></i>'
@@ -13,7 +13,7 @@ var KTBootstrapDatepicker = function () {
             leftArrow: '<i class="la la-angle-left"></i>',
             rightArrow: '<i class="la la-angle-right"></i>'
         }
-    }
+    }*/
     
     // Private functions
     var demos = function () {

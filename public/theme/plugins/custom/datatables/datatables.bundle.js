@@ -15499,7 +15499,7 @@ var defaults = {
 		}
 	}
 };
-
+/*
 if (KTUtil.isRTL()) {
 	defaults = {
 		"language": {
@@ -15511,7 +15511,7 @@ if (KTUtil.isRTL()) {
 			}
 		}
 	}
-}
+}*/
 
 $.extend(true, $.fn.dataTable.defaults, defaults);
 

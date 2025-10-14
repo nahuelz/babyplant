@@ -497,7 +497,10 @@ var KTUtil = function() {
         },
 
         find: function(parent, query) {
-            return parent.querySelector(query);
+            parent = KTUtil.getById(parent);
+            if (parent) {
+                return parent.querySelector(query);
+            }
         },
 
         findAll: function(parent, query) {
@@ -907,14 +910,66 @@ var KTUtil = function() {
             }, duration);
         },
 
-        on: function(element, type, handler) {
-            if (typeof element === 'string') {
-                element = document.getElementById(element);
+        /**
+         * Checks whether object has property matchs given key path.
+         * @param {object} obj Object contains values paired with given key path
+         * @param {string} keys Keys path seperated with dots
+         * @returns {object}
+         */
+        isset: function(obj, keys) {
+            var stone;
+
+            keys = keys || '';
+
+            if (keys.indexOf('[') !== -1) {
+                throw new Error('Unsupported object path notation.');
             }
 
-            if (element) {
-                element.addEventListener(type, handler);
+            keys = keys.split('.');
+
+            do {
+                if (obj === undefined) {
+                    return false;
+                }
+
+                stone = keys.shift();
+
+                if (!obj.hasOwnProperty(stone)) {
+                    return false;
+                }
+
+                obj = obj[stone];
+
+            } while (keys.length);
+
+            return true;
+        },
+
+        on: function(element, selector, event, handler) {
+            if (!selector) {
+                return;
             }
+
+            var eventId = KTUtil.getUniqueID('event');
+
+            window.KTUtilDelegatedEventHandlers[eventId] = function(e) {
+                var targets = element.querySelectorAll(selector);
+                var target = e.target;
+
+                while (target && target !== element) {
+                    for (var i = 0, j = targets.length; i < j; i++) {
+                        if (target === targets[i]) {
+                            handler.call(target, e);
+                        }
+                    }
+
+                    target = target.parentNode;
+                }
+            }
+
+            KTUtil.addEvent(element, event, window.KTUtilDelegatedEventHandlers[eventId]);
+
+            return eventId;
         },
 
         off: function(element, type, handler) {
@@ -987,7 +1042,13 @@ var KTUtil = function() {
 
         getUniqueID: function(prefix) {
             return prefix + Math.floor(Math.random() * (new Date()).getTime());
-        }
+        },
+
+        addEvent: function(el, type, handler, one) {
+            if (typeof el !== 'undefined' && el !== null) {
+                el.addEventListener(type, handler);
+            }
+        },
     };
 }();
 
