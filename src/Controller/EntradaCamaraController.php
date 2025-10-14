@@ -59,6 +59,7 @@ class EntradaCamaraController extends BaseController
         $rsm->addScalarResult('className', 'className');
         $rsm->addScalarResult('colorBandeja', 'colorBandeja');
         $rsm->addScalarResult('colorProducto', 'colorProducto');
+        $rsm->addScalarResult('orden', 'orden');
 
         $renderPage = "entrada_camara/index_table.html.twig";
         return parent::baseIndexTableAction($request, [], $entityTable, ConstanteTipoConsulta::VIEW, $rsm, $renderPage);
@@ -94,11 +95,15 @@ class EntradaCamaraController extends BaseController
 
         $idPedidoProducto = $request->get('idPedidoProducto');
         $fechaEntradaCamara = $request->get('fechaEntradaCamara');
+        $observacion = $request->get('observacion');
+        $observacionCamara = $request->get('observacionCamara');
         $dateTime = new DateTime($fechaEntradaCamara);
         $em = $this->doctrine->getManager();
         /* @var $pedidoProducto PedidoProducto */
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
         $pedidoProducto->setFechaEntradaCamara($dateTime);
+        $pedidoProducto->setObservacion($observacion);
+        $pedidoProducto->setObservacionCamara($observacionCamara);
         if ($pedidoProducto->getEstado()->getCodigoInterno() != ConstanteEstadoPedidoProducto::EN_CAMARA) {
             $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::EN_CAMARA);
             $pedidoProducto->setFechaEntradaCamaraReal(new DateTime());

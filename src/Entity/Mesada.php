@@ -87,7 +87,9 @@ class Mesada {
 
     public function getCantidadBandejas(): mixed
     {
-        return $this->cantidadBandejas;
+        return $this->cantidadBandejas == (int)$this->cantidadBandejas 
+            ? (int)$this->cantidadBandejas 
+            : $this->cantidadBandejas;
     }
 
     public function setCantidadBandejas(mixed $cantidadBandejas): void
@@ -97,7 +99,9 @@ class Mesada {
 
     public function getCantidadBandejasEntregadas(): mixed
     {
-        return $this->cantidadBandejasEntregadas;
+        return $this->cantidadBandejasEntregadas == (int)$this->cantidadBandejasEntregadas
+            ? (int)$this->cantidadBandejasEntregadas
+            : $this->cantidadBandejasEntregadas;
     }
 
     public function setCantidadBandejasEntregadas(mixed $cantidadBandejasEntregadas): void

@@ -154,6 +154,12 @@ class PedidoProducto {
      */
     private mixed $observacion;
 
+
+    /**
+     * @ORM\Column(name="observacion_camara", type="string", length=255, nullable=true)
+     */
+    private mixed $observacionCamara;
+
     /**
      * @ORM\Column(name="hora_siembra", type="datetime", length=255, nullable=true)
      */
@@ -553,6 +559,16 @@ class PedidoProducto {
         return $mesadas;
     }
 
+    public function getMesadaNumero()
+    {
+        $mesadas = 'MESADA N° ' . $this->getMesadaUno()->getTipoMesada()->getNumero();
+        if ($this->getMesadaDos() != null){
+            $mesadas .= '</br>';
+            $mesadas .= 'MESADA N° ' . $this->getMesadaDos()->getTipoMesada()->getNumero();
+        }
+        return $mesadas;
+    }
+
     public function getNombreCompleto(){
         return $this->getTipoVariedad()->getNombreCompleto();
     }
@@ -810,5 +826,17 @@ class PedidoProducto {
     public function getCuentaCorrientePedido(){
         return $this->getPedido()->getCuentaCorrientePedido();
     }
+
+    public function getObservacionCamara(): mixed
+    {
+        return $this->observacionCamara;
+    }
+
+    public function setObservacionCamara(mixed $observacionCamara): void
+    {
+        $this->observacionCamara = $observacionCamara;
+    }
+
+
 
 }

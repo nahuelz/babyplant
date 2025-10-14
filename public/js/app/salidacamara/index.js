@@ -73,7 +73,7 @@ var KTCalendarListView = function() {
                         }
                     }).done(function (form) {
                         showDialog({
-                            titulo: '<i class="fa fa-list-ul margin-right-10"></i> Salida de camara pedido N° '+idProducto,
+                            titulo: '<i class="fa fa-list-ul margin-right-10"></i> Salida de camara pedido N° '+idProducto+ ' ORDEN N° '+idProducto,
                             contenido: form,
                             color: 'btn-light-success ',
                             labelCancel: 'Cerrar',
@@ -91,6 +91,8 @@ var KTCalendarListView = function() {
                         $('.modal-dialog').css('width', '80%');
                         $('.modal-dialog').addClass('modal-xl');
                         $('.modal-dialog').addClass('modal-fullscreen-xl-down');
+                        initObservacionInput();
+                        initObservacionCamaraInput();
                         if (__ID_ESTADO__ !== EN_INVERNACULO) {
                             initmesadaForm();
                             $('#salida_camara_mesadaUno_tipoMesada').select2();
@@ -389,4 +391,16 @@ function removeMesadaHandler(){
         $('#salida_camara_mesadaDos_cantidadBandejas').val('');
         $('.add-mesada').show();
     })
+}
+
+function initObservacionInput(){
+    $('.observacion').click(function(){
+        $('.observacion-input').toggle();
+    });
+}
+
+function initObservacionCamaraInput(){
+    $('.observacion-camara').click(function(){
+        $('.observacion-camara-input').toggle();
+    });
 }

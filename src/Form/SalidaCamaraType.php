@@ -17,6 +17,14 @@ class SalidaCamaraType extends AbstractType
         $builder
             ->add('mesadaUno', MesadaType::class)
             ->add('mesadaDos', MesadaType::class)
+            ->add('observacionCamara', null, [
+                'label' => 'Observación de Cámara',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Ingrese observaciones de la cámara...'
+                ]
+            ])
         ;
     }
 

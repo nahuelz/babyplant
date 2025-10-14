@@ -79,6 +79,7 @@ class SalidaCamaraController extends BaseController
         $rsm->addScalarResult('codigoSobre', 'codigoSobre');
         $rsm->addScalarResult('className', 'className');
         $rsm->addScalarResult('colorBandeja', 'colorBandeja');
+        $rsm->addScalarResult('orden', 'orden');
 
         $renderPage = "salida_camara/index_table.html.twig";
         return parent::baseIndexTableAction($request, [], $entityTable, ConstanteTipoConsulta::VIEW, $rsm, $renderPage);

@@ -1,3 +1,4 @@
+
 var KTCalendarListView = function() {
     return {
         //main function to initiate the module
@@ -49,6 +50,7 @@ var KTCalendarListView = function() {
                 eventClick: function(info) {
                     var element = $(info.el);
                     var idProducto = element.data('id');
+                    var numeroOrden = element.data('orden');
                     var actionUrl = element.data('href');
                     $.ajax({
                         type: 'POST',
@@ -58,11 +60,11 @@ var KTCalendarListView = function() {
                         }
                     }).done(function (form) {
                         showDialog({
-                            titulo: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar a camara pedido N° '+idProducto,
+                            titulo: '<i class="fa fa-list-ul margin-right-10"></i> INGRESAR A CAMARA PEDIDO PRODUCTO N° '+idProducto+ ' ORDEN N° '+numeroOrden,
                             contenido: form,
                             color: 'yellow ',
                             labelCancel: 'Cerrar',
-                            labelSuccess: 'Guardar',
+                            labelSuccess: 'Guardar En Camara',
                             closeButton: true,
                             class: 'entrada-camara-submit',
                             callbackCancel: function () {
@@ -75,7 +77,9 @@ var KTCalendarListView = function() {
                                     dataType: 'json',
                                     data: {
                                         fechaEntradaCamara: $('#fecha-entrada-camara').val(),
-                                        idPedidoProducto: info.event.id
+                                        idPedidoProducto: info.event.id,
+                                        observacion: $('#observacion').val(),
+                                        observacionCamara: $('#observacionCamara').val(),
                                     },
                                     url: __HOMEPAGE_PATH__ + "entrada_camara/guardar/",
                                     success: function (data) {
@@ -95,17 +99,14 @@ var KTCalendarListView = function() {
                         $('.modal-dialog').css('width', '80%');
                         $('.modal-dialog').addClass('modal-xl');
                         $('.modal-dialog').addClass('modal-fullscreen-xl-down');
-                        $('.fecha-entrada').click(function(){
-                            $('.fecha-entrada-camara-edit').toggle();
-                        });
+                        initObservacionInput();
+                        initObservacionCamaraInput();
+                        initFechaEntradaInput();
                         let date = new Date();
                         let hour = date.getHours();
                         let min = date.getMinutes();
                         hour = (hour < 10 ? "0" : "") + hour;
                         min = (min < 10 ? "0" : "") + min;
-                        let hora = hour + ":" + min;
-                        //$('.fecha-entrada-camara').text($('.fecha-entrada-camara').text() + ' ' +  hora);
-                        //$('.fecha-entrada-camara-hidden').text($('.fecha-entrada-camara-hidden').text() + ' ' +  hora);
                         let fechaCompleta = $('.fecha-entrada-camara-hidden').text();
                         fechaCompleta = fechaCompleta.replace(' ', 'T');
                         console.log(fechaCompleta);
@@ -120,6 +121,7 @@ var KTCalendarListView = function() {
                     var element = $(info.el);
                     element.find('.fc-title').html(info.event.title);
                     element.attr('data-id', info.event.id);
+                    element.attr('data-orden', info.event.extendedProps.orden);
                     element.attr('data-idpedido', info.event.extendedProps.idPedido);
                     element.attr('data-toggle', 'modal');
                     element.attr('data-target', '#productoModal');
@@ -177,5 +179,23 @@ function initPreValidation() {
        }
 
         e.stopPropagation();
+    });
+}
+
+function initObservacionInput(){
+    $('.observacion').click(function(){
+        $('.observacion-input').toggle();
+    });
+}
+
+function initObservacionCamaraInput(){
+    $('.observacion-camara').click(function(){
+        $('.observacion-camara-input').toggle();
+    });
+}
+
+function initFechaEntradaInput(){
+    $('.fecha-entrada').click(function(){
+        $('.fecha-entrada-camara-edit').toggle();
     });
 }
