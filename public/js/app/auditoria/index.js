@@ -29,7 +29,7 @@ function initAuditoriaTable() {
                 });
             }
         },
-        serverSide: false,
+        serverSide: true,
         columnDefs: datatablesGetColDef(),
         order: [[1, 'desc']]
     });
