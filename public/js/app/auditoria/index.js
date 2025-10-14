@@ -14,7 +14,8 @@ jQuery(document).ready(function () {
 function initAuditoriaTable() {
     auditoria_table = $('#table-auditoria');
     auditoria_table.on('xhr.dt', function (e, settings, json, xhr) {
-        draw = 2;
+        draw = xhr.responseJSON.draw;
+        console.log(draw);
         KTApp.unblockPage();
     });
     dataTablesInit(auditoria_table, {
