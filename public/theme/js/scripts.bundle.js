@@ -63,14 +63,7 @@ var KTApp = function() {
             KTUtil.scrollInit(this, {
                 mobileNativeScroll: true,
                 handleWindowResize: true,
-                rememberPosition: (el.data('remember-position') == 'true' ? true : false),
-                height: function() {
-                    if (KTUtil.isBreakpointDown('lg') && el.data('mobile-height')) {
-                        return el.data('mobile-height');
-                    } else {
-                        return el.data('height');
-                    }
-                }
+                rememberPosition: (el.data('remember-position') == 'true' ? true : false)
             });
         });
     }
@@ -328,6 +321,13 @@ $(document).ready(function() {
     KTApp.init(KTAppSettings);
 });
 
+// CSS3 Transitions only after page load(.page-loading class added to body tag and remove with JS on page load)
+window.onload = function() {
+    var result = KTUtil.getByTagName('body');
+    if (result && result[0]) {
+        KTUtil.removeClass(result[0], 'page-loading');
+    }
+}
 "use strict";
 
 // Component Definition
@@ -525,6 +525,12 @@ var KTCard = function(elementId, options) {
         remove: function() {
             if (Plugin.eventTrigger('beforeRemove') === false) {
                 return;
+            }
+
+            // Remove tooltips
+            var tooltips;
+            if ( tooltips = document.querySelectorAll('.tooltip.show') ) {
+                $(tooltips).tooltip('dispose');
             }
 
             KTUtil.remove(element);
@@ -1869,6 +1875,7 @@ var KTMenu = function(elementId, options) {
                 } else {
                     KTUtil.slideUp(submenu, speed, function() {
                         Plugin.scrollToItem(item);
+                        Plugin.scrollUpdate();
                         Plugin.eventTrigger('submenuToggle', submenu, e);
                     });
 
@@ -2409,7 +2416,7 @@ var KTOffcanvas = function(elementId, options) {
             return (the.state == 'shown' ? true : false);
         },
 
-        toggle: function() {;
+        toggle: function() {
             Plugin.eventTrigger('toggle');
 
             if (the.state == 'shown') {
@@ -2778,13 +2785,14 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
 "use strict";
 
 // Component Definition
-var KTToggle = function(elementId, options) {
+var KTToggle = function(toggleElement, targetElement, options) {
     // Main object
     var the = this;
     var init = false;
 
     // Get element object
-    var element = KTUtil.getById(elementId);
+    var element = toggleElement;
+    var target = targetElement;
 
     if (!element) {
         return;
@@ -2831,7 +2839,7 @@ var KTToggle = function(elementId, options) {
             the.options = KTUtil.deepExtend({}, defaultOptions, options);
 
             //alert(the.options.target.tagName);
-            the.target = KTUtil.getById(options.target);
+            the.target = target;
 
             the.targetState = the.options.targetState;
             the.toggleState = the.options.toggleState;
@@ -3070,7 +3078,7 @@ if (!Element.prototype.closest) {
 
 
 //
-// requestAnimationFrame polyfill by Erik Möller.
+// requestAnimationFrame polyfill by Erik MÃ¶ller.
 //  With fixes from Paul Irish and Tino Zijdel
 //
 //  http://paulirish.com/2011/requestanimationframe-for-smart-animating/
@@ -3480,25 +3488,26 @@ var KTUtil = function() {
             return window.Zone !== undefined ? true : false;
         },
 
-        // jQuery Workarounds
-
         // Deep extend:  $.extend(true, {}, objA, objB);
         deepExtend: function(out) {
             out = out || {};
 
             for (var i = 1; i < arguments.length; i++) {
                 var obj = arguments[i];
-
-                if (!obj)
-                    continue;
+                if (!obj) continue;
 
                 for (var key in obj) {
-                    if (obj.hasOwnProperty(key)) {
-                        if (typeof obj[key] === 'object')
-                            out[key] = KTUtil.deepExtend(out[key], obj[key]);
-                        else
-                            out[key] = obj[key];
+                    if (!obj.hasOwnProperty(key)) {
+                        continue;
                     }
+
+                    // based on https://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
+                    if ( Object.prototype.toString.call(obj[key]) === '[object Object]' ) {
+                        out[key] = KTUtil.deepExtend(out[key], obj[key]);
+                        continue;
+                    }
+
+                    out[key] = obj[key];
                 }
             }
 
@@ -3895,11 +3904,11 @@ var KTUtil = function() {
             return KTUtil.css(el, 'height');
         },
 
-        outerHeight: function(el, withMargic = false) {
+        outerHeight: function(el, withMargin) {
             var height = el.offsetHeight;
             var style;
 
-            if (withMargic) {
+            if (typeof withMargin !== 'undefined' && withMargin === true) {
                 style = getComputedStyle(el);
                 height += parseInt(style.marginTop) + parseInt(style.marginBottom);
 
@@ -4415,7 +4424,7 @@ var KTUtil = function() {
         detectIE: function() {
             var ua = window.navigator.userAgent;
 
-            // Test values; Uncomment to check result …
+            // Test values; Uncomment to check result â€¦
 
             // IE 10
             // ua = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)';
@@ -4505,8 +4514,10 @@ var KTUtil = function() {
                 } else {
                     if (KTUtil.isMobileDevice() === true && options.mobileHeight) {
                         height = parseInt(options.mobileHeight);
-                    } else {
+                    } else if (options.height) {
                         height = parseInt(options.height);
+                    } else {
+                        height = parseInt(KTUtil.css(element, 'height'));
                     }
                 }
 
@@ -4571,20 +4582,21 @@ var KTUtil = function() {
 
                 // Remember scroll position in cookie
                 var uid = KTUtil.attr(element, 'id');
-                // Consider using Localstorage
-                //if (options.rememberPosition === true && Cookies && uid) {
-                //    if (KTCookie.getCookie(uid)) {
-                //        var pos = parseInt(KTCookie.getCookie(uid));
-                //
-                //        if (pos > 0) {
-                //            element.scrollTop = pos;
-                //        }
-                //    }
-                //
-                //    element.addEventListener('ps-scroll-y', function() {
-                //        KTCookie.setCookie(uid, element.scrollTop);
-                //    });
-                //}
+
+                // Todo:Consider using Localstorage
+                if (options.rememberPosition === true && KTCookie && uid) {
+                    if (KTCookie.getCookie(uid)) {
+                        var pos = parseInt(KTCookie.getCookie(uid));
+
+                        if (pos > 0) {
+                            element.scrollTop = pos;
+                        }
+                    }
+
+                    element.addEventListener('ps-scroll-y', function() {
+                        KTCookie.setCookie(uid, element.scrollTop);
+                    });
+                }
             }
 
             // Init
@@ -4660,34 +4672,34 @@ var KTUtil = function() {
             return  (document.scrollingElement || document.documentElement).scrollTop;
         },
 
-        colorDarken: function(color, amount) {
-            var subtractLight = function(color, amount){
-                var cc = parseInt(color,16) - amount;
-                var c = (cc < 0) ? 0 : (cc);
-                c = (c.toString(16).length > 1 ) ? c.toString(16) : `0${c.toString(16)}`;
+        changeColor: function(col, amt) {
 
-                return c;
+            var usePound = false;
+
+            if (col[0] == "#") {
+                col = col.slice(1);
+                usePound = true;
             }
 
-            color = (color.indexOf("#")>=0) ? color.substring(1,color.length) : color;
-            amount = parseInt((255*amount)/100);
+            var num = parseInt(col,16);
 
-            return color = `#${subtractLight(color.substring(0,2), amount)}${subtractLight(color.substring(2,4), amount)}${subtractLight(color.substring(4,6), amount)}`;
-        },
+            var r = (num >> 16) + amt;
 
-        colorLighten: function(color, amount) {
-            var addLight = function(color, amount){
-                var cc = parseInt(color,16) + amount;
-                var c = (cc > 255) ? 255 : (cc);
-                c = (c.toString(16).length > 1 ) ? c.toString(16) : `0${c.toString(16)}`;
+            if (r > 255) r = 255;
+            else if  (r < 0) r = 0;
 
-                return c;
-            }
+            var b = ((num >> 8) & 0x00FF) + amt;
 
-            color = (color.indexOf("#")>=0) ? color.substring(1,color.length) : color;
-            amount = parseInt((255*amount)/100);
+            if (b > 255) b = 255;
+            else if  (b < 0) b = 0;
 
-            return color = `#${addLight(color.substring(0,2), amount)}${addLight(color.substring(2,4), amount)}${addLight(color.substring(4,6), amount)}`;
+            var g = (num & 0x0000FF) + amt;
+
+            if (g > 255) g = 255;
+            else if (g < 0) g = 0;
+
+            return (usePound?"#":"") + (g | (b << 8) | (r << 16)).toString(16);
+
         },
 
         // Throttle function: Input as function which needs to be throttled and delay is the time interval in milliseconds
@@ -4716,12 +4728,12 @@ var KTUtil = function() {
             timer  =  setTimeout(func, delay);
         },
 
-        btnWait: function(el, cls, message, disable = true) {
+        btnWait: function(el, cls, message, disable) {
             if (!el) {
                 return;
             }
 
-            if (disable) {
+            if (typeof disable !== 'undefined' && disable === true) {
                 KTUtil.attr(el, "disabled", true);
             }
 
@@ -4764,7 +4776,9 @@ var KTUtil = function() {
             }
         },
 
-        isOffscreen: function(el, direction, offset = 0) {
+        isOffscreen: function(el, direction, offset) {
+            offset = offset || 0;
+
             var windowWidth = KTUtil.getViewPort().width;
             var windowHeight = KTUtil.getViewPort().height;
 
@@ -4826,14 +4840,6 @@ KTUtil.ready(function() {
     }
 });
 
-// CSS3 Transitions only after page load(.page-loading class added to body tag and remove with JS on page load)
-window.onload = function() {
-    var result = KTUtil.getByTagName('body');
-    if (result && result[0]) {
-        KTUtil.removeClass(result[0], 'page-loading');
-    }
-}
-
 "use strict";
 
 // Component Definition
@@ -4853,7 +4859,8 @@ var KTWizard = function(elementId, options) {
     // Default options
     var defaultOptions = {
         startStep: 1,
-        clickableSteps: false // to make steps clickable this set value true and add data-wizard-clickable="true" in HTML for class="wizard" element
+        clickableSteps: false, // to make steps clickable this set value true and add data-wizard-clickable="true" in HTML for class="wizard" element
+        navigation: true
     };
 
     ////////////////////////////
@@ -4894,15 +4901,15 @@ var KTWizard = function(elementId, options) {
             // Elements
             the.steps = KTUtil.findAll(element, '[data-wizard-type="step"]');
 
-            the.btnSubmit = KTUtil.find(element, '[data-wizard-type="action-submit"]');
             the.btnNext = KTUtil.find(element, '[data-wizard-type="action-next"]');
             the.btnPrev = KTUtil.find(element, '[data-wizard-type="action-prev"]');
-            the.btnLast = KTUtil.find(element, '[data-wizard-type="action-last"]');
-            the.btnFirst = KTUtil.find(element, '[data-wizard-type="action-first"]');
+            the.btnSubmit = KTUtil.find(element, '[data-wizard-type="action-submit"]');
 
             // Variables
             the.events = [];
+            the.lastStep = 0;
             the.currentStep = 1;
+            the.newStep = 0;
             the.stopped = false;
             the.totalSteps = the.steps.length;
 
@@ -4919,35 +4926,52 @@ var KTWizard = function(elementId, options) {
          * Build Form Wizard
          */
         build: function() {
-            // Next button event handler
-            KTUtil.addEvent(the.btnNext, 'click', function(e) {
-                e.preventDefault();
-                Plugin.goTo(Plugin.getNextStep(), true);
-            });
+            if (the.options.navigation) {
+                // Next button event handler
+                KTUtil.addEvent(the.btnNext, 'click', function(e) {
+                    e.preventDefault();
 
-            // Prev button event handler
-            KTUtil.addEvent(the.btnPrev, 'click', function(e) {
-                e.preventDefault();
-                Plugin.goTo(Plugin.getPrevStep(), true);
-            });
+                    // Set new step number
+                    Plugin.setNewStep(Plugin.getNextStep());
 
-            // First button event handler
-            KTUtil.addEvent(the.btnFirst, 'click', function(e) {
-                e.preventDefault();
-                Plugin.goTo(Plugin.getFirstStep(), true);
-            });
+                    // Trigger change event
+                    if (Plugin.eventTrigger('change') !== false) {
+                        Plugin.goTo(Plugin.getNextStep());
+                    }
+                });
 
-            // Last button event handler
-            KTUtil.addEvent(the.btnLast, 'click', function(e) {
-                e.preventDefault();
-                Plugin.goTo(Plugin.getLastStep(), true);
-            });
+                // Prev button event handler
+                KTUtil.addEvent(the.btnPrev, 'click', function(e) {
+                    e.preventDefault();
+
+                    // Set new step number
+                    Plugin.setNewStep(Plugin.getPrevStep());
+
+                    // Trigger change event
+                    if (Plugin.eventTrigger('change') !== false) {
+                        Plugin.goTo(Plugin.getPrevStep());
+                    }
+                });
+
+                // Submit button event handler
+                KTUtil.addEvent(the.btnSubmit, 'click', function(e) {
+                    e.preventDefault();
+
+                    Plugin.eventTrigger('submit');
+                });
+            }
 
             if (the.options.clickableSteps === true) {
                 KTUtil.on(element, '[data-wizard-type="step"]', 'click', function() {
                     var index = KTUtil.index(this) + 1;
+
                     if (index !== the.currentStep) {
-                        Plugin.goTo(index, true);
+                        Plugin.setNewStep(index);
+
+                        // Trigger change event
+                        if (Plugin.eventTrigger('change') !== false) {
+                            Plugin.goTo(index);
+                        }
                     }
                 });
             }
@@ -4956,8 +4980,12 @@ var KTWizard = function(elementId, options) {
         /**
          * Handles wizard click wizard
          */
-        goTo: function(number, eventHandle) {
-            console.log('go to:' + number);
+        goTo: function(number) {
+            // Skip if stopped
+            if (the.stopped === true) {
+                the.stopped = false;
+                return;
+            }
 
             // Skip if this step is already shown
             if (number === the.currentStep || number > the.totalSteps || number < 0) {
@@ -4965,70 +4993,31 @@ var KTWizard = function(elementId, options) {
             }
 
             // Validate step number
-            if (number) {
-                number = parseInt(number);
-            } else {
-                number = Plugin.getNextStep();
-            }
+            number = parseInt(number);
 
-            // Before next and prev events
-            var callback;
+            // Set current step
+            the.lastStep = the.currentStep;
+            the.currentStep = number;
+            the.newStep = 0;
 
-            if (eventHandle === true) {
-                if (number > the.currentStep) {
-                    callback = Plugin.eventTrigger('beforeNext');
-                } else {
-                    callback = Plugin.eventTrigger('beforePrev');
-                }
-            }
+            Plugin.updateUI();
 
-            // Skip if stopped
-            if (the.stopped === true) {
-                the.stopped = false;
-                return;
-            }
-
-            // Continue if no exit
-            if (callback !== false) {
-                // Before change
-                if (eventHandle === true) {
-                    Plugin.eventTrigger('beforeChange');
-                }
-
-                // Set current step
-                the.currentStep = number;
-
-                Plugin.updateUI();
-
-                // Trigger change event
-                if (eventHandle === true) {
-                    Plugin.eventTrigger('change');
-                }
-            }
-
-            // After next and prev events
-            if (eventHandle === true) {
-                if (number > the.startStep) {
-                    Plugin.eventTrigger('afterNext');
-                } else {
-                    Plugin.eventTrigger('afterPrev');
-                }
-            }
+            Plugin.eventTrigger('changed');
 
             return the;
         },
 
         /**
-         * Cancel
+         * Stop wizard
          */
         stop: function() {
             the.stopped = true;
         },
 
         /**
-         * Resume
+         * Resume wizard
          */
-        start: function() {
+        resume: function() {
             the.stopped = false;
         },
 
@@ -5054,7 +5043,7 @@ var KTWizard = function(elementId, options) {
         },
 
         /**
-         * Go to the first step
+         * Update wizard UI after step change
          */
         updateUI: function() {
             var stepType = '';
@@ -5113,7 +5102,7 @@ var KTWizard = function(elementId, options) {
         },
 
         /**
-         * Get next step
+         * Get next step number
          */
         getNextStep: function() {
             if (the.totalSteps >= (the.currentStep + 1)) {
@@ -5124,7 +5113,7 @@ var KTWizard = function(elementId, options) {
         },
 
         /**
-         * Get prev step
+         * Get prev step number
          */
         getPrevStep: function() {
             if ((the.currentStep - 1) >= 1) {
@@ -5132,6 +5121,20 @@ var KTWizard = function(elementId, options) {
             } else {
                 return 1;
             }
+        },
+
+        /**
+         * Get new step number
+         */
+        getNewStep: function() {
+            return the.newStep;
+        },
+
+        /**
+         * Set new step
+         */
+        setNewStep: function(step) {
+            the.newStep = step;
         },
 
         /**
@@ -5181,50 +5184,50 @@ var KTWizard = function(elementId, options) {
     /**
      * Go to the next step
      */
-    the.goNext = function(eventHandle) {
-        return Plugin.goTo(Plugin.getNextStep(), eventHandle);
+    the.goNext = function() {
+        return Plugin.goTo(Plugin.getNextStep());
     };
 
     /**
      * Go to the prev step
      */
-    the.goPrev = function(eventHandle) {
-        return Plugin.goTo(Plugin.getPrevStep(),eventHandle);
+    the.goPrev = function() {
+        return Plugin.goTo(Plugin.getPrevStep());
     };
 
     /**
      * Go to the last step
      */
-    the.goLast = function(eventHandle) {
-        return Plugin.goTo(Plugin.getLastStep(), eventHandle);
+    the.goLast = function() {
+        return Plugin.goTo(Plugin.getLastStep());
     };
 
     /**
      * Go to the first step
      */
-    the.goFirst = function(eventHandle) {
-        return Plugin.goTo(Plugin.getFirstStep(), eventHandle);
+    the.goFirst = function() {
+        return Plugin.goTo(Plugin.getFirstStep());
     };
 
     /**
      * Go to a step
      */
-    the.goTo = function(number, eventHandle) {
-        return Plugin.goTo(number, eventHandle);
+    the.goTo = function(number) {
+        return Plugin.goTo(number);
     };
 
     /**
-     * Cancel step
+     * Stop wizard
      */
     the.stop = function() {
         return Plugin.stop();
     };
 
     /**
-     * Resume step
+     * Resume wizard
      */
-    the.start = function() {
-        return Plugin.start();
+    the.resume = function() {
+        return Plugin.resume();
     };
 
     /**
@@ -5232,6 +5235,20 @@ var KTWizard = function(elementId, options) {
      */
     the.getStep = function() {
         return the.currentStep;
+    };
+
+    /**
+     * Get new step number
+     */
+    the.getNewStep = function() {
+        return Plugin.getNewStep();
+    };
+
+    /**
+     * Set new step number
+     */
+    the.setNewStep = function(number) {
+        Plugin.setNewStep(number);
     };
 
     /**
@@ -5249,7 +5266,7 @@ var KTWizard = function(elementId, options) {
     };
 
     /**
-     * Attach event
+     * Attach event("change", "changed", "submit")
      */
     the.on = function(name, handler) {
         return Plugin.addEvent(name, handler);
@@ -5310,7 +5327,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
              ** PRIVATE METHODS
              ********************/
             isInit: false,
-            cellOffset: 110,
+            cellOffset: 108,
             iconOffset: 15,
             stateId: 'meta',
             ajaxParams: {},
@@ -5550,8 +5567,11 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
                         dropdownMenu.css('z-index', '2000');
                     }
                 }).on('hide.bs.dropdown', '.' + pfx + 'datatable .' + pfx + 'datatable-body', function(e) {
-                    $(e.target).append(dropdownMenu.detach());
-                    dropdownMenu.hide();
+                    if (typeof dropdownMenu !== 'undefined') {
+                        $(e.target).append(dropdownMenu.detach());
+                        dropdownMenu.hide();
+                        dropdownMenu.css('display', '');
+                    }
                 });
 
                 // remove dropdown if window resize
@@ -6120,7 +6140,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
                 var containerWidth = $(datatable.tableBody).innerWidth() - Plugin.iconOffset;
 
                 // get total number of columns
-                var columns = $(datatable.tableBody).
+                var columns = $(datatable.tableHead).
                 find('.' + pfx + 'datatable-row:first-child').
                 find('.' + pfx + 'datatable-cell').
                     // exclude expand icon
@@ -6442,8 +6462,8 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
                     || options.data.serverFiltering === false && action === 'search'
                 ) {
                     setTimeout(function() {
-                        afterGetData();
                         Plugin.setAutoColumns();
+                        afterGetData();
                     });
                     return;
                 }
@@ -6667,12 +6687,16 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
                         Plugin.dataRender();
                     },
                     populate: function() {
+                        datatable.dataSet = datatable.dataSet || [];
+                        // no records available
+                        if (datatable.dataSet.length === 0) return;
+
                         var icons = Plugin.getOption('layout.icons.pagination');
                         var title = Plugin.getOption('translate.toolbar.pagination.items.default');
                         // pager root element
                         pg.pager = $('<div/>').addClass(pfx + 'datatable-pager ' + pfx + 'datatable-paging-loaded');
                         // numbering links
-                        var pagerNumber = $('<ul/>').addClass(pfx + 'datatable-pager-nav mb-5 mb-sm-0');
+                        var pagerNumber = $('<ul/>').addClass(pfx + 'datatable-pager-nav my-2 mb-sm-0');
                         pg.pagerLayout['pagination'] = pagerNumber;
 
                         // pager first/previous button
@@ -6689,15 +6713,6 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
                         attr('title', title.prev).
                         addClass(pfx + 'datatable-pager-link ' + pfx + 'datatable-pager-link-prev').
                         append($('<i/>').addClass(icons.prev)).
-                        on('click', pg.gotoMorePage)).
-                        appendTo(pagerNumber);
-
-                        // more previous pages
-                        $('<li/>').
-                        append($('<a/>').
-                        attr('title', title.more).
-                        addClass(pfx + 'datatable-pager-link ' + pfx + 'datatable-pager-link-more-prev').
-                        html($('<i/>').addClass(icons.more)).
                         on('click', pg.gotoMorePage)).
                         appendTo(pagerNumber);
 
@@ -6733,15 +6748,6 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
                             appendTo(pagerNumber);
                         }
 
-                        // more next pages
-                        $('<li/>').
-                        append($('<a/>').
-                        attr('title', title.more).
-                        addClass(pfx + 'datatable-pager-link ' + pfx + 'datatable-pager-link-more-next').
-                        html($('<i/>').addClass(icons.more)).
-                        on('click', pg.gotoMorePage)).
-                        appendTo(pagerNumber);
-
                         // pager next/last button
                         $('<li/>').
                         append($('<a/>').
@@ -6761,7 +6767,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
 
                         // page info
                         if (Plugin.getOption('toolbar.items.info')) {
-                            pg.pagerLayout['info'] = $('<div/>').addClass(pfx + 'datatable-pager-info').append($('<span/>').addClass(pfx + 'datatable-pager-detail'));
+                            pg.pagerLayout['info'] = $('<div/>').addClass(pfx + 'datatable-pager-info my-2 mb-sm-0').append($('<span/>').addClass(pfx + 'datatable-pager-detail'));
                         }
 
                         $.each(Plugin.getOption('toolbar.layout'), function(i, layout) {
@@ -7403,13 +7409,22 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
                     $(datatable.table).find('.' + pfx + 'datatable-cell').show();
                     $(datatable.tableBody).each(function() {
                         var recursive = 0;
-                        while ($(this)[0].offsetWidth < $(this)[0].scrollWidth && recursive < options.columns.length) {
+                        var offsetWidth = $(this)[0].offsetWidth;
+                        var scrollWidth = $(this)[0].scrollWidth;
+
+                        while (offsetWidth < scrollWidth && (scrollWidth - offsetWidth) > Plugin.cellOffset && recursive < options.columns.length) {
+
                             $(datatable.table).find('.' + pfx + 'datatable-row').each(function(i) {
                                 var cell = $(this).find('.' + pfx + 'datatable-cell:not(:hidden):not([data-autohide-disabled])').last();
-                                $(cell).hide();
-                                hiddenExist = true;
+                                if (cell.length) {
+                                    $(cell).hide();
+                                    hiddenExist = true;
+                                }
                             });
                             recursive++;
+
+                            offsetWidth = $(this)[0].offsetWidth;
+                            scrollWidth = $(this)[0].scrollWidth;
                         }
                     });
 
@@ -8144,7 +8159,28 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
                 datatable = initialDatatable;
                 $(datatable).trigger(pfx + 'datatable-on-destroy');
                 Plugin.isInit = false;
+
+                // clean up variables
                 initialDatatable = null;
+                datatable.dataSet = null;
+                datatable.originalDataSet = null;
+                datatable.tableHead = null;
+                datatable.tableBody = null;
+                datatable.table = null;
+                datatable.wrap = null;
+                datatable.API = {
+                    record: null,
+                    value: null,
+                    params: null,
+                };
+
+                Plugin.ajaxParams = {};
+                Plugin.pagingObject = {};
+                Plugin.nodeTr = [];
+                Plugin.nodeTd = [];
+                Plugin.nodeCols = [];
+                Plugin.recentNode = [];
+
                 return initialDatatable;
             },
 
@@ -8865,8 +8901,8 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
                             Extension.unselectedRows = Extension.remove(Extension.unselectedRows, id);
                         });
                         var storage = {};
-                        storage['selectedRows'] = $.unique(Extension.selectedRows);
-                        storage['unselectedRows'] = $.unique(Extension.unselectedRows);
+                        storage['selectedRows'] = Extension.selectedRows.filter(Extension.unique);
+                        storage['unselectedRows'] = Extension.unselectedRows.filter(Extension.unique);
                         datatable.stateKeep('checkbox', storage);
                     });
                     $(datatable).on(pfx + 'datatable-on-uncheck', function(e, ids) {
@@ -8876,8 +8912,9 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
                             Extension.selectedRows = Extension.remove(Extension.selectedRows, id);
                         });
                         var storage = {};
-                        storage['selectedRows'] = $.unique(Extension.selectedRows);
-                        storage['unselectedRows'] = $.unique(Extension.unselectedRows);
+                        storage['selectedRows'] = Extension.selectedRows.filter(Extension.unique);
+                        storage['unselectedRows'] = Extension.unselectedRows.filter(Extension.unique);
+                        storage['unselectedRows'] = Extension.unselectedRows.filter(Extension.unique);
                         datatable.stateKeep('checkbox', storage);
                     });
                 }
@@ -8904,7 +8941,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
                             }));
                         }
                         var storage = {};
-                        storage['selectedRows'] = $.unique(Extension.selectedRows);
+                        storage['selectedRows'] = Extension.selectedRows.filter(Extension.unique);
                         datatable.stateKeep('checkbox', storage);
                     }
 
@@ -9014,11 +9051,11 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
                             selectedAllRows = Extension.remove(selectedAllRows, parseInt(id));
                         });
                     }
-                    return $.unique(selectedAllRows);
+                    return selectedAllRows.filter(Extension.unique);
                 }
 
                 // else return single checked selected rows
-                return Extension.selectedRows;
+                return Extension.selectedRows.filter(Extension.unique);
             },
 
             remove: function(array, element) {
@@ -9096,34 +9133,54 @@ KTUtil.ready(function() {
     ////////////////////////////////////////////////////
 
     // Init Desktop & Mobile Headers
-    KTLayoutHeader.init('kt_header', 'kt_header_mobile');
+    if (typeof KTLayoutHeader !== 'undefined') {
+        KTLayoutHeader.init('kt_header', 'kt_header_mobile');
+    }
 
     // Init Header Menu
-    KTLayoutHeaderMenu.init('kt_header_menu', 'kt_header_menu_wrapper');
+    if (typeof KTLayoutHeaderMenu !== 'undefined') {
+        KTLayoutHeaderMenu.init('kt_header_menu', 'kt_header_menu_wrapper');
+    }
 
     // Init Header Topbar For Mobile Mode
-    KTLayoutHeaderTopbar.init('kt_header_mobile_topbar_toggle');
+    if (typeof KTLayoutHeaderTopbar !== 'undefined') {
+        KTLayoutHeaderTopbar.init('kt_header_mobile_topbar_toggle');
+    }
 
     // Init Brand Panel For Logo
-    KTLayoutBrand.init('kt_brand');
+    if (typeof KTLayoutBrand !== 'undefined') {
+        KTLayoutBrand.init('kt_brand');
+    }
 
     // Init Aside
-    KTLayoutAside.init('kt_aside');
+    if (typeof KTLayoutAside !== 'undefined') {
+        KTLayoutAside.init('kt_aside');
+    }
 
     // Init Aside Menu Toggle
-    KTLayoutAsideToggle.init('kt_aside_toggle');
+    if (typeof KTLayoutAsideToggle !== 'undefined') {
+        KTLayoutAsideToggle.init('kt_aside_toggle');
+    }
 
     // Init Aside Menu
-    KTLayoutAsideMenu.init('kt_aside_menu');
+    if (typeof KTLayoutAsideMenu !== 'undefined') {
+        KTLayoutAsideMenu.init('kt_aside_menu');
+    }
 
     // Init Subheader
-    KTLayoutSubheader.init('kt_subheader');
+    if (typeof KTLayoutSubheader !== 'undefined') {
+        KTLayoutSubheader.init('kt_subheader');
+    }
 
     // Init Content
-    KTLayoutContent.init('kt_content');
+    if (typeof KTLayoutContent !== 'undefined') {
+        KTLayoutContent.init('kt_content');
+    }
 
     // Init Footer
-    KTLayoutFooter.init('kt_footer');
+    if (typeof KTLayoutFooter !== 'undefined') {
+        KTLayoutFooter.init('kt_footer');
+    }
 
 
     //////////////////////////////////////////////
@@ -9131,52 +9188,81 @@ KTUtil.ready(function() {
     //////////////////////////////////////////////
 
     // Init Scrolltop
-    KTLayoutScrolltop.init('kt_scrolltop');
+    if (typeof KTLayoutScrolltop !== 'undefined') {
+        KTLayoutScrolltop.init('kt_scrolltop');
+    }
 
     // Init Sticky Card
-    KTLayoutStickyCard.init('kt_page_sticky_card');
+    if (typeof KTLayoutStickyCard !== 'undefined') {
+        KTLayoutStickyCard.init('kt_page_sticky_card');
+    }
 
     // Init Stretched Card
-    KTLayoutStretchedCard.init('kt_page_stretched_card');
+    if (typeof KTLayoutStretchedCard !== 'undefined') {
+        KTLayoutStretchedCard.init('kt_page_stretched_card');
+    }
 
     // Init Code Highlighter & Preview Blocks(used to demonstrate the theme features)
-    KTLayoutExamples.init();
+    if (typeof KTLayoutExamples !== 'undefined') {
+        KTLayoutExamples.init();
+    }
 
     // Init Demo Selection Panel
-    KTLayoutDemoPanel.init('kt_demo_panel');
+    if (typeof KTLayoutDemoPanel !== 'undefined') {
+        KTLayoutDemoPanel.init('kt_demo_panel');
+    }
 
     // Init Chat App(quick modal chat)
-    KTLayoutChat.init();
+    if (typeof KTLayoutChat !== 'undefined') {
+        KTLayoutChat.init('kt_chat_modal');
+    }
 
     // Init Quick Actions Offcanvas Panel
-    KTLayoutQuickActions.init('kt_quick_actions');
+    if (typeof KTLayoutQuickActions !== 'undefined') {
+        KTLayoutQuickActions.init('kt_quick_actions');
+    }
 
     // Init Quick Notifications Offcanvas Panel
-    KTLayoutQuickNotifications.init('kt_quick_notifications');
+    if (typeof KTLayoutQuickNotifications !== 'undefined') {
+        KTLayoutQuickNotifications.init('kt_quick_notifications');
+    }
 
     // Init Quick Offcanvas Panel
-    KTLayoutQuickPanel.init('kt_quick_panel');
+    if (typeof KTLayoutQuickPanel!== 'undefined') {
+        KTLayoutQuickPanel.init('kt_quick_panel');
+    }
 
     // Init Quick User Panel
-    KTLayoutQuickUser.init('kt_quick_user');
+    if (typeof KTLayoutQuickUser !== 'undefined') {
+        KTLayoutQuickUser.init('kt_quick_user');
+    }
 
     // Init Quick Search Panel
-    KTLayoutQuickSearch.init('kt_quick_search');
+    if (typeof KTLayoutQuickSearch !== 'undefined') {
+        KTLayoutQuickSearch.init('kt_quick_search');
+    }
 
     // Init Quick Cart Panel
-    KTLayoutQuickCartPanel.init('kt_quick_cart');
+    if (typeof KTLayoutQuickCartPanel !== 'undefined') {
+        KTLayoutQuickCartPanel.init('kt_quick_cart');
+    }
 
-    // Init Search For Quick Search Dropdown
-    KTLayoutSearch().init('kt_quick_search_dropdown');
+    // Init Dropdown Search
+    if (typeof KTLayoutSearch !== 'undefined') {
+        KTLayoutSearch().init('kt_quick_search_dropdown');
+    }
 
-    // Init Search For Quick Search Offcanvas Panel
-    KTLayoutSearchOffcanvas().init('kt_quick_search_offcanvas');
+    // Init Offcanvas Search
+    if (typeof KTLayoutSearchOffcanvas !== 'undefined') {
+        KTLayoutSearchOffcanvas().init('kt_quick_search_offcanvas');
+    }
 });
 
 "use strict";
 
 var KTLayoutAsideMenu = function() {
     // Private properties
+    var _body;
     var _element;
     var _menuObject;
 
@@ -9218,25 +9304,77 @@ var KTLayoutAsideMenu = function() {
                 expandAll: false // allow having multiple expanded accordions in the menu
             }
         });
+    }
 
-        // Disable menu click if aside is fixed and minimized
-        _menuObject.on('submenuToggle', function(menu) {
-            if (KTLayoutAside.isMinimized() === true  && KTLayoutAside.isHoverable() === false) {
-                return false;
-            }
-        });
+    var _initHover = function() {
+        // Handle Minimized Aside Hover
+        if (KTUtil.hasClass(_body, 'aside-fixed') && KTUtil.hasClass(_body, 'aside-minimize-hoverable')) {
+            var insideTm;
+            var outsideTm;
 
-        // Close aside offcanvas panel before page reload On tablet and mobile
-        _menuObject.on('linkClick', function(menu) {
-            if (KTUtil.isBreakpointDown('lg')) { // Tablet and mobile mode
-                KTLayoutAside.getOffcanvas().hide(); // Hide offcanvas after general link click
-            }
-        });
+            // Handle Aside Hover Mode
+            KTUtil.addEvent(_element, 'mouseenter', function(e) {
+                e.preventDefault();
+
+                if (KTUtil.isBreakpointUp('lg') === false) {
+                    return;
+                }
+
+                if (outsideTm) {
+                    clearTimeout(outsideTm);
+                    outsideTm = null;
+                }
+
+                if (insideTm) {
+                    clearTimeout(insideTm);
+                    insideTm = null;
+                }
+
+                insideTm = setTimeout(function() {
+                    if (KTUtil.hasClass(_body, 'aside-minimize') && KTUtil.isBreakpointUp('lg')) {
+                        // Hover class
+                        KTUtil.addClass(_body, 'aside-minimize-hover');
+
+                        KTLayoutAsideMenu.getMenu().scrollUpdate();
+                        KTLayoutAsideMenu.getMenu().scrollTop();
+                    }
+                }, 50);
+            });
+
+            KTUtil.addEvent(KTLayoutAside.getElement(), 'mouseleave', function(e) {
+                e.preventDefault();
+
+                if (KTUtil.isBreakpointUp('lg') === false) {
+                    return;
+                }
+
+                if (insideTm) {
+                    clearTimeout(insideTm);
+                    insideTm = null;
+                }
+
+                if (outsideTm) {
+                    clearTimeout(outsideTm);
+                    outsideTm = null;
+                }
+
+                outsideTm = setTimeout(function() {
+                    if (KTUtil.hasClass(_body, 'aside-minimize-hover') && KTUtil.isBreakpointUp('lg')) {
+                        KTUtil.removeClass(_body, 'aside-minimize-hover');
+
+                        // Hover class
+                        KTLayoutAsideMenu.getMenu().scrollUpdate();
+                        KTLayoutAsideMenu.getMenu().scrollTop();
+                    }
+                }, 100);
+            });
+        }
     }
 
     // Public methods
     return {
         init: function(id) {
+            _body = KTUtil.getBody();
             _element = KTUtil.getById(id);
 
             if (!_element) {
@@ -9245,6 +9383,7 @@ var KTLayoutAsideMenu = function() {
 
             // Initialize menu
             _init();
+            _initHover();
         },
 
         getElement: function() {
@@ -9284,8 +9423,7 @@ var KTLayoutAsideToggle = function() {
 
     // Initialize
     var _init = function() {
-        _toggleObject = new KTToggle(_element, {
-            target: _body,
+        _toggleObject = new KTToggle(_element, _body, {
             targetState: 'aside-minimize',
             toggleState: 'active'
         });
@@ -9378,62 +9516,6 @@ var KTLayoutAside = function() {
                 state: 'mobile-toggle-active'
             }
         });
-
-        // Handle Minimized Aside Hover
-        if (KTUtil.hasClass(_body, 'aside-fixed') && KTUtil.hasClass(_body, 'aside-minimize-hoverable')) {
-            var insideTm;
-            var outsideTm;
-
-            // Handle Aside Hover Mode
-            KTUtil.addEvent(_element, 'mouseenter', function(e) {
-                e.preventDefault();
-
-                if (KTUtil.isBreakpointUp('lg') === false) {
-                    return;
-                }
-
-                if (outsideTm) {
-                    clearTimeout(outsideTm);
-                    outsideTm = null;
-                }
-
-                insideTm = setTimeout(function() {
-                    if (KTUtil.hasClass(_body, 'aside-minimize') && KTUtil.isBreakpointUp('lg')) {
-                        KTUtil.removeClass(_body, 'aside-minimize');
-
-                        // Hover class
-                        KTUtil.addClass(_body, 'aside-minimize-hover');
-
-                        KTLayoutAsideMenu.getMenu().scrollUpdate();
-                        KTLayoutAsideMenu.getMenu().scrollTop();
-                    }
-                }, 50);
-            });
-
-            KTUtil.addEvent(_element, 'mouseleave', function(e) {
-                e.preventDefault();
-
-                if (KTUtil.isBreakpointUp('lg') === false) {
-                    return;
-                }
-
-                if (insideTm) {
-                    clearTimeout(insideTm);
-                    insideTm = null;
-                }
-
-                outsideTm = setTimeout(function() {
-                    if (KTUtil.hasClass(_body, 'aside-minimize-hover') && KTUtil.isBreakpointUp('lg')) {
-                        KTUtil.removeClass(_body, 'aside-minimize-hover');
-                        KTUtil.addClass(_body, 'aside-minimize');
-
-                        // Hover class
-                        KTLayoutAsideMenu.getMenu().scrollUpdate();
-                        KTLayoutAsideMenu.getMenu().scrollTop();
-                    }
-                }, 100);
-            });
-        }
     }
 
     // Public methods
@@ -9700,8 +9782,7 @@ var KTLayoutHeaderTopbar = function() {
 
     // Private functions
     var _init = function() {
-        _toggleObject = new KTToggle(_toggleElement, {
-            target: KTUtil.getBody(),
+        _toggleObject = new KTToggle(_toggleElement, KTUtil.getBody(), {
             targetState: 'topbar-mobile-on',
             toggleState: 'active',
         });
@@ -10139,11 +10220,11 @@ var KTLayoutChat = function () {
 
     // Public methods
     return {
-        init: function() {
-            // init modal chat example
-            _init(KTUtil.getById('kt_chat_modal'));
+        init: function(id) {
+            // Init modal chat example
+            _init(KTUtil.getById(id));
 
-            // trigger click to show popup modal chat on page load
+            // Trigger click to show popup modal chat on page load
             if (encodeURI(window.location.hostname) == 'keenthemes.com' || encodeURI(window.location.hostname) == 'www.keenthemes.com') {
                 setTimeout(function() {
                     if (!KTCookie.getCookie('kt_app_chat_shown')) {
@@ -10287,89 +10368,98 @@ var KTLayoutExamples = function() {
             elements = document.querySelectorAll('.example:not(.example-compact):not(.example-hover):not(.example-basic)');
         }
 
-        for (var i = 0; i < elements.length; ++i) {
-            var example = elements[i];
-            var copy = KTUtil.find(example, '.example-copy');
+        if (elements && elements.length > 0 ) {
+            for (var i = 0; i < elements.length; ++i) {
+                var example = elements[i];
+                var copy = KTUtil.find(example, '.example-copy');
 
-            var clipboard = new ClipboardJS(copy, {
-                target: function(trigger) {
-                    var example = trigger.closest('.example');
-                    var el = KTUtil.find(example, '.example-code .tab-pane.active');
+                if (copy) {
+                    var clipboard = new ClipboardJS(copy, {
+                        target: function(trigger) {
+                            var example = trigger.closest('.example');
+                            var el = KTUtil.find(example, '.example-code .tab-pane.active');
 
-                    if (!el) {
-                        el = KTUtil.find(example, '.example-code');
-                    }
+                            if (!el) {
+                                el = KTUtil.find(example, '.example-code');
+                            }
 
-                    return el;
+                            return el;
+                        }
+                    });
+
+                    clipboard.on('success', function(e) {
+                        KTUtil.addClass(e.trigger, 'example-copied');
+                        e.clearSelection();
+
+                        setTimeout(function() {
+                            KTUtil.removeClass(e.trigger, 'example-copied');
+                        }, 2000);
+                    });
                 }
-            });
-
-            clipboard.on('success', function(e) {
-                KTUtil.addClass(e.trigger, 'example-copied');
-                e.clearSelection();
-
-                setTimeout(function() {
-                    KTUtil.removeClass(e.trigger, 'example-copied');
-                }, 2000);
-            });
+            }
         }
     }
 
     var initCompactMode = function(element) {
         var example,code,toggle,copy, clipboard;
+
         var elements = element;
         if (typeof elements === 'undefined') {
             var elements = document.querySelectorAll('.example.example-compact');
         }
 
-        for (var i = 0; i < elements.length; ++i) {
-            var example = elements[i];
-            var toggle = KTUtil.find(example, '.example-toggle');
-            var copy = KTUtil.find(example, '.example-copy');
+        if (elements && elements.length > 0 ) {
+            for (var i = 0; i < elements.length; ++i) {
+                var example = elements[i];
+                var toggle = KTUtil.find(example, '.example-toggle');
+                var copy = KTUtil.find(example, '.example-copy');
 
-            // Handle toggle
-            KTUtil.addEvent(toggle, 'click', function() {
-                var example = this.closest('.example');
-                var code =  KTUtil.find(example, '.example-code');
-                var the = this;
+                // Handle toggle
+                KTUtil.addEvent(toggle, 'click', function() {
+                    var example = this.closest('.example');
+                    var code =  KTUtil.find(example, '.example-code');
+                    var the = this;
 
-                if (KTUtil.hasClass(this, 'example-toggled')) {
-                    KTUtil.slideUp(code, 300, function() {
-                        KTUtil.removeClass(the, 'example-toggled');
-                        KTUtil.removeClass(code, 'example-code-on');
-                        KTUtil.hide(code);
-                    });
-                } else {
-                    KTUtil.addClass(code, 'example-code-on');
-                    KTUtil.addClass(this, 'example-toggled');
-                    KTUtil.slideDown(code, 300, function() {
-                        KTUtil.show(code);
-                    });
-                }
-            });
-
-            // Handle copy
-            var clipboard = new ClipboardJS(copy, {
-                target: function(trigger) {
-                    var example = trigger.closest('.example');
-                    var el = KTUtil.find(example, '.example-code .tab-pane.active');
-
-                    if (!el) {
-                        el = KTUtil.find(example, '.example-code');
+                    if (KTUtil.hasClass(this, 'example-toggled')) {
+                        KTUtil.slideUp(code, 300, function() {
+                            KTUtil.removeClass(the, 'example-toggled');
+                            KTUtil.removeClass(code, 'example-code-on');
+                            KTUtil.hide(code);
+                        });
+                    } else {
+                        KTUtil.addClass(code, 'example-code-on');
+                        KTUtil.addClass(this, 'example-toggled');
+                        KTUtil.slideDown(code, 300, function() {
+                            KTUtil.show(code);
+                        });
                     }
+                });
 
-                    return el;
+                // Handle copy
+                if (copy) {
+                    var clipboard = new ClipboardJS(copy, {
+                        target: function(trigger) {
+                            var example = trigger.closest('.example');
+                            var el = KTUtil.find(example, '.example-code .tab-pane.active');
+
+                            if (!el) {
+                                el = KTUtil.find(example, '.example-code');
+                            }
+
+                            return el;
+                        }
+                    });
+
+                    clipboard.on('success', function(e) {
+                        KTUtil.addClass(e.trigger, 'example-copied');
+                        e.clearSelection();
+
+                        setTimeout(function() {
+                            KTUtil.removeClass(e.trigger, 'example-copied');
+                        }, 2000);
+                    });
                 }
-            });
-
-            clipboard.on('success', function(e) {
-                KTUtil.addClass(e.trigger, 'example-copied');
-                e.clearSelection();
-
-                setTimeout(function() {
-                    KTUtil.removeClass(e.trigger, 'example-copied');
-                }, 2000);
-            });
+            }
         }
     }
 
