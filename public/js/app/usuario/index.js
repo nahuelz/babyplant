@@ -42,7 +42,7 @@ function datatablesGetColDef() {
     {
       targets: index++,
       name: 'email',
-      width: '100px',  // Establece un ancho fijo para la columna de email
+      width: '25px',  // Establece un ancho fijo para la columna de email
       className: 'dt-center text-truncate'  // Opcional: corta el texto que exceda el ancho
     },
     {
