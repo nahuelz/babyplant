@@ -7,7 +7,7 @@ jQuery(document).ready(function () {
     columnDefs: datatablesGetColDef(),
     order: [[1, 'asc']],
     pageLength: 25,  // Esta línea establece 25 filas por página
-    lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]]
+    lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, 1000]]
   });
 
   $(document).on('click', '.accion-habilitar', function (e) {
