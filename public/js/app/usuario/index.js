@@ -2,16 +2,36 @@ var usuario_table = null
 
 jQuery(document).ready(function () {
   usuario_table = $('#table-usuario')
-  dataTablesInit(usuario_table, {
-    ajax: __HOMEPAGE_PATH__ + 'usuario/index_table/',
-    columnDefs: datatablesGetColDef(),
-    order: [[1, 'asc']],
-    pageLength: 25,  // Esta línea establece 25 filas por página
-    lengthMenu: [[10, 25, 50, 100, 1000], [10, 25, 50, 100, 1000]],
-      scrollX: false,  // Desactivar scroll horizontal
-      autoWidth: false,  // Desactivar auto-ancho
-      scrollCollapse: true  // Permitir que la tabla se encoja
-  });
+    dataTablesInit(usuario_table, {
+        ajax: {
+            url: __HOMEPAGE_PATH__ + 'usuario/index_table/',
+            type: 'GET',
+            data: function (d) {
+                // Mapear los parámetros de DataTables a los que espera el servidor
+                return {
+                    draw: d.draw,
+                    start: d.start,
+                    length: d.length,
+                    search: d.search.value,
+                    order: d.order,
+                    columns: d.columns
+                };
+            },
+            dataSrc: function (json) {
+                // Procesar la respuesta del servidor al formato que espera DataTables
+                return json.data;
+            }
+        },
+        columnDefs: datatablesGetColDef(),
+        order: [[1, 'asc']],
+        pageLength: 25,
+        lengthMenu: [[10, 25, 50, 100, 10000], [10, 25, 50, 100, 10000]],
+        //scrollX: false,
+        autoWidth: false,
+        //scrollCollapse: true,
+        serverSide: true,
+        processing: true
+    });
 
   $(document).on('click', '.accion-habilitar', function (e) {
     e.preventDefault();
