@@ -38,7 +38,7 @@ function datatablesGetColDef() {
     {
       targets: index++,
       name: 'id',
-      width: '30px',
+      width: '5px',
       className: 'dt-center',
       orderable: false,
       render: function (data, type, full, meta) {
