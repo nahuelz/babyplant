@@ -6,6 +6,8 @@ jQuery(document).ready(function () {
     ajax: __HOMEPAGE_PATH__ + 'usuario/index_table/',
     columnDefs: datatablesGetColDef(),
     order: [[1, 'asc']],
+    pageLength: 25,  // Esta línea establece 25 filas por página
+    lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]]
   });
 
   $(document).on('click', '.accion-habilitar', function (e) {
@@ -50,6 +52,8 @@ function datatablesGetColDef() {
     {
       targets: index++,
       name: 'email',
+      width: '100px',  // Establece un ancho fijo para la columna de email
+      className: 'text-truncate'  // Opcional: corta el texto que exceda el ancho
     },
     {
       targets: index++,
