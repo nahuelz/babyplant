@@ -45,11 +45,16 @@ var datatables_default_options = {
         }
     },
     headerCallback: function (thead, data, start, end, display) {
-        thead.getElementsByTagName('th')[0].innerHTML = '\
-                    <label class="kt-checkbox kt-checkbox--single kt-checkbox--solid">\
-                        <input type="checkbox" value="" class="kt-group-checkable">\
-                        <span></span>\
-                    </label>';
+        // Verificar si hay checkboxes en las filas
+        var hasCheckboxes = $(this.api().rows().nodes()).find('input[type="checkbox"]').length > 0;
+
+        if (hasCheckboxes) {
+            thead.getElementsByTagName('th')[0].innerHTML = '\
+            <label class="kt-checkbox kt-checkbox--single kt-checkbox--solid">\
+                <input type="checkbox" value="" class="kt-group-checkable">\
+                <span></span>\
+            </label>';
+        }
     },
     columnDefs: [],
     initComplete: function () {

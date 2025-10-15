@@ -7,7 +7,10 @@ jQuery(document).ready(function () {
     columnDefs: datatablesGetColDef(),
     order: [[1, 'asc']],
     pageLength: 25,  // Esta línea establece 25 filas por página
-    lengthMenu: [[10, 25, 50, 100, 1000], [10, 25, 50, 100, 1000]]
+    lengthMenu: [[10, 25, 50, 100, 1000], [10, 25, 50, 100, 1000]],
+      scrollX: false,  // Desactivar scroll horizontal
+      autoWidth: false,  // Desactivar auto-ancho
+      scrollCollapse: true  // Permitir que la tabla se encoja
   });
 
   $(document).on('click', '.accion-habilitar', function (e) {
@@ -32,51 +35,38 @@ jQuery(document).ready(function () {
  * @returns {Array}
  */
 function datatablesGetColDef() {
-  let index = 0
+  let index = 1
 
   return [
-    {
-      targets: index++,
-      name: 'id',
-      width: '5px',
-      className: 'dt-center',
-      orderable: false,
-      render: function (data, type, full, meta) {
-        return '\
-                    <label class="kt-checkbox kt-checkbox--single kt-checkbox--solid">\
-                        <input type="checkbox" value="" class="kt-checkable">\
-                        <span></span>\
-                    </label>'
-      },
-    },
+
     {
       targets: index++,
       name: 'email',
-      width: '50px',  // Establece un ancho fijo para la columna de email
+      width: '100px',  // Establece un ancho fijo para la columna de email
       className: 'dt-center text-truncate'  // Opcional: corta el texto que exceda el ancho
     },
     {
       targets: index++,
       name: 'nombre',
-        width: '50px',  // Establece un ancho fijo para la columna de email
+        width: '100px',  // Establece un ancho fijo para la columna de email
         className: 'dt-center text-truncate'  // Opcional: corta el texto que exceda el ancho
     },
     {
       targets: index++,
       name: 'apellido',
-        width: '50px',  // Establece un ancho fijo para la columna de email
+        width: '100px',  // Establece un ancho fijo para la columna de email
         className: 'dt-center text-truncate'  // Opcional: corta el texto que exceda el ancho
     },
     {
       targets: index++,
       name: 'celular',
-        width: '50px',  // Establece un ancho fijo para la columna de email
+        width: '100px',  // Establece un ancho fijo para la columna de email
         className: 'dt-center text-truncate'  // Opcional: corta el texto que exceda el ancho
     },
     {
       targets: index++,
       name: 'grupos',
-        width: '50px',  // Establece un ancho fijo para la columna de email
+        width: '100px',  // Establece un ancho fijo para la columna de email
         className: 'dt-center text-truncate'  // Opcional: corta el texto que exceda el ancho
     },
     {
