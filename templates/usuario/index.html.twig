@@ -5,6 +5,24 @@
 	{{ parent() }}
 	<link href="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css"/>
 
+	<style>
+		table.dataTable {
+			width: 100% !important;
+			table-layout: fixed !important;
+		}
+
+		table.dataTable td {
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		table.dataTable th {
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+	</style>
 {% endblock %}
 
 {% block body %}
