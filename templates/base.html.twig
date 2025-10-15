@@ -261,8 +261,9 @@
     <script src="{{ asset('plugins/bootbox/bootbox.js') }}" type="text/javascript"></script>
 
 
-    <script src="{{ asset('js/kt-util.js') }}"></script>
-
+    {% if app.request.headers.get('User-Agent') matches '/(Mobile|Android|iP(hone|od|ad)|BlackBerry|IEMobile|Opera Mini)/i' %}
+        <script src="{{ asset('js/kt-util.js') }}"></script>
+    {% endif %}
 
     {# Select2 ES #}
     <script src="{{ asset('plugins/select2/dist/js/i18n/es.js') }}"
