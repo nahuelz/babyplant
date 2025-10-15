@@ -42,32 +42,22 @@ function datatablesGetColDef() {
     {
       targets: index++,
       name: 'email',
-      width: '100px',  // Establece un ancho fijo para la columna de email
-      className: 'dt-center text-truncate'  // Opcional: corta el texto que exceda el ancho
     },
     {
       targets: index++,
       name: 'nombre',
-        width: '100px',  // Establece un ancho fijo para la columna de email
-        className: 'dt-center text-truncate'  // Opcional: corta el texto que exceda el ancho
     },
     {
       targets: index++,
       name: 'apellido',
-        width: '100px',  // Establece un ancho fijo para la columna de email
-        className: 'dt-center text-truncate'  // Opcional: corta el texto que exceda el ancho
     },
     {
       targets: index++,
       name: 'celular',
-        width: '100px',  // Establece un ancho fijo para la columna de email
-        className: 'dt-center text-truncate'  // Opcional: corta el texto que exceda el ancho
     },
     {
       targets: index++,
       name: 'grupos',
-        width: '100px',  // Establece un ancho fijo para la columna de email
-        className: 'dt-center text-truncate'  // Opcional: corta el texto que exceda el ancho
     },
     {
       targets: -1,
