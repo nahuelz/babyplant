@@ -151,7 +151,12 @@ function initDataTable() {
             });
         },
         lengthMenu: [5, 10, 25, 50, 100, 500, 1000],
-        pageLength: 5,
+        pageLength: 25,
+        scrollX: false,
+        //autoWidth: false,
+        //scrollCollapse: true,
+        fixedHeader: false,
+        //processing: true,
         destroy: true,
         buttons: [
             {
@@ -218,7 +223,7 @@ function initDataTable() {
             }
         ],
         columnDefs: datatablesGetColDef(),
-        order: [[1, 'desc']],
+        order: [],
         rowGroup: {
             dataSrc: 1
         },
@@ -251,7 +256,7 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'id',
             width: '5px',
-            className: 'dt-center',
+            className: 'nowrap text-center margin-0 padding-0 p-0',
             orderable: false,
             render: function (data, type, full, meta) {
                 return '';
@@ -260,15 +265,16 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'id',
-            width: '15px',
-            className: 'dt-center',
-            type: 'num'
+            width: '50px',
+            orderable: false,
+            className: 'nowrap text-center margin-0 padding-0 p-0'
         },
         {
             targets: index++,
             name: 'idProducto',
-            width: '5px',
-            className: 'nowrap text-center margin-0 ',
+            orderable: false,
+            width: '50px',
+            className: 'nowrap text-center margin-0 padding-0 p-0',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
                     return '<a href="' + data.path + '" target="_blank">' + data.idProducto + '</a>';
@@ -279,8 +285,9 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'fechaCreacion',
-            className: 'dt-center',
-            width: '50px',
+            orderable: false,
+            className: 'nowrap text-center margin-0 padding-0 p-0',
+            width: '5px',
             render: function (data, type, full, meta) {
                 if (type === 'sort') {
                     return moment(data, 'DD/MM/YYYY').format('YYYYMMDD');
@@ -291,11 +298,12 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'nombreVariedad',
-            className: 'nowrap text-center margin-0 ',
-            width: '150px',
+            orderable: false,
+            className: 'nowrap text-center margin-0 padding-0 p-0',
+            width: '50px',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<span class="label label-inline margin-0 font-weight-bold p-6" style="width: 220px;color: #ffffff !important;background-color: ' + data.colorProducto + '">' + data.nombreProductoCompleto + '</span>';
+                    return '<span class="label label-inline margin-0 font-weight-bold p-6" style="font-size: 11px; font-weight: bold !important;width: 220px;color: black !important;background-color: ' + data.colorProducto + '">' + data.nombreProductoCompleto + '</span>';
                 }
                 return data.nombreProductoCompleto;
             }
@@ -303,6 +311,7 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'nombreCliente',
+            orderable: false,
             className: 'nowrap text-center margin-0 ',
             width: '50px',
             render: function (data, type, full, meta) {
@@ -315,12 +324,14 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'cantidadBandejas',
+            orderable: false,
             className: 'dt-center',
             width: '50px',
         },
         {
             targets: index++,
             name: 'fechaSiembra',
+            orderable: false,
             width: '50px',
             className: 'dt-center',
             render: function (data, type, full, meta) {
@@ -333,6 +344,7 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'fechaEntrega',
+            orderable: false,
             width: '50px',
             className: 'dt-center',
             render: function (data, type, full, meta) {
@@ -345,7 +357,8 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'estado',
-            width: '90',
+            orderable: false,
+            width: '50',
             className: 'nowrap text-center align-middle',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
@@ -357,6 +370,7 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'diasEnCamara',
+            orderable: false,
             className: 'dt-center',
             searchable: true,
             width: '50px',
@@ -365,6 +379,7 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'diasEnInvernaculo',
+            orderable: false,
             className: 'dt-center',
             searchable: true,
             width: '50px',
@@ -373,6 +388,7 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'ordenSiembra',
+            orderable: false,
             width: '50px',
             className: 'dt-center font-weight-bold',
             searchable: true,
@@ -380,6 +396,7 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'mesada',
+            orderable: false,
             className: 'dt-center',
             searchable: true,
             width: '50px',
