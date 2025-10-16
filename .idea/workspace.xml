@@ -6,8 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="fix grilla usuarios">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/app/pedido/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/app/usuario/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/usuario/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/config/config-datatables.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/config/config-datatables.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/pedido/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/index.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/usuario/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/usuario/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/usuario/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/usuario/index_table.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -397,6 +401,9 @@
     </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="StructureViewState">
+    <option name="selectedTab" value="Twig" />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="" />
@@ -753,23 +760,8 @@
       <workItem from="1760404886400" duration="657000" />
       <workItem from="1760407351598" duration="327000" />
       <workItem from="1760441277407" duration="8749000" />
-      <workItem from="1760547093949" duration="4973000" />
-    </task>
-    <task id="LOCAL-00246" summary="fix error reporte">
-      <option name="closed" value="true" />
-      <created>1758306902291</created>
-      <option name="number" value="00246" />
-      <option name="presentableId" value="LOCAL-00246" />
-      <option name="project" value="LOCAL" />
-      <updated>1758306902291</updated>
-    </task>
-    <task id="LOCAL-00247" summary="fix error reporte">
-      <option name="closed" value="true" />
-      <created>1758307055821</created>
-      <option name="number" value="00247" />
-      <option name="presentableId" value="LOCAL-00247" />
-      <option name="project" value="LOCAL" />
-      <updated>1758307055821</updated>
+      <workItem from="1760547093949" duration="5113000" />
+      <workItem from="1760569907290" duration="10654000" />
     </task>
     <task id="LOCAL-00248" summary="fix error reporte">
       <option name="closed" value="true" />
@@ -1147,7 +1139,23 @@
       <option name="project" value="LOCAL" />
       <updated>1760554315986</updated>
     </task>
-    <option name="localTasksCounter" value="295" />
+    <task id="LOCAL-00295" summary="fix grilla usuarios">
+      <option name="closed" value="true" />
+      <created>1760554369424</created>
+      <option name="number" value="00295" />
+      <option name="presentableId" value="LOCAL-00295" />
+      <option name="project" value="LOCAL" />
+      <updated>1760554369424</updated>
+    </task>
+    <task id="LOCAL-00296" summary="fix grilla usuarios">
+      <option name="closed" value="true" />
+      <created>1760570845888</created>
+      <option name="number" value="00296" />
+      <option name="presentableId" value="LOCAL-00296" />
+      <option name="project" value="LOCAL" />
+      <updated>1760570845888</updated>
+    </task>
+    <option name="localTasksCounter" value="297" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
