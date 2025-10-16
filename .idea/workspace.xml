@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment=".">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-    </list>
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -755,15 +753,7 @@
       <workItem from="1760407351598" duration="327000" />
       <workItem from="1760441277407" duration="8749000" />
       <workItem from="1760547093949" duration="5113000" />
-      <workItem from="1760569907290" duration="11064000" />
-    </task>
-    <task id="LOCAL-00253" summary="fix error generar remito">
-      <option name="closed" value="true" />
-      <created>1759167078686</created>
-      <option name="number" value="00253" />
-      <option name="presentableId" value="LOCAL-00253" />
-      <option name="project" value="LOCAL" />
-      <updated>1759167078686</updated>
+      <workItem from="1760569907290" duration="11074000" />
     </task>
     <task id="LOCAL-00254" summary="fix error generar remito">
       <option name="closed" value="true" />
@@ -1149,7 +1139,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760589759197</updated>
     </task>
-    <option name="localTasksCounter" value="302" />
+    <task id="LOCAL-00302" summary=".">
+      <option name="closed" value="true" />
+      <created>1760589779217</created>
+      <option name="number" value="00302" />
+      <option name="presentableId" value="LOCAL-00302" />
+      <option name="project" value="LOCAL" />
+      <updated>1760589779217</updated>
+    </task>
+    <option name="localTasksCounter" value="303" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
