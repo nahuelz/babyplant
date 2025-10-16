@@ -287,7 +287,7 @@ function datatablesGetColDef() {
             name: 'fechaCreacion',
             orderable: false,
             width: '50px',
-            className: 'dt-center',
+            className: 'dt-center p-0',
             render: function (data, type, full, meta) {
                 if (type === 'sort') {
                     return moment(data, 'DD/MM/YYYY').format('YYYYMMDD');
@@ -312,7 +312,7 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'nombreCliente',
             orderable: false,
-            className: 'nowrap text-center margin-0 ',
+            className: 'nowrap text-center margin-0 p-0',
             width: '50px',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
@@ -325,7 +325,7 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'cantidadBandejas',
             orderable: false,
-            className: 'dt-center',
+            className: 'dt-center p-0',
             width: '50px',
         },
         {
@@ -333,7 +333,7 @@ function datatablesGetColDef() {
             name: 'fechaSiembra',
             orderable: false,
             width: '50px',
-            className: 'dt-center',
+            className: 'dt-center p-0',
             render: function (data, type, full, meta) {
                 if (type === 'sort') {
                     return moment(data, 'DD/MM/YYYY').format('YYYYMMDD');
@@ -346,7 +346,7 @@ function datatablesGetColDef() {
             name: 'fechaEntrega',
             orderable: false,
             width: '50px',
-            className: 'dt-center',
+            className: 'dt-center p-0',
             render: function (data, type, full, meta) {
                 if (type === 'sort') {
                     return moment(data, 'DD/MM/YYYY').format('YYYYMMDD');
@@ -359,7 +359,7 @@ function datatablesGetColDef() {
             name: 'estado',
             orderable: false,
             width: '50',
-            className: 'nowrap text-center align-middle',
+            className: 'nowrap text-center align-middle p-0',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
                     return '<span class="label label-inline ' + data.colorEstado + ' font-weight-bold p-4" style="width: 120px">' + data.estado + '</span>';
@@ -371,7 +371,7 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'diasEnCamara',
             orderable: false,
-            className: 'dt-center',
+            className: 'dt-center p-0',
             searchable: true,
             width: '50px',
             type: 'num'
@@ -380,24 +380,24 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'diasEnInvernaculo',
             orderable: false,
-            className: 'dt-center',
+            className: 'dt-center p-0',
             searchable: true,
             width: '50px',
             type: 'num'
         },
         {
             targets: index++,
-            name: 'ordenSiembra',
+            name: 'ordenSiembra p-0',
             orderable: false,
-            width: '50px',
-            className: 'dt-center font-weight-bold',
+            width: '75px',
+            className: 'dt-center font-weight-bold p-0',
             searchable: true,
         },
         {
             targets: index++,
             name: 'mesada',
             orderable: false,
-            className: 'dt-center',
+            className: 'dt-center p-0',
             searchable: true,
             width: '50px',
             render: function (data, type, full, meta) {
@@ -423,7 +423,7 @@ function datatablesGetColDef() {
             name: '',
             title: '',
             width: '50px',
-            className: "text-center dt-acciones",
+            className: "text-center dt-acciones p-0",
             orderable: false,
 
             render: dataTablesActionFormatter
