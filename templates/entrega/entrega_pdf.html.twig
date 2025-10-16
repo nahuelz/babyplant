@@ -19,7 +19,28 @@
 
     <body>
         {% include 'PDF/header.html.twig' %}
-        {% include 'PDF/cliente.html.twig' %}
+        <div class="table-border header">
+            <table width="100%" border="0">
+                <tr>
+                    <td>
+                        <table cellpadding="5" cellspacing="5" style="padding: 0;">
+                            <tr>
+                                <td align="right"><strong>NOMBRE</strong></td>
+                                <td>{{ entity.clienteEntrega.nombreCompleto|default('-') }}</td>
+                                <td align="right"><strong>CUIT</strong></td>
+                                <td>{{ entity.clienteEntrega.cuit|default('-') }}</td>
+                            </tr>
+                            <tr>
+                                <td align="right"><strong>CELULAR</strong></td>
+                                <td>{{ entity.clienteEntrega.celular|default('-') }}</td>
+                                <td align="right"><strong>DOMICILIO</strong></td>
+                                <td>{{ entity.clienteEntrega.domicilio|default('-') }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
         <div class="table-border">
             <table class="datos-productos-table">
                 <thead>
