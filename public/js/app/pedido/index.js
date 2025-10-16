@@ -286,8 +286,8 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'fechaCreacion',
             orderable: false,
-            className: 'nowrap text-center margin-0 padding-0 p-0',
-            width: '5px',
+            width: '50px',
+            className: 'dt-center',
             render: function (data, type, full, meta) {
                 if (type === 'sort') {
                     return moment(data, 'DD/MM/YYYY').format('YYYYMMDD');
