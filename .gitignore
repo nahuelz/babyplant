@@ -7,6 +7,7 @@
 /.env.local.php
 /.env.*.local
 /.idea/
+/.idea/workspace.xml
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/

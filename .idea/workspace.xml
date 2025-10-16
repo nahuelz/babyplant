@@ -4,14 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment="fix grilla usuarios">
+    <list default="true" id="232bcece-c813-4f01-bffc-29da7c6e84c3" name="Changes" comment=".">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/pedido/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/pedido/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app/usuario/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app/usuario/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/config/config-datatables.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/config/config-datatables.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pedido/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pedido/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/usuario/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/usuario/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/usuario/index_table.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/usuario/index_table.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -761,39 +756,7 @@
       <workItem from="1760407351598" duration="327000" />
       <workItem from="1760441277407" duration="8749000" />
       <workItem from="1760547093949" duration="5113000" />
-      <workItem from="1760569907290" duration="10654000" />
-    </task>
-    <task id="LOCAL-00248" summary="fix error reporte">
-      <option name="closed" value="true" />
-      <created>1758307111470</created>
-      <option name="number" value="00248" />
-      <option name="presentableId" value="LOCAL-00248" />
-      <option name="project" value="LOCAL" />
-      <updated>1758307111470</updated>
-    </task>
-    <task id="LOCAL-00249" summary="fix error reporte">
-      <option name="closed" value="true" />
-      <created>1758307211523</created>
-      <option name="number" value="00249" />
-      <option name="presentableId" value="LOCAL-00249" />
-      <option name="project" value="LOCAL" />
-      <updated>1758307211523</updated>
-    </task>
-    <task id="LOCAL-00250" summary="fix error reporte">
-      <option name="closed" value="true" />
-      <created>1758307311865</created>
-      <option name="number" value="00250" />
-      <option name="presentableId" value="LOCAL-00250" />
-      <option name="project" value="LOCAL" />
-      <updated>1758307311865</updated>
-    </task>
-    <task id="LOCAL-00251" summary="fix error reporte">
-      <option name="closed" value="true" />
-      <created>1758307451062</created>
-      <option name="number" value="00251" />
-      <option name="presentableId" value="LOCAL-00251" />
-      <option name="project" value="LOCAL" />
-      <updated>1758307451062</updated>
+      <workItem from="1760569907290" duration="11044000" />
     </task>
     <task id="LOCAL-00252" summary="fix error reporte">
       <option name="closed" value="true" />
@@ -1155,7 +1118,39 @@
       <option name="project" value="LOCAL" />
       <updated>1760570845888</updated>
     </task>
-    <option name="localTasksCounter" value="297" />
+    <task id="LOCAL-00297" summary="al editar abre una nueva pestaña">
+      <option name="closed" value="true" />
+      <created>1760589418865</created>
+      <option name="number" value="00297" />
+      <option name="presentableId" value="LOCAL-00297" />
+      <option name="project" value="LOCAL" />
+      <updated>1760589418865</updated>
+    </task>
+    <task id="LOCAL-00298" summary="se achicaron los campos de la grilla de pedidos">
+      <option name="closed" value="true" />
+      <created>1760589445184</created>
+      <option name="number" value="00298" />
+      <option name="presentableId" value="LOCAL-00298" />
+      <option name="project" value="LOCAL" />
+      <updated>1760589445184</updated>
+    </task>
+    <task id="LOCAL-00299" summary="se achicaron los campos de la grilla de pedidos">
+      <option name="closed" value="true" />
+      <created>1760589545862</created>
+      <option name="number" value="00299" />
+      <option name="presentableId" value="LOCAL-00299" />
+      <option name="project" value="LOCAL" />
+      <updated>1760589545862</updated>
+    </task>
+    <task id="LOCAL-00300" summary=".">
+      <option name="closed" value="true" />
+      <created>1760589690170</created>
+      <option name="number" value="00300" />
+      <option name="presentableId" value="LOCAL-00300" />
+      <option name="project" value="LOCAL" />
+      <updated>1760589690170</updated>
+    </task>
+    <option name="localTasksCounter" value="301" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1183,9 +1178,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="detalle stock" />
-    <MESSAGE value="fix select2" />
-    <MESSAGE value="stock semanal" />
     <MESSAGE value="fix entregar reserva" />
     <MESSAGE value="confirmar_remito" />
     <MESSAGE value="Descuentos remito.&#10;Entregar mitad bandeja." />
@@ -1208,6 +1200,9 @@
     <MESSAGE value="FIX PARPADEA PANTALLA" />
     <MESSAGE value="fix parpadeo" />
     <MESSAGE value="fix grilla usuarios" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix grilla usuarios" />
+    <MESSAGE value="al editar abre una nueva pestaña" />
+    <MESSAGE value="se achicaron los campos de la grilla de pedidos" />
+    <MESSAGE value="." />
+    <option name="LAST_COMMIT_MESSAGE" value="." />
   </component>
 </project>
