@@ -28,6 +28,7 @@ jQuery(document).ready(function () {
         lengthMenu: [[10, 25, 50, 100, 10000], [10, 25, 50, 100, 10000]],
         //scrollX: false,
         autoWidth: false,
+        fixedHeader: false,
         //scrollCollapse: true,
         serverSide: true,
         processing: true
