@@ -40,7 +40,7 @@ class EntregaProducto {
     private mixed $pedidoProducto;
 
     /**
-     * @ORM\Column(name="cantidad_bandejas", type="string", length=50, nullable=false)
+     * @ORM\Column(name="cantidad_bandejas", type="decimal", precision=6, scale=1, nullable=true)
      */
     private $cantidadBandejas;
 
@@ -100,9 +100,17 @@ class EntregaProducto {
         $this->entrega = $entrega;
     }
 
-    public function getCantidadBandejas()
+    /**
+     * @return float|int|null
+     */
+    public function getCantidadBandejas(): float|int|null
     {
-        return $this->cantidadBandejas;
+        if ($this->cantidadBandejas === null) {
+            return null;
+        }
+        return $this->cantidadBandejas == (int)$this->cantidadBandejas
+            ? (int)$this->cantidadBandejas
+            : (float)$this->cantidadBandejas;
     }
 
     public function setCantidadBandejas(mixed $cantidadBandejas): void

@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -36,14 +37,20 @@ class MesadaType extends AbstractType {
                     'placeholder' => '-- Elija la mesada --',
                     'auto_initialize' => true)
             )
-            ->add('cantidadBandejas', IntegerType::class, array(
-                    'required' => false,
-                    'mapped' => true,
-                    'label' => 'Cantidad Bandejas',
+            ->add('cantidadBandejas', NumberType::class, array(
+                    'required' => true,
+                    'label' => 'Cantidad de Bandejas',
+                    'scale' => 1,
+                    'html5' => true,
                     'attr' => array(
-                        'class' => 'form-control cantidadBandejas',
-                        'min' => 1,
-                        'tabindex' => '5'))
+                        'placeholder' => 'Escriba la cantidad de bandejas (ej: 0,5)',
+                        'min' => 0.5,
+                        'step' => 0.1,
+                        'class' => 'form-control',
+                        'inputmode' => 'decimal',
+                        'pattern' => '[0-9]+([,][0-9]+)?'
+                    )
+                )
             )
 
         ;

@@ -60,5 +60,15 @@
                 {% endfor %}
             </table>
         </div>
+
+        {% if entity.observacion != '' %}
+            <div class="table-border">
+                <table >
+                        <tr>
+                            <td align="center">{{ entity.observacion }}</td>
+                        </tr>
+                </table>
+            </div>
+        {% endif %}
     </body>
 </html>

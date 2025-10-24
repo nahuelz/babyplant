@@ -52,12 +52,12 @@ class PedidoProducto {
     private mixed $tipoBandeja;
 
     /**
-     * @ORM\Column(name="cantidad_bandejas_pedidas", type="integer", nullable=false)
+     * @ORM\Column(name="cantidad_bandejas_pedidas", type="decimal", precision=6, scale=1, nullable=true)
      */
     private mixed $cantidadBandejasPedidas;
 
     /**
-     * @ORM\Column(name="cantidad_bandejas_reales", type="integer", nullable=true)
+     * @ORM\Column(name="cantidad_bandejas_reales", type="decimal", precision=6, scale=1, nullable=true)
      */
     private mixed $cantidadBandejasReales;
 
@@ -273,11 +273,16 @@ class PedidoProducto {
     }
 
     /**
-     * @return mixed
+     * @return float|int|null
      */
-    public function getCantidadBandejasPedidas(): mixed
+    public function getCantidadBandejasPedidas(): float|int|null
     {
-        return $this->cantidadBandejasPedidas;
+        if ($this->cantidadBandejasPedidas === null) {
+            return null;
+        }
+        return $this->cantidadBandejasPedidas == (int)$this->cantidadBandejasPedidas 
+            ? (int)$this->cantidadBandejasPedidas 
+            : (float)$this->cantidadBandejasPedidas;
     }
 
     /**
@@ -290,11 +295,16 @@ class PedidoProducto {
     }
 
     /**
-     * @return mixed
+     * @return float|int|null
      */
-    public function getCantidadBandejasReales(): mixed
+    public function getCantidadBandejasReales(): float|int|null
     {
-        return $this->cantidadBandejasReales;
+        if ($this->cantidadBandejasReales === null) {
+            return null;
+        }
+        return $this->cantidadBandejasReales == (int)$this->cantidadBandejasReales 
+            ? (int)$this->cantidadBandejasReales 
+            : (float)$this->cantidadBandejasReales;
     }
 
     /**
@@ -794,12 +804,21 @@ class PedidoProducto {
         return $cantidadBandejas;
     }
 
-    public function getCantidadBandejasDisponibles(){
-        // Disponible = bandejasReasles - (bandejasEntregadas + bandejasReservadas)
-        if ($this->getEstado()->getCodigoInterno() == ConstanteEstadoPedidoProducto::CANCELADO){
+    /**
+     * @return float|int
+     */
+    public function getCantidadBandejasDisponibles(): float|int
+    {
+        // Si el estado es CANCELADO, devolver 0 como entero
+        if ($this->getEstado()->getCodigoInterno() == ConstanteEstadoPedidoProducto::CANCELADO) {
             return 0;
         }
-        return ($this->getCantidadBandejasReales() - ($this->getCantidadBandejasEntregadas() + $this->getCantidadBandejasReservadasSinEntregar()));
+        
+        $disponibles = $this->getCantidadBandejasReales() - ($this->getCantidadBandejasEntregadas() + $this->getCantidadBandejasReservadasSinEntregar());
+        
+        // Si es un número entero (ej: 10.0), devolverlo como entero (10)
+        // Si tiene decimales (ej: 10.5), mantenerlo como float
+        return $disponibles == (int)$disponibles ? (int)$disponibles : (float)$disponibles;
     }
 
     public function setCantidadBandejasDisponibles()

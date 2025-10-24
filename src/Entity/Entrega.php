@@ -64,6 +64,13 @@ class Entrega {
     private mixed $estado;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="observacion", type="text", nullable=true)
+     */
+    private $observacion;
+
+    /**
      * @param $historicoEstados
      */
     public function __construct()
@@ -248,4 +255,16 @@ class Entrega {
     public function getCuentaCorrientePedido(){
         return $this->getEntregasProductos()->first()->getCuentaCorrientePedido();
     }
+
+    public function getObservacion(): ?string
+    {
+        return $this->observacion;
+    }
+
+    public function setObservacion(?string $observacion): void
+    {
+        $this->observacion = $observacion;
+    }
+
+
 }

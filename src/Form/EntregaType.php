@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -78,6 +79,15 @@ class EntregaType extends AbstractType {
             )
             ->add('remito', RemitoType::class, array(
                 'required' => false
+            ))
+            ->add('observacion', TextareaType::class, array(
+                'required' => false,
+                'label' => 'OBSERVACIÓN',
+                'attr' => array(
+                    'class' => 'form-control',
+                    'rows' => 3,
+                    'placeholder' => 'Ingrese una observación opcional...'
+                )
             ))
         ;
     }

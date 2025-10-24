@@ -34,7 +34,7 @@
         "estadoPedidoProducto": "{{ entity.estadoPedidoProducto|default('Sin estado') }}",
         "colorEstadoPedidoProducto": "{{ entity.colorEstadoPedidoProducto|default('default') }}"
         },
-        "{{ entity.cantidadBandejas|default('-') }}",
+        "{{ entity.cantidadBandejas == (entity.cantidadBandejas|round(0, 'floor')) ? entity.cantidadBandejas|number_format(0, '', '') : entity.cantidadBandejas }}",
         {
         {% if entity.idEstado == SIN_ENTREGAR %}
             "entregar": "{{ path( "reserva_confirmar_entrega", { id: entity.idReserva }) }}",

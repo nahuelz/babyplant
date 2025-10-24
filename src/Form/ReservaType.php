@@ -12,7 +12,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -84,13 +84,19 @@ class ReservaType extends AbstractType {
                     'placeholder' => '-- Elija el pedido producto --',
                     'auto_initialize' => false)
             )
-            ->add('cantidadBandejas', IntegerType::class, array(
+            ->add('cantidadBandejas', NumberType::class, array(
                     'required' => true,
                     'label' => 'Cantidad de Bandejas',
+                    'scale' => 1,
+                    'html5' => true,
                     'attr' => array(
-                        'placeholder' => 'Escriba la cantidad de bandejas',
-                        'min' => 1,
-                        'class' => 'form-control')
+                        'placeholder' => 'Escriba la cantidad de bandejas (ej: 0,5)',
+                        'min' => 0.5,
+                        'step' => 0.1,
+                        'class' => 'form-control',
+                        'inputmode' => 'decimal',
+                        'pattern' => '[0-9]+([,][0-9]+)?'
+                    )
                 )
             )
             ->add('fechaEntregaEstimada', DateType::class, array(

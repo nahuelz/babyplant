@@ -21,11 +21,11 @@
         },
         {
         "idPedido": "{{ entity.id }}",
-        "cantidadBandejasDisponibles": "{{ entity.cantidadBandejasDisponibles }}",
+        "cantidadBandejasDisponibles": "{{ entity.cantidadBandejasDisponibles is same as (entity.cantidadBandejasDisponibles|round(0, 'floor')) ? entity.cantidadBandejasDisponibles|number_format(0, '', '') : entity.cantidadBandejasDisponibles }}",
         "nombreCliente": "{{ entity.cliente|default('-') }}",
         "path": "{{ path('situacioncliente_show', { "id": entity.idCliente }) }}"
         },
-        "{{ entity.cantidadBandejas|default('-') }}",
+        "{{ entity.cantidadBandejas == (entity.cantidadBandejas|round(0, 'floor')) ? entity.cantidadBandejas|number_format(0, '', '') : entity.cantidadBandejas }}",
         "{{ entity.fechaSiembraPedido is not null ? entity.fechaSiembraPedido|date('d/m/Y') : '-' }}",
         "{{ entity.fechaEntregaPedido is not null ? entity.fechaEntregaPedido|date('d/m/Y') : '-' }}",
         {

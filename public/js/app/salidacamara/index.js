@@ -290,7 +290,7 @@ function initFormValidation() {
 }
 function initValidations(){
     $('#salida_camara_mesadaUno_cantidadBandejas').on('keyup', function(){
-        if ($(this).val() > parseInt($('#cantidadBandejasReales').val())){
+        if ($(this).val() > parseFloat($('#cantidadBandejasReales').val())){
             $(this).val($('#cantidadBandejasReales').val());
         }
     });
@@ -302,9 +302,9 @@ jQuery(document).ready(function() {
 });
 
 function cantidadDeBandejasValida(){
-    let cantidadBandejasMesadaUno = $('#salida_camara_mesadaUno_cantidadBandejas').val() ? parseInt($('#salida_camara_mesadaUno_cantidadBandejas').val()) : 0;
-    let cantidadBandejasMesadaDos = $('#salida_camara_mesadaDos_cantidadBandejas').val() ? parseInt($('#salida_camara_mesadaDos_cantidadBandejas').val()) : 0;
-    let cantidadBandejasReales = parseInt($('#cantidadBandejasReales').val());
+    let cantidadBandejasMesadaUno = $('#salida_camara_mesadaUno_cantidadBandejas').val() ? parseFloat($('#salida_camara_mesadaUno_cantidadBandejas').val()) : 0;
+    let cantidadBandejasMesadaDos = $('#salida_camara_mesadaDos_cantidadBandejas').val() ? parseFloat($('#salida_camara_mesadaDos_cantidadBandejas').val()) : 0;
+    let cantidadBandejasReales = parseFloat($('#cantidadBandejasReales').val());
     let cantidadTotalBandejas = cantidadBandejasMesadaUno + cantidadBandejasMesadaDos;
 
     return (cantidadTotalBandejas === cantidadBandejasReales);
@@ -366,7 +366,7 @@ function initmesadaForm() {
         disableMesadaDosOptionHandler();
         removeMesadaHandler();
         $('#salida_camara_mesadaDos_cantidadBandejas').on('keyup', function(){
-            if ($(this).val() > parseInt($('#cantidadBandejasReales').val())){
+            if ($(this).val() > parseFloat($('#cantidadBandejasReales').val())){
                 $(this).val($('#cantidadBandejasReales').val());
             }
         });

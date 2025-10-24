@@ -60,6 +60,13 @@
                     </a>
                 </li>
             {% endif %}
+            {% if is_granted("ROLE_MENU_CONFIGURACION") %}
+                <li class="menu-item " aria-haspopup="true">
+                    <a href="{{ path('notificacion_todas_notificaciones') }}" class="menu-link ">
+                        <span class="menu-text">Notificaciones</span>
+                    </a>
+                </li>
+            {% endif %}
         </ul>
     </div>
 </li>

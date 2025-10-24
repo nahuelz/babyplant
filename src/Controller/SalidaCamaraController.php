@@ -2,26 +2,18 @@
 
 namespace App\Controller;
 
-use App\Controller\BaseController;
 use App\Entity\Constants\ConstanteEstadoMesada;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Constants\ConstanteTipoConsulta;
 use App\Entity\EstadoMesada;
-use App\Entity\EstadoMesadaHistorico;
 use App\Entity\EstadoPedidoProducto;
-use App\Entity\EstadoPedidoProductoHistorico;
-use App\Entity\Pedido;
 use App\Entity\PedidoProducto;
 use App\Entity\Mesada;
-use App\Entity\TipoMesada;
 use App\Form\SalidaCamaraType;
-use DateTime;
 use Doctrine\ORM\Query\ResultSetMapping;
-use Doctrine\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

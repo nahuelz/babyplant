@@ -85,11 +85,17 @@ class Mesada {
         $this->id = $id;
     }
 
-    public function getCantidadBandejas(): mixed
+    /**
+     * @return float|int|null
+     */
+    public function getCantidadBandejas(): float|int|null
     {
-        return $this->cantidadBandejas == (int)$this->cantidadBandejas 
-            ? (int)$this->cantidadBandejas 
-            : $this->cantidadBandejas;
+        if ($this->cantidadBandejas === null) {
+            return null;
+        }
+        return $this->cantidadBandejas == (int)$this->cantidadBandejas
+            ? (int)$this->cantidadBandejas
+            : (float)$this->cantidadBandejas;
     }
 
     public function setCantidadBandejas(mixed $cantidadBandejas): void

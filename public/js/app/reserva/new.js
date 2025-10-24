@@ -9,8 +9,15 @@ jQuery(document).ready(function () {
     $('#reserva_cliente').select2();
     $('#reserva_submit').html('Reservar');
     initClienteSelect2();
+    initClienteReservaHandler();
 
 });
+
+function initClienteReservaHandler() {
+    $('#reserva_origen_cliente').on('change', function(){
+        $('#reserva_cliente').val($(this).val()).select2();
+    })
+}
 
 function customAfterChainedSelect(){
     $('#reserva_pedidoProducto').select2({
@@ -68,10 +75,10 @@ function initBaseSubmitButton() {
 
         fv.revalidateField('requiredFields');
 
-        if (parseInt($('#reserva_cantidadBandejas').val()) < 1){
+        if (parseFloat($('#reserva_cantidadBandejas').val()) < 0.5){
             Swal.fire({
                 title: 'Error',
-                text: "La cantidad de bandejas no puede ser menor a 1.",
+                text: "La cantidad de bandejas no puede ser menor a 0.5.",
                 icon: "warning"
             });
             return false;

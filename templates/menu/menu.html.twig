@@ -34,12 +34,12 @@
     {% include 'menu/menu_configuracion.html.twig' %}
 {% endif %}
 
-{# MENU SEGURIDAD #}
-{% if is_granted("ROLE_MENU_SEGURIDAD") %}
-    {% include 'menu/menu_seguridad.html.twig' %}    
+{# MENU ESTADISTICAS #}
+{% if is_granted("ROLE_ESTADISTICAS") %}
+    {% include 'menu/menu_estadisticas.html.twig' %}
 {% endif %}
 
 {# MENU SEGURIDAD #}
-{% if is_granted("ROLE_ESTADISTICAS") %}
-    {% include 'menu/menu_estadisticas.html.twig' %}
+{% if is_granted("ROLE_MENU_SEGURIDAD") %}
+    {% include 'menu/menu_seguridad.html.twig' %}    
 {% endif %}

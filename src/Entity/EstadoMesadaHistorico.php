@@ -51,7 +51,7 @@ class EstadoMesadaHistorico {
     private $motivo;
 
     /**
-     * @ORM\Column(name="cantidad_bandejas", type="integer", nullable=false)
+     * @ORM\Column(name="cantidad_bandejas", type="decimal", precision=6, scale=1, nullable=true)
      */
     private mixed $cantidadBandejas;
 
@@ -105,9 +105,17 @@ class EstadoMesadaHistorico {
         return $this;
     }
 
-    public function getCantidadBandejas(): mixed
+    /**
+     * @return float|int|null
+     */
+    public function getCantidadBandejas(): float|int|null
     {
-        return $this->cantidadBandejas;
+        if ($this->cantidadBandejas === null) {
+            return null;
+        }
+        return $this->cantidadBandejas == (int)$this->cantidadBandejas
+            ? (int)$this->cantidadBandejas
+            : (float)$this->cantidadBandejas;
     }
 
     public function setCantidadBandejas(mixed $cantidadBandejas): void
