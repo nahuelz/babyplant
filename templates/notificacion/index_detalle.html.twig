@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mis Notificaciones{% endblock %}
+
+{% block body %}
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <h3 class="card-label">Mis Notificaciones</h3>
+            </div>
+            <div class="card-toolbar">
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('notificacion_new') }}" class="btn btn-primary font-weight-bold">
+                        <i class="fa fa-plus"></i> Nueva Notificación
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="timeline timeline-3">
+                <div class="timeline-items">
+                    {% for notificacion in notificaciones %}
+                        <div class="timeline-item">
+                            <div class="timeline-media">
+                                <i class="flaticon-bell {% if not notificacion.leida %}text-primary{% else %}text-muted{% endif %}"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="mr-2">
+                                        <span class="text-dark-75 font-weight-bold">{{ notificacion.titulo }}</span>
+                                        <span class="text-muted ml-2">{{ notificacion.fechaCreacion|date('d/m/Y H:i') }}</span>
+                                    </div>
+                                    {% if not notificacion.leida %}
+                                        <span class="label label-light-primary label-inline">Nuevo</span>
+                                    {% endif %}
+                                </div>
+                                <p class="p-0">
+                                    {{ notificacion.contenido|raw }}
+                                </p>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-custom alert-notice alert-light-info fade show" role="alert">
+                            <div class="alert-icon"><i class="flaticon-information"></i></div>
+                            <div class="alert-text">
+                                No hay notificaciones para mostrar.
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .timeline.timeline-3 .timeline-item .timeline-media {
+            height: 40px;
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        .timeline.timeline-3 .timeline-item .timeline-media i {
+            font-size: 1.3rem;
+        }
+    </style>
+{% endblock %}

@@ -16,20 +16,3 @@
     </div>
 </a>
 {% endfor %}
-
-{#
-
-    {% set iconColorClass = notificacion.prioridad == 'A' ? 'font-red' : (notificacion.prioridad == 'M' ? 'font-yellow' : 'font-green') %}
-    
-    <li>
-        <a class="notificacion-link notificacion_ver" href="javascript:;" 
-           data-id-notificacion="{{ notificacion.id }}" data-contenido-notificacion="{{ notificacion.contenido }}">
-            <span class="details">
-                <i class=" fa fa-exclamation-circle {{ iconColorClass }}" style="font-size: 15px"></i>
-                {{ notificacion.titulo|clear_format|truncate(60, false, '...') }}
-            </span>
-            <span class="time">{{ notificacion.fechaCreacion|time_ago_in_words }}</span>
-        </a>
-    </li>
-    
-#}    

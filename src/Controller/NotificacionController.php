@@ -2,42 +2,65 @@
 
 namespace App\Controller;
 
-use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use App\Entity\Notificacion;
 
 /**
  * NotificacionController.
  *
  * @Route("/notificacion")
- * @IsGranted("ROLE_USER")
+ * @IsGranted("ROLE_ADMIN")
  */
-class NotificacionController extends AbstractController {
+class NotificacionController extends BaseController {
 
     /**
      *
-     * @var ManagerRegistry
+     * @Route("/", name="notificacion_index")
+     * @Method("GET")
+     * @Template("notificacion/_ndex.html.twig")
      */
-    protected ManagerRegistry $doctrine;
+    public function index() {
 
+        $extraParams = [
+            'select_boolean' => $this->selectService->getBooleanSelect()
+        ];
 
-    public function __construct(ManagerRegistry $doctrine){
-        $this->doctrine = $doctrine;
-
-        return $this;
+        return parent::baseIndexAction($extraParams);
     }
+
+    /**
+     * Tabla para notificacion.
+     *
+     * @Route("/index_table/", name="notificacion_table", methods={"GET|POST"})
+     * @IsGranted("ROLE_GRUPO_VIEW")
+     */
+    public function indexTableAction(Request $request): Response {
+        $columnDefinition = [
+            ['field' => 'id', 'type' => '', 'searchable' => false, 'sortable' => false],
+            ['field' => 'nombre', 'type' => 'string', 'searchable' => true, 'sortable' => true],
+            ['field' => 'descripcion', 'type' => 'string', 'searchable' => true, 'sortable' => true],
+            ['field' => 'roles', 'type' => 'string', 'searchable' => true, 'sortable' => true],
+            ['field' => 'acciones', 'type' => '', 'searchable' => false, 'sortable' => false],
+        ];
+
+        return parent::baseIndexTableAction($request, $columnDefinition);
+    }
+
     /**
      * Muestra las notificaciones del usuario en el menú.
      * 
      * @Route("/ultimas_notificaciones/", name="notificacion_ultimas_notificaciones")
      * @Method("POST")
      */
-    public function getMenuNotificaciones() {
+    public function getMenuNotificaciones(): Response
+    {
         return $this->render('notificacion/index_table.html.twig', //
                         array('notificaciones' => $this->getNotificacionesByUsuario(false, 50, true)) //
         );
@@ -49,7 +72,8 @@ class NotificacionController extends AbstractController {
      * @Route("/todas_notificaciones/", name="notificacion_todas_notificaciones")
      * @Method("POST")
      */
-    public function getDetalleNotificaciones() {
+    public function getDetalleNotificaciones(): Response
+    {
         return $this->render('notificacion/index_detalle.html.twig', //
                         array('notificaciones' => $this->getNotificacionesByUsuario(true, 500, false)) //
         );
@@ -62,15 +86,11 @@ class NotificacionController extends AbstractController {
      * @return type
      */
     private function getNotificacionesByUsuario($showAll = false, $limit = null, $filterDate = true) {
-
         $em = $this->doctrine->getManager();
-
         $usuario = $this->getUser();
-
         $rsm = new ResultSetMapping();
 
         $rsm->addScalarResult('id', 'id');
-        $rsm->addScalarResult('prioridad', 'prioridad');
         $rsm->addScalarResult('titulo', 'titulo');
         $rsm->addScalarResult('contenido', 'contenido');
         $rsm->addScalarResult('fechaCreacion', 'fechaCreacion');
@@ -78,38 +98,44 @@ class NotificacionController extends AbstractController {
 
         $sql = '';
 
+        // Get user roles and create JSON array conditions
+        $userRoles = $this->getUser()->getRoles();
+        $rolesConditions = [];
+        foreach ($userRoles as $role) {
+            $rolesConditions[] = "JSON_CONTAINS(n.destinatarios, '\"$role\"')";
+        }
+        $rolesCondition = !empty($rolesConditions) ? 'AND (' . implode(' OR ', $rolesConditions) . ')' : '';
+
         if ($showAll) {
             $sql .= 'SELECT n.id,
-                        n.prioridad,
-                        n.titulo,
-                        n.contenido,
-                        n.fecha_creacion AS fechaCreacion,
-                        IF(lu.id_notificacion IS NULL, FALSE, TRUE) AS leida
-                    FROM notificacion n                        
-                        LEFT JOIN (
-                            SELECT nu.id_notificacion
-                            FROM notificacion_usuario nu
-                            WHERE nu.fecha_baja IS NULL
-                                AND nu.id_usuario = ?
-                        ) AS lu ON lu.id_notificacion = n.id
-                    WHERE n.fecha_baja IS NULL
-                        AND (compareDestinatarios(?, n.destinatarios) OR compareDestinatarios(?, n.destinatarios))';
+                    n.titulo,
+                    n.contenido,
+                    n.fecha_creacion AS fechaCreacion,
+                    IF(lu.id_notificacion IS NULL, FALSE, TRUE) AS leida
+                FROM notificacion n                        
+                    LEFT JOIN (
+                        SELECT nu.id_notificacion
+                        FROM notificacion_usuario nu
+                        WHERE nu.fecha_baja IS NULL
+                            AND nu.id_usuario = ?
+                    ) AS lu ON lu.id_notificacion = n.id
+                WHERE n.fecha_baja IS NULL
+                    ' . $rolesCondition;
         } else {
             $sql .= 'SELECT n.id,
-                        n.prioridad,
-                        n.titulo,
-                        n.contenido,
-                        n.fecha_creacion AS fechaCreacion,
-                        false AS leida
-                    FROM notificacion n
-                    WHERE n.fecha_baja IS NULL
-                        AND n.id NOT IN (
-                            SELECT nu.id_notificacion
-                            FROM notificacion_usuario nu
-                            WHERE nu.fecha_baja IS NULL
-                            AND nu.id_usuario = ?
-                        )
-                        AND (compareDestinatarios(?, n.destinatarios) OR compareDestinatarios(?, n.destinatarios))';
+                    n.titulo,
+                    n.contenido,
+                    n.fecha_creacion AS fechaCreacion,
+                    false AS leida
+                FROM notificacion n
+                WHERE n.fecha_baja IS NULL
+                    AND n.id NOT IN (
+                        SELECT nu.id_notificacion
+                        FROM notificacion_usuario nu
+                        WHERE nu.fecha_baja IS NULL
+                        AND nu.id_usuario = ?
+                    )
+                    ' . $rolesCondition;
         }
 
         if ($filterDate) {
@@ -117,17 +143,14 @@ class NotificacionController extends AbstractController {
         }
 
         $sql .= " GROUP BY n.id
-                ORDER BY n.fecha_creacion DESC";
+            ORDER BY n.fecha_creacion DESC";
 
         if ($limit) {
             $sql .= " LIMIT $limit";
         }
 
         $native_query = $em->createNativeQuery($sql, $rsm);
-
-        $native_query->setParameter(1, $usuario);
-        $native_query->setParameter(2, implode(",", $this->getUser()->getRoles()));
-        $native_query->setParameter(3, $usuario);
+        $native_query->setParameter(1, $usuario->getId());
 
         return $native_query->getResult();
     }
@@ -169,6 +192,36 @@ class NotificacionController extends AbstractController {
         )));
 
         return $response;
+    }
+
+    /**
+     * @Route("/new", name="notificacion_new", methods={"GET","POST"})
+     * @Template("notificacion/new.html.twig")
+     * @IsGranted("ROLE_ADMIN")
+     */
+    public function new(): array {
+        return parent::baseNewAction();
+    }
+
+    /**
+     * @Route("/insertar", name="notificacion_create", methods={"GET","POST"})
+     * @Template("notificacion/new.html.twig")
+     */
+    public function createAction(Request $request) {
+        return parent::baseCreateAction($request);
+    }
+
+    /**
+     *
+     * @param string $entityFormTypeClassName
+     * @param Notificacion $entity
+     */
+    protected function baseInitCreateCreateForm($entityFormTypeClassName, $entity): FormInterface {
+        return ($this->createForm($entityFormTypeClassName, $entity, array(
+            'action' => $this->generateUrl($this->getURLPrefix() . '_create'),
+            'method' => 'POST',
+            'roles' => $this->getParameter('security.role_hierarchy.roles')
+        )));
     }
 
 }

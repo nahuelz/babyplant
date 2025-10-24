@@ -33,13 +33,6 @@ class Notificacion {
     /**
      * @var string
      *
-     * @ORM\Column(name="prioridad", type="string", nullable=false)
-     */
-    protected $prioridad;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="titulo", type="string", length=255, nullable=false)
      */
     protected $titulo;
@@ -60,11 +53,9 @@ class Notificacion {
     protected $notificacionesUsuario;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="destinatarios", type="string", length=255, nullable=false)
+     * @ORM\Column(type="json")
      */
-    protected $destinatarios;
+    private $destinatarios = [];
 
     /**
      * Constructor
@@ -80,37 +71,6 @@ class Notificacion {
      */
     public function getId() {
         return $this->id;
-    }
-
-    /**
-     * Set prioridad
-     *
-     * @param string $prioridad
-     *
-     * @return Notificacion
-     */
-    public function setPrioridad($prioridad) {
-        $this->prioridad = $prioridad;
-
-        return $this;
-    }
-
-    /**
-     * Get prioridad
-     *
-     * @return string
-     */
-    public function getPrioridad() {
-        return $this->prioridad;
-    }
-
-    /**
-     * Get labelPrioridad
-     *
-     * @return string
-     */
-    public function getLabelPrioridad() {
-        return $this->prioridad == 'A' ? 'Alta' : ($this->prioridad == 'M' ? 'Media' : 'Baja');
     }
 
     /**
@@ -191,7 +151,7 @@ class Notificacion {
     /**
      * Set destinatarios
      *
-     * @param string $destinatarios
+     * @param array $destinatarios
      *
      * @return Notificacion
      */
@@ -204,9 +164,10 @@ class Notificacion {
     /**
      * Get destinatarios
      *
-     * @return string
+     * @return array
      */
-    public function getDestinatarios() {
+    public function getDestinatarios(): array
+    {
         return $this->destinatarios;
     }
 

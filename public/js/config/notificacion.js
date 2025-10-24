@@ -18,10 +18,17 @@ function loadNotificacionesUsuario() {
         url: __HOMEPAGE_PATH__ + 'notificacion/ultimas_notificaciones/',
         global: false
     }).done(function (notificaciones) {
-
         $('#content-notificaciones').html(notificaciones);
 
         var cantidadNotificaciones = $('#content-notificaciones .notificacion-link').length;
+        var $notificationBadge = $('.notification-badge');
+
+        // Actualizar contador
+        if (cantidadNotificaciones > 0) {
+            $notificationBadge.text(cantidadNotificaciones).show();
+        } else {
+            $notificationBadge.hide();
+        }
 
         $('.total-notificaciones').text(cantidadNotificaciones);
 
@@ -31,17 +38,18 @@ function loadNotificacionesUsuario() {
             $('.notificaciones-pulse').removeClass('pulse');
         }
 
-//
-//        if (cantidadNotificaciones > 0) {
-//            $('.dropdown-notification .fa-bell').addClass('faa-tada animated'); // http://l-lin.github.io/font-awesome-animation/
-//            $('.notificacion_marcar_todas_vistas').show();
-//        } else {
-//            $('.dropdown-notification .fa-bell').removeClass('faa-tada animated');
-//            $('.notificacion_marcar_todas_vistas').hide();
-//        }
-//
-//        toggleNotificaciones();
+        if (cantidadNotificaciones > 0) {
+            $('.fa-bell').addClass('faa-tada animated');
+            $('.notificacion_marcar_todas_vistas').show();
+        } else {
+            $('.fa-bell').removeClass('faa-tada animated');
+            $('.notificacion_marcar_todas_vistas').hide();
+        }
 
+        toggleNotificaciones();
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        var msg = "No se pud" + (todos ? "ieron" : "o") + " marcar como vista" + (todos ? "s" : "") + " la" + (todos ? "s" : "") + " notificaci" + (todos ? "ones" : "ón") + ". Intente nuevamente.";
+        showError(msg);
     });
 }
 
@@ -79,10 +87,6 @@ function initHandlerVerNotificacionButton() {
             callbackSuccess: function () {
                 notificacionMarcarVista(notificacionLink);
             }
-        });
-
-        dialog.on("shown.bs.modal", function () {
-            App.initSlimScroll($('.modal-body'));
         });
 
         $('.modal-dialog').css('width', '70%');
@@ -208,7 +212,7 @@ function notificacionMarcarVista($ocultarLink) {
 
         showFlashMessage('success', mensajeSuccess);
 
-    }).error(function (jqXHR, textStatus, errorThrown) {
+    }).fail(function (jqXHR, textStatus, errorThrown) {
 
         var msg = "No se pud" + (todos ? "ieron" : "o") + " marcar como vista" + (todos ? "s" : "") + " la" + (todos ? "s" : "") + " notificaci" + (todos ? "ones" : "ón") + ". Intente nuevamente.";
 
