@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class NotificacionType extends AbstractType
 {
@@ -68,7 +69,14 @@ class NotificacionType extends AbstractType
                     'attr' => array(
                         'class' => 'form-control choice',
                         'placeholder' => 'Seleccione los roles aqu&iacute;.'))
-            );
+            )
+            ->add('imagenFile', VichFileType::class, [
+                'required' => false,
+                'allow_delete' => true,
+                'download_uri' => true,
+                'label' => 'Imagen de notificación',
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver) {

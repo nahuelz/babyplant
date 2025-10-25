@@ -17,55 +17,73 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="timeline timeline-3">
-                <div class="timeline-items">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-checkable" id="kt_datatable_notificaciones" style="width: 100%">
+                    <thead>
+                    <tr>
+                        <th>Estado</th>
+                        <th>Título</th>
+                        <th>Contenido</th>
+                        <th>Fecha</th>
+                    </tr>
+                    </thead>
+                    <tbody>
                     {% for notificacion in notificaciones %}
-                        <div class="timeline-item">
-                            <div class="timeline-media">
-                                <i class="flaticon-bell {% if not notificacion.leida %}text-primary{% else %}text-muted{% endif %}"></i>
-                            </div>
-                            <div class="timeline-content">
-                                <div class="d-flex align-items-center justify-content-between mb-3">
-                                    <div class="mr-2">
-                                        <span class="text-dark-75 font-weight-bold">{{ notificacion.titulo }}</span>
-                                        <span class="text-muted ml-2">{{ notificacion.fechaCreacion|date('d/m/Y H:i') }}</span>
-                                    </div>
-                                    {% if not notificacion.leida %}
-                                        <span class="label label-light-primary label-inline">Nuevo</span>
-                                    {% endif %}
-                                </div>
-                                <p class="p-0">
-                                    {{ notificacion.contenido|raw }}
-                                </p>
-                            </div>
-                        </div>
+                        <tr>
+                            <td class="text-center">
+                                {% if not notificacion.leida %}
+                                    <span class="label label-light-primary label-inline">Nuevo</span>
+                                {% else %}
+                                    <i class="flaticon-bell text-muted"></i>
+                                {% endif %}
+                            </td>
+                            <td>{{ notificacion.titulo }}</td>
+                            <td>{{ notificacion.contenido|striptags|raw|slice(0, 100) }}{% if notificacion.contenido|length > 100 %}...{% endif %}</td>
+                            <td>{{ notificacion.fechaCreacion|date('d/m/Y H:i') }}</td>
+                        </tr>
                     {% else %}
-                        <div class="alert alert-custom alert-notice alert-light-info fade show" role="alert">
-                            <div class="alert-icon"><i class="flaticon-information"></i></div>
-                            <div class="alert-text">
-                                No hay notificaciones para mostrar.
-                            </div>
-                        </div>
+                        <tr>
+                            <td colspan="4" class="text-center">No hay notificaciones para mostrar.</td>
+                        </tr>
                     {% endfor %}
-                </div>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 {% endblock %}
 
-{% block stylesheets %}
+{% block javascripts %}
     {{ parent() }}
-    <style>
-        .timeline.timeline-3 .timeline-item .timeline-media {
-            height: 40px;
-            width: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
+
+    <!-- Agrega esto justo antes de cerrar el bloque javascripts -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+
+    <script>
+        // Esperamos a que jQuery esté completamente cargado
+        if (typeof $ !== 'undefined') {
+            $(document).ready(function() {
+                $('#kt_datatable_notificaciones').DataTable({
+                    responsive: true,
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+                    },
+                    order: [[3, 'desc']],
+                    pageLength: 5,
+                    lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Todos"]],
+                    columnDefs: [
+                        { orderable: false, targets: [0] },
+                        { width: '10%', targets: 0 },
+                        { width: '20%', targets: 1 },
+                        { width: '50%', targets: 2 },
+                        { width: '20%', targets: 3 }
+                    ]
+                });
+            });
+        } else {
+            console.error('jQuery no está cargado correctamente');
         }
-        .timeline.timeline-3 .timeline-item .timeline-media i {
-            font-size: 1.3rem;
-        }
-    </style>
+    </script>
 {% endblock %}

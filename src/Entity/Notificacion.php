@@ -7,6 +7,9 @@ use App\Entity\Traits\Rango;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Notificacion
@@ -15,7 +18,9 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Entity
  * 
  * @Gedmo\SoftDeleteable(fieldName="fechaBaja")
+ * @Vich\Uploadable
  */
+
 class Notificacion {
 
     use Auditoria;
@@ -56,6 +61,18 @@ class Notificacion {
      * @ORM\Column(type="json")
      */
     private $destinatarios = [];
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="imagen", type="string", length=255, nullable=true)
+     */
+    private $imagen;
+
+    /**
+     * @Vich\UploadableField(mapping="notificacion_imagen", fileNameProperty="imagen")
+     */
+    private $imagenFile;
 
     /**
      * Constructor
@@ -169,6 +186,43 @@ class Notificacion {
     public function getDestinatarios(): array
     {
         return $this->destinatarios;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getImagen(): ?string
+    {
+        return $this->imagen;
+    }
+
+    /**
+     * @param string|null $imagen
+     * @return Notificacion
+     */
+    public function setImagen(?string $imagen): self
+    {
+        $this->imagen = $imagen;
+        return $this;
+    }
+
+    /**
+     * @param File|UploadedFile|null $imagenFile
+     */
+    public function setImagenFile($imagenFile = null): void
+    {
+        $this->imagenFile = $imagenFile;
+
+        if (null !== $imagenFile) {
+            // Es necesario para forzar la actualización de la entidad
+            // si solo cambia el archivo
+            $this->fechaActualizacion = new \DateTimeImmutable();
+        }
+    }
+
+    public function getImagenFile(): ?File
+    {
+        return $this->imagenFile;
     }
 
 }

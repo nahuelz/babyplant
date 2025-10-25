@@ -24,15 +24,11 @@ class NotificacionController extends BaseController {
      *
      * @Route("/", name="notificacion_index")
      * @Method("GET")
-     * @Template("notificacion/_ndex.html.twig")
      */
     public function index() {
-
-        $extraParams = [
-            'select_boolean' => $this->selectService->getBooleanSelect()
-        ];
-
-        return parent::baseIndexAction($extraParams);
+        return $this->render('notificacion/index_detalle.html.twig', //
+            array('notificaciones' => $this->getNotificacionesByUsuario(true, 500, false)) //
+        );
     }
 
     /**
@@ -95,6 +91,7 @@ class NotificacionController extends BaseController {
         $rsm->addScalarResult('contenido', 'contenido');
         $rsm->addScalarResult('fechaCreacion', 'fechaCreacion');
         $rsm->addScalarResult('leida', 'leida');
+        $rsm->addScalarResult('imagen', 'imagen');
 
         $sql = '';
 
@@ -108,34 +105,36 @@ class NotificacionController extends BaseController {
 
         if ($showAll) {
             $sql .= 'SELECT n.id,
-                    n.titulo,
-                    n.contenido,
-                    n.fecha_creacion AS fechaCreacion,
-                    IF(lu.id_notificacion IS NULL, FALSE, TRUE) AS leida
-                FROM notificacion n                        
-                    LEFT JOIN (
-                        SELECT nu.id_notificacion
-                        FROM notificacion_usuario nu
-                        WHERE nu.fecha_baja IS NULL
-                            AND nu.id_usuario = ?
-                    ) AS lu ON lu.id_notificacion = n.id
-                WHERE n.fecha_baja IS NULL
-                    ' . $rolesCondition;
+                n.titulo,
+                n.contenido,
+                n.fecha_creacion AS fechaCreacion,
+                n.imagen,
+                IF(lu.id_notificacion IS NULL, FALSE, TRUE) AS leida
+            FROM notificacion n                        
+                LEFT JOIN (
+                    SELECT nu.id_notificacion
+                    FROM notificacion_usuario nu
+                    WHERE nu.fecha_baja IS NULL
+                        AND nu.id_usuario = ?
+                ) AS lu ON lu.id_notificacion = n.id
+            WHERE n.fecha_baja IS NULL
+                ' . $rolesCondition;
         } else {
             $sql .= 'SELECT n.id,
-                    n.titulo,
-                    n.contenido,
-                    n.fecha_creacion AS fechaCreacion,
-                    false AS leida
-                FROM notificacion n
-                WHERE n.fecha_baja IS NULL
-                    AND n.id NOT IN (
-                        SELECT nu.id_notificacion
-                        FROM notificacion_usuario nu
-                        WHERE nu.fecha_baja IS NULL
+                n.titulo,
+                n.contenido,
+                n.fecha_creacion AS fechaCreacion,
+                n.imagen,
+                false AS leida
+            FROM notificacion n
+            WHERE n.fecha_baja IS NULL
+                AND n.id NOT IN (
+                    SELECT nu.id_notificacion
+                    FROM notificacion_usuario nu
+                    WHERE nu.fecha_baja IS NULL
                         AND nu.id_usuario = ?
-                    )
-                    ' . $rolesCondition;
+                )
+                ' . $rolesCondition;
         }
 
         if ($filterDate) {

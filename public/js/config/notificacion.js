@@ -74,11 +74,30 @@ function initHandlerVerNotificacionButton() {
         e.preventDefault();
         var notificacionLink = $(this);
         var mensaje = $(this).data('contenido-notificacion');
+        var titulo = $(this).data('titulo-notificacion');
+        var imagenUrl = $(this).data('imagen');
+
+        // Crear el contenido del diálogo
+        var contenido = '';
+
+        // Agregar la imagen si existe
+        if (imagenUrl) {
+            contenido += `
+                <div class="text-center mb-3">
+                    <img src="${imagenUrl}" 
+                         class="img-fluid rounded" 
+                         style="max-height: 300px; width: auto;"
+                         alt="Imagen de la notificación">
+                </div>`;
+        }
+
+        // Agregar el mensaje
+        contenido += '<div class="notificacion-contenido">' + mensaje + '</div>';
 
         dialog = showDialog({
             color: 'blue',
-            contenido: mensaje,
-            titulo: '<i class="fa fa-info-circle"></i> Notificación',
+            contenido: contenido,
+            titulo: '<i class="fa fa-info-circle"></i> ' + titulo,
             labelSuccess: 'Marcar como leída',
             labelCancel: 'Cerrar',
             callbackCancel: function () {
@@ -89,7 +108,12 @@ function initHandlerVerNotificacionButton() {
             }
         });
 
-        $('.modal-dialog').css('width', '70%');
+        // Ajustar el tamaño del diálogo si hay imagen
+        if (imagenUrl) {
+            $('.modal-dialog').css('max-width', '800px');
+        } else {
+            $('.modal-dialog').css('width', '70%');
+        }
 
         e.stopPropagation();
     });

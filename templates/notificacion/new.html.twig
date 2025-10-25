@@ -22,6 +22,12 @@
             <div class="row">
                 {{ macro_form._new_field(form.titulo, 'col-md-12') }}
                 {{ macro_form._new_field(form.contenido, 'col-md-12') }}
+                {{ macro_form._new_field(form.imagenFile, 'col-md-12') }}
+                {% if entity.imagen %}
+                    <img src="{{ asset('uploads/notificaciones/' ~ notificacion.imagen) }}"
+                         alt="Imagen de notificación"
+                         style="max-width: 200px; margin-top: 10px;">
+                {% endif %}
                 {{ macro_form._new_field(form.fechaDesde, 'col-md-6') }}
                 {{ macro_form._new_field(form.fechaHasta, 'col-md-6') }}
             </div>

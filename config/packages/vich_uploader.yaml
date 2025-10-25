@@ -12,3 +12,9 @@ vich_uploader:
             upload_destination: "%kernel.project_dir%/public/uploads/archivo_adjunto"
             namer: App\Namer\ArchivoAdjuntoNamer
             directory_namer: App\Namer\ArchivoAdjuntoNamer
+        notificacion_imagen:
+            uri_prefix: /uploads/notificaciones
+            upload_destination: '%kernel.project_dir%/public/uploads/notificaciones'
+            namer: Vich\UploaderBundle\Naming\OrignameNamer
+            delete_on_update: true
+            delete_on_remove: true

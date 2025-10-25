@@ -1,18 +1,37 @@
 {% for notificacion in notificaciones %}
-<!--begin::Item-->
-<a href="#" class="navi-item">
-    <div class="navi-link notificacion-link notificacion_ver" data-id-notificacion="{{ notificacion.id }}" data-contenido-notificacion="{{ notificacion.contenido }}">
-        <div class="navi-icon mr-2">
-            <i class="flaticon2-line-chart text-success"></i>
-        </div>
-        <div class="navi-text">
-            <div class="font-weight-bold">
-                {{ notificacion.titulo|clear_format|u.truncate(60, false, '...') }}
+    <!--begin::Item-->
+    <a href="#" class="navi-item">
+        <div class="navi-link notificacion-link notificacion_ver"
+             data-id-notificacion="{{ notificacion.id }}"
+             data-contenido-notificacion="{{ notificacion.contenido }}"
+             data-titulo-notificacion="{{ notificacion.titulo }}"
+             {% if notificacion.imagen %}data-imagen="{{ asset('uploads/notificaciones/' ~ notificacion.imagen) }}"{% endif %}>
+
+            <div class="d-flex align-items-center">
+                {% if notificacion.imagen %}
+                    <div class="symbol symbol-40 symbol-light mr-3">
+                <span class="symbol-label">
+                    <img src="{{ asset('uploads/notificaciones/' ~ notificacion.imagen) }}"
+                         class="h-50 align-self-center"
+                         alt="Imagen de notificación"
+                         style="object-fit: cover; width: 30px; height: 30px;">
+                </span>
+                    </div>
+                {% else %}
+                    <div class="navi-icon mr-3">
+                        <i class="flaticon2-bell text-primary"></i>
+                    </div>
+                {% endif %}
+
+                <div class="navi-text">
+                    <div class="font-weight-bold">
+                        {{ notificacion.titulo|clear_format|u.truncate(60, false, '...') }}
+                    </div>
+                    <div class="text-muted">
+                        {{ notificacion.fechaCreacion|ago|capitalize }}
+                    </div>
+                </div>
             </div>
-            <div class="text-muted">
-                {{ notificacion.fechaCreacion|ago|capitalize }}
-            </div>
         </div>
-    </div>
-</a>
+    </a>
 {% endfor %}
