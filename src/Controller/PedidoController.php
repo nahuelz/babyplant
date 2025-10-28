@@ -107,6 +107,7 @@ class PedidoController extends BaseController {
         $rsm->addScalarResult('diasEnCamara', 'diasEnCamara');
         $rsm->addScalarResult('diasEnInvernaculo', 'diasEnInvernaculo');
         $rsm->addScalarResult('celular', 'celular');
+        $rsm->addScalarResult('cantidadSemillas', 'cantidadSemillas');
 
         $nativeQuery = $em->createNativeQuery('call sp_index_pedido(?,?,?)', $rsm);
 
