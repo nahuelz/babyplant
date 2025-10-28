@@ -22,6 +22,7 @@ BEGIN
         tp.color                                                    AS colorProducto,
         epp.id                                                      AS idEstado,
         u.celular                                                   AS celular,
+        pp.cantidad_semillas                                        AS cantidadSemillas,
         if(pp.fecha_salida_camara_real is null, (to_days(curdate()) - to_days(cast(`pp`.`fecha_entrada_camara` as date))),
            (to_days(pp.fecha_salida_camara_real) - to_days(pp.fecha_entrada_camara))) AS `diasEnCamara`,
         if(epp.id in (5,6,7,8), (
