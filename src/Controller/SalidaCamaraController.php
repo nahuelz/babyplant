@@ -60,6 +60,13 @@ class SalidaCamaraController extends BaseController
         $rsm->addScalarResult('colorProducto', 'colorProducto');
         $rsm->addScalarResult('fechaSalidaCamaraReal', 'fechaSalidaCamaraReal');
         $rsm->addScalarResult('className', 'className');
+        $rsm->addScalarResult('producto', 'producto');
+        $rsm->addScalarResult('tipoProducto', 'tipoProducto');
+        $rsm->addScalarResult('estado', 'estado');
+        $rsm->addScalarResult('colorEstado', 'colorEstado');
+        $rsm->addScalarResult('idEstado', 'idEstado');
+        $rsm->addScalarResult('codigoSobre', 'codigoSobre');
+        $rsm->addScalarResult('cliente', 'cliente');
         $rsm->addScalarResult('cantidadBandejas', 'cantidadBandejas');
 
         $renderPage = "salida_camara/index_table.html.twig";

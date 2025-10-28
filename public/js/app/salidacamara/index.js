@@ -33,7 +33,7 @@ var KTCalendarListView = function() {
                 },
                 moreLinkText: "más",
                 height: 800,
-                contentHeight: 750,
+                contentHeight: 2750,
                 aspectRatio: 3,  // see: https://fullcalendar.io/docs/aspectRatio
 
                 views: {
@@ -64,6 +64,7 @@ var KTCalendarListView = function() {
                     var element = $(info.el);
                     var idProducto = element.data('id');
                     idTipoProducto = info.event.extendedProps.idProducto;
+                    orden = info.event.extendedProps.orden;
                     var actionUrl = element.data('href');
                     $.ajax({
                         type: 'POST',
@@ -73,7 +74,7 @@ var KTCalendarListView = function() {
                         }
                     }).done(function (form) {
                         showDialog({
-                            titulo: '<i class="fa fa-list-ul margin-right-10"></i> Salida de camara pedido N° '+idProducto+ ' ORDEN N° '+idProducto,
+                            titulo: '<i class="fa fa-list-ul margin-right-10"></i> Salida de camara pedido N° '+idProducto+ ' ORDEN N° '+orden,
                             contenido: form,
                             color: 'btn-light-success ',
                             labelCancel: 'Cerrar',
@@ -260,7 +261,7 @@ var KTCalendarListView = function() {
                                     </div>\n\
                                     <div class="d-flex flex-column font-weight-bold">\n\
                                         <label class="text-dark text-hover-primary mb-1 font-size-lg">Bandejas</label>\n\
-                                        <span class="text-muted">'+info.event.extendedProps.cantidadTipoBandejabandeja+'</span>\n\
+                                        <span class="text-muted">'+info.event.extendedProps.cantidadBandejas+'</span>\n\
                                     </div>\n\
                                 </div>\n\
                             </div>\n\
