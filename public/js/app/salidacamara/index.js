@@ -146,7 +146,7 @@ var KTCalendarListView = function() {
                                 const bandejasPorDia = events.reduce((acumulador, event) => {
                                     if (event.start) {
                                         const fecha = event.start.toISOString().split('T')[0];
-                                        const cantidad = parseInt(event.extendedProps?.cantidadBandejas || 0, 10);
+                                        const cantidad = parseFloat(event.extendedProps?.cantidadBandejas || 0, 10);
                                         acumulador[fecha] = (acumulador[fecha] || 0) + cantidad;
                                     }
                                     return acumulador;
