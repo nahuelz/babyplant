@@ -84,7 +84,7 @@ class MovimientoType extends AbstractType
                             ->leftJoin('App:PedidoProducto', 'pp', Join::WITH, 'pp.pedido = p')
                             ->leftJoin('App:Usuario', 'u', Join::WITH, 'p.cliente = u ')
                             ->where('u.id = :idCliente')
-                            ->andWhere('pp.estado IN (1,2,3,4,5,6,7,8,9)')
+                            ->andWhere('pp.estado IN (1,2,3,4,5,6,7,8)')
                             ->andWhere('pp.fechaBaja IS NULL')
                             ->orderBy('p.id', 'DESC')
                             ->setParameter('idCliente', $idCliente)
