@@ -126,6 +126,68 @@ var KTCalendarListView = function() {
                         info.el.style.backgroundColor = info.event.extendedProps.colorProducto;
                     }
                 },
+                // Reemplaza el viewSkeletonRender con este código
+                viewSkeletonRender: function(info) {
+                    if (info.view.type === 'dayGridWeek') {
+                        const calendar = this;
+                        console.log('Iniciando contadores de bandejas...');
+
+                        const actualizarContadores = () => {
+                            try {
+                                const events = calendar.getEvents();
+                                console.log('Eventos encontrados:', events.length);
+
+                                if (events.length === 0) {
+                                    console.log('No hay eventos para mostrar en el calendario');
+                                    return;
+                                }
+
+                                // Contar bandejas por día
+                                const bandejasPorDia = events.reduce((acumulador, event) => {
+                                    if (event.start) {
+                                        const fecha = event.start.toISOString().split('T')[0];
+                                        const cantidad = parseInt(event.extendedProps?.cantidadBandejas || 0, 10);
+                                        acumulador[fecha] = (acumulador[fecha] || 0) + cantidad;
+                                    }
+                                    return acumulador;
+                                }, {});
+
+                                // Actualizar la UI
+                                document.querySelectorAll('.fc-day-header[data-date]').forEach(header => {
+                                    const fecha = header.getAttribute('data-date');
+                                    const contador = bandejasPorDia[fecha] || 0;
+
+                                    // Limpiar contador anterior
+                                    const contadorAnterior = header.querySelector('.day-bandejas-counter');
+                                    if (contadorAnterior) {
+                                        contadorAnterior.remove();
+                                    }
+
+                                    // Agregar nuevo contador si hay bandejas
+                                    if (contador > 0) {
+                                        const nuevoContador = document.createElement('div');
+                                        nuevoContador.className = 'day-bandejas-counter';
+                                        nuevoContador.textContent = `${contador} bandejas`;
+                                        header.appendChild(nuevoContador);
+                                    }
+                                });
+
+                            } catch (error) {
+                                console.error('Error al actualizar contadores:', error);
+                            }
+                        };
+
+                        // Programar actualizaciones
+                        [100, 1000, 3000].forEach(delay => {
+                            setTimeout(actualizarContadores, delay);
+                        });
+
+                        // Actualizar cuando cambien los eventos
+                        calendar.on('eventChange', actualizarContadores);
+                        calendar.on('eventAdd', actualizarContadores);
+                        calendar.on('eventRemove', actualizarContadores);
+                    }
+                },
                 eventDrop: function(info) {
                     dialogFinalizarForm = '\
                         <div class="row">\n\

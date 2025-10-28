@@ -53,25 +53,14 @@ class SalidaCamaraController extends BaseController
         $rsm = new ResultSetMapping();
 
         $rsm->addScalarResult('id', 'id');
-        $rsm->addScalarResult('idProducto', 'idProducto');
-        $rsm->addScalarResult('nombreCompleto', 'nombreCompleto');
         $rsm->addScalarResult('nombreCorto', 'nombreCorto');
-        $rsm->addScalarResult('cantidadTipoBandejabandeja', 'cantidadTipoBandejabandeja');
-        $rsm->addScalarResult('cantidadBandejas', 'cantidadBandejas');
-        $rsm->addScalarResult('tipoBandeja', 'tipoBandeja');
-        $rsm->addScalarResult('cliente', 'cliente');
-        $rsm->addScalarResult('estado', 'estado');
-        $rsm->addScalarResult('idEstado', 'idEstado');
-        $rsm->addScalarResult('colorEstado', 'colorEstado');
-        $rsm->addScalarResult('colorProducto', 'colorProducto');
-        $rsm->addScalarResult('colorIcono', 'colorIcono');
         $rsm->addScalarResult('fechaSalidaCamara', 'fechaSalidaCamara');
-        $rsm->addScalarResult('fechaSalidaCamaraReal', 'fechaSalidaCamaraReal');
-        $rsm->addScalarResult('descripcion', 'descripcion');
-        $rsm->addScalarResult('codigoSobre', 'codigoSobre');
-        $rsm->addScalarResult('className', 'className');
         $rsm->addScalarResult('colorBandeja', 'colorBandeja');
         $rsm->addScalarResult('orden', 'orden');
+        $rsm->addScalarResult('colorProducto', 'colorProducto');
+        $rsm->addScalarResult('fechaSalidaCamaraReal', 'fechaSalidaCamaraReal');
+        $rsm->addScalarResult('className', 'className');
+        $rsm->addScalarResult('cantidadBandejas', 'cantidadBandejas');
 
         $renderPage = "salida_camara/index_table.html.twig";
         return parent::baseIndexTableAction($request, [], $entityTable, ConstanteTipoConsulta::VIEW, $rsm, $renderPage);
