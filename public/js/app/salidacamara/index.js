@@ -19,7 +19,7 @@ var KTCalendarListView = function() {
             var YESTERDAY = todayDate.clone().subtract(1, 'day').format('YYYY-MM-DD');
             var TODAY = todayDate.format('YYYY-MM-DD');
             var TOMORROW = todayDate.clone().add(1, 'day').format('YYYY-MM-DD');
-
+            let actualizarContadores;
             var calendarEl = document.getElementById('kt_calendar');
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -132,7 +132,7 @@ var KTCalendarListView = function() {
                         const calendar = this;
                         console.log('Iniciando contadores de bandejas...');
 
-                        const actualizarContadores = () => {
+                        actualizarContadores = () => {
                             try {
                                 const events = calendar.getEvents();
                                 console.log('Eventos encontrados:', events.length);
@@ -319,6 +319,21 @@ var KTCalendarListView = function() {
                 }
             });
             calendar.render();
+
+            document.addEventListener('click', function(e) {
+                const target = e.target.closest('.fc-prev-button, .fc-next-button, .fc-today-button');
+                if (target) {
+                    console.log('Botón de navegación clickeado');
+                    setTimeout(() => {
+                        if (calendar.view.type === 'dayGridWeek') {
+                            console.log('Actualizando contadores...');
+                            if (typeof actualizarContadores === 'function') {
+                                actualizarContadores();
+                            }
+                        }
+                    }, 100); // Pequeño retraso para asegurar que el calendario se actualice
+                }
+            });
         }
     };
 }();
