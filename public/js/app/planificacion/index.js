@@ -21,7 +21,7 @@ var KTCalendarListView = function() {
                 },
                 hiddenDays:  [ 0 ],
                 height: 800,
-                contentHeight: 750,
+                contentHeight: 2750,
                 aspectRatio: 3,  // see: https://fullcalendar.io/docs/aspectRatio
                 views: {
                     dayGridMonth: { buttonText: 'mes' },
