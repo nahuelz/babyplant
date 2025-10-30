@@ -64,6 +64,19 @@ class SelectService {
         return $this->getResponseData($entities, $useId, false, true, true);
 
     }
+    public function getOrigenSemillaSelect($useId = false) {
+
+        $sql = "SELECT x.id, x.nombre AS nombre
+                FROM App\Entity\TipoOrigenSemilla x 
+                WHERE x.fechaBaja IS NULL";
+
+        $query = $this->em->createQuery($sql);
+
+        $entities = $query->getArrayResult();
+
+        return $this->getResponseData($entities, $useId, false, true, true);
+
+    }
 
     /**
      *

@@ -26,6 +26,7 @@
         "path": "{{ path('situacioncliente_show', { "id": entity.idCliente }) }}"
         },
         "{{ entity.cantidadBandejas == (entity.cantidadBandejas|round(0, 'floor')) ? entity.cantidadBandejas|number_format(0, '', '') : entity.cantidadBandejas }}",
+        "{{ entity.origenSemilla|default('-') }}",
         "{{ entity.cantidadSemillas|default('-') }}",
         "{{ entity.fechaSiembraPedido is not null ? entity.fechaSiembraPedido|date('d/m/Y') : '-' }}",
         "{{ entity.fechaEntregaPedido is not null ? entity.fechaEntregaPedido|date('d/m/Y') : '-' }}",

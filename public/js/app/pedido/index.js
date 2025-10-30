@@ -330,6 +330,13 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
+            name: 'origenSemilla',
+            orderable: false,
+            className: 'dt-center p-0',
+            width: '50px',
+        },
+        {
+            targets: index++,
             name: 'cantidadSemillas',
             orderable: false,
             className: 'dt-center p-0',

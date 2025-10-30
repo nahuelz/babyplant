@@ -46,6 +46,7 @@ class PedidoController extends BaseController {
 
         $clienteSelect = $this->getSelectService()->getClienteFilter();
         $estadoSelect = $this->getSelectService()->getEstadoSelect();
+        $origenSemillaSelect = $this->getSelectService()->getOrigenSemillaSelect();
 
         $em = $this->doctrine->getManager();
         $columnasOcultas = $em->getRepository('App\Entity\GlobalConfig')->find($this->getUser()->getId());
@@ -64,6 +65,7 @@ class PedidoController extends BaseController {
             'actividadReciente' => $this->getActividadRecienteData(),
             'clienteSelect' => $clienteSelect,
             'estadoSelect' => $estadoSelect,
+            'origenSemillaSelect' => $origenSemillaSelect,
             'page_title' => 'Pedidos generados'
         );
     }
@@ -107,6 +109,7 @@ class PedidoController extends BaseController {
         $rsm->addScalarResult('diasEnCamara', 'diasEnCamara');
         $rsm->addScalarResult('diasEnInvernaculo', 'diasEnInvernaculo');
         $rsm->addScalarResult('celular', 'celular');
+        $rsm->addScalarResult('origenSemilla', 'origenSemilla');
         $rsm->addScalarResult('cantidadSemillas', 'cantidadSemillas');
 
         $nativeQuery = $em->createNativeQuery('call sp_index_pedido(?,?,?)', $rsm);
