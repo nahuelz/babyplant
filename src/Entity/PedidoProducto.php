@@ -561,10 +561,13 @@ class PedidoProducto {
 
     public function getMesada()
     {
-        $mesadas = 'MESADA N° ' . $this->getMesadaUno()->getTipoMesada()->getNumero().' BANDEJAS: '.$this->getMesadaUno()->getCantidadBandejas();
-        if ($this->getMesadaDos() != null){
-            $mesadas .= '</br>';
-            $mesadas .= 'MESADA N° ' . $this->getMesadaDos()->getTipoMesada()->getNumero().' BANDEJAS: '.$this->getMesadaDos()->getCantidadBandejas();
+        $mesadas = '';
+        if ($this->getMesadaUno() != null) {
+            $mesadas = 'MESADA N° ' . $this->getMesadaUno()->getTipoMesada()->getNumero() . ' BANDEJAS: ' . $this->getMesadaUno()->getCantidadBandejas();
+            if ($this->getMesadaDos() != null) {
+                $mesadas .= '</br>';
+                $mesadas .= 'MESADA N° ' . $this->getMesadaDos()->getTipoMesada()->getNumero() . ' BANDEJAS: ' . $this->getMesadaDos()->getCantidadBandejas();
+            }
         }
         return $mesadas;
     }
