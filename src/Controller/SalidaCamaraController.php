@@ -111,7 +111,7 @@ class SalidaCamaraController extends BaseController
             $this->get('session')->getFlashBag()->set('success', $message);
             return $this->redirectToRoute('salidacamara_index');
         }
-        return $this->render('pedidoproducto/show/salida_camara_show.html.twig', [
+        return $this->render('pedido_producto/show/salida_camara_show.html.twig', [
             'form' => $form->createView(),
             'entity' => $entity
         ]);

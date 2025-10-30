@@ -67,7 +67,7 @@ class EntradaCamaraController extends BaseController
 
     /**
      * @Route("/{id}/pedido_producto_entrada_camara", name="pedido_producto_entrada_camara", methods={"GET","POST"})
-     * @Template("pedidoproducto/show/entrada_camara_show.html.twig")
+     * @Template("pedido_producto/show/entrada_camara_show.html.twig")
      */
     public function showPedidoProductoEntradaCamaraAction($id) {
 

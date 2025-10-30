@@ -159,7 +159,7 @@ class PlanificacionController extends BaseController
 
     /**
      * @Route("/{id}/producto_show", name="planificacion_producto_show", methods={"GET","POST"})
-     * @Template("pedidoproducto/show/planificacion_show.html.twig")
+     * @Template("pedido_producto/show/planificacion_show.html.twig")
      */
     public function showPedidoProductoAction($id) {
 

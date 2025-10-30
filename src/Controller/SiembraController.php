@@ -128,7 +128,7 @@ class SiembraController extends BaseController
 
     /**
      * @Route("/{id}/pedido_producto_siembra", name="pedido_producto_siembra", methods={"GET","POST"})
-     * @Template("pedidoproducto/show/siembra_show.html.twig")
+     * @Template("pedido_producto/show/siembra_show.html.twig")
      */
     public function showPedidoProductoAction($id) {
 

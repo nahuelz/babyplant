@@ -3,7 +3,7 @@
         <div class="input-group-prepend">
             <span class="input-group-text"><i class="fas fa-comment"></i></span>
         </div>
-        <textarea class="form-control" data-pedido-id="{{ entity.id }}" id="observacion" placeholder="Observación">{{ entity.observacion|default('') }}</textarea>
+        <label for="observacion"></label><textarea rows="1" class="form-control" data-pedido-id="{{ entity.id }}" id="observacion" placeholder="Observacion">{{ entity.observacion|default('') }}</textarea>
         <div class="input-group-append">
             <button class="btn btn-primary" id="guardar-observacion" type="button">
                 <i class="fas fa-save"></i> Guardar
@@ -11,13 +11,12 @@
         </div>
     </div>
 </div>
-
 <div class="form-group observacion-camara-input" style="margin-top: 30px; display: none">
     <div class="input-group input-group-lg">
         <div class="input-group-prepend">
             <span class="input-group-text"><i class="fas fa-comment"></i></span>
         </div>
-        <textarea class="form-control" data-pedido-id="{{ entity.id }}" id="observacionCamara" placeholder="Observación Cámara">{{ entity.observacionCamara|default('') }}</textarea>
+        <label for="observacionCamara"></label><textarea rows="1"  class="form-control" data-pedido-id="{{ entity.id }}" id="observacionCamara" placeholder="Observacion CAMARA">{{ entity.observacionCamara|default('') }}</textarea>
         <div class="input-group-append">
             <button class="btn btn-primary" id="guardar-observacion-camara" type="button">
                 <i class="fas fa-save"></i> Guardar
