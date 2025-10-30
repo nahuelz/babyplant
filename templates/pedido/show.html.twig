@@ -69,7 +69,8 @@
                         {{ macro_show._show_detail('Fecha de siembra real', producto.fechaSiembraReal is not null ? producto.fechaSiembraReal|date("d/m/Y") : '-', 'col-md-2') }}
                         {{ macro_show._show_detail('Fecha de entrega pedido', producto.fechaEntregaPedido is not null ? producto.fechaEntregaPedido|date("d/m/Y") : '-', 'col-md-2') }}
                         {{ macro_show._show_detail('Fecha de entrega real', producto.fechaEntregaPedidoReal is not null ? producto.fechaEntregaPedidoReal|date("d/m/Y") : '-', 'col-md-2') }}
-                        {{ macro_show._show_detail('Estado', producto.estado|default('-'), 'col-md-4') }}
+                        {{ macro_show._show_detail('Estado', producto.estado|default('-'), 'col-md-2') }}
+                        {{ macro_show._show_detail('Tipo Bandeja', producto.tipoBandeja.nombre|default('-'), 'col-md-2') }}
 
                         {{ macro_show._show_detail('Cantidad Bandejas Pedidas', producto.cantidadBandejasPedidas|default('-'), 'col-md-2') }}
                         {{ macro_show._show_detail('Cantidad Bandejas Reales', producto.cantidadBandejasReales|default('-'), 'col-md-2') }}
