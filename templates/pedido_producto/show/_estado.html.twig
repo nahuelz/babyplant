@@ -1,0 +1,14 @@
+<div class="col-md-4">
+    <div class="d-flex align-items-center mb-10">
+        <div class="symbol symbol-40 symbol-light-primary mr-5">
+            <span class="symbol-label">
+                <span class="svg-icon svg-icon-xl svg-icon-primary">
+                    <i class="la la-file-alt icon-2x text-dark"></i>
+                </span>
+            </span>
+        </div>
+        <div class="d-flex flex-column font-weight-bold">
+            <span class="label label-inline font-weight-bold estado {{ entity.estado.color|default('') }}" style="padding: 20px;">{{ entity.estado.nombre|default('') }}</span>
+        </div>
+    </div>
+</div>
