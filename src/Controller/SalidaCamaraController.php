@@ -134,7 +134,8 @@ class SalidaCamaraController extends BaseController
 
     }
 
-    private function actualizarMesadas(PedidoProducto $entity) {
+    private function actualizarMesadas(PedidoProducto $entity): void
+    {
         if ($entity->getMesadaUno() != null) {
             $this->actualizarMesada($entity->getMesadaUno(), $entity);
         }
@@ -144,7 +145,7 @@ class SalidaCamaraController extends BaseController
         }
     }
 
-    private function actualizarMesada(Mesada $mesada, PedidoProducto $entity)
+    private function actualizarMesada(Mesada $mesada, PedidoProducto $entity): void
     {
         // SETEO EL PRODUCTO A LA MESADA
         $mesada->setPedidoProducto($entity);

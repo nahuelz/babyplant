@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\PedidoProducto;
 use App\Repository\PedidoProductoRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\Expr\Base;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,11 +14,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/pedido/producto")
- * @IsGranted("ROLE_PEDIDO")
  */
-class PedidoProductoController extends AbstractController
+class PedidoProductoController extends BaseController
 {
-    #[Route('/', name: 'app_pedido_producto_index', methods: ['GET'])]
+    #[Route('/', name: 'pedidoproducto_index', methods: ['GET'])]
     public function index(PedidoProductoRepository $pedidoProductoRepository): Response
     {
         return $this->render('pedido_producto/index.html.twig', [
@@ -25,7 +25,7 @@ class PedidoProductoController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_pedido_producto_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'pedido_producto_show', methods: ['GET'])]
     public function show(PedidoProducto $pedidoProducto): Response
     {
         return $this->render('pedido_producto/show.html.twig', [
@@ -33,7 +33,7 @@ class PedidoProductoController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_pedido_producto_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'pedido_producto_delete', methods: ['POST'])]
     public function delete(Request $request, PedidoProducto $pedidoProducto, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$pedidoProducto->getId(), $request->request->get('_token'))) {
@@ -41,6 +41,24 @@ class PedidoProductoController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_pedido_producto_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('pedidoproducto_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/actualizar-observacion', name: 'pedido_producto_actualizar_observacion', methods: ['POST'])]
+    public function actualizarObservacion(Request $request, PedidoProducto $pedidoProducto): \Symfony\Component\HttpFoundation\JsonResponse
+    {
+        $em = $this->doctrine->getManager();
+        $data = json_decode($request->getContent(), true);
+
+        if (isset($data['tipo']) && $data['tipo'] === 'observacion') {
+            $pedidoProducto->setObservacion($data['valor']);
+        } elseif (isset($data['tipo']) && $data['tipo'] === 'observacion_camara') {
+            $pedidoProducto->setObservacionCamara($data['valor']);
+        }
+
+        $em->persist($pedidoProducto);
+        $em->flush();
+
+        return $this->json(['success' => true]);
     }
 }

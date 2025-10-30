@@ -106,6 +106,7 @@ var KTCalendarListView = function() {
                         $('.modal-dialog').addClass('modal-fullscreen-xl-down');
                         initSobreInput();
                         initObservacionInput();
+                        initObservacionCamaraInput();
                     });
                 },
                 eventRender: function(info) {
@@ -292,11 +293,5 @@ function initSobreInput(){
     }
     $('.sobre').click(function(){
         $('.sobre-input').toggle();
-    });
-}
-
-function initObservacionInput(){
-    $('.observacion').click(function(){
-        $('.observacion-input').toggle();
     });
 }

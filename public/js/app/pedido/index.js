@@ -672,9 +672,9 @@ function initFormValidationCambiarMesada() {
 }
 
 function cantidadDeBandejasValida(){
-    let cantidadBandejasMesadaUno = $('#cambiar_mesada_mesadaUno_cantidadBandejas').val() ? parseInt($('#cambiar_mesada_mesadaUno_cantidadBandejas').val()) : 0;
-    let cantidadBandejasMesadaDos = $('#cambiar_mesada_mesadaDos_cantidadBandejas').val() ? parseInt($('#cambiar_mesada_mesadaDos_cantidadBandejas').val()) : 0;
-    let cantidadBandejasReales = parseInt($('#cantidadBandejasReales').val());
+    let cantidadBandejasMesadaUno = $('#cambiar_mesada_mesadaUno_cantidadBandejas').val() ? parseFloat($('#cambiar_mesada_mesadaUno_cantidadBandejas').val()) : 0;
+    let cantidadBandejasMesadaDos = $('#cambiar_mesada_mesadaDos_cantidadBandejas').val() ? parseFloat($('#cambiar_mesada_mesadaDos_cantidadBandejas').val()) : 0;
+    let cantidadBandejasReales = parseFloat($('#cantidadBandejasReales').val());
     let cantidadTotalBandejas = cantidadBandejasMesadaUno + cantidadBandejasMesadaDos;
 
     return (cantidadTotalBandejas === cantidadBandejasReales);

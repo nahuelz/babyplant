@@ -1,13 +1,13 @@
 create definer = root@`%` view view_entrada_camara as
-select
-    pp.id                                                                               AS id,
-    concat(pp.numero_orden, ' ', substr(tp.nombre, 1, 3), ' - ', tp.nombre, ' ',
-           tsp.nombre, ' ',  tv.nombre, ' <strong class=tipo-bandeja>',
-           pp.cantidad_bandejas_reales, ' (X', tb.nombre,')</strong>',
-           ' Semillas: ', pp.cantidad_semillas, ' - ', u.nombre, ' ',u.apellido)        AS title,
+select pp.id                                                                         AS id,
+       concat(pp.numero_orden, ' ',
+              substr(tp.nombre, 1, 3), ' - ',  tp.nombre, ' ', tsp.nombre, ' ', tv.nombre, ' <strong class=tipo-bandeja>',
+              case when pp.cantidad_bandejas_reales = floor(pp.cantidad_bandejas_reales) then format(pp.cantidad_bandejas_reales, 0) else pp.cantidad_bandejas_reales end,
+              ' (X',tb.nombre, ')</strong>', ' Semillas: ', pp.cantidad_semillas,
+              ' - ', u.nombre, ' ',u.apellido)                                       AS title,
     if (epp.nombre <> 'SEMBRADO',
         concat(epp.class_name, ' ', tp.nombre, ' ', epp.nombre),
-        concat(epp.class_name, ' ', tp.nombre))                                       AS className,
+        concat(epp.class_name, ' ', tp.nombre))                                      AS className,
     tb.color                                                                         AS colorBandeja,
     tp.color                                                                         AS colorProducto,
     pp.fecha_siembra_real                                                            AS fechaSiembraReal
@@ -20,4 +20,6 @@ from pedido p
          LEFT JOIN usuario u ON p.id_cliente = u.id
          LEFT JOIN estado_pedido_producto epp ON epp.id = pp.id_estado_pedido_producto
 WHERE pp.fecha_baja is null AND pp.id_estado_pedido_producto in (3, 4);
+
+
 

@@ -1,15 +1,5 @@
 var fv;
-var collectionHoldermesada;
-var idTipoProducto;
-var agrego = false;
 var EN_INVERNACULO = 5;
-const requiredField = {
-    validators: {
-        notEmpty: {
-            message: "Este campo es requerido"
-        }
-    }
-};
 var KTCalendarListView = function() {
     return {
         //main function to initiate the module
@@ -63,7 +53,7 @@ var KTCalendarListView = function() {
                 eventClick: function(info) {
                     var element = $(info.el);
                     var idProducto = element.data('id');
-                    idTipoProducto = info.event.extendedProps.idProducto;
+                    idPedido = info.event.extendedProps.idPedido;
                     orden = info.event.extendedProps.orden;
                     var actionUrl = element.data('href');
                     $.ajax({
@@ -74,7 +64,7 @@ var KTCalendarListView = function() {
                         }
                     }).done(function (form) {
                         showDialog({
-                            titulo: '<i class="fa fa-list-ul margin-right-10"></i> Salida de camara pedido N° '+idProducto+ ' ORDEN N° '+orden,
+                            titulo: '<i class="fa fa-list-ul margin-right-10"></i> Salida de camara pedido N° '+idPedido+ ' ORDEN N° '+orden,
                             contenido: form,
                             color: 'btn-light-success ',
                             labelCancel: 'Cerrar',
@@ -131,15 +121,11 @@ var KTCalendarListView = function() {
                 viewSkeletonRender: function(info) {
                     if (info.view.type === 'dayGridWeek') {
                         const calendar = this;
-                        console.log('Iniciando contadores de bandejas...');
 
                         actualizarContadores = () => {
                             try {
                                 const events = calendar.getEvents();
-                                console.log('Eventos encontrados:', events.length);
-
                                 if (events.length === 0) {
-                                    console.log('No hay eventos para mostrar en el calendario');
                                     return;
                                 }
 
@@ -469,16 +455,4 @@ function removeMesadaHandler(){
         $('#salida_camara_mesadaDos_cantidadBandejas').val('');
         $('.add-mesada').show();
     })
-}
-
-function initObservacionInput(){
-    $('.observacion').click(function(){
-        $('.observacion-input').toggle();
-    });
-}
-
-function initObservacionCamaraInput(){
-    $('.observacion-camara').click(function(){
-        $('.observacion-camara-input').toggle();
-    });
 }

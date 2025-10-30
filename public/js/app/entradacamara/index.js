@@ -109,7 +109,6 @@ var KTCalendarListView = function() {
                         min = (min < 10 ? "0" : "") + min;
                         let fechaCompleta = $('.fecha-entrada-camara-hidden').text();
                         fechaCompleta = fechaCompleta.replace(' ', 'T');
-                        console.log(fechaCompleta);
                         $('#fecha-entrada-camara').val(fechaCompleta);
                         if ($('.estado').text() == 'EN CAMARA'){
                             $('.entrada-camara-submit').hide();
@@ -179,18 +178,6 @@ function initPreValidation() {
        }
 
         e.stopPropagation();
-    });
-}
-
-function initObservacionInput(){
-    $('.observacion').click(function(){
-        $('.observacion-input').toggle();
-    });
-}
-
-function initObservacionCamaraInput(){
-    $('.observacion-camara').click(function(){
-        $('.observacion-camara-input').toggle();
     });
 }
 

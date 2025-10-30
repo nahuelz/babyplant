@@ -1,0 +1,13 @@
+<div class="input-group input-group-lg fecha-siembra-edit" style="display: none">
+    <div class="input-group-prepend">
+        <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+    </div>
+    <label for="fecha-siembra"></label><input type="datetime-local" class="form-control" min="07:00" max="20:00" id="fecha-siembra" placeholder="Ingrese una fecha" value=">{{ entity.fechaSiembraReal is not null ? entity.fechaSiembraReal|date('H:i') : '-' }}">
+</div>
+
+<div class="input-group input-group-lg hora-edit" style="display: none">
+    <div class="input-group-prepend">
+        <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+    </div>
+    <label for="hora-siembra"></label><input type="time" class="form-control" min="07:00" max="20:00" id="hora-siembra" placeholder="Ingrese una hora" value=">{{ entity.horaSiembra is not null ? entity.horaSiembra|date('H:i') : '-' }}">
+</div>

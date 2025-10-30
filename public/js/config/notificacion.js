@@ -48,8 +48,9 @@ function loadNotificacionesUsuario() {
 
         toggleNotificaciones();
     }).fail(function (jqXHR, textStatus, errorThrown) {
-        var msg = "No se pud" + (todos ? "ieron" : "o") + " marcar como vista" + (todos ? "s" : "") + " la" + (todos ? "s" : "") + " notificaci" + (todos ? "ones" : "ón") + ". Intente nuevamente.";
-        showError(msg);
+        var msg = "No se pudo  marcar como vista la notificación. Intente nuevamente.";
+        
+        console.log(msg);
     });
 }
 
@@ -219,9 +220,9 @@ function notificacionMarcarVista($ocultarLink) {
 
         if (dataParsed === null) {
 
-            var msg = "No se pud" + (todos ? "ieron" : "o") + " marcar como vista" + (todos ? "s" : "") + " la" + (todos ? "s" : "") + " notificaci" + (todos ? "ones" : "ón") + ". Intente nuevamente.";
+            var msg = "No se pudo  marcar como vista la notificación. Intente nuevamente.";
 
-            showError(msg);
+            console.log(msg);
         } else {
             if (todos) {
                 $('.notificacion_marcar_visto').each(function () {
@@ -238,9 +239,9 @@ function notificacionMarcarVista($ocultarLink) {
 
     }).fail(function (jqXHR, textStatus, errorThrown) {
 
-        var msg = "No se pud" + (todos ? "ieron" : "o") + " marcar como vista" + (todos ? "s" : "") + " la" + (todos ? "s" : "") + " notificaci" + (todos ? "ones" : "ón") + ". Intente nuevamente.";
+        var msg = "No se pudo  marcar como vista la notificación. Intente nuevamente.";
 
-        showError(msg);
+        console.log(msg);
     });
 }
 

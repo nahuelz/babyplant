@@ -207,9 +207,8 @@ function initDateInput(){
     $('#fecha-siembra').val(fechaCompletaHidden);
 }
 function initToggleOptions(){
-    $('.observacion').click(function () {
-        $('.observacion-edit').toggle();
-    });
+    initObservacionInput()
+    initObservacionCamaraInput()
     $('.bandejas').click(function () {
         $('.bandejas-edit').toggle();
     });

@@ -639,7 +639,7 @@ class PedidoProducto {
 
     public function getNumeroOrdenCompleto()
     {
-        return $this->numeroOrden ? $this->numeroOrden . ' '.strtoupper(substr($this->getTipoProducto(), 0, 3)) : '-';
+        return $this->numeroOrden ? $this->numeroOrden . ' '.strtoupper(substr($this->getTipoProducto(), 0, 3)) : '';
     }
 
     /**
