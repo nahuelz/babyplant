@@ -22,6 +22,7 @@ BEGIN
         tp.color                                                    AS colorProducto,
         epp.id                                                      AS idEstado,
         u.celular                                                   AS celular,
+        tos.nombre                                                  AS origenSemilla,
         pp.cantidad_semillas                                        AS cantidadSemillas,
         if(pp.fecha_salida_camara_real is null, (to_days(curdate()) - to_days(cast(`pp`.`fecha_entrada_camara` as date))),
            (to_days(pp.fecha_salida_camara_real) - to_days(pp.fecha_entrada_camara))) AS `diasEnCamara`,
@@ -43,10 +44,10 @@ BEGIN
              LEFT JOIN tipo_mesada tm1 on (tm1.id = m1.id_tipo_mesada)
              LEFT JOIN mesada m2 on (m2.id = pp.id_mesada_dos)
              LEFT JOIN tipo_mesada tm2 on (tm2.id = m2.id_tipo_mesada)
+             LEFT JOIN tipo_origen_semilla tos on (tos.id = pp.id_tipo_origen_semilla)
     WHERE p.fecha_baja IS NULL
       AND (p.fecha_creacion >= _fechaDesde AND p.fecha_creacion <= _fechaHasta)
       AND (_idCliente IS NULL OR (_idCliente IS NOT NULL AND p.id_cliente = _idCliente))
     ORDER BY p.id DESC
     ;
 END;
-
