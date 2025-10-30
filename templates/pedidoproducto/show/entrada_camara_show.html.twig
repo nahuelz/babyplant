@@ -2,14 +2,14 @@
     <div class="row">
         <div class="modal-body" style="padding-top: 0px;padding-bottom: 0px;">
             <div class="row">
-                {% include 'pedidoProducto/show/_producto.html.twig' %}
-                {% include 'pedidoProducto/show/_estado.html.twig' %}
-                {% include 'pedidoProducto/show/_cliente.html.twig' %}
-                {% include 'pedidoProducto/show/_fecha_siembra.html.twig' %}
-                {% include 'pedidoProducto/show/_fecha_entrada_camara.html.twig' %}
-                {% include 'pedidoProducto/show/_fecha_entrega_pedido.html.twig' %}
-                {% include 'pedidoProducto/show/_cantidad_bandejas.html.twig' %}
-                {% include 'pedidoproducto/show/_observacion.html.twig' %}
+                {% include 'pedido_producto/show/_producto.html.twig' %}
+                {% include 'pedido_producto/show/_estado.html.twig' %}
+                {% include 'pedido_producto/show/_cliente.html.twig' %}
+                {% include 'pedido_producto/show/_fecha_siembra.html.twig' %}
+                {% include 'pedido_producto/show/_fecha_entrada_camara.html.twig' %}
+                {% include 'pedido_producto/show/_fecha_entrega_pedido.html.twig' %}
+                {% include 'pedido_producto/show/_cantidad_bandejas.html.twig' %}
+                {% include 'pedido_producto/show/_observacion.html.twig' %}
                 <div class="col-md-12">
                     <div class="form-group fecha-entrada-camara-edit" style="display: none;">
                         <label class="text-dark text-hover-primary mb-1 font-size-lg font-weight-bold">DIA Y HORA DE ENTRADA A CAMARA:</label>
@@ -18,7 +18,7 @@
                             <input type="datetime-local" class="form-control" min="07:00" max="20:00" id="fecha-entrada-camara" placeholder="Ingrese una fecha" value=">{{ entity.fechaEntradaCamara is not null ? entity.fechaEntradaCamara|date('H:i') : '-' }}">
                         </div>
                     </div>
-                    {% include 'pedidoproducto/show/_observacion_input.html.twig' %}
+                    {% include 'pedido_producto/show/_observacion_input.html.twig' %}
                 </div>
             </div>
         </div>

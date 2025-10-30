@@ -2,15 +2,15 @@
     <div class="row">
         <div class="modal-body" style="padding-top: 0;padding-bottom: 0;">
             <div class="row">
-                {% include 'pedidoProducto/show/_producto.html.twig' %}
-                {% include 'pedidoProducto/show/_estado.html.twig' %}
-                {% include 'pedidoProducto/show/_cliente.html.twig' %}
-                {% include 'pedidoProducto/show/_fecha_siembra.html.twig' %}
-                {% include 'pedidoProducto/show/_fecha_entrada_camara.html.twig' %}
-                {% include 'pedidoProducto/show/_fecha_entrega_pedido.html.twig' %}
-                {% include 'pedidoProducto/show/_cantidad_bandejas.html.twig' %}
-                {% include 'pedidoproducto/show/_observacion.html.twig' %}
-                {% include 'pedidoproducto/show/_mesada.html.twig' %}
+                {% include 'pedido_producto/show/_producto.html.twig' %}
+                {% include 'pedido_producto/show/_estado.html.twig' %}
+                {% include 'pedido_producto/show/_cliente.html.twig' %}
+                {% include 'pedido_producto/show/_fecha_siembra.html.twig' %}
+                {% include 'pedido_producto/show/_fecha_entrada_camara.html.twig' %}
+                {% include 'pedido_producto/show/_fecha_entrega_pedido.html.twig' %}
+                {% include 'pedido_producto/show/_cantidad_bandejas.html.twig' %}
+                {% include 'pedido_producto/show/_observacion.html.twig' %}
+                {% include 'pedido_producto/show/_mesada.html.twig' %}
             </div>
 
             {% if entity.estado.codigoInterno == 4 %}
@@ -20,7 +20,7 @@
                     </div>
                 </div>
             {% endif %}
-            {% include 'pedidoproducto/show/_observacion_input.html.twig' %}
+            {% include 'pedido_producto/show/_observacion_input.html.twig' %}
         </div>
     </div>
 {% endif  %}
