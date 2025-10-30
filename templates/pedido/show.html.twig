@@ -60,9 +60,11 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        {{ macro_show._show_detail('Numero Orden', producto.numeroOrdenCompleto|default('-'), 'col-md-4') }}
+                        {{ macro_show._show_detail('Numero Orden', producto.numeroOrdenCompleto|default('-'), 'col-md-2') }}
                         {{ macro_show._show_detail('Nombre producto', producto.nombreCompleto|default('-'), 'col-md-4') }}
-                        {{ macro_show._show_detail('Fecha pedido', producto.fechaCreacion is not null ? producto.fechaCreacion|date("d/m/Y") : '-', 'col-md-4') }}
+                        {{ macro_show._show_detail('Origen Semilla', producto.tipoOrigenSemilla.nombre|default('-'), 'col-md-2') }}
+                        {{ macro_show._show_detail('Cantidad Semillas', producto.cantSemillas|default('-'), 'col-md-2') }}
+                        {{ macro_show._show_detail('Fecha pedido', producto.fechaCreacion is not null ? producto.fechaCreacion|date("d/m/Y") : '-', 'col-md-2') }}
                         {{ macro_show._show_detail('Fecha de siembra pedido', producto.fechaSiembraPedido is not null ? producto.fechaSiembraPedido|date("d/m/Y") : '-', 'col-md-2') }}
                         {{ macro_show._show_detail('Fecha de siembra real', producto.fechaSiembraReal is not null ? producto.fechaSiembraReal|date("d/m/Y") : '-', 'col-md-2') }}
                         {{ macro_show._show_detail('Fecha de entrega pedido', producto.fechaEntregaPedido is not null ? producto.fechaEntregaPedido|date("d/m/Y") : '-', 'col-md-2') }}
