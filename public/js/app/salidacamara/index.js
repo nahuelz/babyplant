@@ -354,8 +354,8 @@ function initFormValidation() {
 }
 function initValidations(){
     $('#salida_camara_mesadaUno_cantidadBandejas').on('keyup', function(){
-        if ($(this).val() > parseFloat($('#cantidadBandejasReales').val())){
-            $(this).val($('#cantidadBandejasReales').val());
+        if ($(this).val() > parseFloat($('#cantidadBandejasValue').val())){
+            $(this).val($('#cantidadBandejasValue').val());
         }
     });
 }
@@ -368,7 +368,7 @@ jQuery(document).ready(function() {
 function cantidadDeBandejasValida(){
     let cantidadBandejasMesadaUno = $('#salida_camara_mesadaUno_cantidadBandejas').val() ? parseFloat($('#salida_camara_mesadaUno_cantidadBandejas').val()) : 0;
     let cantidadBandejasMesadaDos = $('#salida_camara_mesadaDos_cantidadBandejas').val() ? parseFloat($('#salida_camara_mesadaDos_cantidadBandejas').val()) : 0;
-    let cantidadBandejasReales = parseFloat($('#cantidadBandejasReales').val());
+    let cantidadBandejasReales = parseFloat($('#cantidadBandejasValue').val());
     let cantidadTotalBandejas = cantidadBandejasMesadaUno + cantidadBandejasMesadaDos;
 
     return (cantidadTotalBandejas === cantidadBandejasReales);
@@ -424,14 +424,14 @@ function initmesadaForm() {
     $('#salida_camara_mesadaDos_tipoMesada').select2();
     $('.row-mesada-empty').hide();
     $('.mesada-dos').hide();
-    $('#salida_camara_mesadaUno_cantidadBandejas').val($('#cantidadBandejasReales').val())
+    $('#salida_camara_mesadaUno_cantidadBandejas').val($('#cantidadBandejasValue').val())
     $(document).on('click', '.add-mesada', function (e) {
         e.preventDefault();
         disableMesadaDosOptionHandler();
         removeMesadaHandler();
         $('#salida_camara_mesadaDos_cantidadBandejas').on('keyup', function(){
-            if ($(this).val() > parseFloat($('#cantidadBandejasReales').val())){
-                $(this).val($('#cantidadBandejasReales').val());
+            if ($(this).val() > parseFloat($('#cantidadBandejasValue').val())){
+                $(this).val($('#cantidadBandejasValue').val());
             }
         });
         $('.add-mesada').hide();
