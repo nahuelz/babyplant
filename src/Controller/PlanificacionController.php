@@ -52,6 +52,7 @@ class PlanificacionController extends BaseController
         $rsm = new ResultSetMapping();
 
         $rsm->addScalarResult('id', 'id');
+        $rsm->addScalarResult('idPedido', 'idPedido');
         $rsm->addScalarResult('title', 'title');
         $rsm->addScalarResult('colorBandeja', 'colorBandeja');
         $rsm->addScalarResult('colorProducto', 'colorProducto');

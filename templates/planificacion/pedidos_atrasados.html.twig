@@ -1,7 +1,7 @@
 <table id="example" class="display" style="width:100%">
     <thead>
     <tr>
-        <th>N° Pedido Producto</th>
+        <th>N° Pedido</th>
         <th>Nombre Producto</th>
         <th>Fecha Siembra</th>
         <th>Acciones</th>
@@ -10,7 +10,7 @@
     <tbody>
         {% for producto in pedidosProductos %}
         <tr>
-            <td class="padding-0">{{ producto.id }}</td>
+            <td class="padding-0">{{ producto.idPedido }}</td>
             <td class="padding-0">{{ producto.nombreProducto }} {{ producto.nombreSubProducto }} {{ producto.nombreVariedad }}</td>
             <td class="padding-0">{{ producto.fechaSiembraPlanificacion is not null ? producto.fechaSiembraPlanificacion|date('Y-m-d') : '-' }} </td>
             <td class="padding-0">

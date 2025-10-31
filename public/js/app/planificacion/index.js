@@ -51,6 +51,7 @@ var KTCalendarListView = function() {
                 eventClick: function(info) {
                     var element = $(info.el);
                     var idProducto = element.data('id');
+                    var idPedido = info.event.extendedProps.idPedido;
                     var actionUrl = element.data('href');
                     $.ajax({
                         type: 'POST',
@@ -60,7 +61,7 @@ var KTCalendarListView = function() {
                         }
                     }).done(function (form) {
                         showDialog({
-                            titulo: '<i class="fa fa-list-ul margin-right-10"></i> Orden de siembra pedido N° '+idProducto,
+                            titulo: '<i class="fa fa-list-ul margin-right-10"></i><a target="_blank" href="'+__HOMEPAGE_PATH__+'pedido/'+idPedido+'/#'+idProducto+'"> Planificación pedido N° '+idProducto,
                             contenido: form,
                             color: 'yellow ',
                             labelCancel: 'Cerrar',
