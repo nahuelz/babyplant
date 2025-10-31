@@ -10,7 +10,7 @@
         <div class="d-flex flex-column font-weight-bold">
             <label class="text-dark text-hover-primary mb-1 font-size-lg">Bandejas Sembradas / Pedidas</label>
             <span class="text-muted">{{ entity.cantidadBandejasReales|default(entity.cantidadBandejasReales) }}(X{{ entity.tipoBandeja }}) / {{ entity.cantidadBandejasPedidas|default(entity.cantidadBandejasPedidas) }}(X{{ entity.tipoBandeja }})</span>
-            <input type="hidden" id="cantidadBandejasReales" value="{{ entity.cantidadBandejasReales }}">
+            <input type="hidden" id="cantidadBandejasValue" value="{{ entity.cantidadBandejasReales|default(entity.cantidadBandejasPedidas) }}">
         </div>
     </div>
 </div>
