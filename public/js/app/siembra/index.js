@@ -50,7 +50,8 @@ var KTCalendarListView = function() {
                     if (__ES_ADMIN__) {
                         var element = $(info.el);
                         var idProducto = element.data('id');
-                        var idPedido = element.data('idpedido');
+                        var idPedido = info.event.extendedProps.idPedido;
+                        var orden = info.event.extendedProps.orden;
                         var actionUrl = element.data('href');
                         $.ajax({
                             type: 'POST',
@@ -60,7 +61,7 @@ var KTCalendarListView = function() {
                             }
                         }).done(function (form) {
                             showDialog({
-                                titulo: '<i class="fa fa-list-ul margin-right-10"></i><a target="_blank" href="'+__HOMEPAGE_PATH__+'pedido/'+idPedido+'/#'+idProducto+'"> Orden de siembra pedido producto N° ' + idProducto+'</a>',
+                                titulo: '<i class="fa fa-list-ul margin-right-10"></i><a target="_blank" href="'+__HOMEPAGE_PATH__+'pedido/'+idPedido+'/#'+idProducto+'"> Orden de siembra Pedido N° ' + idPedido+' Orden N° '+orden+'</a>',
                                 contenido: form,
                                 className: 'modal-dialog-small',
                                 color: 'yellow ',

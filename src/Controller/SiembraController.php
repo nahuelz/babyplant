@@ -59,6 +59,8 @@ class SiembraController extends BaseController
         $rsm->addScalarResult('colorProducto', 'colorProducto');
         $rsm->addScalarResult('fechaSiembraPlanificacion', 'fechaSiembraPlanificacion');
         $rsm->addScalarResult('className', 'className');
+        $rsm->addScalarResult('orden', 'orden');
+        $rsm->addScalarResult('idPedido', 'idPedido');
 
         $renderPage = "siembra/index_table.html.twig";
         return parent::baseIndexTableAction($request, [], $entityTable, ConstanteTipoConsulta::VIEW, $rsm, $renderPage);
