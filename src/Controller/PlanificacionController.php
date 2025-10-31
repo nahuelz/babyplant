@@ -141,11 +141,12 @@ class PlanificacionController extends BaseController
         $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($idPedidoProducto);
         $pedidoProducto->setObservacion($observacion);
         if (($pedidoProducto->getEstado()->getCodigoInterno() != ConstanteEstadoPedidoProducto::PLANIFICADO) && ($codSobre != '')) {
-            $pedidoProducto->setCodigoSobre($codSobre);
             $estado = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::PLANIFICADO);
             $this->estadoService->cambiarEstadoPedidoProducto($pedidoProducto, $estado, 'PLANIFICADO.');
             $pedidoProducto->setNumeroOrden($this->getDoctrine()->getRepository(PedidoProducto::class)->getSiguienteNumeroOrden($pedidoProducto->getTipoProducto()));
         }
+        $pedidoProducto->setCodigoSobre($codSobre);
+        $pedidoProducto->setObservacion($observacion);
         $em->flush();
 
         $message = 'Se guardo correctamente el orden de siembra';
