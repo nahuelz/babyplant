@@ -567,8 +567,10 @@ class PedidoController extends BaseController {
         if ($form->isSubmitted() && $form->isValid()) {
             $estadoMesada = $em->getRepository(EstadoMesada::class)->findOneByCodigoInterno(ConstanteEstadoMesada::PENDIENTE);
             if ($pedidoProducto->getMesadaDos() == null || $pedidoProducto->getMesadaDos()->getCantidadBandejas() == 0) {
-                $pedidoProducto->getMesadaDos()->setCantidadBandejas(0);
-                $pedidoProducto->setMesadaDos(null); // evitar persistir si no hay datos
+                if ($pedidoProducto->getMesadaDos() != null) {
+                    $pedidoProducto->getMesadaDos()->setCantidadBandejas(0);
+                    $pedidoProducto->setMesadaDos(null); // evitar persistir si no hay datos
+                }
             }else{
                 $pedidoProducto->getMesadaDos()->getTipoMesada()->setTipoProducto($pedidoProducto->getTipoProducto());
                 $this->estadoService->cambiarEstadoMesada($pedidoProducto->getMesadaDos(), $estadoMesada, 'CAMBIO DE MESADA.');

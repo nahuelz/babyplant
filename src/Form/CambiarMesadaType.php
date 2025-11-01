@@ -14,7 +14,7 @@ class CambiarMesadaType extends AbstractType
         $builder
             ->add('mesadaUno', MesadaType::class)
             ->add('mesadaDos', MesadaType::class, [
-                'required' => false,  // Hace que el campo sea opcional
+                'required' => false,
             ])
         ;
     }
