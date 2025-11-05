@@ -202,12 +202,8 @@ class EntregaController extends BaseController {
         $repository = $this->doctrine->getRepository(PedidoProducto::class);
 
         $query = $repository->createQueryBuilder('pp')
-            ->select("pp.id, concat ('PEDIDO N° ', p.id, ' ORDEN N° ',pp.numeroOrden,' ', tp.nombre, ' ', v.nombre,' (x',tb.nombre,') DISPONIBLES: ',pp.cantidadBandejasDisponibles, ' MESADA N° ', tm.nombre, ' ADELANTO: $',ccp.saldo) as denominacion")
+            ->select("pp.id, concat ('ORDEN N° ',pp.numeroOrden,' DISPONIBLES: ',pp.cantidadBandejasDisponibles, ' MESADA N° ', tm.nombre) as denominacion")
             ->leftJoin('pp.pedido', 'p' )
-            ->leftJoin('App:TipoVariedad', 'v', Join::WITH, 'pp.tipoVariedad = v')
-            ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')
-            ->leftJoin('App:TipoProducto', 'tp', Join::WITH, 'sb.tipoProducto = tp')
-            ->leftJoin('App:TipoBandeja', 'tb', Join::WITH, 'pp.tipoBandeja = tb')
             ->leftJoin('App:Mesada', 'm', Join::WITH, 'm.pedidoProducto = pp')
             ->leftJoin('App:TipoMesada', 'tm', Join::WITH, 'm.tipoMesada = tm')
             ->leftJoin('App:CuentaCorrientePedido', 'ccp', Join::WITH, 'p.cuentaCorrientePedido = ccp')

@@ -265,13 +265,13 @@ function customAfterChainedSelect(){
     $('#entrega_entregaProducto_pedidoProducto').select2({
         templateResult: function(data) {
             if (!data.id) {
-                return data.text;
+                return $('<span style="font-weight: bold;">' + data.text + '</span>');
             }
-            var palabraResaltar = "DISPONIBLES: "; // Palabras a resaltar
+            var palabraResaltar = "DISPONIBLES: ";
             var regex = new RegExp('(' + palabraResaltar + '\\d+(?:\\.\\d+)?\\s?)', 'gi');
             var highlightedText = data.text.replace(regex, '<span class="highlight">$1</span>');
 
-            return $('<span>').html(highlightedText);
+            return $('<span style="font-weight: bold;">').html(highlightedText);
         }
     });
 }
