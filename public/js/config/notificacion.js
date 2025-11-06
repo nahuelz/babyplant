@@ -269,44 +269,51 @@ function ocultarNotificacion($ocultarLink) {
  *  
  */
 function showDialog(options) {
+    var buttons = {
+        danger: {
+            label: options.labelCancel ? options.labelCancel : "Cancelar",
+            className: "btn-sm btn-light-dark pull-left font-weight-bold cancel ",
+            callback: function () {
+                return options.callbackCancel();
+            }
+        }
+    };
+
+    // Agregar el botón third si está definido
+    if (options.labelThird) {
+        buttons.third = {
+            label: options.labelThird,
+            className: "btn-sm btn-light-primary font-weight-bold mr-2 " + (options.thirdButtonClass || ''),
+            callback: function() {
+                if (options.callbackThird) {
+                    return options.callbackThird();
+                }
+                return true;
+            }
+        };
+    }
+
+    // Agregar el botón success después del third
+    buttons.success = {
+        label: options.labelSuccess ? options.labelSuccess : "Guardar",
+        className: "btn-sm btn-submit submit-button btn-light-success font-weight-bold success " +
+            (options.color ? options.color : '') +
+            (options.class ? options.class : ''),
+        callback: function () {
+            return options.callbackSuccess();
+        }
+    };
 
     var d = bootbox.dialog({
         backdrop: true,
-        buttons: {
-            danger: {
-                label: options.labelCancel ? options.labelCancel : "Cancelar",
-                className: "btn-sm btn-light-dark pull-left font-weight-bold cancel ",
-                callback: function () {
-                    var result = options.callbackCancel();
-                    return result;
-                }
-            },
-            success: {
-                label: options.labelSuccess ? options.labelSuccess : "Guardar",
-                className: "btn-sm btn-submit submit-button btn-light-success font-weight-bold success " + (options.color ? options.color : '') + (options.class ? options.class : ''),
-                callback: function () {
-                    var result = options.callbackSuccess();
-                    return result;
-                }
-            }
-        },
+        buttons: buttons,
         className: options.className,
         message: options.contenido,
         title: options.titulo
-
     });
 
     $(d).find('.modal-header').addClass(options.color ? options.color : '');
     initPreValidation();
-
-    // Add resizable function to modal
-        /*
-    $(d).find(".modal-content").resizable({
-        alsoResize: " .bootbox-body",
-        handles: "e, s",
-        minHeight: 250,
-        minWidth: 350
-    });*/
 
     return d;
 }

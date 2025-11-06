@@ -181,6 +181,10 @@ class Usuario implements UserInterface {
         return $nombre;
     }
 
+    public function getNombreCorto(): string {
+        return $this->getApellido(). ' '.$this->getNombre();
+    }
+
     public function getId(): ?int {
         return $this->id;
     }

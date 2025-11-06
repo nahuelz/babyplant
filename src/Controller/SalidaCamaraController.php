@@ -17,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @Route("/salida_camara")
@@ -69,6 +70,8 @@ class SalidaCamaraController extends BaseController
         $rsm->addScalarResult('codigoSobre', 'codigoSobre');
         $rsm->addScalarResult('cliente', 'cliente');
         $rsm->addScalarResult('cantidadBandejas', 'cantidadBandejas');
+        $rsm->addScalarResult('pasaCamara', 'pasaCamara');
+        $rsm->addScalarResult('camaraDestino', 'camaraDestino');
 
         $renderPage = "salida_camara/index_table.html.twig";
         return parent::baseIndexTableAction($request, [], $entityTable, ConstanteTipoConsulta::VIEW, $rsm, $renderPage);
@@ -105,6 +108,7 @@ class SalidaCamaraController extends BaseController
             } else {
                 $entity->setMesadaDos(null);
             }
+            $entity->setPasaCamara(false);
             $em->flush();
             $this->actualizarMesadas($entity);
             $em->flush();
@@ -154,5 +158,60 @@ class SalidaCamaraController extends BaseController
         $mesada->getTipoMesada()->setTipoProducto($entity->getTipoProducto());
         // ACTUALIZO ESPACIO OCUPADO
         $mesada->getTipoMesada()->actualizarOcupado();
+    }
+
+    /**
+     * @Route("/pasa-camara/", name="salida_camara_pasa_camara", methods={"POST"})
+     * @IsGranted("ROLE_SALIDA_CAMARA")
+     */
+    public function pasaCamaraAction(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        
+        // Obtener los datos del request
+        $camaraDestino = $data['camaraDestino'] ?? null;
+        $observaciones = $data['observaciones'] ?? null;
+        $pedidoProductoId = $data['pedidoProductoId'] ?? null;
+
+        if (!$camaraDestino || !$pedidoProductoId) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Faltan parámetros requeridos'
+            ], 400);
+        }
+
+        try {
+            $entityManager = $this->getDoctrine()->getManager();
+            
+            // Obtener el pedido producto
+            $pedidoProducto = $entityManager->getRepository(PedidoProducto::class)->find($pedidoProductoId);
+            
+            if (!$pedidoProducto) {
+                throw $this->createNotFoundException('No se encontró el pedido producto con id ' . $pedidoProductoId);
+            }
+
+            // Actualizar los campos
+            $pedidoProducto->setPasaCamara(true);
+            $pedidoProducto->setCamaraDestino($camaraDestino);
+            
+            // Si hay observaciones, actualizarlas
+            if ($observaciones) {
+                $observacionActual = $pedidoProducto->getObservacionCamara() ? $pedidoProducto->getObservacionCamara() . "\n" : '';
+                $pedidoProducto->setObservacionCamara($observacionActual . "[Pase de cámara] " . $observaciones);
+            }
+
+            $entityManager->flush();
+
+            return new JsonResponse([
+                'success' => 'success',
+                'message' => 'Pase de cámara registrado correctamente'
+            ]);
+
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'success' => 'error',
+                'message' => 'Error al procesar el pase de cámara: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

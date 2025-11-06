@@ -194,6 +194,19 @@ class PedidoProducto {
      */
     private $reservas;
 
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="pasa_camara", type="boolean", options={"default": false})
+     */
+    private bool $pasaCamara = false;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="camara_destino", type="string", length=100, nullable=true)
+     */
+    private ?string $camaraDestino = null;
 
     public function __construct()
     {
@@ -859,8 +872,25 @@ class PedidoProducto {
         $this->observacionCamara = $observacionCamara;
     }
 
+    public function isPasaCamara(): bool
+    {
+        return $this->pasaCamara;
+    }
 
+    public function setPasaCamara(bool $pasaCamara): self
+    {
+        $this->pasaCamara = $pasaCamara;
+        return $this;
+    }
 
+    public function getCamaraDestino(): ?string
+    {
+        return $this->camaraDestino;
+    }
 
-
+    public function setCamaraDestino(?string $camaraDestino): self
+    {
+        $this->camaraDestino = $camaraDestino;
+        return $this;
+    }
 }

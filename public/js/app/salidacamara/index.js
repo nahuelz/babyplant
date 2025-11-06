@@ -69,7 +69,9 @@ var KTCalendarListView = function() {
                             color: 'btn-light-success ',
                             labelCancel: 'Cerrar',
                             labelSuccess: 'Enviar a mesada',
+                            labelThird: 'Pasa de cámara',
                             closeButton: true,
+                            thirdButtonClass: 'pasa_camara_submit',
                             class: 'salida_camara_submit',
                             callbackCancel: function () {
                                 return;
@@ -84,6 +86,7 @@ var KTCalendarListView = function() {
                         $('.modal-dialog').addClass('modal-fullscreen-xl-down');
                         initObservacionInput();
                         initObservacionCamaraInput();
+                        initPasaCamara();
                         if (__ID_ESTADO__ !== EN_INVERNACULO) {
                             initmesadaForm();
                             $('#salida_camara_mesadaUno_tipoMesada').select2();
@@ -96,12 +99,21 @@ var KTCalendarListView = function() {
                             $('.remove-mesada').hide();
                         }else{
                             $('.salida_camara_submit').hide();
+                            $('.pasa_camara_submit').hide();
                         }
                     });
                 },
                 eventRender: function(info) {
                     var element = $(info.el);
-                    element.find('.fc-title').html(info.event.title);
+                    var title = info.event.title;
+
+                    // Si hay una cámara destino, la agregamos al título
+                    if (info.event.extendedProps.pasaCamara === true || info.event.extendedProps.pasaCamara === '1') {
+                        var camaraDestino = info.event.extendedProps.camaraDestino || 'Sin destino';
+                        title += '<div class="camara-destino" style="font-size: 1rem; color: white; font-weight: bold; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; padding: 2px; border: 1px solid red; border-radius: 3px; background-color: rgba(255, 255, 0, 1); text-align: center; margin-right: 15px">PASA A ' + camaraDestino + '</div>';
+                    }
+
+                    element.find('.fc-title').html(title);
                     element.attr('data-id', info.event.id);
                     element.attr('data-idpedido', info.event.extendedProps.idPedido);
                     element.attr('data-toggle', 'modal');
@@ -110,7 +122,16 @@ var KTCalendarListView = function() {
                     element.css('min-height', '40px');
                     element.find('.fc-title').css('font-size', '1rem');
                     element.find('.tipo-bandeja').attr('style', 'color: ' + info.event.extendedProps.colorBandeja + ' !important;');
+
+                    // Establecer borde negro por defecto
                     info.el.style.borderColor = 'black';
+
+                    // Si pasaCamara es true, agregar borde rojo
+                    if (info.event.extendedProps.pasaCamara === true || info.event.extendedProps.pasaCamara === '1') {
+                        info.el.style.borderWidth = '3px';
+                        info.el.style.borderStyle = 'solid';
+                        info.el.style.borderColor = 'red';
+                    }
 
                     //COLOR FONDO
                     if (info.event.extendedProps.colorProducto) {
@@ -362,6 +383,13 @@ function initValidations(){
 
 jQuery(document).ready(function() {
     KTCalendarListView.init();
+    const flashMessage = localStorage.getItem('flashMessage');
+    if (flashMessage) {
+        const { type, message } = JSON.parse(flashMessage);
+        showFlashMessage(type, message);
+        // Limpiar el mensaje para que no se muestre de nuevo
+        localStorage.removeItem('flashMessage');
+    }
 
 });
 
@@ -456,3 +484,86 @@ function removeMesadaHandler(){
         $('.add-mesada').show();
     })
 }
+
+
+function initPasaCamara() {
+    $(".pasa_camara_submit").off('click').on('click', function(e) {
+        e.preventDefault();
+        
+        // Obtener el ID del pedido producto desde el botón o de donde corresponda
+        const pedidoProductoId = $('#idProducto').val();
+        if (!pedidoProductoId) {
+            console.error('No se encontró el ID del pedido producto');
+            return;
+        }
+
+        // Contenido del modal
+        const contenido = `
+            <div class="form-group">
+                <label>Seleccione la cámara destino:</label>
+                <select id="selectCamaraDestino" class="form-control" required>
+                    <option value="">Seleccione una opción</option>
+                    <option value="OPCION 1">OPCION 1</option>
+                    <option value="OPCION 2">OPCION 2</option>
+                    <option value="OPCION 3">OPCION 3</option>
+                </select>
+            </div>
+            <div class="form-group mt-3">
+                <label>Observaciones:</label>
+                <textarea id="observacionesPase" class="form-control" rows="3" placeholder="Ingrese observaciones (opcional)"></textarea>
+            </div>
+        `;
+
+        // Mostrar el modal de confirmación
+        showDialog({
+            titulo: 'Pasar a otra cámara',
+            contenido: contenido,
+            color: 'btn-light-primary',
+            labelCancel: 'Cancelar',
+            labelSuccess: 'Confirmar',
+            callbackCancel: function() {
+                return true; // Cierra el modal
+            },
+            callbackSuccess: function() {
+                // Obtener los valores del formulario
+                const camaraDestino = $('#selectCamaraDestino').val();
+                const observaciones = $('#observacionesPase').val();
+
+                // Validaciones
+                if (!camaraDestino) {
+                    showFlashMessage('error', 'Por favor seleccione una cámara destino');
+                    return false; // Evita que se cierre el modal
+                }
+
+                // Realizar la llamada AJAX
+                $.ajax({
+                    url: __HOMEPAGE_PATH__ + "salida_camara/pasa-camara/",
+                    type: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        camaraDestino: camaraDestino,
+                        observaciones: observaciones,
+                        pedidoProductoId: pedidoProductoId
+                    }),
+                    success: function(result) {
+                        // Guardar el mensaje en localStorage antes de recargar
+                        localStorage.setItem('flashMessage', JSON.stringify({
+                            type: result.success,
+                            message: result.message
+                        }));
+                    },
+                    error: function(result) {
+                        // Guardar mensaje de error
+                        localStorage.setItem('flashMessage', JSON.stringify({
+                            type: 'error',
+                            message: result.responseJSON?.message || 'Ocurrió un error inesperado'
+                        }));
+                    }
+                });
+                window.location.reload();
+            }
+        });
+    });
+}
+

@@ -16,6 +16,8 @@
         "estado": "{{ entity.estado|default('-') }}",
         "colorEstado": "{{ entity.colorEstado|default('-') }}",
         "idEstado": "{{ entity.idEstado|default('-') }}",
+        "camaraDestino": "{{ entity.camaraDestino|default('-') }}",
+        "pasaCamara": "{{ entity.pasaCamara|default('-') }}",
         "codigoSobre": "{{ entity.codigoSobre|escape_json|default('-')|raw|default('-') }}",
         "cliente": "{{ entity.cliente|default('-') }}",
         "fechaSalidaCamaraReal": "{{ entity.fechaSalidaCamaraReal is not null ? entity.fechaSalidaCamaraReal|date('Y-m-d') : '-' }}",
