@@ -318,7 +318,10 @@ function datatablesGetColDef() {
                 if (type === 'display') {
                     return '<a href="' + data.path + '" target="_blank">' + data.nombreCliente + '</a>';
                 }
-                return data.nombreCliente;
+                // Para búsqueda: nombre normal + nombre invertido, todo en minúsculas y sin comas
+                let nombreSinComas = data.nombreCliente.replace(/,/g, '').toLowerCase();
+                let nombreInvertido = nombreSinComas.split(/\s+/).reverse().join(' ');
+                return nombreSinComas + ' ' + nombreInvertido;
             }
         },
         {
