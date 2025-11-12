@@ -34,11 +34,11 @@
         <tbody>
         {% for pedidoProducto in entity.pedidosProductos %}
             <tr>
-                <td width="290" align="center">{{ pedidoProducto.productoBandeja }}</td>
-                <td width="115" align="center">{{ pedidoProducto.cantidadBandejasPedidas }}</td>
-                <td width="125" align="center">{{ pedidoProducto.cantSemillas * 0.9 }}</td>
-                <td width="140" align="center">{{ pedidoProducto.fechaSiembraPedido|date('d/m/Y') }}</td>
-                <td width="125" align="center">{{ pedidoProducto.fechaEntregaPedido|date('d/m/Y') }}</td>
+                <td width="290" align="center" {% if pedidoProducto.estado == 'CANCELADO' %}style="text-decoration: line-through;"{% endif %}>{{ pedidoProducto.productoBandeja }} {% if pedidoProducto.estado == 'CANCELADO' %}<strong style="text-decoration: none;">(CANCELADO)</strong>{% endif %}</td>
+                <td width="115" align="center" {% if pedidoProducto.estado == 'CANCELADO' %}style="text-decoration: line-through;"{% endif %}>{{ pedidoProducto.cantidadBandejasPedidas }}</td>
+                <td width="125" align="center" {% if pedidoProducto.estado == 'CANCELADO' %}style="text-decoration: line-through;"{% endif %}>{{ pedidoProducto.cantSemillas * 0.9 }}</td>
+                <td width="140" align="center" {% if pedidoProducto.estado == 'CANCELADO' %}style="text-decoration: line-through;"{% endif %}>{{ pedidoProducto.fechaSiembraPedido|date('d/m/Y') }}</td>
+                <td width="125" align="center" {% if pedidoProducto.estado == 'CANCELADO' %}style="text-decoration: line-through;"{% endif %}>{{ pedidoProducto.fechaEntregaPedido|date('d/m/Y') }}</td>
             </tr>
         {% endfor %}
     </table>
