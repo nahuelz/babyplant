@@ -198,8 +198,8 @@ class Mesada {
     }
 
     public function revertirBandejas($cantidad){
-        $this->cantidadBandejasEntregadas = 0;
-        $this->cantidadBandejas = $cantidad;
+        $this->cantidadBandejasEntregadas -= $cantidad;
+        $this->cantidadBandejas += $cantidad;
         $this->getTipoMesada()->actualizarOcupado();
     }
 
