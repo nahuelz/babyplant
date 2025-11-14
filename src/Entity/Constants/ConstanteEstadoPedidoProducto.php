@@ -53,4 +53,9 @@ class ConstanteEstadoPedidoProducto {
      */
     const CANCELADO = 9;
 
+    /**
+     * ENTREGA CANCELADA
+     */
+    const ENTREGA_CANCELADA = 10;
+
 }

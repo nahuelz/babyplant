@@ -53,7 +53,7 @@
                                     {% if mesada.estado.codigoInterno != 3 %}
                                         {% if mesada.pedidoProducto != null %}
                                             {% if mesada.cantidadBandejas > 0 %}
-                                                {% if mesada.pedidoProducto.estado.codigoInterno == 5 %}
+                                                {% if mesada.pedidoProducto.estado.codigoInterno == 5 or mesada.pedidoProducto.estado.codigoInterno == 7 %}
                                                     <tr>
                                                         <td class="text-center v-middle">{{ mesada.pedidoProducto.id }}</td>
                                                         <td class="text-center v-middle">{{ mesada.pedidoProducto.numeroOrdenCompleto }}</td>

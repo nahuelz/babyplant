@@ -140,6 +140,74 @@ class EntregaController extends BaseController {
     public function show($id): Array {
         return parent::baseShowAction($id);
     }
+    
+    /**
+     * @Route("/{id}/cancelar", name="entrega_cancelar", methods={"POST|GET"})
+     * @IsGranted("ROLE_ENTREGA")
+     */
+    public function cancelarEntrega($id, Request $request): JsonResponse
+    {
+        $em = $this->doctrine->getManager();
+        $entrega = $em->getRepository(Entrega::class)->find($id);
+
+        if (!$entrega) {
+            return $this->json([
+                'success' => false,
+                'message' => 'No se encontró la entrega especificada'
+            ], 404);
+        }
+
+        try {
+            $em->beginTransaction();
+
+            // Obtener el estado de entrega cancelada
+            $estadoCancelada = $em->getRepository(EstadoEntrega::class)
+                ->findOneByCodigoInterno(ConstanteEstadoEntrega::CANCELADA);
+
+            if (!$estadoCancelada) {
+                throw new \Exception('No se encontró el estado de entrega cancelada');
+            }
+
+            // Revertir los cambios de la entrega
+            $entregaService = new EntregaService();
+            $entregaService->revertirEntrega($em, $entrega);
+
+            // Cambiar el estado de la entrega a cancelada
+            $this->cambiarEstadoEntrega($em, $entrega, $estadoCancelada, 'Entrega cancelada');
+
+            $em->flush();
+            $em->commit();
+
+            return $this->json([
+                'success' => true,
+                'message' => 'Entrega cancelada exitosamente',
+                'redirect' => $this->generateUrl('entrega_show', ['id' => $entrega->getId()])
+            ]);
+
+        } catch (\Exception $e) {
+            $em->rollback();
+            return $this->json([
+                'success' => false,
+                'message' => 'Error al cancelar la entrega: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    /**
+     * Cambia el estado de una entrega y registra el historial
+     */
+    private function cambiarEstadoEntrega(ObjectManager $em, Entrega $entrega, $estado, string $motivo): void
+    {
+        $entrega->setEstado($estado);
+        
+        $historico = new \App\Entity\EstadoEntregaHistorico();
+        $historico->setEntrega($entrega);
+        $historico->setEstado($estado);
+        $historico->setFecha(new \DateTime());
+        $historico->setMotivo($motivo);
+        
+        $em->persist($historico);
+    }
 
     /**
      * @Route("/{id}/edit", name="entrega_edit", methods={"GET","POST"})

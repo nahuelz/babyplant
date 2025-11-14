@@ -73,7 +73,21 @@
                             </div>
                             {{ macro_show._show_detail('Numero Orden', producto.getNumeroOrdenCompleto|default('-'), 'col-md-2') }}
                             {{ macro_show._show_detail('Bandejas Entregadas', entregaProducto.cantidadBandejas|default('-'), 'col-md-2') }}
-                            {{ macro_show._show_detail('Mesada', producto.mesadaNumero|default('-'), 'col-md-2') }}
+                            {% set mesadaContent %}
+                                {{ producto.mesadaNumero }}
+                                <a href="{{ path('app_tipo_mesada_show', {'id': producto.mesadaUno.tipoMesada.id}) }}" class="btn btn-xs btn-icon" style="max-height: 15px" title="Ver pedido">
+                                    <i class="la la-search" style="color: #0a6aa1"></i>
+                                </a>
+                            {% endset %}
+                            {{ macro_show._show_detail('Mesada', mesadaContent, 'col-md-2') }}
+
+                            {% set pedidoContent %}
+                                {{ producto.pedido.id }}
+                                <a href="{{ path('pedido_show', {'id': producto.pedido.id}) }}" class="btn btn-xs btn-icon" style="max-height: 15px" title="Ver pedido">
+                                    <i class="la la-search" style="color: #0a6aa1"></i>
+                                </a>
+                            {% endset %}
+                            {{ macro_show._show_detail('Pedido N°', pedidoContent, 'col-md-2') }}
                             {% if entregaProducto.precioUnitario != null %}
                                 {{ macro_show._show_detail('Precio Unitario', entregaProducto.precioUnitario|money_format|default('-'), 'col-md-2') }}
                                 {{ macro_show._show_detail('Subtotal', entregaProducto.getPrecioSubTotal|money_format|default('-'), 'col-md-2') }}

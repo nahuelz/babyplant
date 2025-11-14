@@ -18,4 +18,9 @@ class ConstanteEstadoEntrega {
      */
     const CON_REMITO = 2;
 
+    /**
+     * CANCELADA
+     */
+    const CANCELADA = 3;
+
 }

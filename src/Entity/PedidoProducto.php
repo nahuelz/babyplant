@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Entity\Constants\ConstanteEstadoEntrega;
+use App\Entity\Constants\ConstanteEstadoEntregaProducto;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Constants\ConstanteEstadoReserva;
 use App\Entity\Traits\Auditoria;
@@ -743,7 +745,13 @@ class PedidoProducto {
     {
         $cantidadBandejas = 0;
         foreach ($this->getEntregasProductos() as $entregaProducto){
-            $cantidadBandejas+= $entregaProducto->getCantidadBandejas();
+            if ($entregaProducto->getEntrega()->getEstado() != null){
+                if ($entregaProducto->getEntrega()->getEstado()->getCodigoInterno() != ConstanteEstadoEntrega::CANCELADA) {
+                    $cantidadBandejas += $entregaProducto->getCantidadBandejas();
+                }
+            }else{
+                $cantidadBandejas += $entregaProducto->getCantidadBandejas();
+            }
         }
         return $cantidadBandejas;
     }

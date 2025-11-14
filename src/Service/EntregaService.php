@@ -54,17 +54,41 @@ class EntregaService {
             $this->entregarBandejas($em, $pedidoProducto, $estadoMesada, $bandejasAEntregar);
             $em->persist($datosEntrega);
 
-            $this->cambiarEstadoPedido($em, $pedidoProducto, $estadoPedidoProducto, $datosEntrega);
+            $this->cambiarEstadoPedido($em, $pedidoProducto, $estadoPedidoProducto,'Entrega de producto', $datosEntrega);
 
             $pedidoProducto->setCantidadBandejasDisponibles();
 
         }
         $estadoEntrega = $em->getRepository(EstadoEntrega::class)->findOneByCodigoInterno(ConstanteEstadoEntrega::SIN_REMITO);
-        $this->cambiarEstadoEntrega($em, $entrega, $estadoEntrega);
+        $this->cambiarEstadoEntrega($em, $entrega, $estadoEntrega, 'Entrega de producto');
 
         $em->flush();
 
         return true;
+    }
+
+    public function revertirEntrega(ObjectManager $em, Entrega $entrega): void
+    {
+        /** @var EntregaProducto $entregaProducto */
+        foreach ($entrega->getEntregasProductos() as $entregaProducto) {
+            $pedidoProducto = $entregaProducto->getPedidoProducto();
+            $estadoEntrega = $em->getRepository(EstadoEntrega::class)->findOneByCodigoInterno(ConstanteEstadoEntrega::CANCELADA);
+            $this->cambiarEstadoEntrega($em, $entrega, $estadoEntrega, 'Cancela Entrega');
+            $estadoPedidoProducto = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::ENTREGA_CANCELADA);
+            $this->cambiarEstadoPedido($em, $pedidoProducto, $estadoPedidoProducto, 'Cancela Entrega.');
+            $this->revertirBandejas($em, $entregaProducto);
+            $em->flush();
+            $pedidoProducto->setCantidadBandejasDisponibles();
+        }
+    }
+
+    public function revertirBandejas($em, EntregaProducto $entregaProducto): void
+    {
+        $cantidadBandejas = $entregaProducto->getCantidadBandejas();
+        $mesadaUno = $entregaProducto->getPedidoProducto()->getMesadaUno();
+        $estadoMesada = $em->getRepository(EstadoMesada::class)->findOneByCodigoInterno(ConstanteEstadoMesada::PENDIENTE);
+        $mesadaUno->revertirBandejas($cantidadBandejas);
+        $this->cambiarEstadoMesada($em, $mesadaUno, $estadoMesada);
     }
 
     public function entregarBandejas($em, $pedidoProducto, $estadoMesada, $bandejasAEntregar): void
@@ -117,14 +141,24 @@ class EntregaService {
      * @param EstadoPedidoProducto $estadoProducto
      * @param null $datosEntrega
      */
-    private function cambiarEstadoPedido(ObjectManager $em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto, $datosEntrega = null): void
+    private function cambiarEstadoPedido(ObjectManager $em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto, $motivo, $datosEntrega = null): void
     {
-        $pedidoProducto->setEstado($estadoProducto);
+        // SOLO CAMBIO EL ESTADO DEL PEDIDO SI SE ENTREGA POR COMPLETO
+        if (!in_array($estadoProducto->getCodigoInterno(),[ConstanteEstadoPedidoProducto::ENTREGADO_PARCIAL, ConstanteEstadoPedidoProducto::ENTREGA_CANCELADA])) {
+            // SI SE ENTREGA PARCIAL, O SE CANCELA, NO CAMBIA EL ESTADO DEL PEDIDO, QUEDA EN INVERNACULO
+            $pedidoProducto->setEstado($estadoProducto);
+        }else{
+            if ($pedidoProducto->getEstado()->getCodigoInterno() == ConstanteEstadoPedidoProducto::ENTREGADO){
+                // SI EL ESTADO ERA ENTREGADO PERO SE CANCELO LA ENTREGA, PASA NUEVAMENTE A INVERNACULO
+                $estadoPedidoProducto = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::EN_INVERNACULO);
+                $pedidoProducto->setEstado($estadoPedidoProducto);
+            }
+        }
         $estadoPedidoProductoHistorico = new EstadoPedidoProductoHistorico();
         $estadoPedidoProductoHistorico->setPedidoProducto($pedidoProducto);
         $estadoPedidoProductoHistorico->setFecha(new DateTime());
         $estadoPedidoProductoHistorico->setEstado($estadoProducto);
-        $estadoPedidoProductoHistorico->setMotivo('Entrega de bandejas');
+        $estadoPedidoProductoHistorico->setMotivo($motivo);
         $estadoPedidoProductoHistorico->setDatosEntrega($datosEntrega);
         $pedidoProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
 
@@ -137,14 +171,14 @@ class EntregaService {
      * @param Entrega $entrega
      * @param EstadoEntrega $estadoEntrega
      */
-    private function cambiarEstadoEntrega(ObjectManager $em, Entrega $entrega, EstadoEntrega $estadoEntrega): void
+    private function cambiarEstadoEntrega(ObjectManager $em, Entrega $entrega, EstadoEntrega $estadoEntrega, $motivo): void
     {
         $entrega->setEstado($estadoEntrega);
         $estadoEntregaHistorico = new EstadoEntregaHistorico();
         $estadoEntregaHistorico->setEntrega($entrega);
         $estadoEntregaHistorico->setFecha(new DateTime());
         $estadoEntregaHistorico->setEstado($estadoEntrega);
-        $estadoEntregaHistorico->setMotivo('Entrega de producto');
+        $estadoEntregaHistorico->setMotivo($motivo);
         $entrega->addHistoricoEstado($estadoEntregaHistorico);
 
         $em->persist($estadoEntregaHistorico);

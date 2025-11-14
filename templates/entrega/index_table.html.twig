@@ -32,6 +32,7 @@
         {
         {% if entity.idEstado == 1 %} {# 1 = PENDIENTE DE REMITO #}
             "generar_remito": "{{ path( "remito_new", { "id": entity.idClienteEntrega }) }}",
+            "cancelar": "{{ path( "entrega_cancelar", { "id": entity.idEntrega }) }}",
         {% endif %}
         "situacion_cliente": "{{ path( "situacioncliente_show", { "id": entity.idCliente }) }}",
         "show": "{{ path('entrega_show',{id: entity.idEntrega}) }}",

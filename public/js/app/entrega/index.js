@@ -7,6 +7,7 @@ $(document).ready(function () {
     initTable();
     initVerHistoricoEstadoEntregaHandler();
     initClienteSelect2();
+    initCancelarButton();
 });
 /**
  *
@@ -221,6 +222,8 @@ function dataTablesActionFormatter(data, type, full, meta) {
             (data.print_pdf_interno !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf_interno + '" target="_blank"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Entrega Interno</a>' : '')
             +
             (data.delete !== undefined ? '<a class="dropdown-item accion-borrar" href="' + data.delete + '"><i class="la la-remove" style="margin-right: 5px;"></i> Borrar</a>' : '')
+            +
+            (data.cancelar !== undefined ? '<a class="dropdown-item accion-cancelar" href="' + data.cancelar + '"><i class="la la-remove" style="margin-right: 5px;"></i> Cancelar </a>' : '')
         ;
 
         actions = ' <div class="dropdown dropdown-inline">\
@@ -273,5 +276,21 @@ function initVerHistoricoEstadoEntregaHandler() {
             $('.bs-popover-top').hide();
             $('.btn-submit').hide();
         });
+    });
+}
+
+function initCancelarButton() {
+    $(document).on('click', '.accion-cancelar', function (e) {
+        e.preventDefault();
+        var a_href = $(this).attr('href');
+        show_confirm({
+            title: 'Confirmar',
+            type: 'warning',
+            msg: '¿Desea cancelar esta entrega?',
+            callbackOK: function () {
+                location.href = a_href;
+            }
+        });
+        e.stopPropagation();
     });
 }

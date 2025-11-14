@@ -77,6 +77,7 @@ class Entrega {
     {
         $this->entregasProductos = new ArrayCollection();
         $this->historicoEstados = new ArrayCollection();
+        $this->estado = null; // Inicializar la propiedad estado
     }
 
     public function __toString()
