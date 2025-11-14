@@ -145,16 +145,14 @@ class EntregaController extends BaseController {
      * @Route("/{id}/cancelar", name="entrega_cancelar", methods={"POST|GET"})
      * @IsGranted("ROLE_ENTREGA")
      */
-    public function cancelarEntrega($id, Request $request): JsonResponse
+    public function cancelarEntrega($id, Request $request): RedirectResponse
     {
         $em = $this->doctrine->getManager();
         $entrega = $em->getRepository(Entrega::class)->find($id);
 
         if (!$entrega) {
-            return $this->json([
-                'success' => false,
-                'message' => 'No se encontró la entrega especificada'
-            ], 404);
+            $this->addFlash('error', 'No se encontró la entrega especificada.');
+            return $this->redirectToRoute('entrega_index');
         }
 
         try {
@@ -178,18 +176,13 @@ class EntregaController extends BaseController {
             $em->flush();
             $em->commit();
 
-            return $this->json([
-                'success' => true,
-                'message' => 'Entrega cancelada exitosamente',
-                'redirect' => $this->generateUrl('entrega_show', ['id' => $entrega->getId()])
-            ]);
+            $this->addFlash('success', 'Entrega cancelada exitosamente.');
+            return $this->redirectToRoute('entrega_index');
 
         } catch (\Exception $e) {
             $em->rollback();
-            return $this->json([
-                'success' => false,
-                'message' => 'Error al cancelar la entrega: ' . $e->getMessage()
-            ], 500);
+            $this->addFlash('error', 'Error al cancelar la entrega: ' . $e->getMessage());
+            return $this->redirectToRoute('entrega_index');
         }
     }
     
