@@ -400,6 +400,11 @@ class RemitoController extends BaseController {
 
         $this->estadoService->cambiarEstadoRemito($remito, $estadoCancelado, 'CANCELADO.');
 
+        foreach ($remito->getEntregas() as $entrega) {
+            $estadoSinRemito = $em->getRepository(EstadoEntrega::class)->find(ConstanteEstadoEntrega::SIN_REMITO);
+            $this->estadoService->cambiarEstadoEntrega($entrega, $estadoSinRemito, 'Remito cancelado, vuelve a estado "SIN REMITO"');
+        }
+
         $em->flush();
 
         $this->addFlash('success', 'El remito fue cancelado correctamente.');
