@@ -146,7 +146,7 @@ class PrintService{
             'margin_right' => 2,
             'margin_top' => 2,
             'margin_bottom' => 2,
-            'orientation' => 'P',
+            'orientation' => 'L',
         ]);
         return $mpdfService;
     }
