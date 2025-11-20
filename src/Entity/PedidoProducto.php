@@ -577,9 +577,9 @@ class PedidoProducto {
     public function getMesada()
     {
         $mesadas = '';
-        if ($this->getMesadaUno() != null) {
+        if ($this->getMesadaUno() != null and $this->getMesadaUno()->getTipoMesada() != null) {
             $mesadas = 'MESADA N° ' . $this->getMesadaUno()->getTipoMesada()->getNumero() . ' BANDEJAS: ' . $this->getMesadaUno()->getCantidadBandejas();
-            if ($this->getMesadaDos() != null) {
+            if ($this->getMesadaDos() != null and $this->getMesadaDos()->getTipoMesada() != null) {
                 $mesadas .= '</br>';
                 $mesadas .= 'MESADA N° ' . $this->getMesadaDos()->getTipoMesada()->getNumero() . ' BANDEJAS: ' . $this->getMesadaDos()->getCantidadBandejas();
             }
