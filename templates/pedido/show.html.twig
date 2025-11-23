@@ -83,12 +83,21 @@
                         {% if historicoEstados.estado.id == 2 %}
                             <div class="row">
                                 <div class="col-md-2">
+                                    <span class="label label-inline label-light-warning font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-list-ul padding-right-5"></span> PLANIFICADO</span>
+                                </div>
+                                {{ macro_show._show_detail('Fecha de planificacion', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                                {{ macro_show._show_detail('Codigo Sobre', producto.codigoSobre|default('-'), 'col-md-3') }}
+                            </div>
+                        {% endif %}
+                        {% if historicoEstados.estado.id == 3 %}
+                            <div class="row">
+                                <div class="col-md-2">
                                     <span class="label label-inline label-light-success font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-leaf padding-right-5"></span> SEMBRADO</span>
                                 </div>
                                 {{ macro_show._show_detail('Fecha de siembra', producto.fechaSiembraReal is not null ? producto.fechaSiembraReal|date("d/m/Y H:i") : '-', 'col-md-3') }}
                             </div>
                         {% endif %}
-                        {% if historicoEstados.estado.id == 3 %}
+                        {% if historicoEstados.estado.id == 4 %}
                             <div class="row">
                                 <div class="col-md-2">
                                     <span class="label label-inline label-light-primary font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-list-ul padding-right-5"></span> EN CAMARA</span>
@@ -98,7 +107,7 @@
                                 {{ macro_show._show_detail('Tiempo en camara', producto.cantidadDiasEnCamara|default('-'), 'col-md-3') }}
                             </div>
                         {% endif %}
-                        {% if historicoEstados.estado.id == 4 %}
+                        {% if historicoEstados.estado.id == 5 %}
                             <div class="row">
                                 <div class="col-md-2">
                                     <span class="label label-inline label-light-info font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-home padding-right-5"></span> EN INVERNACULO</span>
