@@ -9,6 +9,8 @@
         "orden": "{{ entity.orden|default('-') }}",
         "idPedido": "{{ entity.idPedido|default('-') }}",
         "colorProducto": "{{ entity.colorProducto|default('-') }}",
+        "observacion": "{{ entity.observacion|escape_json|default('-')|raw|default('-') }}",
+        "observacionCamara": "{{ entity.observacionCamara|escape_json|default('-')|raw|default('-') }}",
         "href":  "{{ path( "pedido_producto_entrada_camara", { 'id': entity.id }) }}",
         "className": "{{ entity.className|default('fc-event-danger fc-event-solid-danger') }}"
         }

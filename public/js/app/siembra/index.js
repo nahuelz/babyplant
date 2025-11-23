@@ -98,7 +98,7 @@ var KTCalendarListView = function() {
                                     if (info.event.start.toISOString() > todayDate.toISOString()){
                                         Swal.fire({
                                             title: "ERROR",
-                                            html: "No se puede cambiar el estado un producto planificado posterior al día de hoy!",
+                                            html: "No se puede sembrar un producto planificado posterior al día de hoy!",
                                         });
                                         return false;
                                     }
@@ -161,6 +161,18 @@ var KTCalendarListView = function() {
                     element.find('.fc-content').css('margin-top', '1%');
                     element.find('.tipo-bandeja').attr('style', 'color: ' + info.event.extendedProps.colorBandeja + ' !important;');
                     info.el.style.borderColor = 'black';
+
+                    // Mostrar ícono de advertencia si hay observación
+                    if (info.event.extendedProps.observacion && info.event.extendedProps.observacion.trim() !== '-') {
+                        var warningIcon = $('<i class="fas fa-exclamation-triangle fa-lg text-warning ml-2" title="Este pedido tiene una observación"></i>');
+                        element.find('.fc-title').append(warningIcon);
+                    }
+
+                    // Mostrar ícono de advertencia si hay observación camara
+                    if (info.event.extendedProps.observacionCamara && info.event.extendedProps.observacionCamara.trim() !== '-') {
+                        var warningIcon = $('<i class="fas fa-exclamation-triangle fa-lg text-warning ml-2" title="Este pedido tiene una observación en camara"></i>');
+                        element.find('.fc-title').append(warningIcon);
+                    }
 
                     //COLOR FONDO
                     if (info.event.extendedProps.colorProducto) {

@@ -127,6 +127,7 @@ class TipoVariedadController extends BaseController
         $query = $repository->createQueryBuilder('l')
             ->select("l.id, l.nombre AS denominacion")
             ->where('l.tipoSubProducto = :subProducto')
+            ->andWhere("l.habilitado = 1")
             ->setParameter('subProducto', $idSubProducto)
             ->orderBy('l.nombre', 'ASC')
             ->getQuery();

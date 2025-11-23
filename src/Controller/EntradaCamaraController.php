@@ -61,6 +61,8 @@ class EntradaCamaraController extends BaseController
         $rsm->addScalarResult('colorProducto', 'colorProducto');
         $rsm->addScalarResult('orden', 'orden');
         $rsm->addScalarResult('idPedido', 'idPedido');
+        $rsm->addScalarResult('observacion', 'observacion');
+        $rsm->addScalarResult('observacionCamara', 'observacionCamara');
 
         $renderPage = "entrada_camara/index_table.html.twig";
         return parent::baseIndexTableAction($request, [], $entityTable, ConstanteTipoConsulta::VIEW, $rsm, $renderPage);

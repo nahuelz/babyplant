@@ -12,6 +12,8 @@
         "idEstado": "{{ entity.idEstado }}",
         "cantidadBandejas": "{{ entity.cantidadBandejas }}",
         "codigoSobre": "{{ entity.codigoSobre|escape_json|default('-')|raw|default('-') }}",
+        "observacion": "{{ entity.observacion|escape_json|default('-')|raw|default('-') }}",
+        "observacionCamara": "{{ entity.observacionCamara|escape_json|default('-')|raw|default('-') }}",
         "cliente": "{{ entity.cliente }}",
         "colorBandeja": "{{ entity.colorBandeja }}",
         "colorProducto": "{{ entity.colorProducto }}",

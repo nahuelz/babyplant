@@ -137,6 +137,18 @@ var KTCalendarListView = function() {
                     if (info.event.extendedProps.colorProducto) {
                         info.el.style.backgroundColor = info.event.extendedProps.colorProducto;
                     }
+
+                    // Mostrar ícono de advertencia si hay observación
+                    if (info.event.extendedProps.observacion && info.event.extendedProps.observacion.trim() !== '-') {
+                        var warningIcon = $('<i class="fas fa-exclamation-triangle text-warning ml-2" title="Este pedido tiene una observación"></i>');
+                        element.find('.fc-title').append(warningIcon);
+                    }
+
+                    // Mostrar ícono de advertencia si hay observación camara
+                    if (info.event.extendedProps.observacionCamara && info.event.extendedProps.observacionCamara.trim() !== '-') {
+                        var warningIcon = $('<i class="fas fa-exclamation-triangle text-warning ml-2" title="Este pedido tiene una observación en camara"></i>');
+                        element.find('.fc-title').append(warningIcon);
+                    }
                 },
                 // Reemplaza el viewSkeletonRender con este código
                 viewSkeletonRender: function(info) {

@@ -66,6 +66,8 @@ class PlanificacionController extends BaseController
         $rsm->addScalarResult('cantidadBandejas', 'cantidadBandejas');
         $rsm->addScalarResult('codigoSobre', 'codigoSobre');
         $rsm->addScalarResult('cliente', 'cliente');
+        $rsm->addScalarResult('observacion', 'observacion');
+        $rsm->addScalarResult('observacionCamara', 'observacionCamara');
 
         $renderPage = "planificacion/index_table.html.twig";
         return parent::baseIndexTableAction($request, [], $entityTable, ConstanteTipoConsulta::VIEW, $rsm, $renderPage);
