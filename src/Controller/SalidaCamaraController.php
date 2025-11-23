@@ -108,6 +108,7 @@ class SalidaCamaraController extends BaseController
             if ($entity->getMesadaDos()->getCantidadBandejas() != null) {
                 $this->estadoService->cambiarEstadoMesada($entity->getMesadaDos(), $estadoMesada, 'ENVIADO A INVERNACULO.');
             } else {
+                $entity->getMesadaDos()->setCantidadBandejas(0);
                 $entity->setMesadaDos(null);
             }
             $entity->setPasaCamara(false);

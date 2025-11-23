@@ -13,13 +13,13 @@
                 {% include 'pedido_producto/show/_mesada.html.twig' %}
             </div>
 
-            {% if entity.estado.codigoInterno == 4 %}
-                <div class="row">
-                    <div class="col-md-12">
-                        {% include 'salida_camara/new.html.twig' %}
-                    </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    {% include 'salida_camara/new.html.twig' %}
                 </div>
-            {% endif %}
+            </div>
+
             {% include 'pedido_producto/show/_observacion_input.html.twig' %}
         </div>
     </div>

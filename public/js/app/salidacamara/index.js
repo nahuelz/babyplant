@@ -87,19 +87,26 @@ var KTCalendarListView = function() {
                         initObservacionInput();
                         initObservacionCamaraInput();
                         initPasaCamara();
-                        if (__ID_ESTADO__ !== EN_INVERNACULO) {
-                            initmesadaForm();
-                            $('#salida_camara_mesadaUno_tipoMesada').select2();
-                            //initMesadaChainedSelect();
-                            $('#salida_camara_mesadaUno_tipoProducto').val('').select2().change();
-                            if ($('#ultimaMesada').val() != '') {
+                        initmesadaForm();
+                        $('#salida_camara_mesadaUno_tipoMesada').select2();
+                        $('#salida_camara_mesadaUno_tipoProducto').val('').select2().change();
+                        if ($('#ultimaMesada').val() != '') {
+                            if ($('#salida_camara_mesadaUno_tipoMesada').val() == '') {
                                 $('#salida_camara_mesadaUno_tipoMesada').val($('#ultimaMesada').val()).select2();
                             }
-                            initValidations();
-                            $('.remove-mesada').hide();
-                        }else{
-                            $('.salida_camara_submit').hide();
+                        }
+                        initValidations();
+                        $('.remove-mesada').hide();
+                        if (__ID_ESTADO__ == EN_INVERNACULO) {
+                            $('.salida_camara_submit').text('Cambiar Mesada');
                             $('.pasa_camara_submit').hide();
+                        }
+                        if ($('#salida_camara_mesadaDos_cantidadBandejas').val() == '') {
+                            $('.mesada-dos').hide();
+                        }else{
+                            removeMesadaHandler();
+                            $('.remove-mesada').show();
+                            $('.add-mesada').hide();
                         }
                     });
                 },
@@ -463,8 +470,9 @@ function initmesadaForm() {
     $('#salida_camara_mesadaUno_tipoMesada').select2();
     $('#salida_camara_mesadaDos_tipoMesada').select2();
     $('.row-mesada-empty').hide();
-    $('.mesada-dos').hide();
-    $('#salida_camara_mesadaUno_cantidadBandejas').val($('#cantidadBandejasValue').val())
+    if ($('#salida_camara_mesadaUno_cantidadBandejas').val() == '') {
+        $('#salida_camara_mesadaUno_cantidadBandejas').val($('#cantidadBandejasValue').val())
+    }
     $(document).on('click', '.add-mesada', function (e) {
         e.preventDefault();
         disableMesadaDosOptionHandler();
