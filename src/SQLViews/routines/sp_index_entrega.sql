@@ -21,7 +21,8 @@ SELECT DISTINCT
 FROM entrega e
          LEFT JOIN entrega_producto ep ON ep.id_entrega = e.id
          LEFT JOIN pedido_producto pp ON pp.id = ep.id_pedido_producto
-         LEFT JOIN usuario u ON e.id_cliente = u.id
+         LEFT JOIN pedido p ON p.id = pp.id_pedido
+         LEFT JOIN usuario u ON p.id_cliente = u.id
          LEFT JOIN usuario ue ON e.id_cliente_entrega = ue.id
          LEFT JOIN tipo_variedad tv ON tv.id = pp.id_tipo_variedad
          LEFT JOIN tipo_sub_producto tsp ON tsp.id = tv.id_tipo_sub_producto
@@ -33,4 +34,3 @@ WHERE e.fecha_baja IS NULL
 ORDER BY e.id DESC
 ;
 END;
-
