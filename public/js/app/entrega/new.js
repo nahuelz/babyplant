@@ -10,7 +10,7 @@ jQuery(document).ready(function () {
     initBaseSubmitButton();
     $('.submit-button').html('Guardar');
     initPreValidation();
-    initClienteEntregaHandler();
+    //initClienteEntregaHandler();
     initClienteSelect2();
 });
 

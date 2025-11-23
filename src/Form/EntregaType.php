@@ -32,7 +32,7 @@ class EntregaType extends AbstractType {
             ->add('cliente', EntityType::class, array(
                 'class' => Usuario::class,
                 'required' => true,
-                'label' => 'CLIENTE',
+                'label' => 'CLIENTE PRODUCTO',
                 'placeholder' => '-- Elija --',
                 'attr' => array(
                     'class' => 'form-control choice',
