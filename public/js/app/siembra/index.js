@@ -162,16 +162,13 @@ var KTCalendarListView = function() {
                     element.find('.tipo-bandeja').attr('style', 'color: ' + info.event.extendedProps.colorBandeja + ' !important;');
                     info.el.style.borderColor = 'black';
 
-                    // Mostrar ícono de advertencia si hay observación
-                    if (info.event.extendedProps.observacion && info.event.extendedProps.observacion.trim() !== '-') {
-                        var warningIcon = $('<i class="fas fa-exclamation-triangle fa-lg text-warning ml-2" title="Este pedido tiene una observación"></i>');
-                        element.find('.fc-title').append(warningIcon);
-                    }
+                    // Mostrar ícono de comentario si hay observación general o de cámara
+                    const tieneObservacion = (info.event.extendedProps.observacion && info.event.extendedProps.observacion.trim() !== '-') ||
+                        (info.event.extendedProps.observacionCamara && info.event.extendedProps.observacionCamara.trim() !== '-');
 
-                    // Mostrar ícono de advertencia si hay observación camara
-                    if (info.event.extendedProps.observacionCamara && info.event.extendedProps.observacionCamara.trim() !== '-') {
-                        var warningIcon = $('<i class="fas fa-exclamation-triangle fa-lg text-warning ml-2" title="Este pedido tiene una observación en camara"></i>');
-                        element.find('.fc-title').append(warningIcon);
+                    if (tieneObservacion) {
+                        var commentIcon = $('<i class="fas fa-comment text-warning ml-2" title="Este pedido tiene observaciones"></i>');
+                        element.find('.fc-title').append(commentIcon);
                     }
 
                     //COLOR FONDO
