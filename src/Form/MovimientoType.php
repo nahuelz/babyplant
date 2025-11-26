@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -41,16 +42,17 @@ class MovimientoType extends AbstractType
                     },
                 )
             )
-            ->add('monto', NumberType::class, array(
-                    'required' => true,
-                    'label' => 'Monto',
-                    'attr' => array(
-                        'class' => 'form-control',
-                        'placeholder' => 'Monto',
-                        'tabindex' => '6'
-                    )
+            ->add('monto', MoneyType::class, array(
+                'required' => true,
+                'label' => 'Monto',
+                'currency' => '',  // O la moneda que uses
+                'attr' => array(
+                    'class' => 'form-control monto-input',
+                    'style' => 'font-size: 1.1rem; font-weight: bold;',
+                    'placeholder' => '0,00',
+                    'tabindex' => '6'
                 )
-            )
+            ))
             ->add('descripcion', TextareaType::class, array(
                     'required' => false,
                     'label' => 'Descripcion',

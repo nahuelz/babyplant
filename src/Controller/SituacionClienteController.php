@@ -221,6 +221,8 @@ class SituacionClienteController extends BaseController {
         $em = $this->doctrine->getManager();
 
         $monto = $request->request->get('monto');
+        $monto = str_replace('.', '', $monto);  // Elimina los puntos
+        $monto = str_replace(',', '.', $monto); // Reemplaza la coma por punto
         $modoPagoValue = $request->request->get('modoPago');
         $descripcion = $request->request->get('descripcion');
         $id = $request->request->get('idCuentaCorrienteUsuario');
@@ -296,6 +298,8 @@ class SituacionClienteController extends BaseController {
         $em = $this->doctrine->getManager();
 
         $monto = $request->request->get('monto');
+        $monto = str_replace('.', '', $monto);  // Elimina los puntos
+        $monto = str_replace(',', '.', $monto); // Reemplaza la coma por punto
         $modoPagoValue = $request->request->get('modoPago');
         $descripcion = $request->request->get('descripcion');
         $idPedido = $request->request->get('idPedido');

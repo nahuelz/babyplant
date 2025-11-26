@@ -243,7 +243,7 @@ class Movimiento {
     /**
      * @return mixed
      */
-    public function getSaldoCuenta()
+    public function getSaldoCuenta(): float
     {
         return $this->saldoCuenta;
     }

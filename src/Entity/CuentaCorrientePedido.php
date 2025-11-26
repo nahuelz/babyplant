@@ -57,12 +57,12 @@ class CuentaCorrientePedido {
         $this->id = $id;
     }
 
-    public function getSaldo(): int
+    public function getSaldo(): float
     {
         return $this->saldo;
     }
 
-    public function setSaldo(int $saldo): void
+    public function setSaldo(float $saldo): void
     {
         $this->saldo = $saldo;
     }
