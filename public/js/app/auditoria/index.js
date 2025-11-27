@@ -14,6 +14,7 @@ jQuery(document).ready(function () {
 function initAuditoriaTable() {
     auditoria_table = $('#table-auditoria');
     auditoria_table.on('xhr.dt', function (e, settings, json) {
+        console.log("JSON recibido:", json);
         if (json && json.draw) {
             draw = json.draw;
             console.log(draw);
