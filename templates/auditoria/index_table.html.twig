@@ -9,7 +9,7 @@
         "{{ entity.numero|default('-') }}", 
         "{{ entity.fecha|default('-') }}", 
         "{{ entity.usuario }}", 
-        "{{ entity.mensaje|escape_json|default('-') }}",
+        "{{ entity.mensaje|escape_json|e('js')|default('-') }}",
         "{{ entity.corregido is defined and entity.corregido == 1 ? 'Si' : 'No' }}",
         {
         "show" : " {{ path( "auditoria_interna_show", { "id": loop.index0, "numero": entity.numero, "timeStamp": daysErrors.timeStamp }) }}"
