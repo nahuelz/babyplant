@@ -185,10 +185,14 @@ class AppExtension extends AbstractExtension {
         // Eliminamos comillas dobles escapadas
         $result = str_replace('\"', "'", $result);
 
+        // Reemplazamos comillas dobles anidadas
+        $result = preg_replace('/"{2,}/', "'", $result);
+
         // Eliminamos caracteres de control
         $result = preg_replace('/[\x00-\x1F\x7F]/u', ' ', $result);
 
         // Eliminamos espacios múltiples
+        $result = preg_replace('/\s+/', ' ', $result);
 
         return $result;
     }
