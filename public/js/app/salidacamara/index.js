@@ -64,7 +64,7 @@ var KTCalendarListView = function() {
                         }
                     }).done(function (form) {
                         showDialog({
-                            titulo: '<i class="fa fa-list-ul margin-right-10"></i><a target="_blank" href="'+__HOMEPAGE_PATH__+'pedido/'+idPedido+'/#'+idProducto+'"> Salida de camara Pedido N° '+idPedido+' Orden N° '+orden,
+                            titulo: '<i class="fa fa-list-ul margin-right-10"></i><a href="'+__HOMEPAGE_PATH__+'pedido/'+idPedido+'/#'+idProducto+'"> Salida de camara Pedido N° '+idPedido+' Orden N° '+orden,
                             contenido: form,
                             color: 'btn-light-success ',
                             labelCancel: 'Cerrar',

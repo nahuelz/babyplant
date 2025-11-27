@@ -171,7 +171,7 @@ function datatablesGetColDef() {
             width: '50px',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<a href="' + data.path + '" target="_blank">' + data.nombreCliente + '</a>';
+                    return '<a href="' + data.path + '">' + data.nombreCliente + '</a>';
                 }
                 return data.nombreCliente;
             }
@@ -252,22 +252,16 @@ function dataTablesActionFormatter(data, type, full, meta) {
         actions = '';
     } else {
         actions +=
-            (data.situacion_cliente !== undefined ? '<a class="dropdown-item" href="' + data.situacion_cliente + '" target="_blank"><i class="la la-user" style="margin-right: 5px;"></i> Situacion Cliente</a>' : '')
+            (data.situacion_cliente !== undefined ? '<a class="dropdown-item" href="' + data.situacion_cliente + '"><i class="la la-user" style="margin-right: 5px;"></i> Situacion Cliente</a>' : '')
             +
-            (data.show !== undefined ? '<a class="dropdown-item" href="' + data.show + '" target="_blank"><i class="la la-search" style="margin-right: 5px;"></i> Ver Remito</a>' : '')
+            (data.show !== undefined ? '<a class="dropdown-item" href="' + data.show + '"><i class="la la-search" style="margin-right: 5px;"></i> Ver Remito</a>' : '')
             +
             (data.historico_estados !== undefined ? '<a class="dropdown-item link-ver-historico-remito" href="#" data-href="' + data.historico_estados + '"><i class="la la-file-alt" style="margin-right: 5px;" data-original-title="Hist&oacute;rico de estados"></i>Hist&oacute;rico de estados</a>' : '')
             +
-            (data.print_pdf !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf + '" target="_blank"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Remito</a>' : '')
+            (data.print_pdf !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf + '"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Remito</a>' : '')
             +
             (data.cancelar !== undefined ? '<a class="dropdown-item accion-cancelar" href="' + data.cancelar + '"><i class="la la-remove" style="margin-right: 5px;"></i> Cancelar</a>' : '')
-        /*+
-            (data.print_factura_arca !== undefined ? '<a class="dropdown-item" href="' + data.print_factura_arca + '" target="_blank"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Factura Arca</a>' : '')
-            +
-            (data.print_ticket_arca !== undefined ? '<a class="dropdown-item" href="' + data.print_ticket_arca + '" target="_blank"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Ticket Arca</a>' : '')
-            +
-            (data.delete !== undefined ? '<a class="dropdown-item accion-borrar" href="' + data.delete + '"><i class="la la-remove" style="margin-right: 5px;"></i> Borrar</a>' : '')
-        */;
+        ;
 
         actions = ' <div class="dropdown dropdown-inline">\
                         <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\

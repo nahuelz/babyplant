@@ -61,7 +61,7 @@ var KTCalendarListView = function() {
                             }
                         }).done(function (form) {
                             showDialog({
-                                titulo: '<i class="fa fa-list-ul margin-right-10"></i><a target="_blank" href="'+__HOMEPAGE_PATH__+'pedido/'+idPedido+'/#'+idProducto+'"> Orden de siembra Pedido N° ' + idPedido+' Orden N° '+orden+'</a>',
+                                titulo: '<i class="fa fa-list-ul margin-right-10"></i><a href="'+__HOMEPAGE_PATH__+'pedido/'+idPedido+'/#'+idProducto+'"> Orden de siembra Pedido N° ' + idPedido+' Orden N° '+orden+'</a>',
                                 contenido: form,
                                 className: 'modal-dialog-small',
                                 color: 'yellow ',

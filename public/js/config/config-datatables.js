@@ -388,7 +388,7 @@ function dataTablesActionFormatter(data, type, full, meta) {
         actions +=
                 (data.show !== undefined ? '<a class="dropdown-item" href="' + data.show + '"><i class="la la-search" style="margin-right: 5px;"></i> Ver</a>' : '')
                 +
-                (data.edit !== undefined ? '<a class="dropdown-item" href="' + data.edit + '" target="_blank"><i class="la la-edit" style="margin-right: 5px;"></i> Editar</a>' : '')
+                (data.edit !== undefined ? '<a class="dropdown-item" href="' + data.edit + '"><i class="la la-edit" style="margin-right: 5px;"></i> Editar</a>' : '')
                 +
                 (data.delete !== undefined ? '<a class="dropdown-item accion-borrar" href="' + data.delete + '"><i class="la la-remove" style="margin-right: 5px;"></i> Borrar</a>' : '')
                 ;

@@ -142,9 +142,9 @@ function initBaseSubmitButton() {
                                                 backdrop: false,
                                                 confirmButtonText: 'Agregar Nueva Reserva',
                                                 html: '<div class="d-flex flex-row justify-content-center align-items-center w-100">' +
-                                                    '<a href="/reserva/imprimir-reserva/' + result.message + '" target="_blank" class="swal2-confirm swal2-styled" title="Imprimir reserva">' +
+                                                    '<a href="/reserva/imprimir-reserva/' + result.message + '" class="swal2-confirm swal2-styled" title="Imprimir reserva">' +
                                                     '<i class="fas fa-file-pdf text-white"></i> Imprimir A4</a>' +
-                                                    '<a href="/reserva/imprimir-reserva-ticket/' + result.message + '" target="_blank" class="swal2-confirm swal2-styled" title="Imprimir reserva">' +
+                                                    '<a href="/reserva/imprimir-reserva-ticket/' + result.message + '" class="swal2-confirm swal2-styled" title="Imprimir reserva">' +
                                                     '<i class="fas fa-receipt text-white"></i> Imprimir TICKET</a>' +
                                                     '<a href="/reserva/" class="swal2-confirm swal2-styled" title="Ver Reservas">' +
                                                     '<i class="fas fa-search text-white"></i> Ver Reservas</a>' +

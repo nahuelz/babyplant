@@ -131,7 +131,7 @@ function datatablesGetColDef() {
             visible: false,
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<a href="' + data.path + '" target="_blank">' + data.idPedidoProducto + '</a>';
+                    return '<a href="' + data.path + '">' + data.idPedidoProducto + '</a>';
                 }
                 return data.idPedidoProducto;
             }
@@ -155,7 +155,7 @@ function datatablesGetColDef() {
             className: 'nowrap text-center margin-0 ',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<a href="' + data.path + '" target="_blank">' + data.nombreCliente + '</a>';
+                    return '<a href="' + data.path + '">' + data.nombreCliente + '</a>';
                 }
                 return data.nombreCliente;
             }
@@ -166,7 +166,7 @@ function datatablesGetColDef() {
             className: 'nowrap text-center margin-0 ',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<a href="' + data.pathClienteReserva + '" target="_blank">' + data.nombreClienteReserva + '</a>';
+                    return '<a href="' + data.pathClienteReserva + '">' + data.nombreClienteReserva + '</a>';
                 }
                 return data.nombreClienteReserva;
             }
@@ -242,15 +242,15 @@ function dataTablesActionFormatter(data, type, full, meta) {
         actions +=
             (data.entregar !== undefined ? '<a class="dropdown-item reserva-entregar" href="#" data-id="' + data.idReserva + '" data-href="' + data.entregar + '"><i class="la la-truck" style="margin-right: 5px;"></i> Entregar</a>' : '')
             +
-            (data.situacion_cliente !== undefined ? '<a class="dropdown-item" href="' + data.situacion_cliente + '" target="_blank"><i class="la la-user" style="margin-right: 5px;"></i> Situacion Cliente</a>' : '')
+            (data.situacion_cliente !== undefined ? '<a class="dropdown-item" href="' + data.situacion_cliente + '"><i class="la la-user" style="margin-right: 5px;"></i> Situacion Cliente</a>' : '')
             +
-            (data.show !== undefined ? '<a class="dropdown-item" href="' + data.show + '" target="_blank"><i class="la la-search" style="margin-right: 5px;"></i> Ver Reserva</a>' : '')
+            (data.show !== undefined ? '<a class="dropdown-item" href="' + data.show + '"><i class="la la-search" style="margin-right: 5px;"></i> Ver Reserva</a>' : '')
             +
             (data.historico_estados !== undefined ? '<a class="dropdown-item link-ver-historico-reserva" href="#" data-href="' + data.historico_estados + '"><i class="la la-file-alt" style="margin-right: 5px;" data-original-title="Hist&oacute;rico de estados"></i>Hist&oacute;rico de estados</a>' : '')
             +
-            (data.print_pdf !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf + '" target="_blank"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Reserva A4</a>' : '')
+            (data.print_pdf !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf + '"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Reserva A4</a>' : '')
             +
-            (data.print_pdf_ticket !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf_ticket + '" target="_blank"><i class="la la-receipt" style="margin-right: 5px;"></i> Imprimir Reserva TICKET</a>' : '')
+            (data.print_pdf_ticket !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf_ticket + '"><i class="la la-receipt" style="margin-right: 5px;"></i> Imprimir Reserva TICKET</a>' : '')
             +
             (data.cancelar !== undefined ? '<a class="dropdown-item accion-cancelar" href="' + data.cancelar + '"><i class="la la-remove" style="margin-right: 5px;"></i> Cancelar</a>' : '')
             +

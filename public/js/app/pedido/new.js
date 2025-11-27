@@ -218,10 +218,10 @@ function initBaseSubmitButton() {
                             backdrop: false,
                             confirmButtonText: 'Agregar Nuevo Pedido',
                             html: '<div class="d-flex flex-row justify-content-center align-items-center w-100">' +
-                                '<a href="/pedido/imprimir-pedido/'+result.message+'" target="_blank" class="swal2-confirm swal2-styled" title="Imprimir comprobante">\n' +
+                                '<a href="/pedido/imprimir-pedido/'+result.message+'" class="swal2-confirm swal2-styled" title="Imprimir comprobante">\n' +
                                 '<i class="fas fa-file-pdf text-white"></i> Imprimir A4\n' +
                                 '</a>'+
-                                '<a href="/pedido/imprimir-pedido-ticket/'+result.message+'" target="_blank" class="swal2-confirm swal2-styled" title="Imprimir comprobante">\n' +
+                                '<a href="/pedido/imprimir-pedido-ticket/'+result.message+'" class="swal2-confirm swal2-styled" title="Imprimir comprobante">\n' +
                                 '<i class="fas fa-receipt text-white"></i> Imprimir TICKET\n' +
                                 '</a>'+
                                 '<a href="/pedido/" class="swal2-confirm swal2-styled" title="Ver Pedidos">\n' +

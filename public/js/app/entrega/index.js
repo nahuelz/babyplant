@@ -111,7 +111,7 @@ function datatablesGetColDef() {
             visible: false,
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<a href="' + data.path + '" target="_blank">' + data.idPedidoProducto + '</a>';
+                    return '<a href="' + data.path + '">' + data.idPedidoProducto + '</a>';
                 }
                 return data.idPedidoProducto;
             }
@@ -134,7 +134,7 @@ function datatablesGetColDef() {
             className: 'nowrap text-center margin-0 ',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<a href="' + data.path + '" target="_blank">' + data.nombreCliente + '</a>';
+                    return '<a href="' + data.path + '">' + data.nombreCliente + '</a>';
                 }
                 return data.nombreCliente;
             }
@@ -145,7 +145,7 @@ function datatablesGetColDef() {
             className: 'nowrap text-center margin-0 ',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<a href="' + data.pathEntrega + '" target="_blank">' + data.nombreClienteEntrega + '</a>';
+                    return '<a href="' + data.pathEntrega + '">' + data.nombreClienteEntrega + '</a>';
                 }
                 return data.nombreClienteEntrega;
             }
@@ -207,19 +207,19 @@ function dataTablesActionFormatter(data, type, full, meta) {
         actions = '';
     } else {
         actions +=
-            (data.generar_remito !== undefined ? '<a class="dropdown-item" href="' + data.generar_remito + '" target="_blank"><i class="la la-edit" style="margin-right: 5px;"></i> Generar Remito</a>' : '')
+            (data.generar_remito !== undefined ? '<a class="dropdown-item" href="' + data.generar_remito + '"><i class="la la-edit" style="margin-right: 5px;"></i> Generar Remito</a>' : '')
             +
-            (data.situacion_cliente !== undefined ? '<a class="dropdown-item" href="' + data.situacion_cliente + '" target="_blank"><i class="la la-user" style="margin-right: 5px;"></i> Situacion Cliente</a>' : '')
+            (data.situacion_cliente !== undefined ? '<a class="dropdown-item" href="' + data.situacion_cliente + '"><i class="la la-user" style="margin-right: 5px;"></i> Situacion Cliente</a>' : '')
             +
-            (data.show !== undefined ? '<a class="dropdown-item" href="' + data.show + '" target="_blank"><i class="la la-search" style="margin-right: 5px;"></i> Ver Entrega</a>' : '')
+            (data.show !== undefined ? '<a class="dropdown-item" href="' + data.show + '"><i class="la la-search" style="margin-right: 5px;"></i> Ver Entrega</a>' : '')
             +
             (data.historico_estados !== undefined ? '<a class="dropdown-item link-ver-historico-entrega" href="#" data-href="' + data.historico_estados + '"><i class="la la-file-alt" style="margin-right: 5px;" data-original-title="Hist&oacute;rico de estados"></i>Hist&oacute;rico de estados</a>' : '')
             +
-            (data.print_pdf !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf + '" target="_blank"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Entrega A4</a>' : '')
+            (data.print_pdf !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf + '"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Entrega A4</a>' : '')
             +
-            (data.print_pdf_ticket !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf_ticket + '" target="_blank"><i class="la la-receipt" style="margin-right: 5px;"></i> Imprimir Entrega TICKET</a>' : '')
+            (data.print_pdf_ticket !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf_ticket + '"><i class="la la-receipt" style="margin-right: 5px;"></i> Imprimir Entrega TICKET</a>' : '')
             +
-            (data.print_pdf_interno !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf_interno + '" target="_blank"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Entrega Interno</a>' : '')
+            (data.print_pdf_interno !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf_interno + '"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Entrega Interno</a>' : '')
             +
             (data.delete !== undefined ? '<a class="dropdown-item accion-borrar" href="' + data.delete + '"><i class="la la-remove" style="margin-right: 5px;"></i> Borrar</a>' : '')
             +

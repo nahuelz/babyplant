@@ -175,7 +175,7 @@ function datatablesGetColDef() {
             className: 'dt-center',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<a href="' + full[2].path + '" target="_blank">' + data + '</a>';
+                    return '<a href="' + full[2].path + '">' + data + '</a>';
                 }
                 return data;
             }
@@ -187,7 +187,7 @@ function datatablesGetColDef() {
             className: 'nowrap text-center margin-0 ',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<a href="' + data.path + '" target="_blank">' + data.idProducto + '</a>';
+                    return '<a href="' + data.path + '">' + data.idProducto + '</a>';
                 }
                 return data.idProducto;
             }
@@ -211,7 +211,7 @@ function datatablesGetColDef() {
             width: '50px',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<a href="' + data.path + '" target="_blank">' + data.nombreCliente + '</a>';
+                    return '<a href="' + data.path + '">' + data.nombreCliente + '</a>';
                 }
                 return data.nombreCliente;
             }

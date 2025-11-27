@@ -349,10 +349,10 @@ function initBaseSubmitButton() {
                                 showDialog({
                                     titulo: '<i class="fa fa-list-ul margin-right-10"></i> REMITO AGREGADO',
                                     contenido: '' +
-                                        '<a href="/remito/imprimir-remito/'+result.id+'" target="_blank" class="btn btn-light-primary blue mr-10" title="Imprimir Remito">\n' +
+                                        '<a href="/remito/imprimir-remito/'+result.id+'" class="btn btn-light-primary blue mr-10" title="Imprimir Remito">\n' +
                                         '<i class="fas fa-file-pdf text-white"></i> Imprimir A4\n' +
                                         '</a>'+
-                                        '<a href="/remito/imprimir-remito-ticket/'+result.id+'" target="_blank" class="btn btn-light-primary blue mr-10" title="Imprimir Remito">\n' +
+                                        '<a href="/remito/imprimir-remito-ticket/'+result.id+'" class="btn btn-light-primary blue mr-10" title="Imprimir Remito">\n' +
                                         '<i class="fas fa-receipt text-white"></i> Imprimir TICKET\n' +
                                         '</a>'+
                                         '<a href="/remito/new" class="btn btn-light-primary blue mr-10" title="Agregar Nuevo Remito">\n' +

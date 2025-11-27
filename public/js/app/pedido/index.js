@@ -277,7 +277,7 @@ function datatablesGetColDef() {
             className: 'nowrap text-center margin-0 padding-0 p-0',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<a href="' + data.path + '" target="_blank">' + data.idProducto + '</a>';
+                    return '<a href="' + data.path + '">' + data.idProducto + '</a>';
                 }
                 return data.idProducto;
             }
@@ -316,7 +316,7 @@ function datatablesGetColDef() {
             width: '50px',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<a href="' + data.path + '" target="_blank">' + data.nombreCliente + '</a>';
+                    return '<a href="' + data.path + '">' + data.nombreCliente + '</a>';
                 }
                 // Para búsqueda: nombre normal + nombre invertido, todo en minúsculas y sin comas
                 let nombreSinComas = data.nombreCliente.replace(/,/g, '').toLowerCase();

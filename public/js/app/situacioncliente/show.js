@@ -110,10 +110,10 @@ function initAgregarAdelanto() {
                                     showDialog({
                                         titulo: 'Imprimir Comprobante Pago',
                                         contenido: '' +
-                                            '<a href="/situacion_cliente/imprimir-comprobante-movimiento/'+data.id+'" target="_blank" class="btn btn-light-primary blue" title="Imprimir comprobante">\n' +
+                                            '<a href="/situacion_cliente/imprimir-comprobante-movimiento/'+data.id+'" class="btn btn-light-primary blue" title="Imprimir comprobante">\n' +
                                             '<i class="fa fa-file-pdf text-white"></i> Imprimir A4\n' +
                                             '</a>'+
-                                            '<a href="/situacion_cliente/imprimir-comprobante-movimiento-ticket/'+data.id+'" target="_blank" class="btn btn-light-primary blue" style=" float: right; " title="Imprimir comprobante">\n' +
+                                            '<a href="/situacion_cliente/imprimir-comprobante-movimiento-ticket/'+data.id+'" class="btn btn-light-primary blue" style=" float: right; " title="Imprimir comprobante">\n' +
                                             '<i class="fa fa-file-pdf text-white"></i> Imprimir TICKET\n' +
                                             '</a>',
                                         labelCancel: 'Cerrar',
@@ -199,10 +199,10 @@ function initAgregarSaldo() {
                                         showDialog({
                                             titulo: 'Imprimir Comprobante Pago',
                                             contenido: '' +
-                                                '<a href="/situacion_cliente/imprimir-comprobante-movimiento/'+data.id+'" target="_blank" class="btn btn-light-primary blue" title="Imprimir comprobante">\n' +
+                                                '<a href="/situacion_cliente/imprimir-comprobante-movimiento/'+data.id+'" class="btn btn-light-primary blue" title="Imprimir comprobante">\n' +
                                                 '<i class="fa fa-file-pdf text-white"></i> Imprimir A4\n' +
                                                 '</a>'+
-                                                '<a href="/situacion_cliente/imprimir-comprobante-movimiento-ticket/'+data.id+'" target="_blank" class="btn btn-light-primary blue" style=" float: right; " title="Imprimir comprobante">\n' +
+                                                '<a href="/situacion_cliente/imprimir-comprobante-movimiento-ticket/'+data.id+'" class="btn btn-light-primary blue" style=" float: right; " title="Imprimir comprobante">\n' +
                                                 '<i class="fa fa-file-pdf text-white"></i> Imprimir TICKET\n' +
                                                 '</a>',
                                             labelCancel: 'Cerrar',
@@ -498,10 +498,10 @@ function initAgregarPago() {
                                     showDialog({
                                         titulo: 'Imprimir Comprobante Pago',
                                         contenido: '' +
-                                            '<a href="/pago/imprimir-comprobante-pago/'+data.id+'" target="_blank" class="btn btn-light-primary blue" title="Imprimir comprobante">\n' +
+                                            '<a href="/pago/imprimir-comprobante-pago/'+data.id+'" class="btn btn-light-primary blue" title="Imprimir comprobante">\n' +
                                             '<i class="fa fa-file-pdf text-white"></i> Imprimir A4\n' +
                                             '</a>'+
-                                            '<a href="/pago/imprimir-comprobante-pago-ticket/'+data.id+'" target="_blank" class="btn btn-light-primary blue" style=" float: right; " title="Imprimir comprobante">\n' +
+                                            '<a href="/pago/imprimir-comprobante-pago-ticket/'+data.id+'" class="btn btn-light-primary blue" style=" float: right; " title="Imprimir comprobante">\n' +
                                             '<i class="fa fa-receipt text-white"></i> Imprimir TICKET\n' +
                                             '</a>',
                                         labelSuccess: 'Guardar',
