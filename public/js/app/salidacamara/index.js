@@ -432,6 +432,14 @@ function initPreValidation() {
                     if ($('#salida_camara_mesadaDos_cantidadBandejas').val() < 1) {
                         $("#salida_camara_mesadaDos_cantidadBandejas").attr('disabled', 'disabled');
                         $("#salida_camara_mesadaDos_tipoMesada").attr('disabled', 'disabled');
+                    }else{
+                        if ($('#salida_camara_mesadaDos_tipoMesada').val() == '') {
+                            Swal.fire({
+                                title: 'Debe ingresar la Mesada 2.',
+                                icon: "error"
+                            });
+                            return false;
+                        }
                     }
                     $('form[name="salida_camara"]').submit();
                 }else{
