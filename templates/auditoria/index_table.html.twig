@@ -1,31 +1,31 @@
 {
 "data": [
 {% set index = 0 %}
-{% for daysErrors in entities %}
-    {% for entity in daysErrors.data %}
-        [
-        "{{ loop.index0 }}",
-        "{{ daysErrors.timeStamp }}",
-        "{{ entity.numero|default('-') }}", 
-        "{{ entity.fecha|default('-') }}", 
-        "{{ entity.usuario }}", 
-        "{{ entity.mensaje|escape_json|e('js')|default('-') }}",
-        "{{ entity.corregido is defined and entity.corregido == 1 ? 'Si' : 'No' }}",
-        {
-        "show" : " {{ path( "auditoria_interna_show", { "id": loop.index0, "numero": entity.numero, "timeStamp": daysErrors.timeStamp }) }}"
-        {% if entity.corregido is defined %}
-            {% if entity.corregido == 0 %}
-                ,"toggle_fix" : " {{ path( "auditoria_toggle_fix", { "id": loop.index0, "numero": entity.numero, "timeStamp": daysErrors.timeStamp, "corregido": '1' }) }}"
-            {% else %}
-                ,"toggle_no_fix" : " {{ path( "auditoria_toggle_fix", { "id": loop.index0, "numero": entity.numero, "timeStamp": daysErrors.timeStamp, "corregido": '0' }) }}"
+    {% for daysErrors in entities %}
+        {% for entity in daysErrors.data %}
+            [
+            "{{ loop.index0 }}",
+            "{{ daysErrors.timeStamp }}",
+            "{{ entity.numero|default('-')|e('js') }}",
+            "{{ entity.fecha|default('-')|e('js') }}",
+            "{{ entity.usuario|e('js') }}",
+            "{{ entity.mensaje|default('-')|e('js') }}",
+            "{{ entity.corregido is defined and entity.corregido == 1 ? 'Si' : 'No' }}",
+            {
+            "show": "{{ path('auditoria_interna_show', { id: loop.index0, numero: entity.numero, timeStamp: daysErrors.timeStamp }) }}"{% if entity.corregido is defined %}
+            {% if entity.corregido == 0 %},
+                "toggle_fix": "{{ path('auditoria_toggle_fix', { id: loop.index0, numero: entity.numero, timeStamp: daysErrors.timeStamp, corregido: '1' }) }}"
+            {% else %},
+                "toggle_no_fix": "{{ path('auditoria_toggle_fix', { id: loop.index0, numero: entity.numero, timeStamp: daysErrors.timeStamp, corregido: '0' }) }}"
             {% endif %}
         {% endif %}
-        }
-        ]{{ (loop.parent.loop.last and loop.last ? '' : ',') }}
-        {% set index = index + 1 %}
+            }
+            ]{% if not(loop.parent.loop.last and loop.last) %},{% endif %}
+            {% set index = index + 1 %}
+        {% endfor %}
     {% endfor %}
-{% endfor %}
 ],
 "draw": {{ draw }},
-"recordsTotal": {{ index }}
+"recordsTotal": {{ index }},
+"recordsFiltered": {{ index }}
 }
