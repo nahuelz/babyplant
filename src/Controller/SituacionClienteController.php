@@ -681,9 +681,11 @@ class SituacionClienteController extends BaseController {
             'idCliente' => $request->request->get('idCliente'),
         ));
         $form->handleRequest($request);
-        if ($form->isValid()) {
-
+        if ($form->isSubmitted()) {
             $em = $this->doctrine->getManager();
+            $movimientoData = $request->request->get('movimiento');
+            $monto = str_replace(['.', ','], ['', '.'], $movimientoData['monto']);
+            $movimiento->setMonto($monto);
             $idReserva = $request->request->get('idReserva');
             $reserva = $em->getRepository(Reserva::class)->find($idReserva);
             $movimiento->setReserva($reserva);
