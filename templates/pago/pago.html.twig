@@ -42,7 +42,7 @@
                             <td>{{ entregaProducto.estado|default('-') }}</td>
                             <td>{{ entregaProducto.montoPendiente|money_format }}</td>
                             <td>{{ entregaProducto.pedidoProducto.adelanto|money_format }}</td>
-                            <td>{{ entregaProducto.adelantoReserva|money_format }}</td>
+                            <td>{{ entregaProducto.adelantoReserva|default('0')|money_format }}</td>
                         </tr>
                     {% endfor %}
                 {% endfor %}
