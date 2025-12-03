@@ -290,7 +290,7 @@ class Entrega {
     }
 
     public function getAdelantoReserva(){
-        return $this->getReserva()->getAdelanto();
+        return $this->getReserva() ? $this->getReserva()->getAdelanto() : '0';
     }
 
 }
