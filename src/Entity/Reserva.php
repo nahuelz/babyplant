@@ -270,11 +270,7 @@ class Reserva {
         $this->cuentaCorrienteReserva = $cuentaCorrienteReserva;
     }
 
-
-
-
-
-
-
-
+    public function getTieneMovimientos(){
+        return (sizeof($this->getCuentaCorrienteReserva()->getMovimientos()) > 0);
+    }
 }

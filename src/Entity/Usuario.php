@@ -615,6 +615,12 @@ class Usuario implements UserInterface {
             }
         }
 
+        foreach ($this->getReservas() as $reserva){
+            if ($reserva->getTieneMovimientos()){
+                $resultado = true;
+            }
+        }
+
         return $resultado;
     }
 
