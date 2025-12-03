@@ -26,12 +26,39 @@
                                                     <th class="text-center nowrap">Monto</th>
                                                     <th class="text-center nowrap">Modo de pago</th>
                                                     <th class="text-center nowrap">Descripción</th>
-                                                    <th class="text-center nowrap">Pedido</th>
+                                                    <th class="text-center nowrap">Pedido/Reserva</th>
                                                     <th class="text-center nowrap">Fecha</th>
                                                     <th class="text-center nowrap"></th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
+                                                {% for reserva in entity.reservas %}
+                                                    {% for movimiento in reserva.cuentaCorrienteReserva.movimientos %}
+                                                        <tr>
+                                                            <td class="v-middle nowrap text-center">
+                                                                {{ movimiento.monto|money_format }}
+                                                            </td>
+                                                            <td class="v-middle nowrap text-center">
+                                                                {{ movimiento.modoPago|default('-') }}
+                                                            </td>
+                                                            <td class="v-middle nowrap text-center">
+                                                                {{ movimiento.descripcion|default('-') }}
+                                                            </td>
+                                                            <td class="v-middle nowrap text-center">
+                                                                Reserva N° {{ reserva.id|default('-') }}
+                                                            </td>
+                                                            <td class="v-middle nowrap text-center">
+                                                                {{ movimiento.fechaCreacion is not null ? movimiento.fechaCreacion|date('d/m/Y') : '-' }}
+                                                            </td>
+                                                            <td class="v-middle nowrap text-center">
+                                                                <a href="{{ path('imprimir_comprobante_movimiento_ticket',{id: movimiento.id}) }}" target="_blank"
+                                                                   class="btn btn-light-primary btn-icon btn-sm blue" title="Imprimir ticket" style="height: 25px;width: 25px;">
+                                                                    <i class="fa fa-receipt text-white"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                {% endfor %}
                                                 {% for pedido in entity.pedidos %}
                                                     {% for movimiento in pedido.cuentaCorrientePedido.movimientos %}
                                                         <tr>
@@ -45,16 +72,12 @@
                                                                 {{ movimiento.descripcion|default('-') }}
                                                             </td>
                                                             <td class="v-middle nowrap text-center">
-                                                                N° {{ movimiento.pedido.id|default('-') }}
+                                                                Pedido N° {{ movimiento.pedido.id|default('-') }}
                                                             </td>
                                                             <td class="v-middle nowrap text-center">
                                                                 {{ movimiento.fechaCreacion is not null ? movimiento.fechaCreacion|date('d/m/Y') : '-' }}
                                                             </td>
                                                             <td class="v-middle nowrap text-center">
-                                                                {# <a href="{{ path('imprimir_comprobante_movimiento',{id: movimiento.id}) }}" target="_blank"
-                                                                   class="btn btn-light-primary btn-icon btn-sm blue" title="Imprimir a4" style="height: 25px;width: 25px;">
-                                                                    <i class="fa fa-file-pdf text-white"></i>
-                                                                </a>#}
                                                                 <a href="{{ path('imprimir_comprobante_movimiento_ticket',{id: movimiento.id}) }}" target="_blank"
                                                                    class="btn btn-light-primary btn-icon btn-sm blue" title="Imprimir ticket" style="height: 25px;width: 25px;">
                                                                     <i class="fa fa-receipt text-white"></i>

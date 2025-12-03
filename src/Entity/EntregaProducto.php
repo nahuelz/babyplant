@@ -152,6 +152,10 @@ class EntregaProducto {
         return $this->getPedidoProducto()->getCuentaCorrientePedido();
     }
 
+    public function getCuentaCorrienteReserva(){
+        return $this->getPedidoProducto()->getCuentaCorrientePedido();
+    }
+
     public function getMontoTotalSinDescuento(){
         return $this->precioUnitario * $this->cantidadBandejas;
     }
@@ -265,6 +269,10 @@ class EntregaProducto {
         }
 
         return $this;
+    }
+
+    public function getAdelantoReserva(){
+        return $this->getEntrega()->getAdelantoReserva();
     }
 
 

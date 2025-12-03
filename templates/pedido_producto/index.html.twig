@@ -24,7 +24,6 @@
                 <th>FechaEntregaPedido</th>
                 <th>FechaEntregaReal</th>
                 <th>CantDiasProduccion</th>
-                <th>OtroOrigenSemilla</th>
                 <th>CodigoSobre</th>
                 <th>Observacion</th>
                 <th>HoraSiembra</th>
@@ -54,7 +53,6 @@
                 <td>{{ pedido_producto.fechaEntregaPedido ? pedido_producto.fechaEntregaPedido|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ pedido_producto.fechaEntregaPedidoReal ? pedido_producto.fechaEntregaPedidoReal|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ pedido_producto.cantDiasProduccion }}</td>
-                <td>{{ pedido_producto.otroOrigenSemilla }}</td>
                 <td>{{ pedido_producto.codigoSobre }}</td>
                 <td>{{ pedido_producto.observacion }}</td>
                 <td>{{ pedido_producto.horaSiembra ? pedido_producto.horaSiembra|date('Y-m-d H:i:s') : '' }}</td>
@@ -63,7 +61,7 @@
                 <td>{{ pedido_producto.fechaUltimaModificacion ? pedido_producto.fechaUltimaModificacion|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ pedido_producto.fechaBaja ? pedido_producto.fechaBaja|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
-                    <a href="{{ path('app_pedido_producto_show', {'id': pedido_producto.id}) }}">show</a>
+                    <a href="{{ path('pedido_producto_show', {'id': pedido_producto.id}) }}">show</a>
                 </td>
             </tr>
         {% else %}
@@ -74,5 +72,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_pedido_producto_new') }}">Create new</a>
+    <a href="#">Create new</a>
 {% endblock %}

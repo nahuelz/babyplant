@@ -121,7 +121,12 @@ class PagoController extends BaseController {
             if ($modoPago == 'CC'){
                 $this->adjudicarCC($em, $remito);
             }else{
-                $this->adjudicarAdelanto($em, $remito);
+                if ($modoPago == 'ADELANTO_RESERVA'){
+                    $this->adjudicarAdelantoReserva($em, $remito);
+                }else {
+                    $this->adjudicarAdelanto($em, $remito);
+                }
+
             }
 
             if ($remito->getPendiente() == 0) {
@@ -341,6 +346,22 @@ class PagoController extends BaseController {
             fn($entregaProducto) => $entregaProducto->getPedidoProducto()->getAdelanto(),
             fn($entregaProducto) => $entregaProducto->getPedidoProducto()->getCuentaCorrientePedido(),
             'ADELANTO'
+        );
+    }
+
+    protected function adjudicarAdelantoReserva($em, $remito): bool
+    {
+        $modoPago = $em->getRepository("App\Entity\ModoPago")->find(ConstanteModoPago::ADELANTO_RESERVA);
+        $tipoMovimiento = $em->getRepository("App\Entity\TipoMovimiento")->find(ConstanteTipoMovimiento::PAGO_TRAMITE);
+
+        return $this->adjudicarPago(
+            $em,
+            $remito,
+            $modoPago,
+            $tipoMovimiento,
+            fn($entregaProducto) => $entregaProducto->getEntrega()->getReserva()->getAdelanto(),
+            fn($entregaProducto) => $entregaProducto->getEntrega()->getReserva()->getCuentaCorrienteReserva(),
+            'ADELANTO RESERVA'
         );
     }
 

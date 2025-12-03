@@ -23,6 +23,7 @@
                                         <tr>
                                             <th class="text-center nowrap">Reserva</th>
                                             <th class="text-center nowrap">Bandejas</th>
+                                            <th class="text-center nowrap">Adelanto</th>
                                             <th class="text-center nowrap">Estado</th>
                                             <th class="text-center nowrap"></th>
                                         </tr>
@@ -37,15 +38,34 @@
                                                     {{ reserva.cantidadBandejas|default('-') }}
                                                 </td>
                                                 <td class="v-middle nowrap text-center">
+                                                    {{ reserva.adelanto|money_format|default('-') }}
+                                                </td>
+                                                <td class="v-middle nowrap text-center">
                                                     <div class="label label-inline font-size-10 font-dark font-weight-bold padding-15 {{ reserva.estado.color|default('-') }}">
                                                         {{ reserva.estado|default('-') }}
                                                     </div>
                                                 </td>
-                                                <td class="v-middle nowrap text-center">
-                                                    <a href="{{ path('reserva_show',{id: reserva.id}) }}" target="_blank"
-                                                       class="btn btn-light-primary btn-icon btn-sm blue" title="Ver reserva" style="height: 25px;width: 25px;">
-                                                        <i class="fa fa-search text-white"></i>
-                                                    </a>
+
+                                                <td class=" text-center dt-acciones">
+                                                    <div class="dropdown dropdown-inline">
+                                                        <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            <i class="ki ki-bold-more-hor"></i>
+                                                        </button>
+                                                        <div class="dropdown-menu">
+                                                            <a href="{{ path('reserva_show',{id: reserva.id}) }}" class="dropdown-item">
+                                                                <i class="la la-search" style="margin-right: 5px;"></i> Ver Reserva
+                                                            </a>
+                                                            <a href="#" class="dropdown-item link-ver-historico-reserva" data-href="{{ path('reserva_historico_estado',{id: reserva.id}) }}">
+                                                                <i class="la la-file-alt" style="margin-right: 5px;"></i> Histórico de estados
+                                                            </a>
+                                                            <a href="{{ path('imprimir_reserva',{id: reserva.id}) }}" class="dropdown-item">
+                                                                <i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Reserva
+                                                            </a>
+                                                            <a href="#" class="dropdown-item add-adelanto-reserva" data-reserva="{{ reserva.id }}">
+                                                                <i class="fas fa-plus" style="margin-right: 5px;"></i> Agregar Adelanto
+                                                            </a>
+                                                        </div>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         {% endfor %}

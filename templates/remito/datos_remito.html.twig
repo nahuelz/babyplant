@@ -42,10 +42,10 @@
                                 <td>{{ entregaProducto.cantidadBandejas }}</td>
                                 <td>{{ entregaProducto.precioUnitario|money_format }}</td>
                                 <td>{{ entregaProducto.precioSubTotal|money_format }}</td>
-                                <td>{{ entregaProducto.montoDescuento|money_format }}</td>
+                                <td>{{ entregaProducto.montoDescuento|default('0')|money_format }}</td>
                                 <td>{{ entregaProducto.estado|default('-') }}</td>
                                 <td>{{ entregaProducto.montoPendiente|money_format }}</td>
-                                <td>{{ entregaProducto.pedidoProducto.adelanto|money_format }}</td>
+                                <td>{{ entregaProducto.pedidoProducto.adelanto|default('0')|money_format }}</td>
                             </tr>
                         {% endfor %}
                     {% endfor %}
@@ -64,15 +64,13 @@
                             {% endif %}
                             {{ entity.totalConDescuento|money_format }}
                         </th>
-                        <th colspan="2" style="text-align: center;font-size: 16px">
+                        <th></th>
+                        <th colspan="1" style="text-align: center;font-size: 16px">
                             PENDIENTE
                         </th>
                         <th colspan="1" style="text-align: center;font-size: 16px">
                             {{ entity.pendiente|money_format }}
                         </th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
                         <th></th>
                     </tr>
                     </tbody>

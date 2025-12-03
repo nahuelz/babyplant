@@ -5,12 +5,12 @@ namespace App\Form;
 use App\Entity\ModoPago;
 use App\Entity\Movimiento;
 use App\Entity\Pedido;
+use App\Entity\Reserva;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -93,6 +93,18 @@ class MovimientoType extends AbstractType
                             ->setMaxResults(15); // 👈 limitar a 10 resultados;
                         return $queryBuilder;
                     }
+                )
+            )
+            ->add(
+                'reserva',
+                EntityType::class,
+                array(
+                    'class' => Reserva::class,
+                    'required' => false,
+                    'attr' => array(
+                        'class' => 'form-control choice hidden',
+                        'tabindex' => '5'
+                    ),
                 )
             )
             ->add('submit', SubmitType::class, [

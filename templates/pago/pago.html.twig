@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="modal-body">
+    <div class="modal-body pt-0">
         <div class="row">
             <div class="col-md-6">
                 {% if modoPago == 'CC' %}
@@ -28,7 +28,8 @@
                     <th scope="col">Subtotal</th>
                     <th scope="col">Estado</th>
                     <th scope="col">Monto Pendiente</th>
-                    <th scope="col">Adelanto</th>
+                    <th scope="col">Adelanto Pedido</th>
+                    <th scope="col">Adelanto Reserva</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -41,6 +42,7 @@
                             <td>{{ entregaProducto.estado|default('-') }}</td>
                             <td>{{ entregaProducto.montoPendiente|money_format }}</td>
                             <td>{{ entregaProducto.pedidoProducto.adelanto|money_format }}</td>
+                            <td>{{ entregaProducto.adelantoReserva|money_format }}</td>
                         </tr>
                     {% endfor %}
                 {% endfor %}

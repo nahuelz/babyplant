@@ -33,4 +33,9 @@ class ConstanteModoPago {
      * ADELANTO
      */
     const ADELANTO = 5;
+
+    /**
+     * ADELANTO RESERVA
+     */
+    const ADELANTO_RESERVA = 6;
 }

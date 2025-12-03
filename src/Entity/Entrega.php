@@ -71,13 +71,19 @@ class Entrega {
     private $observacion;
 
     /**
+     * @ORM\OneToOne(targetEntity=Reserva::class, mappedBy="entrega")
+     */
+    private $reserva;
+
+
+    /**
      * @param $historicoEstados
      */
     public function __construct()
     {
         $this->entregasProductos = new ArrayCollection();
         $this->historicoEstados = new ArrayCollection();
-        $this->estado = null; // Inicializar la propiedad estado
+        $this->estado = null;
     }
 
     public function __toString()
@@ -267,5 +273,24 @@ class Entrega {
         $this->observacion = $observacion;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getReserva()
+    {
+        return $this->reserva;
+    }
+
+    /**
+     * @param mixed $reserva
+     */
+    public function setReserva($reserva): void
+    {
+        $this->reserva = $reserva;
+    }
+
+    public function getAdelantoReserva(){
+        return $this->getReserva()->getAdelanto();
+    }
 
 }

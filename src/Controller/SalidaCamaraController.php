@@ -27,7 +27,7 @@ class SalidaCamaraController extends BaseController
 {
 
     /**
-     * @Route("/", name="salidacamara_index", methods={"GET"})
+     * @Route("/", name="salidacamara_index", methods={"GET|POST"})
      * @Template("salida_camara/index.html.twig")
      * @IsGranted("ROLE_SALIDA_CAMARA")
      */

@@ -33,7 +33,8 @@
                                                 <th class="text-center nowrap">Remito</th>
                                                 <th class="text-center nowrap">Monto Total</th>
                                                 <th class="text-center nowrap">Monto Pendiente</th>
-                                                <th class="text-center nowrap">Adelanto</th>
+                                                <th class="text-center nowrap">Adelanto Pedido</th>
+                                                <th class="text-center nowrap">Adelanto Reserva</th>
                                                 <th class="text-center nowrap">Estado</th>
                                                 <th class="text-center nowrap"></th>
                                             </tr>
@@ -52,6 +53,10 @@
                                                         </td>
                                                         <td class="v-middle nowrap text-center monto-adelanto" style="min-width: 90px;">
                                                             {{ remito.adelanto|money_format }}
+                                                        </td>
+
+                                                        <td class="v-middle nowrap text-center monto-adelanto-reserva" style="min-width: 90px;">
+                                                            {{ remito.adelantoReserva|money_format }}
                                                         </td>
                                                         <td class="v-middle nowrap text-center">
                                                             <div class="label label-inline font-size-10 font-dark font-weight-bold padding-15 {{ remito.estado.color|default('-') }}">
@@ -74,20 +79,20 @@
                                                                         <i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Remito
                                                                     </a>
                                                                     {% if remito.estado.codigoInterno != 3 and remito.estado.codigoInterno != 4 %}
-                                                                        <a href="#" class="dropdown-item add-pago-adelanto" data-remito="{{ remito.id }}" data-monto="{{remito.totalConDescuento }}">
-                                                                            <i class="la la-paypal" style="margin-right: 5px;"></i> Adjudicar Adelanto
-                                                                        </a>
+                                                                        {% if remito.adelanto > 0 %}
+                                                                            <a href="#" class="dropdown-item add-pago-adelanto" data-remito="{{ remito.id }}" data-monto="{{remito.totalConDescuento }}">
+                                                                                <i class="la la-paypal" style="margin-right: 5px;"></i> Adjudicar Adelanto Pedido
+                                                                            </a>
+                                                                        {% endif %}
+                                                                        {% if remito.adelantoReserva > 0 %}
+                                                                            <a href="#" class="dropdown-item add-pago-adelanto-reserva" data-remito="{{ remito.id }}" data-monto="{{remito.totalConDescuento }}">
+                                                                                <i class="la la-paypal" style="margin-right: 5px;"></i> Adjudicar Adelanto Reserva
+                                                                            </a>
+                                                                        {% endif %}
                                                                         <a href="#" class="dropdown-item add-pago-cc" data-remito="{{ remito.id }}" data-monto="{{remito.totalConDescuento }}">
                                                                             <i class="la la-paypal" style="margin-right: 5px;"></i> Adjudicar CC
                                                                         </a>
                                                                     {% endif %}
-                                                                    {#
-                                                                    {% if remito.adelanto > 0 %}
-                                                                        <a href="#" class="dropdown-item enviar-cc" data-remito="{{ remito.id }}" data-monto="{{ remito.adelanto }}">
-                                                                            <i class="la la-paypal" style="margin-right: 5px;"></i> Enviar adelanto a cuenta corriente.
-                                                                        </a>
-                                                                    {% endif %}
-                                                                    #}
                                                                 </div>
                                                             </div>
                                                         </td>

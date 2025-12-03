@@ -4,8 +4,10 @@ $(document).ready(function () {
     initAgregarSaldo();
     initAgregarPago();
     initAgregarAdelanto();
+    initAgregarAdelantoReserva();
     initVerHistoricoEstadoRemitoHandler();
     initAdjudicarAdelanto();
+    initAdjudicarAdelantoReserva();
     initAdjudicarCC();
     enviarCC();
 });
@@ -141,6 +143,7 @@ function initAgregarAdelanto() {
             });
             $("#movimiento_modoPago>option[value='4']").attr('disabled','disabled');
             $("#movimiento_modoPago>option[value='5']").attr('disabled','disabled');
+            $("#movimiento_modoPago>option[value='6']").attr('disabled','disabled');
             let modal = $('.modal-dialog');
             modal.css('width', '80%');
             modal.addClass('modal-xl');
@@ -233,6 +236,7 @@ function initAgregarSaldo() {
             });
             $("#movimiento_modoPago>option[value='4']").attr('disabled','disabled');
             $("#movimiento_modoPago>option[value='5']").attr('disabled','disabled');
+            $("#movimiento_modoPago>option[value='6']").attr('disabled','disabled');
             let modal = $('.modal-dialog');
             modal.css('width', '80%');
             modal.addClass('modal-xl');
@@ -308,6 +312,77 @@ function initAdjudicarAdelanto() {
                     }
                 });
                 let modal = $('.modal-dialog');
+                $('.modal-body').addClass('pt-1 pb-1');
+                modal.css('width', '80%');
+                modal.addClass('modal-xl');
+                modal.addClass('modal-fullscreen-xl-down');
+            });
+        }
+    });
+}
+
+function initAdjudicarAdelantoReserva() {
+    $('.add-pago-adelanto-reserva').on('click', function (e) {
+        e.preventDefault();
+
+        let row = $(this).closest("tr");
+
+        let adelantoTexto = row.find(".monto-adelanto-reserva").text();
+
+        // Limpiar el texto para obtener solo el número
+        let adelanto = adelantoTexto.replace(/[^0-9,-]+/g, "").replace(",", ".");
+        adelanto = parseFloat(adelanto);
+
+        if (adelanto === 0) {
+            Swal.fire({
+                title: 'El pedido no posee adelanto reserva.',
+                icon: "warning",
+            });
+            return false;
+        } else {
+
+            let remito = $(this).attr("data-remito");
+            let monto = $(this).attr("data-monto");
+            $.ajax({
+                type: 'POST',
+                url: __HOMEPAGE_PATH__ + "pago/new",
+                data: {
+                    monto: monto,
+                    idRemito: remito,
+                    idCuentaCorrienteUsuario: __ID_CUENTA_CORRIENTE__,
+                },
+            }).done(function (form) {
+                showDialog({
+                    titulo: '<i class="fa fa-list-ul margin-right-10"></i>ADJUDICAR ADELANTO RESERVA - REMITO N°' + remito,
+                    contenido: form,
+                    labelCancel: 'Cancelar',
+                    labelSuccess: 'Adjudicar Pago',
+                    closeButton: true,
+                    callbackCancel: function () {
+                        return true;
+                    },
+                    callbackSuccess: function () {
+                        $.ajax({
+                            type: 'POST',
+                            url: __HOMEPAGE_PATH__ + "pago/adjudicar",
+                            data: {
+                                idRemito: remito,
+                                modoPago: 'ADELANTO_RESERVA'
+                            },
+                        }).done(function (form) {
+                            Swal.fire({
+                                title: 'Se adjudicó el adelanto.',
+                                icon: "success",
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.reload();
+                                }
+                            });
+                        });
+                    }
+                });
+                let modal = $('.modal-dialog');
+                $('.modal-body').addClass('pt-1 pb-1');
                 modal.css('width', '80%');
                 modal.addClass('modal-xl');
                 modal.addClass('modal-fullscreen-xl-down');
@@ -361,14 +436,27 @@ function initAdjudicarCC() {
         let row = $(this).closest("tr");
 
         let adelantoTexto = row.find(".monto-adelanto").text();
+        let adelantoReservaTexto = row.find(".monto-adelanto-reserva").text();
 
         // Limpiar el texto para obtener solo el número
         let adelanto = adelantoTexto.replace(/[^0-9,-]+/g, "").replace(",", ".");
         adelanto = parseFloat(adelanto);
 
+        // Limpiar el texto para obtener solo el número
+        let adelantoReserva = adelantoReservaTexto.replace(/[^0-9,-]+/g, "").replace(",", ".");
+        adelantoReserva = parseFloat(adelantoReserva);
+
         if (adelanto > 0) {
             Swal.fire({
                 title: 'Primero debe adjudicar el adelanto.',
+                icon: "warning",
+            });
+            return false;
+        }
+
+        if (adelantoReserva > 0) {
+            Swal.fire({
+                title: 'Primero debe adjudicar el adelanto reserva.',
                 icon: "warning",
             });
             return false;
@@ -429,6 +517,7 @@ function initAdjudicarCC() {
                     }
                 });
                 let modal = $('.modal-dialog');
+                $('.modal-body').addClass('pt-1 pb-1');
                 modal.css('width', '80%');
                 modal.addClass('modal-xl');
                 modal.addClass('modal-fullscreen-xl-down');
@@ -527,6 +616,7 @@ function initAgregarPago() {
                 }
             });
             let modal = $('.modal-dialog');
+            $('.modal-body').addClass('pt-1 pb-1');
             modal.css('width', '80%');
             modal.addClass('modal-xl');
             modal.addClass('modal-fullscreen-xl-down');
@@ -601,6 +691,100 @@ function initMontoFormat() {
             });
         });
     }
+}
+
+function initAgregarAdelantoReserva() {
+    $('.add-adelanto-reserva').on('click', function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: __HOMEPAGE_PATH__ + "situacion_cliente/adelanto_reserva/new",
+            data: {
+                idCliente: __ID_USUARIO__,
+                idReserva: $(this).attr("data-reserva"),
+            },
+        }).done(function (form) {
+            showDialog({
+                titulo: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar Adelanto Reserva',
+                contenido: form,
+                labelCancel: 'Cerrar',
+                labelSuccess: 'Guardar',
+                closeButton: true,
+                callbackCancel: function () {
+                    return true;
+                },
+                callbackSuccess: function () {
+                    fv.revalidateField('requiredFields');
+                    status = fv.validate().then((status) => {
+                        if (status === "Valid") {
+                            const form = document.querySelector('form[name="movimiento"]');
+                            const formData = new FormData(form);
+
+                            // Agregar campos adicionales si es necesario
+                            formData.append('idCliente', __ID_USUARIO__);
+                            formData.append('idReserva', $('#idReserva').val());
+
+                            fetch(__HOMEPAGE_PATH__ + "situacion_cliente/adelanto_reserva/create", {
+                                method: 'POST',
+                                body: formData
+                            })
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error('Error en la respuesta del servidor');
+                                    }
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    toastr.success(data.message);
+                                    $('.modal').modal('hide');
+
+                                    showDialog({
+                                        titulo: 'Imprimir Comprobante Pago',
+                                        contenido: '' +
+                                            '<a href="/situacion_cliente/imprimir-comprobante-movimiento/'+data.id+'" class="btn btn-light-primary blue" title="Imprimir comprobante">\n' +
+                                            '<i class="fa fa-file-pdf text-white"></i> Imprimir A4\n' +
+                                            '</a>'+
+                                            '<a href="/situacion_cliente/imprimir-comprobante-movimiento-ticket/'+data.id+'" class="btn btn-light-primary blue" style="float: right;" title="Imprimir comprobante">\n' +
+                                            '<i class="fa fa-file-pdf text-white"></i> Imprimir TICKET\n' +
+                                            '</a>',
+                                        labelCancel: 'Cerrar',
+                                        labelSuccess: 'Guardar',
+                                        closeButton: true,
+                                        callbackCancel: function () {
+                                            window.location.reload();
+                                            return true;
+                                        }
+                                    });
+
+                                    $('.submit-button').hide();
+                                    $('.bootbox-close-button').hide();
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    toastr.error('Ocurrió un error al procesar la solicitud');
+                                });
+                        }
+                        return false;
+                    });
+                    return false;
+                }
+            });
+            $("#movimiento_modoPago>option[value='4']").attr('disabled','disabled');
+            $("#movimiento_modoPago>option[value='5']").attr('disabled','disabled');
+            $("#movimiento_modoPago>option[value='6']").attr('disabled','disabled');
+            let modal = $('.modal-dialog');
+            $('.modal-body').addClass('pt-1 pb-1');
+            modal.css('width', '80%');
+            modal.addClass('modal-xl');
+            modal.addClass('modal-fullscreen-xl-down');
+            $('#movimiento_modoPago').select2();
+            $('#movimiento_pedido').select2();
+            initFormValidation();
+            initMontoFormat();
+        });
+        e.stopPropagation();
+        return true;
+    })
 }
 
 

@@ -2,12 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Constants\ConstanteAPI;
 use App\Entity\Constants\ConstanteTipoMovimiento;
 use App\Entity\CuentaCorrientePedido;
+use App\Entity\CuentaCorrienteReserva;
 use App\Entity\CuentaCorrienteUsuario;
 use App\Entity\ModoPago;
 use App\Entity\Movimiento;
 use App\Entity\Pedido;
+use App\Entity\Reserva;
 use App\Entity\TipoMovimiento;
 use App\Entity\Usuario;
 use App\Form\MovimientoType;
@@ -117,6 +120,16 @@ class SituacionClienteController extends BaseController {
                 $cuentaCorrientePedido->setPedido($pedido);
                 $pedido->setCuentaCorrientePedido($cuentaCorrientePedido);
                 $em->persist($cuentaCorrientePedido);
+                $em->flush();
+            }
+        }
+
+        foreach ($entity->getReservas() as $reserva) {
+            if ($reserva->getCuentaCorrienteReserva() == null) {
+                $cuentaCorrienteReserva = new CuentaCorrienteReserva();
+                $cuentaCorrienteReserva->setReserva($reserva);
+                $reserva->setCuentaCorrienteReserva($cuentaCorrienteReserva);
+                $em->persist($cuentaCorrienteReserva);
                 $em->flush();
             }
         }
@@ -625,6 +638,86 @@ class SituacionClienteController extends BaseController {
         $mpdfOutput = $this->printService->printA4($basePath, $filename, $html);
 
         return new Response($mpdfOutput);
+    }
+
+
+    /**
+     * @Route("/adelanto_reserva/new", name="adelanto_reserva_new", methods={"GET","POST"})
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
+     */
+    public function adelantoReservaNewAction(Request $request): Response
+    {
+        $movimiento = new Movimiento();
+        $idCliente = $request->request->get('idCliente');
+        $idReserva = $request->request->get('idReserva');
+        $em = $this->doctrine->getManager();
+        $reserva = $em->getRepository(Reserva::class)->find($idReserva);
+        $movimiento->setReserva($reserva);
+
+        $form = $this->createForm(MovimientoType::class, $movimiento, array(
+            'action' => 'adelanto_reserva_create',
+            'method' => 'POST',
+            'idCliente' => $idCliente,
+        ));
+
+        return $this->render('situacion_cliente/movimiento_reserva_form.html.twig', [
+            'form' => $form->createView(),
+            'entity' => $movimiento,
+            'idReserva' => $idReserva,
+            'modal' => true
+        ]);
+    }
+
+    /**
+     * @Route("/adelanto_reserva/create", name="adelanto_reserva_create", methods={"GET","POST"})
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
+     */
+    public function adelantoReservaCreateAction(Request $request): Response
+    {
+        $movimiento = new Movimiento();
+        $form = $this->createForm(MovimientoType::class, $movimiento, array(
+            'action' => 'adelanto_reserva_create',
+            'method' => 'POST',
+            'idCliente' => $request->request->get('idCliente'),
+        ));
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+
+            $em = $this->doctrine->getManager();
+            $idReserva = $request->request->get('idReserva');
+            $reserva = $em->getRepository(Reserva::class)->find($idReserva);
+            $movimiento->setReserva($reserva);
+            $cuentaCorrienteReserva = $reserva->getCuentaCorrienteReserva();
+            $movimiento->setSaldoCuenta($cuentaCorrienteReserva->getSaldo());
+            $tipoMovimiento = $em->getRepository(TipoMovimiento::class)->findOneByCodigoInterno(ConstanteTipoMovimiento::ADELANTO_RESERVA);
+            $movimiento->setTipoMovimiento($tipoMovimiento);
+            $cuentaCorrienteReserva->addMovimiento($movimiento);
+            $em->persist($movimiento);
+            $em->flush();
+
+            $idMovimiento = $movimiento->getId();
+            $response = new Response();
+            $response->setContent(json_encode(array(
+                'message' => 'ADELANTO AGREGADO',
+                'statusCode' => 200,
+                'statusText' => 'OK',
+                'id' => $idMovimiento
+            )));
+
+            return $response;
+        } else {
+            $request->attributes->set('form-error', true);
+        }
+
+        $response = new Response();
+
+        $response->setContent(json_encode(array(
+            'statusCode' => Response::HTTP_OK,
+            'statusText' => ConstanteAPI::STATUS_TEXT_ERROR,
+            'message' => $this->getCreateErrorMessage(),
+        )));
+
+        return $response;
     }
 
 

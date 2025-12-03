@@ -23,4 +23,9 @@ class ConstanteTipoMovimiento
      * INGRESO CC
      */
     const INGRESO_CC = 3;
+
+    /**
+     * ADELANTO RESERVA
+     */
+    const ADELANTO_RESERVA = 4;
 }

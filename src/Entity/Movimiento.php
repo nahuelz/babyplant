@@ -61,6 +61,12 @@ class Movimiento {
     private $cuentaCorrientePedido;
 
     /**
+     * @ORM\ManyToOne(targetEntity=CuentaCorrienteReserva::class, inversedBy="movimientos")
+     * @ORM\JoinColumn(name="id_cuenta_corriente_reserva", referencedColumnName="id", nullable=true)
+     */
+    private $cuentaCorrienteReserva;
+
+    /**
      * @ORM\ManyToOne(targetEntity=Pedido::class)
      * @ORM\JoinColumn(name="id_pedido", referencedColumnName="id", nullable=true)
      */
@@ -71,6 +77,12 @@ class Movimiento {
      * @ORM\JoinColumn(name="id_remito", referencedColumnName="id", nullable=true)
      */
     private $remito;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Reserva::class)
+     * @ORM\JoinColumn(name="id_reserva", referencedColumnName="id", nullable=true)
+     */
+    private $reserva;
 
     /**
      * @ORM\ManyToOne(targetEntity=ModoPago::class)
@@ -138,7 +150,7 @@ class Movimiento {
         $this->monto = $monto;
     }
 
-    public function getDescripcion(): string
+    public function getDescripcion()
     {
         return $this->descripcion;
     }
@@ -303,6 +315,40 @@ class Movimiento {
     {
         $this->montoDeuda = $montoDeuda;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getCuentaCorrienteReserva()
+    {
+        return $this->cuentaCorrienteReserva;
+    }
+
+    /**
+     * @param mixed $cuentaCorrienteReserva
+     */
+    public function setCuentaCorrienteReserva($cuentaCorrienteReserva): void
+    {
+        $this->cuentaCorrienteReserva = $cuentaCorrienteReserva;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getReserva()
+    {
+        return $this->reserva;
+    }
+
+    /**
+     * @param mixed $reserva
+     */
+    public function setReserva($reserva): void
+    {
+        $this->reserva = $reserva;
+    }
+
+
 
 
 

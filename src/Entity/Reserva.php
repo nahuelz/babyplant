@@ -40,7 +40,7 @@ class Reserva {
     private $cliente;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Entrega::class)
+     * @ORM\OneToOne(targetEntity=Entrega::class, inversedBy="reserva")
      * @ORM\JoinColumn(name="id_entrega", referencedColumnName="id", nullable=true)
      */
     private $entrega;
@@ -71,6 +71,12 @@ class Reserva {
      * @ORM\Column(type="datetime", nullable=false)
      */
     private $fechaEntregaReal;
+
+    /**
+     * @ORM\OneToOne(targetEntity=CuentaCorrienteReserva::class, inversedBy="reserva")
+     * @ORM\JoinColumn(name="id_cuenta_corriente_reserva", referencedColumnName="id")
+     */
+    private $cuentaCorrienteReserva;
 
     public function __construct()
     {
@@ -243,6 +249,28 @@ class Reserva {
     {
         $this->fechaEntregaReal = $fechaEntregaReal;
     }
+
+    public function getAdelanto(){
+        return $this->cuentaCorrienteReserva->getSaldo();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCuentaCorrienteReserva()
+    {
+        return $this->cuentaCorrienteReserva;
+    }
+
+    /**
+     * @param mixed $cuentaCorrienteReserva
+     */
+    public function setCuentaCorrienteReserva($cuentaCorrienteReserva): void
+    {
+        $this->cuentaCorrienteReserva = $cuentaCorrienteReserva;
+    }
+
+
 
 
 

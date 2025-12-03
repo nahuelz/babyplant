@@ -21,8 +21,16 @@
         <div class="card-body">
             <i class="fas fa-wallet icon-3x" style="color: cadetblue;"></i>
             <button class="fas fa-plus-square icon-3x float-right add-adelanto" style="color: cadetblue; background: none; border: none;"></button>
-            <span class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-0 mt-6 d-block">{{ entity.saldoAdelantos|money_format }}</span>
-            <span class="font-weight-bold text-muted  font-size-lg">Adelantos</span>
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-0 mt-6 d-block">{{ entity.saldoAdelantos|money_format }}</span>
+                    <span class="font-weight-bold text-muted  font-size-lg">Adelantos Pedidos</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-0 mt-6 d-block">{{ entity.saldoAdelantosReservas|money_format }}</span>
+                    <span class="font-weight-bold text-muted  font-size-lg">Adelantos Reservas</span>
+                </div>
+            </div>
         </div>
         <!--end::Body-->
     </div>

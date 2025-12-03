@@ -386,6 +386,25 @@ class Remito {
         return $adelanto;
     }
 
+    public function getAdelantoReserva()
+    {
+        $adelanto = 0;
+        $reservasVistas = [];
+
+        foreach ($this->entregas as $entrega) {
+            if ($entrega->getReserva() != null) {
+                $reserva = $entrega->getReserva();
+                $reservaId = $reserva->getId();
+                if (!isset($reservasVistas[$reservaId])) {
+                    $adelanto += $reserva->getAdelanto();
+                    $reservasVistas[$reservaId] = true;
+                }
+            }
+        }
+
+        return $adelanto;
+    }
+
     public function getDescuentoTipoDescuento(){
         return  ($this->getTipoDescuento() . ' ' . $this->getCantidadDescuento());
     }

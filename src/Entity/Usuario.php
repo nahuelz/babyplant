@@ -599,6 +599,14 @@ class Usuario implements UserInterface {
         return $saldo;
     }
 
+    public function getSaldoAdelantosReservas(){
+        $saldo = 0;
+        foreach ($this->getReservas() as $reserva){
+            $saldo+= $reserva->getCuentaCorrienteReserva()->getSaldo();
+        }
+        return $saldo;
+    }
+
     public function getTieneMovimientos(){
         $resultado = false;
         foreach ($this->getPedidos() as $pedido){

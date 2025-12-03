@@ -58,7 +58,7 @@
                         <div class="col-md-6 text-right">
                             {# Acciones por producto si querés incluirlas #}
                             <div class="align-items-center">
-                                <a href="{{ path('pedido_producto_show', {'id': entity.pedidoProducto.id}) }}" class="btn btn-primary btn-sm">
+                                <a href="{{ path('pedido_show', {'id': entity.pedidoProducto.pedido.id}) }}" class="btn btn-primary btn-sm">
                                     <i class="fas fa-search"></i> VER
                                 </a>
                             </div>
