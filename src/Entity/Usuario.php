@@ -551,7 +551,7 @@ class Usuario implements UserInterface {
     public function getPendiente(){
         $pendiente = 0;
         foreach ($this->getRemitos() as $remito){
-            if ($remito->getEstado()->getCodigoInterno() != ConstanteEstadoRemito::CANCELADO) {
+            if (($remito->getEstado()->getCodigoInterno() != ConstanteEstadoRemito::CANCELADO) and ($remito->getEstado()->getCodigoInterno() != ConstanteEstadoRemito::PAGO)) {
                 $pendiente += $remito->getPendiente();
             }
         }
