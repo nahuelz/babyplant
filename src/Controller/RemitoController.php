@@ -79,6 +79,7 @@ class RemitoController extends BaseController {
         $rsm->addScalarResult('nombreProductoCompleto', 'nombreProductoCompleto');
         $rsm->addScalarResult('nombreProducto', 'nombreProducto');
         $rsm->addScalarResult('cantidadBandejas', 'cantidadBandejas');
+        $rsm->addScalarResult('cantidadPlantas', 'cantidadPlantas');
         $rsm->addScalarResult('precioUnitario', 'precioUnitario');
         $rsm->addScalarResult('precioSubTotal', 'precioSubTotal');
         $rsm->addScalarResult('precioTotal', 'precioTotal');
@@ -89,6 +90,9 @@ class RemitoController extends BaseController {
         $rsm->addScalarResult('idEstado', 'idEstado');
         $rsm->addScalarResult('colorEstado', 'colorEstado');
         $rsm->addScalarResult('colorProducto', 'colorProducto');
+        $rsm->addScalarResult('montoTotalConDescuentoProducto', 'montoTotalConDescuentoProducto');
+        $rsm->addScalarResult('montoPendienteProducto', 'montoPendienteProducto');
+        $rsm->addScalarResult('montoPagoProducto', 'montoPagoProducto');
 
         $nativeQuery = $em->createNativeQuery('call sp_index_remito(?,?,?)', $rsm);
 

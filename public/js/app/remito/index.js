@@ -87,25 +87,37 @@ function initDataTable() {
                 title: 'Reporte Remitos',
                 className: 'filtrados',
                 exportOptions: {
-                    columns: [4, 1, 6, 6, 8, 7, 9, 10, 7],
+                    columns: [1, 5, 4, 6, 11, 8, 9, 10, 13, 14, 7],
                     filter: 'applied',
                     page: 'all',
                     format: {
                         header: function(data, columnIdx) {
                             var headers = {
-                                4: 'Fecha',
                                 1: 'N° Remito',
-                                6: 'Producto',
+                                5: 'Productor',
+                                4: 'Fecha',
                                 6: 'Especie',
+                                11: 'Cantidad Plantines',
                                 8: 'Cantidad Bandejas',
-                                7: 'Cantidad Plantas',
                                 9: 'Precio Unitario',
                                 10: 'Precio Total',
+                                13: 'Deudores',
+                                14: 'Caj Plant',
                                 7: 'Condicion'
                             };
                             return headers[columnIdx] || data;
                         },
-                        body: function(data) {
+                        body: function(data, row, column, node) {
+                            if (column === 8) {
+                                console.log(data);
+                                return formatMoneyAR(data);
+                            }
+                            if (column === 9) {
+                                return formatMoneyAR(data);
+                            }
+                            if (column === 4) {  // quinta columna en el array de exportación
+                                return Math.round(parseFloat(data) || 0).toString();
+                            }
                             var div = document.createElement('div');
                             div.innerHTML = data;
                             return div.textContent || div.innerText || '';
@@ -131,8 +143,8 @@ function initDataTable() {
         rowGroup: {
             dataSrc: 1,
             endRender: function (rows, group) {
-                let precioTotalConDescuento = rows.data()[0][11].precioTotalConDescuento;
-                let montoPendiente = rows.data()[0][11].montoPendiente;
+                let precioTotalConDescuento = rows.data()[0][15].precioTotalConDescuento;
+                let montoPendiente = rows.data()[0][15].montoPendiente;
 
                 const formatter = new Intl.NumberFormat('es-AR', {style: 'currency', currency: 'ARS'});
 
@@ -171,8 +183,8 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'idRemito',
-            width: '15px',
             className: 'dt-center',
+            width: '15px',
             orderable: false,
             render: function (data, type, full, meta) {
                 return '\
@@ -185,14 +197,12 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'idRemito',
-            width: '30px',
             className: 'dt-center',
             type: 'num'
         },
         {
             targets: index++,
             name: 'idPedidoProducto',
-            width: '30px',
             className: 'dt-center',
             type: 'num',
             visible: false
@@ -200,7 +210,6 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'ordenSiembra',
-            width: '30px',
             className: 'dt-center',
             type: 'num'
         },
@@ -214,7 +223,6 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'nombreCliente',
             className: 'nowrap text-center margin-0 ',
-            width: '50px',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
                     return '<a href="' + data.path + '">' + data.nombreCliente + '</a>';
@@ -228,15 +236,14 @@ function datatablesGetColDef() {
             className: 'nowrap text-center margin-0 ',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<span class="label label-inline margin-0 font-weight-bold p-6" style="width: 220px;color: #ffffff !important;background-color: ' + data.colorProducto + '">' + data.nombreProductoCompleto + '</span>';
+                    return '<span class="label label-inline margin-0 font-weight-bold p-6" style="width: 220px;color: #ffffff !important;background-color: ' + data.colorProducto + '">' + data.nombreProducto + '</span>';
                 }
-                return data.nombreProductoCompleto;
+                return data.nombreProducto;
             }
         },
         {
             targets: index++,
             name: 'estado',
-            width: '90',
             className: 'nowrap text-center align-middle',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
@@ -249,7 +256,6 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'cantidadBandejas',
             className: 'dt-center',
-            width: '30px',
             type: 'num'
         },
         {
@@ -261,6 +267,26 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'precioSubTotal',
             className: 'dt-center'
+        },
+        {
+            targets: index++,
+            name: 'cantidadPlantas',
+            visible: false
+        },
+        {
+            targets: index++,
+            name: 'montoTotalConDescuentoProducto',
+            visible: false
+        },
+        {
+            targets: index++,
+            name: 'montoPendienteProducto',
+            visible: false
+        },
+        {
+            targets: index++,
+            name: 'montoPagoProducto',
+            visible: false
         },
         {
             targets: index++,
@@ -359,5 +385,35 @@ function initVerHistoricoEstadoRemitoHandler() {
             $('.bs-popover-top').hide();
             $('.btn-submit').hide();
         });
+    });
+}
+
+function parseMoneyAR(value) {
+    if (value === null || value === undefined) return 0;
+
+    // Si ya es número, devolverlo
+    if (typeof value === 'number') return value;
+
+    let str = value.toString().trim();
+
+    // Si ya es un número decimal estándar (9950.0000)
+    if (/^\d+(\.\d+)?$/.test(str)) {
+        return parseFloat(str);
+    }
+
+    // Formato AR: $ 9.950,00
+    str = str
+        .replace(/\$/g, '')
+        .replace(/\s/g, '')
+        .replace(/\./g, '')
+        .replace(',', '.');
+
+    return parseFloat(str) || 0;
+}
+
+function formatMoneyAR(value) {
+    return parseMoneyAR(value).toLocaleString('es-AR', {
+        style: 'currency',
+        currency: 'ARS'
     });
 }

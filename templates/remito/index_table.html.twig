@@ -15,8 +15,8 @@
         "path": "{{ path('situacioncliente_show', { "id": entity.idCliente }) }}"
         },
         {
-        "nombreProductoCompleto": "{{ entity.nombreProductoCompleto|default('default') }}",
         "nombreProducto": "{{ entity.nombreProducto|default('default') }}",
+        "nombreProductoCompleto": "{{ entity.nombreProductoCompleto|default('default') }}",
         "colorProducto": "{{ entity.colorProducto|default('default') }}"
         },
         {
@@ -26,6 +26,10 @@
         "{{ entity.cantidadBandejas|default('-') }}",
         "{{ entity.precioUnitario|money_format|default('-') }}",
         "{{ entity.precioSubTotal|money_format|default('-') }}",
+        "{{ entity.cantidadPlantas|default('-') }}",
+        "{{ entity.montoTotalConDescuentoProducto|default('-') }}",
+        "{{ entity.montoPendienteProducto|default('-') }}",
+        "{{ entity.montoPagoProducto|default('-') }}",
         {
         "tipoDescuento": "{{ entity.tipoDescuento|default('default') }}",
         "precioTotalConDescuento": "{{ entity.precioTotalConDescuento|default('default') }}",
