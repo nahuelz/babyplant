@@ -4,7 +4,7 @@
             <h4 class="card-label mb-0">Pedidos</h4>
         </div>
         <div class="card-toolbar">
-            <a href="{{ path('pedido_new', {'id': entity.id}) }}" class="btn btn-primary btn-sm">
+            <a href="{{ path('pedido_new') }}" class="btn btn-primary btn-sm">
                 <i class="la la-plus"></i>
                 Nuevo Pedido
             </a>
@@ -14,7 +14,7 @@
         <div class="tab-content">
             <div class="tab-pane active" id="portlet_pedido_listado">
                 <div class="portlet-body padding-0">
-                    {% if entity.pedidos|length > 0 %}
+                    {% if razonSocial.pedidos|length > 0 %}
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="table-scrollable" style="border: none;overflow-y:scroll; height:400px;">
@@ -27,7 +27,7 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {% for pedido in entity.pedidos %}
+                                        {% for pedido in razonSocial.pedidos %}
                                             {% for producto in pedido.pedidosProductos %}
                                                 <tr>
                                                     <td class="v-middle nowrap text-center">
@@ -53,11 +53,6 @@
                                                                 <a href="{{ path('imprimir_pedido',{id: pedido.id}) }}" class="dropdown-item">
                                                                     <i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Pedido
                                                                 </a>
-                                                                {% if pedido.cliente.celularValido %}
-                                                                    <a href="https://api.whatsapp.com/send?phone={{ pedido.cliente.limpiarCelular }}&amp;text=Hola *{{ pedido.cliente.nombreCompleto }}*,%0ATe informamos que tu pedido N° *{{ pedido.id }}* fue registrado correctamente.%0A{{ absolute_url(path('imprimir_pedido', {id: pedido.id|b64})) }}%0A%0A¡Gracias por tu compra! 🪴🌿%0A- *Vivero Babyplant*" target="_blank" class="dropdown-item">
-                                                                        <i class="la la-whatsapp" style="margin-right: 5px; color: green;"></i> Enviar WhatsApp
-                                                                    </a>
-                                                                {% endif %}
                                                             </div>
                                                         </div>
                                                     </td>

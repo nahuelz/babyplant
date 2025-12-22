@@ -81,7 +81,7 @@ function initDataTable() {
             });
         },
         lengthMenu: [5, 10, 25, 50, 100, 500, 1000],
-        pageLength: 5,
+        pageLength: 50,
         destroy: true,
         columnDefs: datatablesGetColDef(),
         order: [[1, 'desc']],

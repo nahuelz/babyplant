@@ -151,7 +151,7 @@ function initDataTable() {
             });
         },
         lengthMenu: [5, 10, 25, 50, 100, 500, 1000],
-        pageLength: 25,
+        pageLength: 50,
         scrollX: false,
         //autoWidth: false,
         //scrollCollapse: true,
@@ -453,6 +453,10 @@ function datatablesGetColDef() {
     ];
 }
 
+function encodeId(id) {
+    return btoa(id.toString());
+}
+
 /**
  *
  * @param {type} data
@@ -469,20 +473,18 @@ function dataTablesActionFormatter(data, type, full, meta) {
         // Generar botón de WhatsApp si el número es válido
         let botonWhatsapp = '';
         if (data.celular !== undefined) {
-            let celularLimpio = data.celular.replace(/\D+/g, '');
-            let celularConPrefijo = '54' + celularLimpio;
-
-            if (esNumeroWhatsappValido('+' + celularConPrefijo)) {
+            if (esNumeroWhatsappValido(data.celular)) {
+                let idEncriptado = encodeId(full[5].idPedido);
                 let mensaje =
                     `Hola *${full[5].nombreCliente}*,%0A` +
                     `Te informamos que tu pedido N° *${full[5].idPedido}* fue registrado correctamente.%0A` +
                     `Podés ver el detalle y estado de tu pedido en el siguiente enlace:%0A` +
-                    `https://dev.babyplant.com.ar${full[14].print}%0A%0A` +
+                    `https://dev.babyplant.com.ar/pedido/imprimir-pedido/${idEncriptado}%0A%0A` +
                     `¡Gracias por tu compra! 🪴🌿%0A` +
                     `- *Vivero Babyplant*`;
                 botonWhatsapp =
                     '<a class="dropdown-item" href="https://api.whatsapp.com/send?phone='
-                    + celularConPrefijo
+                    + limpiarNumeroCelular(data.celular)
                     + '&text='
                     + mensaje
                     + '" target="_blank">'
@@ -495,7 +497,7 @@ function dataTablesActionFormatter(data, type, full, meta) {
             (data.show_producto !== undefined ? '<a class="dropdown-item" href="' + data.show_producto + '"><i class="la la-search" style="margin-right: 5px;"></i> Ver Producto</a>' : '') +
             (data.edit !== undefined ? '<a class="dropdown-item" href="' + data.edit + '"><i class="la la-edit" style="margin-right: 5px;"></i> Editar</a>' : '') +
             (data.historico_estado !== undefined ? '<a class="dropdown-item link-ver-historico-pedido" href="#" data-href="' + data.historico_estado + '"><i class="la la-file-alt" style="margin-right: 5px;" data-original-title="Hist&oacute;rico de estados"></i>Hist&oacute;rico de estados</a>' : '') +
-            (data.print !== undefined ? '<a class="dropdown-item" href="' + data.print + '"><i class="la la-edit" style="margin-right: 5px;"></i> Print</a>' : '') +
+            (data.print !== undefined ? '<a class="dropdown-item" href="' + data.print + '"><i class="la la-edit" style="margin-right: 5px;"></i> Imprimir pedido</a>' : '') +
             (data.situacion_cliente !== undefined ? '<a class="dropdown-item" href="' + data.situacion_cliente + '"><i class="la la-user" style="margin-right: 5px;"></i> Situacion Cliente</a>' : '') +
             (data.remito !== undefined ? '<a class="dropdown-item" href="' + data.remito + '"><i class="la la-edit" style="margin-right: 5px;"></i> Remito</a>' : '') +
             (data.cancelar !== undefined ? '<a class="dropdown-item accion-cancelar" href="' + data.cancelar + '"><i class="la la-remove" style="margin-right: 5px;"></i> Cancelar</a>' : '') +
@@ -568,11 +570,6 @@ function initCancelarButton() {
         });
         e.stopPropagation();
     });
-}
-
-function esNumeroWhatsappValido(numero) {
-    const regex = /^\+54\d{10}$/;
-    return regex.test(numero);
 }
 
 function initEditarMesadaHandler(){

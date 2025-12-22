@@ -38,48 +38,12 @@ function initFormValidationRazonSocial() {
     });
 }
 
-/*
-function initAgregarRazonSocialModal2() {
-
-    $("#razon_social_submit").off('click').on('click', function (e) {
-        e.preventDefault();
-
-        fvRazonSocial.revalidateField('requiredFields');
-
-        fvRazonSocial.validate().then((status) => {
-
-            if (status === "Valid") {
-                $.ajax({
-                    url: __HOMEPAGE_PATH__ + "razonSocial/createAjax/",
-                    type: 'POST',
-                    data:  $('form[name="razon_social"]').serialize()
-                }).done(function (response) {
-                    var decodedResponse = jQuery.parseJSON(response);
-                    if (decodedResponse.statusText === 'OK') {
-                        $('#razonSocialModal').modal('hide');
-                        var textOption = $('#razon_social_razonSocial').val();
-                        var newOption = new Option('TEST NEW', '9911', true, true);
-                        $("#registration_form_razonSocial").append(newOption).trigger('change');
-                        showFlashMessage("success", decodedResponse.message);
-                    } //
-                    else {
-                        showFlashMessage("danger", decodedResponse.message);
-                    }
-                });
-                return false;
-            }
-        });
-
-        e.stopPropagation();
-    });
-}*/
-
 function initAgregarRazonSocialModal() {
     $('.link-agregar-razonsocial').on('click', function (e) {
         e.preventDefault();
         $.ajax({
             type: 'POST',
-            url: __HOMEPAGE_PATH__ + "razonSocial/newAjax/",
+            url: __HOMEPAGE_PATH__ + "razonsocial/newAjax/",
         }).done(function (form) {
             $('.modalCliente').css('opacity', 0);
             showDialog({
@@ -106,7 +70,7 @@ function initAgregarRazonSocialModal() {
                                     razonSocial: razonSocial,
                                     cuit: cuit
                                 },
-                                url: __HOMEPAGE_PATH__ + "razonSocial/createAjax/",
+                                url: __HOMEPAGE_PATH__ + "razonsocial/createAjax/",
                                 success: function (data) {
                                     if (!jQuery.isEmptyObject(data)) {
                                         let nombreInput = data.nombre + ' (' + data.cuit + ')';

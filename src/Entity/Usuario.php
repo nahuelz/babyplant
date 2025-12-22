@@ -97,7 +97,7 @@ class Usuario implements UserInterface {
     private $tipoUsuario;
 
     /**
-     * @ORM\ManyToOne(targetEntity=RazonSocial::class, cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity=RazonSocial::class, inversedBy="clientes", cascade={"persist"})
      * @ORM\JoinColumn(name="id_razon_social", referencedColumnName="id", nullable=true)
      */
     private $razonSocial;
@@ -622,6 +622,18 @@ class Usuario implements UserInterface {
         }
 
         return $resultado;
+    }
+
+    public function celularValido(): bool
+    {
+        $celularConPrefijo = $this->limpiarCelular();
+        return preg_match('/^\+54\d{10}$/', $celularConPrefijo) === 1;
+    }
+
+    public function limpiarCelular(): string
+    {
+        $celularLimpio = preg_replace('/\D+/', '', $this->celular);
+        return '+54' . $celularLimpio;
     }
 
 

@@ -43,11 +43,38 @@
                                                             {{ entrega.estado|default('-') }}
                                                         </div>
                                                     </td>
-                                                    <td class="v-middle nowrap text-center">
-                                                        <a href="{{ path('entrega_show',{id: entrega.id}) }}" target="_blank"
-                                                           class="btn btn-light-primary btn-icon btn-sm blue" title="Ver entrega" style="height: 25px;width: 25px;">
-                                                            <i class="fa fa-search text-white"></i>
-                                                        </a>
+                                                    <td class=" text-center dt-acciones">
+                                                        <div class="dropdown dropdown-inline">
+                                                            <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <i class="ki ki-bold-more-hor"></i>
+                                                            </button>
+                                                            <div class="dropdown-menu">
+                                                                {% if entrega.estado == 'SIN REMITO' %}
+                                                                    <a href="{{ path( "remito_new", {id: entrega.clienteEntrega.id}) }}" class="dropdown-item">
+                                                                        <i class="la la-truck" style="margin-right: 5px;"></i> Generar Remito
+                                                                    </a>
+                                                                {% endif %}
+                                                                <a href="{{ path('entrega_show',{id: entrega.id}) }}" class="dropdown-item">
+                                                                    <i class="la la-search" style="margin-right: 5px;"></i> Ver Entrega
+                                                                </a>
+                                                                <a href="#" class="dropdown-item link-ver-historico-entrega" data-href="{{ path('entrega_historico_estado',{id: entrega.id}) }}">
+                                                                    <i class="la la-file-alt" style="margin-right: 5px;"></i> Histórico de estados
+                                                                </a>
+                                                                <a href="{{ path('imprimir_entrega',{id: entrega.id}) }}" class="dropdown-item">
+                                                                    <i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Entrega
+                                                                </a>
+                                                                {% if entrega.clienteEntrega.celularValido %}
+                                                                    <a href="https://api.whatsapp.com/send?phone={{ entrega.clienteEntrega.limpiarCelular }}&amp;text=Hola *{{ entrega.clienteEntrega.nombreCompleto }}*,%0ATe informamos que su entrega N° *{{ entrega.id }}* fue registrado correctamente.%0A{{ absolute_url(path('imprimir_entrega', {id: entrega.id|b64})) }}%0A%0A¡Gracias por tu compra! 🪴🌿%0A- *Vivero Babyplant*" target="_blank" class="dropdown-item">
+                                                                        <i class="la la-whatsapp" style="margin-right: 5px; color: green;"></i> Enviar WhatsApp
+                                                                    </a>
+                                                                {% endif %}
+                                                                {% if entrega.estado == 'SIN REMITO' %}
+                                                                    <a class="dropdown-item accion-cancelar" href="{{ path( "entrega_cancelar", { "id": entrega.id, path: 'situacioncliente_show', idCliente: entity.id }) }}">
+                                                                        <i class="la la-remove" style="margin-right: 5px;"></i> Cancelar
+                                                                    </a>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             {% endfor %}

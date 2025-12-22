@@ -2,7 +2,6 @@
 
 namespace App\Twig;
 
-use App\Entity\API;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use DateTime;
@@ -37,6 +36,7 @@ class AppExtension extends AbstractExtension {
             new TwigFilter('date_diff', array($this, 'dateDiff')),
             new TwigFilter('hex_opacity', array($this, 'changeHexOpacity')),
             new TwigFilter('encrypt', array($this, 'encrypt')),
+            new TwigFilter('b64', 'base64_encode'),
             new TwigFilter('truncate', array($this, 'truncate')),
             new TwigFilter('__custom_parameters_auditoria', array($this, 'parametersAuditoria')),
         );
@@ -266,6 +266,10 @@ class AppExtension extends AbstractExtension {
 
     public function encrypt($param) {
         return API::encrypt($param);
+    }
+
+    public function b64($param) {
+        return base64_decode($param);
     }
 
     /**

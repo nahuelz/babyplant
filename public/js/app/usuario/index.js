@@ -24,7 +24,7 @@ jQuery(document).ready(function () {
         },
         columnDefs: datatablesGetColDef(),
         order: [[1, 'asc']],
-        pageLength: 25,
+        pageLength: 50,
         lengthMenu: [[10, 25, 50, 100, 10000], [10, 25, 50, 100, 10000]],
         //scrollX: false,
         autoWidth: false,

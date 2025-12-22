@@ -32,7 +32,6 @@ use App\Service\EstadoService;
 
 /**
  * @Route("/pedido")
- * @IsGranted("ROLE_PEDIDO")
  */
 class PedidoController extends BaseController {
 
@@ -451,6 +450,13 @@ class PedidoController extends BaseController {
 
         /* @var $pedido Pedido */
         $pedido = $em->getRepository("App\Entity\Pedido")->find($id);
+
+        if (!$pedido){
+            $idPedido = base64_decode($id);
+        }
+
+        /* @var $pedido Pedido */
+        $pedido = $em->getRepository("App\Entity\Pedido")->find($idPedido);
 
         if (!$pedido) {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");

@@ -220,6 +220,12 @@ class RemitoController extends BaseController {
         /* @var $remito Remito */
         $remito = $em->getRepository("App\Entity\Remito")->find($id);
 
+        if (!$remito){
+            $id = base64_decode($id);
+        }
+
+        $remito = $em->getRepository("App\Entity\Remito")->find($id);
+
         if (!$remito) {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
@@ -385,7 +391,7 @@ class RemitoController extends BaseController {
      * @Route("/{id}/cancelar", name="remito_cancelar", methods={"GET"})
      * @IsGranted("ROLE_REMITO")
      */
-    public function cancelarRemito(int $id): Response
+    public function cancelarRemito(Request $request, int $id): Response
     {
         $em = $this->doctrine->getManager();
 
@@ -408,6 +414,10 @@ class RemitoController extends BaseController {
         $em->flush();
 
         $this->addFlash('success', 'El remito fue cancelado correctamente.');
+
+        if ($request->query->get('path')){
+            return $this->redirectToRoute($request->query->get('path'), ['id' => $request->query->get('idCliente')]);
+        }
 
         return $this->redirectToRoute('remito_index');
     }

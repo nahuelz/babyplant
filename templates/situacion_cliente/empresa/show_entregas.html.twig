@@ -1,0 +1,73 @@
+<div class="card card-detail">
+    <div class="card-header d-flex justify-content-between align-items-center padding-10">
+        <div class="card-title mb-0">
+            <h4 class="card-label mb-0">Entregas</h4>
+        </div>
+        <div class="card-toolbar">
+            <a href="{{ path('entrega_new', {'id': razonSocial.id}) }}" class="btn btn-primary btn-sm">
+                <i class="la la-plus"></i>
+                Nueva Entrega
+            </a>
+        </div>
+    </div>
+    <div class="card-body padding-1">
+        <div class="tab-content">
+            <div class="tab-pane active" id="portlet_entrega_listado">
+                <div class="portlet-body padding-0">
+                    {% if razonSocial.entregas|length > 0 %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-scrollable" style="border: none;overflow-y:scroll; height:400px;">
+                                    <table class="table table-striped table-bordered table-advance table-hover" style="border: 1px solid #ddd;">
+                                        <thead>
+                                        <tr>
+                                            <th class="text-center nowrap">Entrega</th>
+                                            <th class="text-center nowrap">Bandejas</th>
+                                            <th class="text-center nowrap">Estado</th>
+                                            <th class="text-center nowrap"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for entrega in razonSocial.entregas %}
+                                            {% for entregaProducto in entrega.entregasProductos %}
+                                                {% set producto = entregaProducto.pedidoProducto %}
+                                                <tr>
+                                                    <td class="v-middle nowrap text-center">
+                                                        {{ producto|default('-') }}
+                                                    </td>
+                                                    <td class="v-middle nowrap text-center">
+                                                        {{ entregaProducto.cantidadBandejas|default('-') }}
+                                                    </td>
+                                                    <td class="v-middle nowrap text-center">
+                                                        <div class="label label-inline font-size-10 font-dark font-weight-bold padding-15 {{ entrega.estado.color|default('-') }}">
+                                                            {{ entrega.estado|default('-') }}
+                                                        </div>
+                                                    </td>
+                                                    <td class="v-middle nowrap text-center">
+                                                        <a href="{{ path('entrega_show',{id: entrega.id}) }}" target="_blank"
+                                                           class="btn btn-light-primary btn-icon btn-sm blue" title="Ver entrega" style="height: 25px;width: 25px;">
+                                                            <i class="fa fa-search text-white"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="row row-dictado-empty margin-top-20">
+                            <div class="col-md-12">
+                                <div class="note bg-grey-cararra font-size-13">
+                                    El cliente no presenta entregas registradas.
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

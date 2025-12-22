@@ -33,7 +33,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/reserva")
- * @IsGranted("ROLE_RESERVA")
  */
 class ReservaController extends BaseController {
 
@@ -369,6 +368,13 @@ class ReservaController extends BaseController {
         /* @var $reserva Reserva */
         $reserva = $em->getRepository("App\Entity\Reserva")->find($id);
 
+        if (!$reserva){
+            $id = base64_decode($id);
+        }
+
+        /* @var $reserva Reserva */
+        $reserva = $em->getRepository("App\Entity\Reserva")->find($id);
+
         if (!$reserva) {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
@@ -439,7 +445,7 @@ class ReservaController extends BaseController {
     /**
      * @Route("/{id}/cancelar", name="reserva_cancelar", methods={"GET"})
      */
-    public function cancelarReserva(int $id): Response
+    public function cancelarReserva(Request $request, int $id): Response
     {
         $em = $this->doctrine->getManager();
 
@@ -457,6 +463,10 @@ class ReservaController extends BaseController {
         $em->flush();
 
         $this->addFlash('success', 'La reserva fue cancelada correctamente.');
+
+        if ($request->query->get('path')){
+            return $this->redirectToRoute($request->query->get('path'), ['id' => $request->query->get('idCliente')]);
+        }
 
         return $this->redirectToRoute('reserva_index');
     }

@@ -204,11 +204,16 @@ class PagoController extends BaseController {
         /* @var $pago Pago */
         $pago = $em->getRepository("App\Entity\Pago")->find($id);
 
+        if (!$pago){
+            $id = base64_decode($id);
+        }
+
+        $pago = $em->getRepository("App\Entity\Pago")->find($id);
+
         if (!$pago) {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
-
-        $html = $this->renderView('pago/comprobante_pdf.html.twig', array('entity' => $pago, 'website' => "http://192.168.0.182/babyplant/public/"));
+        $html = $this->renderView('pago/comprobante_pdf.html.twig', array('entity' => $pago, 'tipo_pdf' => "PAGO"));
         $filename = 'pago.pdf';
         $basePath = $this->getParameter('MPDF_BASE_PATH');
 

@@ -1,0 +1,59 @@
+<div class="col-xl-4">
+    <!--begin::Stats Widget 4-->
+    <div class="card card-custom card-stretch gutter-b border-1">
+        <!--begin::Body-->
+        <div class="card-body d-flex align-items-center py-0 mt-8">
+            <div class="d-flex flex-column flex-grow-1 py-2 py-lg-5">
+                <a href="#" class="card-title font-weight-bolder text-dark-75 font-size-h5 mb-2 text-hover-primary">{{ razonSocial.razonSocial }}</a>
+                <span class="font-weight-bold text-muted  font-size-lg">CUIT: {{ razonSocial.cuit }}</span>
+            </div>
+            <img src="{{ asset('images/user/perfil.png') }}" alt="" class="align-self-end h-100px">
+        </div>
+        <!--end::Body-->
+    </div>
+    <!--end::Stats Widget 4-->
+</div>
+<div class="col-xl-4">
+    <!--begin::Stats Widget 25-->
+    <div class="card card-custom bg-light-success card-stretch gutter-b border-1">
+        <!--begin::Body-->
+        <div class="card-body">
+            <i class="fas fa-wallet icon-3x" style="color: cadetblue;"></i>
+            <button class="fas fa-plus-square icon-3x float-right add-adelanto" style="color: cadetblue; background: none; border: none;"></button>
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-0 mt-6 d-block">{{ razonSocial.saldoAdelantos|money_format }}</span>
+                    <span class="font-weight-bold text-muted  font-size-lg">Adelantos Pedidos</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-0 mt-6 d-block">{{ razonSocial.saldoAdelantosReservas|money_format }}</span>
+                    <span class="font-weight-bold text-muted  font-size-lg">Adelantos Reservas</span>
+                </div>
+            </div>
+        </div>
+        <!--end::Body-->
+    </div>
+    <!--end::Stats Widget 25-->
+</div>
+<div class="col-xl-4">
+    <!--begin::Stats Widget 25-->
+    <div class="card card-custom bg-light-danger card-stretch gutter-b border-1">
+        <!--begin::Body-->
+        <div class="card-body">
+            <i class="fas fa-wallet icon-3x" style="color: chocolate;"></i>
+            <button class="fas fa-plus-square icon-3x float-right add-saldo" style="color: cadetblue; background: none; border: none;"></button>
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-0 mt-6 d-block">{{ razonSocial.getPendiente|money_format }}</span>
+                    <span class="font-weight-bold text-muted  font-size-lg">Deuda</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-0 mt-6 d-block saldo-cc">{{ razonSocial.saldo|money_format }}</span>
+                    <span class="font-weight-bold text-muted  font-size-lg">A favor</span>
+                </div>
+            </div>
+        </div>
+        <!--end::Body-->
+    </div>
+    <!--end::Stats Widget 25-->
+</div>

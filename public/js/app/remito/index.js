@@ -78,8 +78,54 @@ function initDataTable() {
             });
         },
         lengthMenu: [5, 10, 25, 50, 100, 500, 1000],
-        pageLength: 5,
+        pageLength: 50,
         destroy: true,
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                text: 'filtrados',
+                title: 'Reporte Remitos',
+                className: 'filtrados',
+                exportOptions: {
+                    columns: [4, 1, 6, 6, 8, 7, 9, 10, 7],
+                    filter: 'applied',
+                    page: 'all',
+                    format: {
+                        header: function(data, columnIdx) {
+                            var headers = {
+                                4: 'Fecha',
+                                1: 'N° Remito',
+                                6: 'Producto',
+                                6: 'Especie',
+                                8: 'Cantidad Bandejas',
+                                7: 'Cantidad Plantas',
+                                9: 'Precio Unitario',
+                                10: 'Precio Total',
+                                7: 'Condicion'
+                            };
+                            return headers[columnIdx] || data;
+                        },
+                        body: function(data) {
+                            var div = document.createElement('div');
+                            div.innerHTML = data;
+                            return div.textContent || div.innerText || '';
+                        }
+                    }
+                },
+                customizeData: function(data) {
+                    /*for (var i = 0; i < data.body.length; i++) {
+                        if (data.body[i][2]) {
+                            //data.body[i][2] = 'PREFIJO-' + data.body[i][2];
+                        }
+                    }*/
+                    console.log('Datos originales:', JSON.stringify(data, null, 2));
+                    // Imprime la primera fila de datos para ver su estructura
+                    if (data.body && data.body.length > 0) {
+                        console.log('Primera fila de datos:', data.body[0]);
+                    }
+                }
+            }
+        ],
         columnDefs: datatablesGetColDef(),
         order: [[1, 'desc']],
         rowGroup: {

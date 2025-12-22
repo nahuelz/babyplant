@@ -158,13 +158,7 @@ class EntregaController extends BaseController {
         try {
             $em->beginTransaction();
 
-            // Obtener el estado de entrega cancelada
-            $estadoCancelada = $em->getRepository(EstadoEntrega::class)
-                ->findOneByCodigoInterno(ConstanteEstadoEntrega::CANCELADA);
-
-            if (!$estadoCancelada) {
-                throw new \Exception('No se encontró el estado de entrega cancelada');
-            }
+            $estadoCancelada = $em->getRepository(EstadoEntrega::class)->findOneByCodigoInterno(ConstanteEstadoEntrega::CANCELADA);
 
             // Revertir los cambios de la entrega
             $entregaService = new EntregaService();
@@ -177,6 +171,11 @@ class EntregaController extends BaseController {
             $em->commit();
 
             $this->addFlash('success', 'Entrega cancelada exitosamente.');
+
+            if ($request->query->get('path')){
+                return $this->redirectToRoute($request->query->get('path'), ['id' => $request->query->get('idCliente')]);
+            }
+
             return $this->redirectToRoute('entrega_index');
 
         } catch (\Exception $e) {
@@ -352,6 +351,13 @@ class EntregaController extends BaseController {
     public function imprimirEntregaAction($id): Response
     {
         $em = $this->doctrine->getManager();
+
+        /* @var $entrega Entrega */
+        $entrega = $em->getRepository("App\Entity\Entrega")->find($id);
+
+        if (!$entrega){
+            $id = base64_decode($id);
+        }
 
         /* @var $entrega Entrega */
         $entrega = $em->getRepository("App\Entity\Entrega")->find($id);

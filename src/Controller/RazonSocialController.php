@@ -5,48 +5,63 @@ namespace App\Controller;
 use App\Entity\Constants\ConstanteAPI;
 use App\Entity\Constants\ConstanteTipoConsulta;
 use App\Entity\RazonSocial;
+use DateInterval;
+use DateTime;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Type;
 
-#[Route('/razonSocial')]
+#[Route('/razonsocial')]
 class RazonSocialController extends BaseController
 {
-    #[Route('/', name: 'razonsocial_index', methods: ['GET'])]
-    public function index(): Array
+    /**
+     * @Route("/", name="razonsocial_index", methods={"GET"})
+     * @Template("razonsocial/index.html.twig")
+     * @IsGranted("ROLE_TIPO_USUARIO")
+     */
+    public function index(): array
     {
-        return $this->baseIndexAction();
+        $razonSocialSelect = $this->getSelectService()->getRazonSocialFilter();
+
+        return array(
+            'razonSocialSelect' => $razonSocialSelect,
+            'page_title' => 'Razon Socal'
+        );
     }
 
     /**
+     * Tabla para app_pago.
      *
      * @Route("/index_table/", name="razonsocial_table", methods={"GET|POST"})
-     *
+     * @IsGranted("ROLE_RESERVA")
      */
     public function indexTableAction(Request $request): Response {
-        $entityTable = 'view_razonsocial';
+
+        $em = $this->doctrine->getManager();
+
+        $razonSocial = $request->get('idCliente') ?: NULL;
 
         $rsm = new ResultSetMapping();
 
         $rsm->addScalarResult('id', 'id');
-        $rsm->addScalarResult('razonsocial', 'razonsocial');
-        $rsm->addScalarResult('habilitado', 'habilitado');
+        $rsm->addScalarResult('razonSocial', 'razonSocial');
+        $rsm->addScalarResult('cuit', 'cuit');
 
-        $columnDefinition = [
-            ['field' => 'id', 'type' => '', 'searchable' => false, 'sortable' => false],
-            ['field' => 'razonsocial', 'type' => 'string', 'searchable' => true, 'sortable' => true],
-            ['field' => 'habilitado', 'type' => 'select', 'searchable' => true, 'sortable' => true],
-            ['field' => 'acciones', 'type' => '', 'searchable' => false, 'sortable' => false]
-        ];
+        $nativeQuery = $em->createNativeQuery('call sp_index_situacion_empresa(?)', $rsm);
 
-        $renderPage = "razonsocial/index_table.html.twig";
-        return parent::baseIndexTableAction($request, $columnDefinition, $entityTable, ConstanteTipoConsulta::VIEW, $rsm, $renderPage);
+        $nativeQuery->setParameter(1, $razonSocial);
+
+        $entities = $nativeQuery->getResult();
+
+        return $this->render('razonsocial/index_table.html.twig', array('entities' => $entities));
     }
 
-    #[Route('/new', name: 'app_razonsocial_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'razonsocial_new', methods: ['GET', 'POST'])]
     public function new(): Array
     {
         return $this->baseNewAction();
@@ -58,22 +73,29 @@ class RazonSocialController extends BaseController
         return $this->baseCreateAction($request, $isAjaxCall);
     }
 
-    #[Route('/{id}', name: 'app_razonsocial_show', methods: ['GET'])]
-    public function show($id): Array
-    {
-        return $this->baseShowAction($id);
+    /**
+     * @Route("/{id}", name="razonsocial_show", methods={"GET"})
+     * @Template("razonsocial/show.html.twig")
+     */
+    public function show($id): Array {
+        return parent::baseShowAction($id);
     }
 
-    #[Route('/{id}/edit', name: 'app_razonsocial_edit', methods: ['GET', 'POST'])]
-    public function edit($id): Array
-    {
-        return $this->baseEditAction($id);
+    /**
+     * @Route("/{id}/edit", name="razonsocial_edit", methods={"GET","POST"})
+     * @Template("razonsocial/new.html.twig")
+     */
+    public function edit($id): array {
+        return parent::baseEditAction($id);
     }
 
-    #[Route('/{id}', name: 'app_razonsocial_delete', methods: ['POST'])]
-    public function delete($id): Response
+    /**
+     * @Route("/{id}/actualizar", name="razonsocial_update", methods={"PUT"})
+     * @Template("razonsocial/new.html.twig")
+     */
+    public function update(Request $request, $id): RedirectResponse|type|Response
     {
-        return $this->baseDeleteAction($id);
+        return parent::baseUpdateAction($request, $id);
     }
 
     /**
@@ -114,8 +136,7 @@ class RazonSocialController extends BaseController
         if ($cuitParam) {
             $em = $this->doctrine->getManager();
             $existeCUIT = $em->getRepository(RazonSocial::class)->findOneBy(array('cuit' => $cuitParam));
-            $existeRazonSocial = $em->getRepository(RazonSocial::class)->findOneBy(array('razonSocial' => $razonSocial));
-            if (!$existeCUIT and !$existeRazonSocial) {
+            if (!$existeCUIT) {
                 $entity = new RazonSocial();
                 $entity->setCuit($cuitParam);
                 $entity->setRazonSocial($razonSocial);
@@ -126,16 +147,10 @@ class RazonSocialController extends BaseController
                 $nombre = $entity->getRazonSocial();
                 $cuit = $entity->getCuit();
             }else{
-                $msg = 'Error al crear Razon Social: El CUIT o RazonSocial ingresado ya existe.';
-                if ($existeCUIT) {
-                    $id = $existeCUIT->getId();
-                    $nombre = $existeCUIT->getRazonSocial();
-                    $cuit = $existeCUIT->getCuit();
-                }else{
-                    $id = $existeRazonSocial->getId();
-                    $nombre = $existeRazonSocial->getRazonSocial();
-                    $cuit = $existeRazonSocial->getCuit();
-                }
+                $msg = 'Error al crear Razon Social: El CUIT ingresado ya existe.';
+                $id = $existeCUIT->getId();
+                $nombre = $existeCUIT->getRazonSocial();
+                $cuit = $existeCUIT->getCuit();
             }
         } else {
             $msg = 'Error al crear Razon Social: Debe ingresar un CUIT.';

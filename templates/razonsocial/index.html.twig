@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+
+    {{ parent() }}
+
+    <link href="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css"/>
+
+    <style>
+        .label-light-secondary{
+            color:black !important;
+        }
+        td {
+            padding-top: 0.4rem !important;
+            padding-bottom: 0.4rem !important;
+        }
+    </style>
+
+{% endblock %}
+
+{% block body %}
+    <!--begin::Card-->
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon2-layers text-primary"></i></span>
+                <h3 class="card-label">Situación Empresa</h3>
+            </div>
+            
+        </div>
+
+        <div class="row padding-top-15">
+            <div class="col-md-6">
+                {% include 'situacion_cliente/empresa/filtros.html.twig' %}
+            </div>
+        </div>
+
+        <div class="card-body padding-top-0 padding-bottom-0">
+            <!--begin: Datatable-->
+            <table class="table table-bordered table-hover table-checkable" id="table-razonsocial">
+                <thead>
+                <tr>
+                    <th class="not-in-filter">ID</th>
+                    <th data-type="string" class="text-center">RAZON SOCIAL</th>
+                    <th data-type="string" class="text-center">CUIT</th>
+                    <th data-type="search" style="width: 10px"></th>
+                </tr>
+                </thead>
+            </table>
+            <!--end: Datatable-->
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script type="text/javascript" src="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.js') }}"></script>
+
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}" ></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-datatables.js') }}" ></script>
+
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/razonsocial/index.js') }}" ></script>
+
+{% endblock %}
+

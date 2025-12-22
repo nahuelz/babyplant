@@ -1,131 +1,90 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
+
 <head>
     <style type="text/css">
-        .remito{
-            background: url({{ asset('images/plantilla/plantilla-movimiento.png') }});
-            background-repeat: no-repeat;
-            background-image-resize: 1;
-            font-size: 16px;
-            font-family: monospace;
-        }
-        .logo-empresa{
-            background: url({{ asset('images/logo/logo.png') }});
-            float:left;
-            background-repeat: no-repeat;
-            width: 40mm;
-            height: 50.98mm;
-            background-image-resize: 3;
-            overflow: hidden;
-            margin-left: 20px;
-            margin-top: 30px;
-        }
-        .datos-empresa{
-            margin-left: 290px;
-            margin-top: -37px;
-            line-height: 5.7mm;
-            width: 200px;
-        }
-        .datos-remito{
-            margin-left: 630px;
-            margin-top: -197px;
-            line-height: 12mm;
-            width: 110px;
-            font-size: 18px;
-            height: 90px;
-        }
-        .datos-cliente-left{
-            margin-top: 36px;
-            line-height: 6.3mm;
-            margin-left: 170px;
-        }
-        .datos-cliente-right{
-            margin-top: -49px;
-            margin-left: 570px;
-            line-height: 6.3mm;
-        }
-        .datos-productos{
-            margin-top: 45px;
-            height: 300px;
+        .table-border {
+            border: 2px solid black;
+            border-radius: 5px;
+            margin-bottom: 10px;
         }
         .datos-productos-table{
-            margin-left: -173px;
             line-height: 7.5mm;
-            margin-top: -20px;
         }
         td{
-            font-size: 16px;
-            margin-bottom: 50px;
-        }
-        .total{
-            height: 100px;
-            margin-left: 600px;
-            margin-top: -75px;
+            font-size: 15px;
         }
     </style>
+    <title>{{ tipo_pdf }}</title>
 </head>
+
 <body>
+{% include 'PDF/header.html.twig' %}
 
-<div class="remito">
-    <br>
-    <div class="logo-empresa" ></div>
-    <div class="datos-empresa">
-        <div>Baby Plant srl</div>
-        <div>33-71230651-9</div>
-        <div>www.babyplant.com.ar</div>
-        <div> 44 4303 </div>
-        <div> Lis. Olmos la Plata </div>
-        <div>  0221 15-669-0199 </div>
-    </div>
 
-    <div class="datos-remito">
-        <div>{{ entity.fechaCreacion|date('d/m/Y') }}</div>
-    </div>
-    {% if entity.cuentaCorrienteUsuario != null %}
-        <div class="datos-cliente-left">
-            <div>{{ entity.cuentaCorrienteUsuario.cliente.nombreCompleto|default('-') }}</div>
-            <div>{{ entity.cuentaCorrienteUsuario.cliente.cuit|default('-') }}</div>
-        </div>
-        <div class="datos-cliente-right">
-            <div>{{ entity.cuentaCorrientePedido.cliente.celular|default('-') }}</div>
-            <div>{{ entity.cuentaCorrienteUsuario.cliente.domicilio|default('-') }}</div>
-        </div>
-    {% else %}
-        <div class="datos-cliente-left">
-            <div>{{ entity.cuentaCorrientePedido.pedido.cliente.nombreCompleto|default('-') }}</div>
-            <div>{{ entity.cuentaCorrientePedido.pedido.cliente.cuit|default('-') }}</div>
-        </div>
-        <div class="datos-cliente-right">
-            <div>{{ entity.cuentaCorrientePedido.pedido.cliente.celular|default('-') }}</div>
-            <div>{{ entity.cuentaCorrientePedido.pedido.cliente.domicilio|default('-') }}</div>
-        </div>
-    {% endif %}
-
-    <div class="datos-productos">
-        <table class="datos-productos-table" border="1" cellpadding="0" cellspacing="0" align="center">
-            <thead>
+    <div class="table-border header">
+        <table width="100%" border="0">
             <tr>
-                <th class="text-center">FECHA</th>
-                <th class="text-center">TIPO</th>
-                <th class="text-center">MONTO</th>
-                <th class="text-center">MODO PAGO</th>
-                <th class="text-center">PRODUCTO / REMITO</th>
+                <td>
+                    <table cellpadding="5" cellspacing="5" style="padding: 0;">
+                        {% if entity.cuentaCorrientePedido != null %}
+                            <tr>
+                                <td align="right"><strong>NOMBRE </strong></td>
+                                <td>{{ entity.cuentaCorrientePedido.pedido.cliente.nombreCompleto|default('-') }}</td>
+                                <td align="right"><strong>CUIT</strong></td>
+                                <td>{{ entity.cuentaCorrientePedido.pedido.cliente.cuit|default('-') }}</td>
+                            </tr>
+                            <tr>
+                                <td align="right"><strong>CELULAR</strong></td>
+                                <td>{{ entity.cuentaCorrientePedido.pedido.cliente.celular|default('-') }}</td>
+                                <td align="right"><strong>DOMICILIO</strong></td>
+                                <td>{{ entity.cuentaCorrientePedido.pedido.cliente.domicilio|default('-') }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td align="right"><strong>NOMBRE</strong></td>
+                                <td>{{ entity.reserva.cliente.nombreCompleto|default('-') }}</td>
+                                <td align="right"><strong>CUIT</strong></td>
+                                <td>{{ entity.reserva.cliente.cuit|default('-') }}</td>
+                            </tr>
+                            <tr>
+                                <td align="right"><strong>CELULAR</strong></td>
+                                <td>{{ entity.reserva.cliente.celular|default('-') }}</td>
+                                <td align="right"><strong>DOMICILIO</strong></td>
+                                <td>{{ entity.reserva.cliente.domicilio|default('-') }}</td>
+                            </tr>
+                        {% endif %}
+                    </table>
+                </td>
             </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td width="120" align="center">{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}</td>
-                <td width="170" align="center">{{ entity.tipoMovimiento }}</td>
-                <td width="120" align="center">{{ entity.monto|money_format  }}</td>
-                <td width="120" align="center">{{ entity.modoPago  }}</td>
-                <td width="250" align="center">{{ entity.pedido.nombreCorto|default('-')  }}</td>
-            </tr>
-            </tbody>
-            <tfoot>
-
-            </tfoot>
         </table>
     </div>
+
+<div class="datos-productos">
+    <table class="datos-productos-table" border="1" cellpadding="0" cellspacing="0" align="center">
+        <thead>
+        <tr>
+            <th class="text-center">FECHA</th>
+            <th class="text-center">TIPO</th>
+            <th class="text-center">MONTO</th>
+            <th class="text-center">MODO PAGO</th>
+            <th class="text-center">{{ entity.pedido ? 'PEDIDO' : entity.cuentaCorrienteUsuario ? 'CC' : 'RESERVA' }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td width="120" align="center">{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}</td>
+            <td width="170" align="center">{{ entity.tipoMovimiento }}</td>
+            <td width="170" align="center">{{ entity.monto|money_format  }}</td>
+            <td width="170" align="center">{{ entity.modoPago  }}</td>
+            <td width="150" align="center">{{ entity.cuentaCorrientePedido ? "N° " ~ entity.cuentaCorrientePedido.pedido.id : "N° " ~ entity.reserva.id }}</td>
+        </tr>
+        </tbody>
+        <tfoot>
+
+        </tfoot>
+    </table>
+</div>
 </div>
 </body>
 </html>

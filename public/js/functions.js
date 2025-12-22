@@ -19,6 +19,17 @@ function initBorrarButton() {
     });
 }
 
+function esNumeroWhatsappValido(numero) {
+    let celularConPrefijo = limpiarNumeroCelular(numero);
+    const regex = /^\+54\d{10}$/;
+    return regex.test(celularConPrefijo);
+}
+
+function limpiarNumeroCelular(numero) {
+    let celularLimpio = numero.replace(/\D+/g, '');
+    return ('+54' + celularLimpio);
+}
+
 function show_confirm(options_in) {
     var options = $.extend({
         title: 'Confirmar',

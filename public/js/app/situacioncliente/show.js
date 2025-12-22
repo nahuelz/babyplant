@@ -10,7 +10,59 @@ $(document).ready(function () {
     initAdjudicarAdelantoReserva();
     initAdjudicarCC();
     enviarCC();
+    initReservaEntregar();
+    initVerHistoricoEstadoReservaHandler();
+    initCancelarButton();
+    initVerHistoricoEstadoEntregaHandler();
 });
+
+function initReservaEntregar(){
+    $(document).off('click', '.reserva-entregar').on('click', '.reserva-entregar', function (e) {
+
+        e.preventDefault();
+
+        idReserva = $(this).data('id');
+
+        var actionUrl = $(this).data('href');
+
+        $.ajax({
+            type: 'POST',
+            url: actionUrl,
+            data: {
+                id: idReserva
+            }
+        }).done(function (form) {
+            showDialog({
+                titulo: '<i class="fa fa-list-ul margin-right-10"></i> Reserva',
+                contenido: form,
+                color: 'yellow',
+                labelCancel: 'Cerrar',
+                labelSuccess: 'Confirmar',
+                closeButton: true,
+                callbackCancel: function () {
+                    return;
+                },
+                callbackSuccess: function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: __HOMEPAGE_PATH__ + "reserva/"+idReserva+"/realizar-entrega",
+                        data: {
+                            id: idReserva
+                        }
+                    }).done(function (form) {
+                        window.location.reload();
+                    });
+                }
+            });
+            $('.modal-dialog').css('width', '80%');
+            $('.modal-dialog').addClass('modal-xl');
+            $('.modal-dialog').addClass('modal-fullscreen-xl-down');
+
+        });
+
+        e.stopPropagation();
+    });
+}
 
 /**
  *
@@ -785,6 +837,102 @@ function initAgregarAdelantoReserva() {
         e.stopPropagation();
         return true;
     })
+}
+
+/**
+ *
+ * @returns {undefined}
+ */
+function initVerHistoricoEstadoReservaHandler() {
+
+    $(document).off('click', '.link-ver-historico-reserva').on('click', '.link-ver-historico-reserva', function (e) {
+
+        e.preventDefault();
+
+        var idAmenaza = $(this).data('id');
+
+        var actionUrl = $(this).data('href');
+
+        $.ajax({
+            type: 'POST',
+            url: actionUrl,
+            data: {
+                id: idAmenaza
+            }
+        }).done(function (form) {
+
+            showDialog({
+                titulo: '<i class="fa fa-list-ul margin-right-10"></i> Hist&oacute;rico de estados',
+                contenido: form,
+                color: 'yellow',
+                labelCancel: 'Cerrar',
+                labelSuccess: 'Cerrar',
+                closeButton: true,
+                callbackCancel: function () {
+                    return;
+                },
+                callbackSuccess: function () {
+                    return;
+                }
+            });
+            $('.bs-popover-top').hide();
+            $('.btn-submit').hide();
+        });
+    });
+}
+
+function initCancelarButton() {
+    $(document).on('click', '.accion-cancelar', function (e) {
+        e.preventDefault();
+        var a_href = $(this).attr('href');
+        show_confirm({
+            title: 'Confirmar',
+            type: 'warning',
+            msg: '¿Seguro que desea cancelar?',
+            callbackOK: function () {
+                location.href = a_href;
+            }
+        });
+        e.stopPropagation();
+    });
+}
+
+function initVerHistoricoEstadoEntregaHandler() {
+
+    $(document).off('click', '.link-ver-historico-entrega').on('click', '.link-ver-historico-entrega', function (e) {
+
+        e.preventDefault();
+
+        var idAmenaza = $(this).data('id');
+
+        var actionUrl = $(this).data('href');
+
+        $.ajax({
+            type: 'POST',
+            url: actionUrl,
+            data: {
+                id: idAmenaza
+            }
+        }).done(function (form) {
+
+            showDialog({
+                titulo: '<i class="fa fa-list-ul margin-right-10"></i> Hist&oacute;rico de estados',
+                contenido: form,
+                color: 'yellow',
+                labelCancel: 'Cerrar',
+                labelSuccess: 'Cerrar',
+                closeButton: true,
+                callbackCancel: function () {
+                    return;
+                },
+                callbackSuccess: function () {
+                    return;
+                }
+            });
+            $('.bs-popover-top').hide();
+            $('.btn-submit').hide();
+        });
+    });
 }
 
 

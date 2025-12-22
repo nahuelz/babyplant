@@ -1,0 +1,27 @@
+<div class="portlet light bordered portlet-nivel-1" style="padding: 5px 10px; margin-left: 30px;border-radius: 5px;background-color: #E1F0FF">
+    <div class="row">
+        <div class="col-md-7">
+            <label for="reporte_filtro_cliente" class="control-label">BUSCAR RAZON SOCIAL</label>
+            <select class="choice form-control datatable-input" id="reporte_filtro_cliente" name="reporte_filtro[cliente]">
+                <option value="">TODOS</option>
+                {% for razonSocial in razonSocialSelect %}
+                    <option value="{{ razonSocial.id }}"> {{ razonSocial.nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-5 padding-top-25">
+            <button class="btn btn-primary btn-primary--icon" id="kt_search">
+                <span>
+                    <i class="la la-search"></i>
+                    <span>Buscar</span>
+                </span>
+            </button>
+            <button class="btn btn-secondary btn-secondary--icon" id="kt_reset">
+                <span>
+                    <i class="la la-close"></i>
+                    <span>Limpiar</span>
+                </span>
+            </button>
+        </div>
+    </div>
+</div>

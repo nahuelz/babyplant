@@ -34,6 +34,18 @@ class SelectService {
 
     }
 
+    public function getRazonSocialFilter() {
+
+        $sql = "SELECT x.id, x.razonSocial AS nombre
+                FROM App\Entity\RazonSocial x 
+                WHERE x.fechaBaja IS NULL
+                ORDER BY x.razonSocial ASC";
+
+        $query = $this->em->createQuery($sql);
+        return $query->getResult();
+
+    }
+
     public function getClienteFilterStock() {
 
         $sql = "SELECT x.id, CONCAT(x.apellido, ', ', x.nombre) AS nombre, IF(x.tieneRazonSocial = 1, CONCAT('(',r.razonSocial,')'),'') AS razon_social

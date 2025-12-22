@@ -43,9 +43,6 @@
         "historico_estado": "{{ path( "pedido_historico_estado", { 'id': entity.idProducto }) }}",
         "print" : "{{ path( "imprimir_pedido", { "id": entity.id }) }}",
         "situacion_cliente" : "{{ path( "situacioncliente_show", { "id": entity.idCliente }) }}"
-        {% if entity.idEstado ==  EN_INVERNACULO%}
-            ,"remito" : " {{ path( "imprimir_remito", { "id": entity.id }) }}"
-        {% endif %}
         {% if entity.idEstado ==  PENDIENTE or entity.idEstado ==  PLANIFICADO %}
             ,"cancelar" : " {{ path( "pedido_producto_cancelar", { "id": entity.idProducto }) }}"
         {% endif %}

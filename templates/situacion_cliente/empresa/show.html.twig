@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% import 'app/_macro_show.html.twig' as macro_show %}
+{% block stylesheets %}
+
+    {{ parent() }}
+
+    <style type="text/css">
+
+
+        .card.card-detail .card-header {
+            padding: 15px;
+            background-color: #f5f5f5;
+        }
+
+        .card.card-detail {
+            margin-bottom: 20px;
+        }
+        .card.card-custom{
+            box-shadow: 0px 0px 20px 0px gray;
+        }
+
+        .select2-results__options .select2-results__option[aria-disabled=true] {
+            display: none;
+        }
+
+    </style>
+{% endblock stylesheets %}
+
+{% block body %}
+
+
+    <div class="row">
+        {% include 'situacion_cliente/empresa/show_tiles.html.twig' %}
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 padding-1">
+            {% include 'situacion_cliente/empresa/show_pedidos.html.twig' %}
+        </div>
+        <div class="col-md-4 padding-1">
+            {% include 'situacion_cliente/empresa/show_reservas.html.twig' %}
+        </div>
+        <div class="col-md-4 padding-1">
+            {% include 'situacion_cliente/empresa/show_entregas.html.twig' %}
+        </div>
+        <div class="col-md-4 padding-1">
+            {% include 'situacion_cliente/empresa/show_remitos.html.twig' %}
+        </div>
+        <div class="col-md-4 padding-1">
+            {% include 'situacion_cliente/empresa/show_pagos.html.twig' %}
+        </div>
+        <div class="col-md-4 padding-1">
+            {% include 'situacion_cliente/empresa/show_adelantos.html.twig' %}
+        </div>
+        <div class="col-md-4 padding-1">
+            {% include 'situacion_cliente/empresa/show_movimientos.html.twig' %}
+        </div>
+
+        <div class="col-md-4 padding-1">
+            {% include 'situacion_cliente/empresa/show_clientes.html.twig' %}
+        </div>
+
+
+
+
+    </div>
+
+
+
+    <div class="card-footer d-flex justify-content-between">
+        <a href="{{ path('situacioncliente_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/situacioncliente/show.js') }}" ></script>
+
+    <script>
+        var __ID_CUENTA_CORRIENTE__ = {{ razonSocial.id }};
+        var __ID_USUARIO__ = {{ razonSocial.id }};
+    </script>
+
+{% endblock %}

@@ -34,7 +34,11 @@
 
 
         <div class="card-footer d-flex justify-content-between">
-            <a href="{{ path('remito_index') }}" class="btn btn-light-dark font-weight-bold">Volver</a>
+            <a href="#" class="btn btn-light-dark font-weight-bold"
+               onclick="history.back(); return false;">
+                Volver
+            </a>
+
             {{ form_widget(form.submit) }}
         </div>
     </div>

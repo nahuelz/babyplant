@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% import 'app/_macro_show.html.twig' as macro_show %}
+
+{% block body %}
+
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+				<span class="card-icon">
+					<i class="flaticon-search text-primary"></i>
+				</span>
+                <h3 class="card-label">Razon Social {{ entity }}</h3>
+            </div>
+            {% if is_granted('ROLE_USUARIO_EDIT') %}
+                <div class="card-toolbar">
+                    <!--begin::Button-->
+                    <a href="{{ path('razonsocial_edit', {'id': entity.id}) }}" class="btn btn-primary font-weight-bolder">
+                        <i class="la la-pen"></i>
+                        Editar
+                    </a>
+                    <!--end::Button-->
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                {{ macro_show._show_detail('Razon Social', entity.razonSocial, 'col-md-4') }}
+                {{ macro_show._show_detail('CUIT', entity.cuit, 'col-md-4') }}
+            </div>
+            <div class="row mt-10">
+                <div class="col">
+                    <div class="d-flex">
+                        <div class="mt-3"><h4>Clientes en la razon social</h4></div>
+                    </div>
+                    <hr>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col" class="text-center">Nombre</th>
+                            <th scope="col" class="text-center">Apellido</th>
+                            <th scope="col" class="text-center">CUIT</th>
+                            <th scope="col" class="text-center">Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% if entity.clientes != null %}
+                            {% for cliente in entity.clientes %}
+                                <tr>
+                                    <td class="text-center">{{ cliente.nombre }}</td>
+                                    <td class="text-center">{{ cliente.apellido }}</td>
+                                    <td class="text-center">{{ cliente.cuit|default('-') }}</td>
+                                    <td class=" text-center dt-acciones">
+                                        <div class="dropdown dropdown-inline">
+                                            <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="ki ki-bold-more-hor"></i>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <a href="{{ path('usuario_show',{id: cliente.id}) }}" class="dropdown-item">
+                                                    <i class="la la-search" style="margin-right: 5px;"></i> Ver Cliente
+                                                </a>
+                                                <a href="{{ path('usuario_edit',{id: cliente.id}) }}" class="dropdown-item">
+                                                    <i class="la la-edit" style="margin-right: 5px;"></i> Editar Cliente
+                                                </a>
+                                                <a href="{{ path('situacioncliente_show',{id: cliente.id}) }}" class="dropdown-item">
+                                                    <i class="la la-user-tie" style="margin-right: 5px;"></i> Ver Situación Cliente
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5">No tiene clientes</td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('razonsocial_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
+        </div>
+
+    </div>
+
+
+{% endblock %}
