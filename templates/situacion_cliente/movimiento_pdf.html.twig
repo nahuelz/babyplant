@@ -40,6 +40,19 @@
                                 <td align="right"><strong>DOMICILIO</strong></td>
                                 <td>{{ entity.cuentaCorrientePedido.pedido.cliente.domicilio|default('-') }}</td>
                             </tr>
+                        {% elseif entity.cuentaCorrienteUsuario != null %}
+                            <tr>
+                                <td align="right"><strong>NOMBRE </strong></td>
+                                <td>{{ entity.cuentaCorrienteUsuario.cliente.nombreCompleto|default('-') }}</td>
+                                <td align="right"><strong>CUIT</strong></td>
+                                <td>{{ entity.cuentaCorrienteUsuario.cliente.cuit|default('-') }}</td>
+                            </tr>
+                            <tr>
+                                <td align="right"><strong>CELULAR</strong></td>
+                                <td>{{ entity.cuentaCorrienteUsuario.cliente.celular|default('-') }}</td>
+                                <td align="right"><strong>DOMICILIO</strong></td>
+                                <td>{{ entity.cuentaCorrienteUsuario.cliente.domicilio|default('-') }}</td>
+                            </tr>
                         {% else %}
                             <tr>
                                 <td align="right"><strong>NOMBRE</strong></td>
@@ -68,7 +81,7 @@
             <th class="text-center">TIPO</th>
             <th class="text-center">MONTO</th>
             <th class="text-center">MODO PAGO</th>
-            <th class="text-center">{{ entity.pedido ? 'PEDIDO' : entity.cuentaCorrienteUsuario ? 'CC' : 'RESERVA' }}</th>
+            <th class="text-center">{{ entity.pedido ? 'PEDIDO' : entity.cuentaCorrienteUsuario ? 'REMITO' : 'RESERVA' }}</th>
         </tr>
         </thead>
         <tbody>
@@ -77,7 +90,7 @@
             <td width="170" align="center">{{ entity.tipoMovimiento }}</td>
             <td width="170" align="center">{{ entity.monto|money_format  }}</td>
             <td width="170" align="center">{{ entity.modoPago  }}</td>
-            <td width="150" align="center">{{ entity.cuentaCorrientePedido ? "N° " ~ entity.cuentaCorrientePedido.pedido.id : "N° " ~ entity.reserva.id }}</td>
+            <td width="150" align="center">{{ entity.cuentaCorrientePedido ? "N° " ~ entity.cuentaCorrientePedido.pedido.id : entity.cuentaCorrienteUsuario ? " - " : "N° " ~ entity.reserva.id }}</td>
         </tr>
         </tbody>
         <tfoot>

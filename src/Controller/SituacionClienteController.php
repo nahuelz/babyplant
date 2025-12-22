@@ -435,7 +435,7 @@ class SituacionClienteController extends BaseController {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
 
-        $html = $this->renderView('situacion_cliente/movimiento_pdf.html.twig', array('entity' => $movimiento, 'tipo_pdf' => "ADELANTO"));
+        $html = $this->renderView('situacion_cliente/movimiento_pdf.html.twig', array('entity' => $movimiento, 'tipo_pdf' => "MOVIMIENTO"));
         $filename = "Movimiento.pdf";
         $basePath = $this->getParameter('MPDF_BASE_PATH');
 
@@ -459,7 +459,7 @@ class SituacionClienteController extends BaseController {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
         }
 
-        $html = $this->renderView('situacion_cliente/movimiento_ticket_pdf.html.twig', array('entity' => $movimiento, 'tipo_pdf' => "ADELANTO"));
+        $html = $this->renderView('situacion_cliente/movimiento_ticket_pdf.html.twig', array('entity' => $movimiento, 'tipo_pdf' => "MOVIMIENTO"));
         $filename = "Movimiento.pdf";
         $basePath = $this->getParameter('MPDF_BASE_PATH');
 
