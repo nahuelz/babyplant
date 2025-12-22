@@ -357,10 +357,8 @@ class EntregaController extends BaseController {
 
         if (!$entrega){
             $id = base64_decode($id);
+            $entrega = $em->getRepository("App\Entity\Entrega")->find($id);
         }
-
-        /* @var $entrega Entrega */
-        $entrega = $em->getRepository("App\Entity\Entrega")->find($id);
 
         if (!$entrega) {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");

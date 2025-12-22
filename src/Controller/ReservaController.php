@@ -370,10 +370,8 @@ class ReservaController extends BaseController {
 
         if (!$reserva){
             $id = base64_decode($id);
+            $reserva = $em->getRepository("App\Entity\Reserva")->find($id);
         }
-
-        /* @var $reserva Reserva */
-        $reserva = $em->getRepository("App\Entity\Reserva")->find($id);
 
         if (!$reserva) {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");

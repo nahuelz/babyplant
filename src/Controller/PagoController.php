@@ -206,9 +206,8 @@ class PagoController extends BaseController {
 
         if (!$pago){
             $id = base64_decode($id);
+            $pago = $em->getRepository("App\Entity\Pago")->find($id);
         }
-
-        $pago = $em->getRepository("App\Entity\Pago")->find($id);
 
         if (!$pago) {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");

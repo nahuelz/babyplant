@@ -222,9 +222,8 @@ class RemitoController extends BaseController {
 
         if (!$remito){
             $id = base64_decode($id);
+            $remito = $em->getRepository("App\Entity\Remito")->find($id);
         }
-
-        $remito = $em->getRepository("App\Entity\Remito")->find($id);
 
         if (!$remito) {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");

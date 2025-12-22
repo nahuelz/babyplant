@@ -428,9 +428,8 @@ class SituacionClienteController extends BaseController {
 
         if (!$movimiento) {
             $id = base64_decode($id);
+            $movimiento = $em->getRepository("App\Entity\Movimiento")->find($id);
         }
-
-        $movimiento = $em->getRepository("App\Entity\Movimiento")->find($id);
 
         if (!$movimiento) {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");

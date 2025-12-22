@@ -452,11 +452,9 @@ class PedidoController extends BaseController {
         $pedido = $em->getRepository("App\Entity\Pedido")->find($id);
 
         if (!$pedido){
-            $idPedido = base64_decode($id);
+            $id = base64_decode($id);
+            $pedido = $em->getRepository("App\Entity\Pedido")->find($id);
         }
-
-        /* @var $pedido Pedido */
-        $pedido = $em->getRepository("App\Entity\Pedido")->find($idPedido);
 
         if (!$pedido) {
             throw $this->createNotFoundException("No se puede encontrar la entidad.");
