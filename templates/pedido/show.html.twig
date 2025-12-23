@@ -145,6 +145,14 @@
                                 {{ macro_show._show_detail('Bandejas Entregadas', historicoEstados.DatosEntrega is not null ? historicoEstados.DatosEntrega.cantidadBandejasAEntregar : '-', 'col-md-3') }}
                             </div>
                         {% endif %}
+                        {% if historicoEstados.estado.id == 11 %}
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <span class="label label-inline label-light-danger font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-exclamation-triangle padding-right-5"></span> {{ historicoEstados.estado.nombre }} </span>
+                                </div>
+                                {{ macro_show._show_detail('Reserva Cancelada', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                            </div>
+                        {% endif %}
                         {% if historicoEstados.estado.id == 10 %}
                             <div class="row">
                                 <div class="col-md-2">

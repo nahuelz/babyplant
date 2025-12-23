@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Constants\ConstanteEstadoMesada;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Constants\ConstanteEstadoReserva;
 use App\Entity\Entrega;
 use App\Entity\EntregaProducto;
 use App\Entity\EstadoEntregaProducto;
+use App\Entity\EstadoMesada;
 use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
 use App\Entity\EstadoReserva;
@@ -176,7 +178,21 @@ class ReservaController extends BaseController {
     {
         $estadoReserva = $em->getRepository(EstadoReserva::class)->findOneByCodigoInterno(ConstanteEstadoReserva::SIN_ENTREGAR);
         $this->estadoService->cambiarEstadoReserva($entity, $estadoReserva,'RESERVA CREADA.');
-        $entity->getPedidoProducto()->setCantidadBandejasDisponibles();
+
+        $pedidoProducto = $entity->getPedidoProducto();
+        $estadoReservado = $em->getRepository(EstadoPedidoProducto::class)->find(ConstanteEstadoPedidoProducto::RESERVADO);
+        $historico = new EstadoPedidoProductoHistorico();
+        $historico->setPedidoProducto($pedidoProducto);
+        $historico->setFecha(new DateTime());
+        $historico->setEstado($estadoReservado);
+        $historico->setMotivo('Reserva.');
+        $historico->setReserva($entity);
+        $pedidoProducto->addHistoricoEstado($historico);
+        $em->persist($historico);
+        $em->flush();
+        $pedidoProducto->setCantidadBandejasDisponibles();
+
+
         $em->flush();
     }
 
@@ -454,9 +470,7 @@ class ReservaController extends BaseController {
             throw $this->createNotFoundException("No se encontró la reserva con ID $id.");
         }
 
-        $estadoCancelado = $em->getRepository(EstadoReserva::class)->find(ConstanteEstadoReserva::CANCELADO);
-
-        $this->estadoService->cambiarEstadoReserva($reserva, $estadoCancelado, 'CANCELADO.');
+        $this->revertirReserva($em, $reserva);
 
         $em->flush();
 
@@ -467,5 +481,25 @@ class ReservaController extends BaseController {
         }
 
         return $this->redirectToRoute('reserva_index');
+    }
+
+
+    public function revertirReserva(ObjectManager $em, Reserva $reserva): void
+    {
+
+        $pedidoProducto = $reserva->getPedidoProducto();
+        $estadoCancelado = $em->getRepository(EstadoReserva::class)->find(ConstanteEstadoReserva::CANCELADO);
+        $this->estadoService->cambiarEstadoReserva($reserva, $estadoCancelado, 'CANCELADO.');
+        $estadoPedidoProducto = $em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::RESERVA_CANCELADA);
+
+        $historico = new EstadoPedidoProductoHistorico();
+        $historico->setPedidoProducto($pedidoProducto);
+        $historico->setFecha(new DateTime());
+        $historico->setEstado($estadoPedidoProducto);
+        $historico->setMotivo('Cancelar Reserva.');
+        $pedidoProducto->addHistoricoEstado($historico);
+        $em->persist($historico);
+        $em->flush();
+        $pedidoProducto->setCantidadBandejasDisponibles();
     }
 }

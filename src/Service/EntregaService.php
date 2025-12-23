@@ -144,7 +144,7 @@ class EntregaService {
     private function cambiarEstadoPedido(ObjectManager $em, PedidoProducto $pedidoProducto, EstadoPedidoProducto $estadoProducto, $motivo, $datosEntrega = null): void
     {
         // SOLO CAMBIO EL ESTADO DEL PEDIDO SI SE ENTREGA POR COMPLETO
-        if (!in_array($estadoProducto->getCodigoInterno(),[ConstanteEstadoPedidoProducto::ENTREGADO_PARCIAL, ConstanteEstadoPedidoProducto::ENTREGA_CANCELADA])) {
+        if (!in_array($estadoProducto->getCodigoInterno(),[ConstanteEstadoPedidoProducto::ENTREGADO_PARCIAL, ConstanteEstadoPedidoProducto::ENTREGA_CANCELADA, ConstanteEstadoPedidoProducto::RESERVA_CANCELADA])) {
             // SI SE ENTREGA PARCIAL, O SE CANCELA, NO CAMBIA EL ESTADO DEL PEDIDO, QUEDA EN INVERNACULO
             $pedidoProducto->setEstado($estadoProducto);
         }else{
