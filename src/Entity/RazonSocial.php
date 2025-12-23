@@ -53,7 +53,7 @@ class RazonSocial
     }
 
     public function __toString() {
-        return $this->razonSocial;
+        return $this->razonSocial ? : '';
     }
 
     /**
