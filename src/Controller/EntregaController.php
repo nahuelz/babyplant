@@ -91,6 +91,7 @@ class EntregaController extends BaseController {
         $rsm->addScalarResult('idEstado', 'idEstado');
         $rsm->addScalarResult('colorEstado', 'colorEstado');
         $rsm->addScalarResult('colorProducto', 'colorProducto');
+        $rsm->addScalarResult('cantidadPlantas', 'cantidadPlantas');
 
         $nativeQuery = $em->createNativeQuery('call sp_index_entrega(?,?,?)', $rsm);
 

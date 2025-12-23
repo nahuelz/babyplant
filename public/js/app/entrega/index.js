@@ -63,6 +63,60 @@ function initDataTable() {
         lengthMenu: [5, 10, 25, 50, 100, 500, 1000],
         pageLength: 50,
         destroy: true,
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                text: 'filtrados',
+                title: 'Reporte Entregas',
+                className: 'filtrados',
+                exportOptions: {
+                    columns: [1, 6, 4, 7, 10, 9, 8],
+                    filter: 'applied',
+                    page: 'all',
+                    format: {
+                        header: function(data, columnIdx) {
+                            var headers = {
+                                1: 'N° Entrega',
+                                6: 'Productor',
+                                4: 'Fecha',
+                                7: 'Especie',
+                                10: 'Cantidad Plantines',
+                                9: 'Cantidad Bandejas',
+                                8: 'Condicion'
+                            };
+                            return headers[columnIdx] || data;
+                        },
+                        body: function(data, row, column) {
+                            var div = document.createElement('div');
+                            div.innerHTML = data;
+                            data = div.textContent || div.innerText || '';
+
+                            if (column === 4) {  // quinta columna en el array de exportación
+                                return Math.round(parseFloat(data) || 0).toString();
+                            }
+
+                            if (column === 3) {  // quinta columna en el array de exportación
+                                return (data || '').toString().split(' ')[0]; //solo la primer palabra  (hasta el primer espacio)
+                            }
+
+                            return data;
+                        }
+                    }
+                },
+                customizeData: function(data) {
+                    /*for (var i = 0; i < data.body.length; i++) {
+                        if (data.body[i][2]) {
+                            //data.body[i][2] = 'PREFIJO-' + data.body[i][2];
+                        }
+                    }*/
+                    console.log('Datos originales:', JSON.stringify(data, null, 2));
+                    // Imprime la primera fila de datos para ver su estructura
+                    if (data.body && data.body.length > 0) {
+                        console.log('Primera fila de datos:', data.body[0]);
+                    }
+                }
+            }
+        ],
         columnDefs: datatablesGetColDef(),
         order: [[1, 'desc']],
         rowGroup: {
@@ -178,6 +232,11 @@ function datatablesGetColDef() {
             className: 'dt-center',
             width: '30px',
             type: 'num'
+        },
+        {
+            targets: index++,
+            name: 'cantidadPlantas',
+            visible: false
         },
         {
             targets: -1,

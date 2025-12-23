@@ -29,6 +29,7 @@
         "colorEstado" : "{{ entity.colorEstado|default('default') }}"
         },
         "{{ entity.cantidadBandejas|default('-') }}",
+        "{{ entity.cantidadPlantas|default('-') }}",
         {
         {% if entity.idEstado == 1 %} {# 1 = PENDIENTE DE REMITO #}
             "generar_remito": "{{ path( "remito_new", { "id": entity.idClienteEntrega }) }}",

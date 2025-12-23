@@ -108,11 +108,7 @@ function initDataTable() {
                             return headers[columnIdx] || data;
                         },
                         body: function(data, row, column, node) {
-                            if (column === 8) {
-                                console.log(data);
-                                return formatMoneyAR(data);
-                            }
-                            if (column === 9) {
+                            if (column === 8 || column === 9) {
                                 return formatMoneyAR(data);
                             }
                             if (column === 4) {  // quinta columna en el array de exportación
@@ -122,18 +118,6 @@ function initDataTable() {
                             div.innerHTML = data;
                             return div.textContent || div.innerText || '';
                         }
-                    }
-                },
-                customizeData: function(data) {
-                    /*for (var i = 0; i < data.body.length; i++) {
-                        if (data.body[i][2]) {
-                            //data.body[i][2] = 'PREFIJO-' + data.body[i][2];
-                        }
-                    }*/
-                    console.log('Datos originales:', JSON.stringify(data, null, 2));
-                    // Imprime la primera fila de datos para ver su estructura
-                    if (data.body && data.body.length > 0) {
-                        console.log('Primera fila de datos:', data.body[0]);
                     }
                 }
             }
