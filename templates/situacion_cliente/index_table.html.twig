@@ -4,12 +4,20 @@
     {% for entity in entities %}
         [
         "{{ entity.id }}",
-        "{{ entity.email|escape_json|default('-')|raw }}",
+{#        "{{ entity.email|escape_json|default('-')|raw }}",#}
         "{{ entity.nombre|escape_json|default('-')|raw }}",
         "{{ entity.apellido|escape_json|default('-')|raw }}",
-        "{{ entity.cuit|escape_json|default('-')|raw }}",
+{#        "{{ entity.cuit|escape_json|default('-')|raw }}",#}
         "{{ entity.celular|escape_json|default('')|raw }}",
-        "{{ entity.razonSocial|escape_json|default('-')|raw }}",
+{#        "{{ entity.razonSocial|escape_json|default('-')|raw }}",#}
+        {
+        "saldoAFavor": "{{ entity.saldoFavor|default('0')|raw }}",
+        "SaldoAFavorFormat": "{{ entity.saldoFavor|money_format|default('0')|raw }}"
+        },
+        {
+        "deuda": "{{ entity.deuda|default('0')|raw }}",
+        "deudaFormat": "{{ entity.deuda|money_format|default('0')|raw }}"
+        },
         {
             "show_cliente" : " {{ path( "situacioncliente_show", { "id": entity.id }) }}"
         }

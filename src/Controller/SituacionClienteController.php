@@ -65,6 +65,8 @@ class SituacionClienteController extends BaseController {
         $rsm->addScalarResult('cuit', 'cuit');
         $rsm->addScalarResult('celular', 'celular');
         $rsm->addScalarResult('razonSocial', 'razonSocial');
+        $rsm->addScalarResult('saldoFavor', 'saldoFavor');
+        $rsm->addScalarResult('deuda', 'deuda');
 
         $nativeQuery = $em->createNativeQuery('call sp_index_situacion_cliente(?)', $rsm);
 

@@ -146,7 +146,7 @@ function datatablesGetColDef() {
 
     return [
         {
-            targets: index++,
+            targets: 0,
             name: 'id',
             width: '15px',
             className: 'dt-center',
@@ -166,34 +166,34 @@ function datatablesGetColDef() {
             className: 'dt-center',
             type: 'num'
         },
-        {
-            targets: index++,
-            name: 'email',
-            width: '30px',
-            className: 'dt-center',
-            type: 'num'
-        },
+        // {
+        //     targets: index++,
+        //     name: 'email',
+        //     width: '30px',
+        //     className: 'dt-center',
+        //     type: 'num'
+        // },
         {
             targets: index++,
             name: 'nombre',
             width: '30px',
             className: 'dt-center',
-            type: 'num'
+            type: 'string'
         },
         {
             targets: index++,
             name: 'apellido',
             width: '30px',
             className: 'dt-center',
-            type: 'num'
+            type: 'string'
         },
-        {
-            targets: index++,
-            name: 'cuit',
-            width: '30px',
-            className: 'dt-center',
-            type: 'num'
-        },
+        // {
+        //     targets: index++,
+        //     name: 'cuit',
+        //     width: '30px',
+        //     className: 'dt-center',
+        //     type: 'num'
+        // },
         {
             targets: index++,
             name: 'celular',
@@ -201,12 +201,48 @@ function datatablesGetColDef() {
             className: 'dt-center',
             type: 'num'
         },
+        // {
+        //     targets: index++,
+        //     name: 'razonSocial',
+        //     width: '30px',
+        //     className: 'dt-center',
+        //     type: 'num'
+        // },
         {
             targets: index++,
-            name: 'razonSocial',
-            width: '30px',
-            className: 'dt-center',
-            type: 'num'
+            name: 'saldoAFavor',
+            className: 'dt-right',
+            orderable: true,
+            type: 'num',
+            render: function (data, type) {
+
+                if (type !== 'display') {
+                    return parseFloat(data.saldoAFavor);
+                }
+
+                // display
+                return '<span class="text-success font-weight-bold">' +
+                    data.SaldoAFavorFormat +
+                    '</span>';
+            }
+        },
+        {
+            targets: index++,
+            name: 'deuda',
+            className: 'dt-right',
+            orderable: true,
+            type: 'num',
+            render: function (data, type) {
+
+                if (type !== 'display') {
+                    return parseFloat(data.deuda);
+                }
+
+                // display
+                return '<span class="text-error font-weight-bold">' +
+                    data.deudaFormat +
+                    '</span>';
+            }
         },
         {
             targets: -1,
