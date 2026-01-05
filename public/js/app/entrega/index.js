@@ -70,7 +70,7 @@ function initDataTable() {
                 title: 'Reporte Entregas',
                 className: 'filtrados',
                 exportOptions: {
-                    columns: [1, 6, 4, 7, 10, 9, 8],
+                    columns: [1, 6, 4, 7, 3, 10, 9, 8],
                     filter: 'applied',
                     page: 'all',
                     format: {
@@ -80,6 +80,7 @@ function initDataTable() {
                                 6: 'Productor',
                                 4: 'Fecha',
                                 7: 'Especie',
+                                3: 'Orden siembra',
                                 10: 'Cantidad Plantines',
                                 9: 'Cantidad Bandejas',
                                 8: 'Condicion'
@@ -91,7 +92,7 @@ function initDataTable() {
                             div.innerHTML = data;
                             data = div.textContent || div.innerText || '';
 
-                            if (column === 4) {  // quinta columna en el array de exportación
+                            if (column === 5) {  // quinta columna en el array de exportación
                                 return Math.round(parseFloat(data) || 0).toString();
                             }
 

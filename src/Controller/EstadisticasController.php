@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\PedidoProductoRepository;
+use App\Repository\PedidoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -160,6 +161,30 @@ class EstadisticasController extends AbstractController
             'datos_grafico' => $datosGrafico,
             'total_remitos' => array_sum($datosGrafico['cantidades']),
             'monto_total' => array_sum($datosGrafico['montos'])
+        ]);
+    }
+
+    /**
+     * @Route("/pedidos-por-cliente", name="estadisticas_pedidos_cliente")
+     */
+    public function pedidosPorCliente(
+        Request $request,
+        PedidoRepository $pedidoRepository
+    ) {
+        $desde = $request->query->get('desde')
+            ? new \DateTime($request->query->get('desde'))
+            : new \DateTime('first day of this month');
+
+        $hasta = $request->query->get('hasta')
+            ? new \DateTime($request->query->get('hasta'))
+            : new \DateTime();
+
+        $resultados = $pedidoRepository->getPedidosPorCliente($desde, $hasta);
+
+        return $this->render('estadisticas/pedidos_por_cliente.html.twig', [
+            'resultados' => $resultados,
+            'desde' => $desde,
+            'hasta' => $hasta,
         ]);
     }
 }

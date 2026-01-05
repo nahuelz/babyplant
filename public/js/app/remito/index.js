@@ -87,7 +87,7 @@ function initDataTable() {
                 title: 'Reporte Remitos',
                 className: 'filtrados',
                 exportOptions: {
-                    columns: [1, 5, 4, 6, 11, 8, 9, 10, 13, 14, 7],
+                    columns: [1, 5, 4, 6, 3, 11, 8, 9, 10, 13, 14, 7],
                     filter: 'applied',
                     page: 'all',
                     format: {
@@ -97,6 +97,7 @@ function initDataTable() {
                                 5: 'Productor',
                                 4: 'Fecha',
                                 6: 'Especie',
+                                3: 'Oden siembra',
                                 11: 'Cantidad Plantines',
                                 8: 'Cantidad Bandejas',
                                 9: 'Precio Unitario',
@@ -108,10 +109,10 @@ function initDataTable() {
                             return headers[columnIdx] || data;
                         },
                         body: function(data, row, column, node) {
-                            if (column === 8 || column === 9) {
-                                return formatMoneyAR(data);
+                            if ([7, 8].includes(column)) {
+                                return parseMoneyAR(data);
                             }
-                            if (column === 4) {  // quinta columna en el array de exportación
+                            if (column === 5) {
                                 return Math.round(parseFloat(data) || 0).toString();
                             }
                             var div = document.createElement('div');

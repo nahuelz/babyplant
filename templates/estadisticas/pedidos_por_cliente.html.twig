@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Estadísticas · Pedidos por Cliente{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+
+        <div class="mb-4">
+            <h2 class="fw-bold">📋 Pedidos por cliente</h2>
+            <p class="text-muted mb-0">
+                Cantidad de pedidos realizados por cada cliente en el período seleccionado
+            </p>
+        </div>
+
+        {# Filtros #}
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <form method="get" class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label">Desde</label>
+                        <input type="date"
+                               name="desde"
+                               class="form-control"
+                               value="{{ desde|date('Y-m-d') }}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Hasta</label>
+                        <input type="date"
+                               name="hasta"
+                               class="form-control"
+                               value="{{ hasta|date('Y-m-d') }}">
+                    </div>
+
+                    <div class="col-md-4 d-flex gap-2">
+                        <button class="btn btn-primary w-100">
+                            Filtrar
+                        </button>
+                        <a href="{{ path('estadisticas_pedidos_cliente') }}"
+                           class="btn btn-outline-secondary w-100">
+                            Limpiar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {# Grilla #}
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Cliente</th>
+                        <th class="text-end">Cantidad de pedidos</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if resultados is empty %}
+                        <tr>
+                            <td colspan="2" class="text-center text-muted py-4">
+                                No hay pedidos en el rango seleccionado
+                            </td>
+                        </tr>
+                    {% else %}
+                        {% set total = 0 %}
+                        {% for row in resultados %}
+                            {% set total = total + row.cantidad %}
+                            <tr>
+                                <td>
+                                    <strong>{{ row.nombre }} {{ row.apellido }}</strong>
+                                </td>
+                                <td class="text-end">
+                                <span class="badge bg-primary fs-6">
+                                    {{ row.cantidad }}
+                                </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                    </tbody>
+
+                    {% if resultados is not empty %}
+                        <tfoot class="table-light">
+                        <tr>
+                            <th>Total</th>
+                            <th class="text-end">
+                                {{ total }}
+                            </th>
+                        </tr>
+                        </tfoot>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
