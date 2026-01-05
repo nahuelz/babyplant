@@ -10,7 +10,7 @@ SELECT DISTINCT
     u.celular       AS celular,
     rs.razon_social AS razonSocial,
     cc.saldo        AS saldo,
-    (COALESCE(scc.saldo, 0) + COALESCE(sp.saldo_pedidos, 0)) AS saldoFavor,
+    (COALESCE(scc.saldo, 0) + COALESCE(sp.saldo_pedidos, 0)) AS saldoAFavor,
     COALESCE(dc.deuda, 0) AS deuda
 FROM usuario u
          LEFT JOIN usuario_grupo ug on ug.usuario_id = u.id

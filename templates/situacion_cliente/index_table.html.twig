@@ -11,8 +11,8 @@
         "{{ entity.celular|escape_json|default('')|raw }}",
 {#        "{{ entity.razonSocial|escape_json|default('-')|raw }}",#}
         {
-        "saldoAFavor": "{{ entity.saldoFavor|default('0')|raw }}",
-        "SaldoAFavorFormat": "{{ entity.saldoFavor|money_format|default('0')|raw }}"
+        "saldoAFavor": "{{ entity.saldoAFavor|default('0')|raw }}",
+        "SaldoAFavorFormat": "{{ entity.saldoAFavor|money_format|default('0')|raw }}"
         },
         {
         "deuda": "{{ entity.deuda|default('0')|raw }}",
