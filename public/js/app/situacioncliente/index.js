@@ -176,14 +176,12 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'nombre',
-            width: '30px',
             className: 'dt-center',
             type: 'string'
         },
         {
             targets: index++,
             name: 'apellido',
-            width: '30px',
             className: 'dt-center',
             type: 'string'
         },
@@ -197,7 +195,6 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'celular',
-            width: '30px',
             className: 'dt-center',
             type: 'num'
         },
