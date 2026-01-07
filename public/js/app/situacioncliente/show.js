@@ -140,6 +140,13 @@ function initAgregarAdelanto() {
                     return true;
                 },
                 callbackSuccess: function () {
+                    const $btn = $('.submit-button');
+                    // Evita doble click
+                    if ($btn.data('loading')) {
+                        return false;
+                    }
+                    $btn.data('loading', true);
+                    $btn.prop('disabled', true);
                     fv.revalidateField('requiredFields');
                     status = fv.validate().then((status) => {
                         if (status === "Valid") {
@@ -183,10 +190,14 @@ function initAgregarAdelanto() {
 
                                 },
                                 error: function () {
+                                    $btn.prop('disabled', false);
+                                    $btn.data('loading', false);
                                     return true;
                                 }
                             });
                         } else {
+                            $btn.prop('disabled', false);
+                            $btn.data('loading', false);
                             return false;
                         }
                     });
@@ -230,6 +241,13 @@ function initAgregarSaldo() {
                     return true;
                 },
                 callbackSuccess: function () {
+                    const $btn = $('.submit-button');
+                    // Evita doble click
+                    if ($btn.data('loading')) {
+                        return false;
+                    }
+                    $btn.data('loading', true);
+                    $btn.prop('disabled', true);
                     fv.revalidateField('requiredFields');
                     status = fv.validate().then((status) => {
                         if (status === "Valid") {
@@ -276,10 +294,14 @@ function initAgregarSaldo() {
                                     }
                                 },
                                 error: function () {
+                                    $btn.data('loading', false);
+                                    $btn.prop('disabled', false);
                                     return true;
                                 }
                             });
                         } else {
+                            $btn.data('loading', false);
+                            $btn.prop('disabled', false);
                             return false;
                         }
                     });
@@ -766,6 +788,13 @@ function initAgregarAdelantoReserva() {
                     return true;
                 },
                 callbackSuccess: function () {
+                    const $btn = $('.submit-button');
+                    // Evita doble click
+                    if ($btn.data('loading')) {
+                        return false;
+                    }
+                    $btn.data('loading', true);
+                    $btn.prop('disabled', true);
                     fv.revalidateField('requiredFields');
                     status = fv.validate().then((status) => {
                         if (status === "Valid") {
@@ -816,6 +845,8 @@ function initAgregarAdelantoReserva() {
                                     toastr.error('Ocurrió un error al procesar la solicitud');
                                 });
                         }
+                        $btn.data('loading', false);
+                        $btn.prop('disabled', false);
                         return false;
                     });
                     return false;
