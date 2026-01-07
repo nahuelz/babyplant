@@ -15,10 +15,8 @@ use App\Entity\TipoMovimiento;
 use App\Entity\Usuario;
 use App\Form\MovimientoType;
 use Doctrine\ORM\Query\ResultSetMapping;
-use Mpdf\Mpdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -271,7 +269,8 @@ class SituacionClienteController extends BaseController {
         return $this->render('situacion_cliente/cuenta_corriente_form.html.twig', [
             'form' => $form->createView(),
             'entity' => $movimiento,
-            'modal' => true
+            'modal' => true,
+            'token' => bin2hex(random_bytes(16))
         ]);
     }
 
@@ -299,6 +298,17 @@ class SituacionClienteController extends BaseController {
     public function movimientoCreateAction(Request $request): Response
     {
         $em = $this->doctrine->getManager();
+        $token = $request->request->get('token');
+        if ($em->getRepository(Movimiento::class)->findOneBy(['token' => $token])) {
+            $response = new Response();
+            $response->setContent(json_encode(array(
+                'message' => 'Este adelanto ya fue procesado',
+                'statusCode' => 400,
+                'statusText' => 'ERROR'
+            )));
+
+            return $response;
+        }
 
         $monto = $request->request->get('monto');
         $monto = str_replace('.', '', $monto);  // Elimina los puntos
@@ -323,6 +333,7 @@ class SituacionClienteController extends BaseController {
             $cuentaCorrienteUsuario->addMovimiento($movimiento);
             $movimiento->setSaldoCuenta($cuentaCorrienteUsuario->getSaldo());
             $movimiento->setMontoDeuda($cuentaCorrienteUsuario->getPendiente());
+            $movimiento->setToken($token);
             $em->persist($movimiento);
             $em->flush();
             $idMovimiento = $movimiento->getId();
@@ -365,7 +376,8 @@ class SituacionClienteController extends BaseController {
         return $this->render('situacion_cliente/movimiento_form.html.twig', [
             'form' => $form->createView(),
             'entity' => $movimiento,
-            'modal' => true
+            'modal' => true,
+            'token' => bin2hex(random_bytes(16))
         ]);
     }
 
@@ -376,6 +388,18 @@ class SituacionClienteController extends BaseController {
     public function adelantoCreateAction(Request $request): Response
     {
         $em = $this->doctrine->getManager();
+
+        $token = $request->request->get('token');
+        if ($em->getRepository(Movimiento::class)->findOneBy(['token' => $token])) {
+            $response = new Response();
+            $response->setContent(json_encode(array(
+                'message' => 'Este adelanto ya fue procesado',
+                'statusCode' => 400,
+                'statusText' => 'ERROR'
+            )));
+
+            return $response;
+        }
 
         $monto = $request->request->get('monto');
         $monto = str_replace('.', '', $monto);  // Elimina los puntos
@@ -399,6 +423,7 @@ class SituacionClienteController extends BaseController {
             $movimiento->setDescripcion($descripcion);
             $movimiento->setTipoMovimiento($tipoMovimiento);
             $movimiento->setPedido($pedido);
+            $movimiento->setToken($token);
             $cuentaCorrientePedido->addMovimiento($movimiento);
             $movimiento->setSaldoCuenta($cuentaCorrientePedido->getSaldo());
             $em->persist($movimiento);
@@ -736,7 +761,8 @@ class SituacionClienteController extends BaseController {
             'form' => $form->createView(),
             'entity' => $movimiento,
             'idReserva' => $idReserva,
-            'modal' => true
+            'modal' => true,
+            'token' => bin2hex(random_bytes(16))
         ]);
     }
 
@@ -755,12 +781,26 @@ class SituacionClienteController extends BaseController {
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
             $em = $this->doctrine->getManager();
+
+            $token = $request->request->get('token');
+            if ($em->getRepository(Movimiento::class)->findOneBy(['token' => $token])) {
+                $response = new Response();
+                $response->setContent(json_encode(array(
+                    'message' => 'Este adelanto ya fue procesado',
+                    'statusCode' => 400,
+                    'statusText' => 'ERROR'
+                )));
+
+                return $response;
+            }
+
             $movimientoData = $request->request->get('movimiento');
             $monto = str_replace(['.', ','], ['', '.'], $movimientoData['monto']);
             $movimiento->setMonto($monto);
             $idReserva = $request->request->get('idReserva');
             $reserva = $em->getRepository(Reserva::class)->find($idReserva);
             $movimiento->setReserva($reserva);
+            $movimiento->setToken($token);
             $cuentaCorrienteReserva = $reserva->getCuentaCorrienteReserva();
             $movimiento->setSaldoCuenta($cuentaCorrienteReserva->getSaldo());
             $tipoMovimiento = $em->getRepository(TipoMovimiento::class)->findOneByCodigoInterno(ConstanteTipoMovimiento::ADELANTO_RESERVA);

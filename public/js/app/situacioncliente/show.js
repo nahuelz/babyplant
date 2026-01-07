@@ -154,6 +154,7 @@ function initAgregarAdelanto() {
                             let monto = $('#movimiento_monto').val();
                             let descripcion = $('#movimiento_descripcion').val();
                             let idPedido = $('#movimiento_pedido').val();
+                            let token = $('#movimiento_token').val();
                             $.ajax({
                                 type: 'POST',
                                 url: __HOMEPAGE_PATH__ + "situacion_cliente/adelanto/create",
@@ -164,6 +165,7 @@ function initAgregarAdelanto() {
                                     descripcion: descripcion,
                                     idUsuario: __ID_USUARIO__,
                                     idPedido: idPedido,
+                                    token: token,
                                 },
                                 success: function (data) {
                                     toastr.success(data.message);
@@ -254,6 +256,7 @@ function initAgregarSaldo() {
                             let modoPago = $('#movimiento_modoPago').val();
                             let monto = $('#movimiento_monto').val();
                             let descripcion = $('#movimiento_descripcion').val();
+                            let token = $('#movimiento_token').val();
                             $.ajax({
                                 type: 'POST',
                                 url: __HOMEPAGE_PATH__ + "situacion_cliente/movimiento/create",
@@ -264,6 +267,7 @@ function initAgregarSaldo() {
                                     descripcion: descripcion,
                                     idCuentaCorrienteUsuario: __ID_CUENTA_CORRIENTE__,
                                     idUsuario: __ID_USUARIO__,
+                                    token: token,
                                 },
                                 success: function (data) {
                                     if (data.statusCode === 200) {
@@ -788,13 +792,6 @@ function initAgregarAdelantoReserva() {
                     return true;
                 },
                 callbackSuccess: function () {
-                    const $btn = $('.submit-button');
-                    // Evita doble click
-                    if ($btn.data('loading')) {
-                        return false;
-                    }
-                    $btn.data('loading', true);
-                    $btn.prop('disabled', true);
                     fv.revalidateField('requiredFields');
                     status = fv.validate().then((status) => {
                         if (status === "Valid") {

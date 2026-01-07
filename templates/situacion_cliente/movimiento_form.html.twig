@@ -8,6 +8,7 @@
             {{ macro_form._new_field(form.monto, "col-md-6") }}
             {{ macro_form._new_field(form.pedido, "col-md-12") }}
             {{ macro_form._new_field(form.descripcion, "col-md-12") }}
+            <input id="movimiento_token" type="hidden" name="token" value="{{ token }}">
         </div>
     </div>
 </div>

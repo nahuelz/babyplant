@@ -104,6 +104,11 @@ class Movimiento {
     private $pedidoProducto;
 
     /**
+     * @ORM\Column(type="string", length=64, unique=true, nullable=true)
+     */
+    private string $token;
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -349,10 +354,14 @@ class Movimiento {
         $this->reserva = $reserva;
     }
 
+    public function getToken(): string
+    {
+        return $this->token;
+    }
 
-
-
-
-
+    public function setToken(string $token): void
+    {
+        $this->token = $token;
+    }
 
 }
