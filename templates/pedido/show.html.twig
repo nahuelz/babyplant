@@ -27,7 +27,7 @@
             <h3 class="card-label">{{ entity }}</h3>
         </div>
         <div class="card-toolbar">
-            {# include 'pedido/header_acciones_button.html.twig' with {'entity': entity } #}
+            {#  include 'pedido/header_acciones_button.html.twig' with {'entity': entity } #}
         </div>
     </div>
     <div class="card-body">
@@ -35,9 +35,9 @@
             <div class="card card-detail" id="{{ producto.id }}">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col-md-5"><h4>Producto N° {{producto.id }}</h4></div>
-                        <div class="col-md-5">
-                            <div class="dropdown dropdown-inline col-md-1" style="float: right">
+                        <div class="col-md-10"><h4>Producto N° {{producto.id }}</h4></div>
+                        <div class="col-md-1">
+                            <div class="dropdown dropdown-inline col-md-1">
                                 <button type="button" class="btn btn-light-primary font-weight-bolder dropdown-toggle" data-toggle="dropdown"> Acciones
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
@@ -58,26 +58,108 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="card-body">
                     <div class="row">
-                        {{ macro_show._show_detail('Numero Orden', producto.numeroOrdenCompleto|default('-'), 'col-md-2') }}
-                        {{ macro_show._show_detail('Nombre producto', producto.nombreCompleto|default('-'), 'col-md-4') }}
-                        {{ macro_show._show_detail('Origen Semilla', producto.tipoOrigenSemilla.nombre|default('-'), 'col-md-2') }}
-                        {{ macro_show._show_detail('Cantidad Semillas', producto.cantSemillas|default('-'), 'col-md-2') }}
-                        {{ macro_show._show_detail('Fecha pedido', producto.fechaCreacion is not null ? producto.fechaCreacion|date("d/m/Y") : '-', 'col-md-2') }}
-                        {{ macro_show._show_detail('Fecha de siembra pedido', producto.fechaSiembraPedido is not null ? producto.fechaSiembraPedido|date("d/m/Y") : '-', 'col-md-2') }}
-                        {{ macro_show._show_detail('Fecha de siembra real', producto.fechaSiembraReal is not null ? producto.fechaSiembraReal|date("d/m/Y") : '-', 'col-md-2') }}
-                        {{ macro_show._show_detail('Fecha de entrega pedido', producto.fechaEntregaPedido is not null ? producto.fechaEntregaPedido|date("d/m/Y") : '-', 'col-md-2') }}
-                        {{ macro_show._show_detail('Fecha de entrega real', producto.fechaEntregaPedidoReal is not null ? producto.fechaEntregaPedidoReal|date("d/m/Y") : '-', 'col-md-2') }}
-                        {{ macro_show._show_detail('Estado', producto.estado|default('-'), 'col-md-2') }}
-                        {{ macro_show._show_detail('Tipo Bandeja', producto.tipoBandeja.nombre|default('-'), 'col-md-2') }}
+                        <div class="card mb-4 col-md-12">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-3">Detalle del producto</h6>
+                                <div class="row">
+                                    {{ macro_show._show_detail('Número Orden', producto.numeroOrdenCompleto|default('-'), 'col-md-3') }}
+                                    {{ macro_show._show_detail('Nombre producto', producto.nombreCompleto|default('-'), 'col-md-3') }}
+                                    {{ macro_show._show_detail('Bandejas', producto.cantidadtipoBandejas|default('-'), 'col-md-3') }}
+                                    {{ macro_show._show_detail('Semillas', producto.cantSemillas|default('-'), 'col-md-3') }}
+                                    {{ macro_show._show_detail('Origen', producto.tipoOrigenSemilla.nombre|default('-'), 'col-md-3') }}
+                                    {{ macro_show._show_detail('Siembra pedido', producto.fechaSiembraPedido ? producto.fechaSiembraPedido|date("d/m/Y") : '-', 'col-md-3') }}
+                                    {{ macro_show._show_detail('Entrega pedido', producto.fechaEntregaPedido ? producto.fechaEntregaPedido|date("d/m/Y") : '-', 'col-md-3') }}
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label d-block">
+                                                Estado
+                                            </label>
+                                            <span class="label label-inline font-weight-bold font-size-14 {{ producto.estado.color|default('') }}" style="padding: 20px;">{{ producto.estado.nombre|default('') }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="card mb-5 col-md-12">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-4">Bandejas</h6>
 
-                        {{ macro_show._show_detail('Cantidad Bandejas Pedidas', producto.cantidadBandejasPedidas|default('-'), 'col-md-2') }}
-                        {{ macro_show._show_detail('Cantidad Bandejas Reales', producto.cantidadBandejasReales|default('-'), 'col-md-2') }}
-                        {{ macro_show._show_detail('Cantidad Bandejas Entregadas', producto.cantidadBandejasEntregadas|default('-'), 'col-md-2') }}
-                        {{ macro_show._show_detail('Cantidad Bandejas Sin Entregar', producto.cantidadBandejasSinEntregar|default('-'), 'col-md-2') }}
-                        {{ macro_show._show_detail('Cantidad Bandejas Reservadas', producto.cantidadBandejasReservadasSinEntregar|default('-'), 'col-md-2') }}
-                        {{ macro_show._show_detail('Cantidad Bandejas Disponibles', producto.cantidadBandejasDisponibles|default('-'), 'col-md-2') }}
+                                <div class="row text-center">
+
+                                    <div class="col-md-2 mb-3">
+                                        <div class="card shadow-sm">
+                                            <div class="card-body py-4">
+                                                <small class="text-muted text-uppercase">Pedidas</small>
+                                                <div class="display-4 font-weight-bold">
+                                                    {{ producto.cantidadBandejasPedidas|default('-') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 mb-3">
+                                        <div class="card shadow-sm">
+                                            <div class="card-body py-4">
+                                                <small class="text-muted text-uppercase">Reales</small>
+                                                <div class="display-4 font-weight-bold">
+                                                    {{ producto.cantidadBandejasReales|default('-') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 mb-3">
+                                        <div class="card shadow-sm border-success">
+                                            <div class="card-body py-4">
+                                                <small class="text-muted text-uppercase">Entregadas</small>
+                                                <div class="display-4 font-weight-bold text-success">
+                                                    {{ producto.cantidadBandejasEntregadas|default('-') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 mb-3">
+                                        <div class="card shadow-sm border-warning">
+                                            <div class="card-body py-4">
+                                                <small class="text-muted text-uppercase">Sin entregar</small>
+                                                <div class="display-4 font-weight-bold text-warning">
+                                                    {{ producto.cantidadBandejasSinEntregar|default('-') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 mb-3">
+                                        <div class="card shadow-sm border-info">
+                                            <div class="card-body py-4">
+                                                <small class="text-muted text-uppercase">Reservadas</small>
+                                                <div class="display-4 font-weight-bold text-info">
+                                                    {{ producto.cantidadBandejasReservadasSinEntregar|default('-') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 mb-3">
+                                        <div class="card shadow-sm {{ producto.cantidadBandejasDisponibles == 0 ? 'border-danger' : 'border-success' }}">
+                                            <div class="card-body py-4">
+                                                <small class="text-muted text-uppercase">Disponibles</small>
+                                                <div class="display-4 font-weight-bold {{ producto.cantidadBandejasDisponibles == 0 ? 'text-danger' : 'text-success' }}">
+                                                    {{ producto.cantidadBandejasDisponibles|default('-') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     {% for historicoEstados in producto.historicoEstados %}
                         {% if historicoEstados.estado.id == 2 %}

@@ -1,0 +1,31 @@
+{% macro item(historico, contenido) %}
+    {% set estado = historico.estado %}
+
+    {# Fallbacks por si algún dato no viene #}
+    {% set icono = estado.icono|default('fas fa-circle') %}
+    {% set color = estado.colorIcono|default('primary') %}
+    {% set nombre = estado.nombre|default('Estado') %}
+    {% set fecha  = historico.fecha ?? null %}
+    {% set usuarioCreacion  = historico.usuarioCreacion ?? null %}
+
+    <div class="timeline-item">
+        <div class="timeline-media bg-light-{{ color }}">
+            <span class="{{ icono }} text-{{ color }}"></span>
+        </div>
+
+        <div class="timeline-desc timeline-desc-light-{{ color }}">
+            <span class="font-weight-bolder text-{{ color }}">
+                {{ nombre }}
+                {% if fecha %}
+                    · {{ fecha|date('d/m/Y H:i') }} · {{ usuarioCreacion }}
+                {% endif %}
+            </span>
+
+            {% if contenido is not empty %}
+                <div class="row mt-3">
+                    {{ contenido|raw }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}

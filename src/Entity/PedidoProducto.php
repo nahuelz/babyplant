@@ -901,4 +901,8 @@ class PedidoProducto {
         $this->camaraDestino = $camaraDestino;
         return $this;
     }
+
+    public function getCantidadTipoBandejas(){
+        return ($this->getCantidadBandejasReales() . ' (x'.$this->getTipoBandeja().')');
+    }
 }
