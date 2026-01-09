@@ -363,7 +363,7 @@ class PagoController extends BaseController {
             $remito,
             $modoPago,
             $tipoMovimiento,
-            fn($entregaProducto) => $entregaProducto->getEntrega()->getReserva()->getAdelanto(),
+            fn($entregaProducto) => $entregaProducto->getEntrega()->getReserva() ? $entregaProducto->getEntrega()->getReserva()->getAdelanto() : '0',
             fn($entregaProducto) => $entregaProducto->getEntrega()->getReserva()->getCuentaCorrienteReserva(),
             'ADELANTO RESERVA'
         );
