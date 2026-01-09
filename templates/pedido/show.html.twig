@@ -122,8 +122,17 @@
                                 <div class="col-md-2">
                                     <span class="label label-inline {{ historicoEstados.estado.color }} font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-check padding-right-5"></span> {{ historicoEstados.estado.nombre }} </span>
                                 </div>
-                                {{ macro_show._show_detail('Fecha', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-3') }}
-                                {{ macro_show._show_detail('Bandejas Reservadas', historicoEstados.reserva is not null ? historicoEstados.reserva.cantidadBandejas : '-', 'col-md-3') }}
+
+                                {{ macro_show._show_detail('N° Reserva', historicoEstados.reserva is not null ? historicoEstados.reserva.id : '-', 'col-md-1 text-center') }}
+                                {{ macro_show._show_detail('Fecha', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-5') }}
+                                {{ macro_show._show_detail('Bandejas Reservadas', historicoEstados.reserva is not null ? historicoEstados.reserva.cantidadBandejas : '-', 'col-md-2') }}
+                                <div class="col-md-1 d-flex align-items-center justify-content-between">
+                                    <a href="{{ path('reserva_show', {'id': historicoEstados.reserva.id}) }}"
+                                       class="btn btn-sm btn-light-info"
+                                       title="Ver detalle de la reserva">
+                                        <i class="fas fa-search"></i>
+                                    </a>
+                                </div>
                             </div>
                         {% endif %}
                         {% if historicoEstados.estado.id == 7 %}
@@ -131,9 +140,19 @@
                                 <div class="col-md-2">
                                     <span class="label label-inline {{ historicoEstados.estado.color }} font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-check padding-right-5"></span> {{ historicoEstados.estado.nombre }}</span>
                                 </div>
+                                {{ macro_show._show_detail('N° Entrega', historicoEstados.DatosEntrega is not null ? historicoEstados.DatosEntrega.entrega.id : '-', 'col-md-1 text-center') }}
                                 {{ macro_show._show_detail('Fecha', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-3') }}
-                                {{ macro_show._show_detail('Bandejas Entregadas', historicoEstados.DatosEntrega is not null ? historicoEstados.DatosEntrega.cantidadBandejasAEntregar : '-', 'col-md-3') }}
-                                {{ macro_show._show_detail('Bandejas Pendientes de Entrega', historicoEstados.DatosEntrega is not null ? historicoEstados.DatosEntrega.cantidadBandejasSinEntregar : '-', 'col-md-3') }}
+                                {{ macro_show._show_detail('Bandejas Entregadas', historicoEstados.DatosEntrega is not null ? historicoEstados.DatosEntrega.cantidadBandejasAEntregar : '-', 'col-md-2') }}
+                                {{ macro_show._show_detail('Bandejas Pendientes de Entrega', historicoEstados.DatosEntrega is not null ? historicoEstados.DatosEntrega.cantidadBandejasSinEntregar : '-', 'col-md-2') }}
+                                {% if historicoEstados.DatosEntrega is not null %}
+                                    <div class="col-md-1 d-flex align-items-center justify-content-between">
+                                        <a href="{{ path('entrega_show', {'id': historicoEstados.DatosEntrega.entrega.id}) }}"
+                                           class="btn btn-sm btn-light-warning"
+                                           title="Ver detalle de la entrega">
+                                            <i class="fas fa-search"></i>
+                                        </a>
+                                    </div>
+                                {% endif %}
                             </div>
                         {% endif %}
                         {% if historicoEstados.estado.id == 8 %}
