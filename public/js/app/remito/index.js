@@ -130,9 +130,18 @@ function initDataTable() {
             endRender: function (rows, group) {
                 let precioTotalConDescuento = rows.data()[0][15].precioTotalConDescuento;
                 let montoPendiente = rows.data()[0][15].montoPendiente;
-
+                const estado = rows.data()[0][7].estado;
+                console.log(estado);
                 const formatter = new Intl.NumberFormat('es-AR', {style: 'currency', currency: 'ARS'});
 
+                if (estado === 'CANCELADO'){
+                    return $('<tr/>').append(`
+                    <td colspan="11" class="text-right font-weight-bold">
+                        <div class="text-danger">CANCELADO</div>
+                    </td>
+                    <td></td>
+                `);
+                }
                 return $('<tr/>').append(`
                     <td colspan="11" class="text-right font-weight-bold">
                         <div>Total Remito con Descuento: ${formatter.format(precioTotalConDescuento)}</div>
