@@ -187,4 +187,29 @@ class EstadisticasController extends AbstractController
             'hasta' => $hasta,
         ]);
     }
+
+    /**
+     * @Route("/produccion-por-producto", name="estadisticas_produccion_producto")
+     */
+    public function produccionPorProducto(
+        Request $request,
+        PedidoProductoRepository $pedidoProductoRepository
+    ) {
+        $desde = $request->query->get('desde')
+            ? new \DateTime($request->query->get('desde'))
+            : new \DateTime('first day of this month');
+
+        $hasta = $request->query->get('hasta')
+            ? new \DateTime($request->query->get('hasta'))
+            : new \DateTime();
+
+        $resultados = $pedidoProductoRepository->getProduccionPorProducto($desde, $hasta);
+
+        return $this->render('estadisticas/produccion_por_producto.html.twig', [
+            'resultados' => $resultados,
+            'desde' => $desde,
+            'hasta' => $hasta,
+        ]);
+    }
+
 }
