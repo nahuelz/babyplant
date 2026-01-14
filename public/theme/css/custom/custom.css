@@ -6,6 +6,10 @@
     filter: opacity(0.5);
 }
 
+.SIN-ENTREGAR{
+    filter: opacity(0.5);
+}
+
 .disabled.day {
     color: gainsboro !important;
 }

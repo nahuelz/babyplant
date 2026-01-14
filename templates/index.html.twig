@@ -51,9 +51,14 @@
                         {% endif %}
                     {% endif %}
 
-                    {# PLANIFICACION ENTREGA#}
+                    {# ENTREGAS #}
                     {% if is_granted("ROLE_ENTREGA") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-truck icon-3x text-dark', 'nombreModulo': 'ENTREGAS','action': path('entrega_index'), 'descripcionModulo': 'Aqui podra ver las entregas' } %}
+                    {% endif %}
+
+                    {# PLANIFICACION ENTREGA#}
+                    {% if is_granted("ROLE_ORDEN_CARGA") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-truck icon-3x text-dark', 'nombreModulo': 'ORDENES DE CARGA','action': path('ordencarga_index'), 'descripcionModulo': 'Aqui podra ver las ordenes de carga' } %}
                     {% endif %}
 
                     {# AGENDA ENTREGA #}

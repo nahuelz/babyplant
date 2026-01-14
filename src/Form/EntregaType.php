@@ -4,6 +4,7 @@ namespace App\Form;
 
 
 use App\Entity\Entrega;
+use App\Entity\TipoModoEntrega;
 use App\Entity\Usuario;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -89,6 +90,26 @@ class EntregaType extends AbstractType {
                     'placeholder' => 'Ingrese una observación opcional...'
                 )
             ))
+            ->add(
+                'tipoModoEntrega',
+                EntityType::class,
+                array(
+                    'class' => TipoModoEntrega::class,
+                    'required' => true,
+                    'label' => 'Modo de entrega',
+                    'placeholder' => '-- Elija el modo de entrega --',
+                    'attr' => array(
+                        'placeholder' => 'Escriba el modo de entrega aquí.',
+                        'class' => 'form-control choice',
+                        'data-placeholder' => '-- Elija --',
+                        'tabindex' => '5'
+                    ),
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('x')
+                            ->orderBy('x.nombre', 'ASC');
+                    },
+                )
+            )
         ;
     }
 

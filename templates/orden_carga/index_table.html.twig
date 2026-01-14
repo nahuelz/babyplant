@@ -1,0 +1,24 @@
+{% autoescape false %}
+    [
+    {% for entity in entities %}
+        {
+        "id": "{{ entity.id }}",
+        "estado": "{{ entity.estado }}",
+        "colorEstado": "{{ entity.colorEstado }}",
+        "idEstado": "{{ entity.idEstado }}",
+        "cliente": "{{ entity.cliente }}",
+        "title": "{{ entity.title|default('-') }}",
+        "start": "{{ entity.fecha is not null ? entity.fecha|date('Y-m-d\\TH:i') : '' }}",
+        "end": "{{ entity.fecha is not null
+            ? entity.fecha|date_modify('+1 minute')|date('Y-m-d\\TH:i')
+            : ''
+            }}",
+
+        "href":  "{{ path( "orden_carga_show", { 'id': entity.id }) }}",
+        "className": "{{ entity.className|default('fc-event-danger fc-event-solid-danger') }}"
+        }
+        {{ (loop.last ? '' : ',') }}
+    {% endfor %}
+    ]
+
+{% endautoescape %}

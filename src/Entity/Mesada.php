@@ -69,6 +69,10 @@ class Mesada {
         $this->historicoEstados = new ArrayCollection();
     }
 
+    public function __toString(){
+        return 'Mesada N° '.$this->getTipoMesada()->getId();
+    }
+
     /**
      * @return mixed
      */

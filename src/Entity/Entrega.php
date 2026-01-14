@@ -75,6 +75,24 @@ class Entrega {
      */
     private $reserva;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=TipoModoEntrega::class)
+     * @ORM\JoinColumn(name="id_tipo_modo_entrega", referencedColumnName="id", nullable=true)
+     */
+    private mixed $tipoModoEntrega;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="entregado", type="boolean", nullable=false, options={"default": false})
+     */
+    private $entregado = false;
+
+    /**
+     * @ORM\Column(name="fecha_entrega", type="datetime", nullable=true)
+     */
+    protected $fechaEntrega;
+
 
     /**
      * @param $historicoEstados
@@ -84,6 +102,7 @@ class Entrega {
         $this->entregasProductos = new ArrayCollection();
         $this->historicoEstados = new ArrayCollection();
         $this->estado = null;
+        $this->setFechaEntrega(new \DateTime());
     }
 
     public function __toString()
@@ -291,6 +310,44 @@ class Entrega {
 
     public function getAdelantoReserva(){
         return $this->getReserva() ? $this->getReserva()->getAdelanto() : '0';
+    }
+
+    public function getTipoModoEntrega(): mixed
+    {
+        return $this->tipoModoEntrega;
+    }
+
+    public function setTipoModoEntrega(mixed $tipoModoEntrega): void
+    {
+        $this->tipoModoEntrega = $tipoModoEntrega;
+    }
+
+    public function isEntregado(): bool
+    {
+        return $this->entregado;
+    }
+
+    public function setEntregado(bool $entregado): self
+    {
+        $this->entregado = $entregado;
+        $this->setFechaEntrega(new \DateTime());
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFechaEntrega()
+    {
+        return $this->fechaEntrega;
+    }
+
+    /**
+     * @param mixed $fechaEntrega
+     */
+    public function setFechaEntrega($fechaEntrega): void
+    {
+        $this->fechaEntrega = $fechaEntrega;
     }
 
 }

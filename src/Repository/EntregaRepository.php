@@ -19,9 +19,12 @@ class EntregaRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('e')
             ->select("e.id, concat('Entrega N° ', e.id) as denominacion")
             ->where('e.clienteEntrega = :cliente')
-            ->andWhere('e.estado = :estado')
+            ->andWhere('e.estado IN (:estado)')
             ->setParameter('cliente', $idCliente)
-            ->setParameter('estado', ConstanteEstadoEntrega::SIN_REMITO)
+            ->setParameter('estado', [
+                ConstanteEstadoEntrega::SIN_REMITO,
+                ConstanteEstadoEntrega::ENTREGADO_SIN_REMITO
+            ])
             ->orderBy('e.id', 'ASC')
             ->groupBy('e.id')
             ->getQuery()

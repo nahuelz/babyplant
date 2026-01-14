@@ -39,6 +39,13 @@
                     </a>
                 </li>
             {% endif %}
+            {% if is_granted("ROLE_ORDEN_CARGA") %}
+                <li class="menu-item " aria-haspopup="true">
+                    <a href="{{ path('ordencarga_index') }}" class="menu-link ">
+                        <span class="menu-text">Ver Ordenes de Carga</span>
+                    </a>
+                </li>
+            {% endif %}
             {% if is_granted("ROLE_PEDIDO") %}
                 <li class="menu-item " aria-haspopup="true">
                     <a href="{{ path('situacioncliente_index') }}" class="menu-link ">

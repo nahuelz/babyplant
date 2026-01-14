@@ -145,6 +145,9 @@ class RemitoController extends BaseController {
         $this->estadoService->cambiarEstadoRemito($remito, $estadoRemito, 'REMITO CREADO.');
         $estadoEntrega = $em->getRepository(EstadoEntrega::class)->findOneByCodigoInterno(ConstanteEstadoEntrega::CON_REMITO);
         foreach ($remito->getEntregas() as $entrega) {
+            if ($entrega->isEntregado()){
+                $estadoEntrega = $em->getRepository(EstadoEntrega::class)->findOneByCodigoInterno(ConstanteEstadoEntrega::ENTREGADO_CON_REMITO);
+            }
             $this->estadoService->cambiarEstadoEntrega($entrega, $estadoEntrega, 'REMITO CREADO.');
             foreach ($entrega->getEntregasProductos() as $entregaProducto) {
                 $entregaProducto->setMontoPendiente($entregaProducto->getMontoTotalConDescuento());

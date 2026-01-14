@@ -28,6 +28,11 @@ class EstadoEntrega extends EntidadBasica {
     private $colorIcono;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $className;
+
+    /**
      * @return mixed
      */
     public function getColor()
@@ -73,6 +78,14 @@ class EstadoEntrega extends EntidadBasica {
     public function setColorIcono($colorIcono): void
     {
         $this->colorIcono = $colorIcono;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getClassName()
+    {
+        return $this->className;
     }
 
 
