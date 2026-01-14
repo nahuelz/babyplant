@@ -98,21 +98,24 @@ class PedidoProductoRepository extends ServiceEntityRepository {
         return $query->getResult();
     }
 
-    /*
-    public function getProductosEnMesada($id)
+    public function getProduccionPorProducto(\DateTime $desde, \DateTime $hasta): array
     {
-        $query = $this->createQueryBuilder('pp')
-            ->select("pp.id, tp.nombre as nombreProducto,pp.numeroOrden, concat(tp.nombre,' ', sb.nombre,' ',v.nombre) as producto, ppm.cantidadBandejas")
-            ->leftJoin('App:Pedido', 'p', Join::WITH, 'pp.pedido = p')
-            ->leftJoin('App:TipoVariedad', 'v', Join::WITH, 'pp.tipoVariedad = v')
-            ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')
-            ->leftJoin('App:TipoProducto', 'tp', Join::WITH, 'sb.tipoProducto = tp')
-            ->leftJoin('App:PedidoProductoMesada', 'ppm', Join::WITH, 'ppm.pedidoProducto = pp')
-            ->andWhere('ppm.tipoMesada = :id')
-            ->setParameter('id', $id)
-            ->getQuery();
-
-        return $query->getResult();
+        return $this->createQueryBuilder('pp')
+            ->select([
+                'tp.nombre AS producto',
+                'SUM(pp.cantidadBandejasReales) AS totalBandejas'
+            ])
+            ->join('pp.tipoVariedad', 'tv')
+            ->join('tv.tipoSubProducto', 'tsp')
+            ->join('tsp.tipoProducto', 'tp')
+            ->where('pp.fechaSiembraReal BETWEEN :desde AND :hasta')
+            ->andWhere('pp.fechaBaja IS NULL')
+            ->groupBy('tp.id')
+            ->orderBy('totalBandejas', 'DESC')
+            ->setParameter('desde', $desde->setTime(0,0,0))
+            ->setParameter('hasta', $hasta->setTime(23,59,59))
+            ->getQuery()
+            ->getArrayResult();
     }
-    */
+
 }
