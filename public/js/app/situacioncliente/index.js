@@ -3,9 +3,41 @@ var init = false;
 
 var $table = $('#table-situacion_cliente');
 
+$.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+
+    const filtrarDeuda = $('#filtro_deuda_distinto_0').is(':checked');
+    const filtrarSaldo = $('#filtro_saldo_distinto_0').is(':checked');
+
+    // Columnas (texto plano, sin formato)
+    const saldo = parseFloat(
+        data[4].replace(/[^\d,-]/g, '').replace(',', '.')
+    ) || 0;
+
+    const deuda = parseFloat(
+        data[5].replace(/[^\d,-]/g, '').replace(',', '.')
+    ) || 0;
+
+    if (filtrarDeuda && deuda === 0) {
+        return false;
+    }
+
+    if (filtrarSaldo && saldo === 0) {
+        return false;
+    }
+
+    return true;
+});
+
+
 $(document).ready(function () {
     initTable();
     initClienteSelect2();
+
+    $('#filtro_deuda_distinto_0, #filtro_saldo_distinto_0').on('change', function () {
+        if ($.fn.DataTable.isDataTable('#table-situacion_cliente')) {
+            $table.DataTable().draw();
+        }
+    });
 });
 
 /**
@@ -34,6 +66,9 @@ function initTable() {
                 $table.DataTable().column($(this).data('col-index')).search('', false, false);
             }
         });
+
+        $('#filtro_deuda_distinto_0, #filtro_saldo_distinto_0').prop('checked', false);
+
         if (init) {
             $table.DataTable().ajax.reload();
         }
@@ -166,13 +201,6 @@ function datatablesGetColDef() {
             className: 'dt-center',
             type: 'num'
         },
-        // {
-        //     targets: index++,
-        //     name: 'email',
-        //     width: '30px',
-        //     className: 'dt-center',
-        //     type: 'num'
-        // },
         {
             targets: index++,
             name: 'nombre',
@@ -185,26 +213,12 @@ function datatablesGetColDef() {
             className: 'dt-center',
             type: 'string'
         },
-        // {
-        //     targets: index++,
-        //     name: 'cuit',
-        //     width: '30px',
-        //     className: 'dt-center',
-        //     type: 'num'
-        // },
         {
             targets: index++,
             name: 'celular',
             className: 'dt-center',
             type: 'num'
         },
-        // {
-        //     targets: index++,
-        //     name: 'razonSocial',
-        //     width: '30px',
-        //     className: 'dt-center',
-        //     type: 'num'
-        // },
         {
             targets: index++,
             name: 'saldoAFavor',
@@ -249,11 +263,6 @@ function datatablesGetColDef() {
             orderable: false,
 
             render: dataTablesActionFormatter
-        },
-        {
-            // hide columns by index number
-            //targets: 0,
-            //visible: false,
         },
     ];
 }
