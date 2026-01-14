@@ -1,14 +1,24 @@
-<div class="portlet light bordered portlet-nivel-1" style="padding: 5px 10px; margin-left: 30px;border-radius: 5px;background-color: #E1F0FF">
+<div class="portlet light bordered portlet-nivel-1"
+     style="padding: 5px 10px; margin-left: 30px; border-radius: 5px; background-color: #E1F0FF">
+
     <div class="row">
+
+        {# BUSCAR CLIENTE #}
         <div class="col-md-7">
             <label for="reporte_filtro_cliente" class="control-label">BUSCAR CLIENTE</label>
-            <select class="choice form-control datatable-input" id="reporte_filtro_cliente" name="reporte_filtro[cliente]">
+            <select class="choice form-control datatable-input"
+                    id="reporte_filtro_cliente"
+                    name="reporte_filtro[cliente]">
                 <option value="">TODOS</option>
                 {% for cliente in clienteSelect %}
-                    <option value="{{ cliente.id }}"> {{ cliente.nombre }} {{ cliente.razon_social }}</option>
+                    <option value="{{ cliente.id }}">
+                        {{ cliente.nombre }} {{ cliente.razon_social }}
+                    </option>
                 {% endfor %}
             </select>
         </div>
+
+        {# BOTONES #}
         <div class="col-md-5 padding-top-25">
             <button class="btn btn-primary btn-primary--icon" id="kt_search">
                 <span>
@@ -23,5 +33,26 @@
                 </span>
             </button>
         </div>
+
     </div>
+
+    {# FILTROS DE DEUDA / SALDO #}
+    <div class="row mt-3">
+        <div class="col-md-12">
+
+            <label class="checkbox checkbox-outline checkbox-danger mr-5">
+                <input type="checkbox" id="filtro_deuda_distinto_0">
+                <span></span>
+                Solo clientes con deuda
+            </label>
+
+            <label class="checkbox checkbox-outline checkbox-success">
+                <input type="checkbox" id="filtro_saldo_distinto_0">
+                <span></span>
+                Solo clientes con saldo a favor
+            </label>
+
+        </div>
+    </div>
+
 </div>
