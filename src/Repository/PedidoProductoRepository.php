@@ -103,17 +103,18 @@ class PedidoProductoRepository extends ServiceEntityRepository {
         return $this->createQueryBuilder('pp')
             ->select([
                 'tp.nombre AS producto',
-                'SUM(pp.cantidadBandejasReales) AS totalBandejas'
+                'SUM(pp.cantidadBandejasReales * tb.nombre) AS totalPlantas'
             ])
             ->join('pp.tipoVariedad', 'tv')
             ->join('tv.tipoSubProducto', 'tsp')
             ->join('tsp.tipoProducto', 'tp')
+            ->join('pp.tipoBandeja', 'tb')
             ->where('pp.fechaSiembraReal BETWEEN :desde AND :hasta')
             ->andWhere('pp.fechaBaja IS NULL')
             ->groupBy('tp.id')
-            ->orderBy('totalBandejas', 'DESC')
-            ->setParameter('desde', $desde->setTime(0,0,0))
-            ->setParameter('hasta', $hasta->setTime(23,59,59))
+            ->orderBy('totalPlantas', 'DESC')
+            ->setParameter('desde', (clone $desde)->setTime(0, 0, 0))
+            ->setParameter('hasta', (clone $hasta)->setTime(23, 59, 59))
             ->getQuery()
             ->getArrayResult();
     }

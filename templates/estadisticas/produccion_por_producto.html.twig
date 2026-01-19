@@ -52,7 +52,7 @@
                     <thead class="table-light">
                     <tr>
                         <th>Producto</th>
-                        <th class="text-end">Total bandejas elaboradas</th>
+                        <th class="text-end">Total plantas elaboradas</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -65,14 +65,14 @@
                     {% else %}
                         {% set total = 0 %}
                         {% for row in resultados %}
-                            {% set total = total + row.totalBandejas %}
+                            {% set total = total + row.totalPlantas %}
                             <tr>
                                 <td>
                                     <strong>{{ row.producto }}</strong>
                                 </td>
                                 <td class="text-end">
                                 <span class="badge bg-success fs-6">
-                                    {{ row.totalBandejas|round }}
+                                    {{ row.totalPlantas|round|number_format(0, ",", ".") }}
                                 </span>
                                 </td>
                             </tr>
@@ -85,7 +85,7 @@
                         <tr>
                             <th>Total general</th>
                             <th class="text-end">
-                                {{ total }}
+                                {{ total|round|number_format(0, ",", ".") }}
                             </th>
                         </tr>
                         </tfoot>
