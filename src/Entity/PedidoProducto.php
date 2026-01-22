@@ -328,7 +328,7 @@ class PedidoProducto {
     public function setCantidadBandejasReales(mixed $cantidadBandejasReales): void
     {
         $this->cantidadBandejasReales = $cantidadBandejasReales;
-        $this->setCantidadBandejasDisponibles();
+        $this->cantidadBandejasDisponibles = $cantidadBandejasReales;
     }
 
     /**
