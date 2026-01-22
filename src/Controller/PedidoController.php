@@ -25,6 +25,7 @@ use Mpdf\MpdfException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -596,6 +597,31 @@ class PedidoController extends BaseController {
         return $this->render('pedido_producto/_modal_mesada.html.twig', [
             'form' => $form->createView(),
             'pedidoProducto' => $pedidoProducto,
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/actualizar-bandejas", name="pedido_producto_actualizar_bandejas", methods={"POST"})
+     * @IsGranted("ROLE_PEDIDO")
+     */
+    public function actualizarBandejasPedidoProducto(int $id): JsonResponse
+    {
+        $em = $this->doctrine->getManager();
+
+        /** @var PedidoProducto|null $pedidoProducto */
+        $pedidoProducto = $em->getRepository(PedidoProducto::class)->find($id);
+
+        if (!$pedidoProducto) {
+            return new JsonResponse(['ok' => false, 'message' => 'Producto no encontrado'], 404);
+        }
+
+        $pedidoProducto->setCantidadBandejasDisponibles();
+        $em->flush();
+
+        return new JsonResponse([
+            'ok' => true,
+            'disponibles' => $pedidoProducto->getCantidadBandejasDisponibles(),
+            'base' => $pedidoProducto->getCantidadBandejasDisponiblesBase()
         ]);
     }
 }

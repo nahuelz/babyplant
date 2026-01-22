@@ -850,6 +850,10 @@ class PedidoProducto {
         $this->cantidadBandejasDisponibles = $this->getCantidadBandejasDisponibles();
     }
 
+    public function getCantidadBandejasDisponiblesBase(){
+        return $this->cantidadBandejasDisponibles;
+    }
+
     public function getCantidadBandejasReservadasSinEntregar(){
         $cantidadBandejas = 0;
         foreach ($this->getReservas() as $reserva){

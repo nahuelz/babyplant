@@ -148,14 +148,35 @@
 
                                     <div class="col-md-2 mb-3">
                                         <div class="card shadow-sm {{ producto.cantidadBandejasDisponibles == 0 ? 'border-danger' : 'border-success' }}">
-                                            <div class="card-body py-4">
+                                            <div class="card-body py-4 position-relative">
                                                 <small class="text-muted text-uppercase">Disponibles</small>
-                                                <div class="display-4 font-weight-bold {{ producto.cantidadBandejasDisponibles == 0 ? 'text-danger' : 'text-success' }}">
-                                                    {{ producto.cantidadBandejasDisponibles|default('-') }}
+
+                                                <div class="display-4 font-weight-bold {{ producto.cantidadBandejasDisponibles == 0 ? 'text-danger' : 'text-success' }}"
+                                                     id="disponibles-{{ producto.id }}"
+                                                     data-base="{{ producto.cantidadBandejasDisponiblesBase|round }}"
+                                                >
+                                                    {{ producto.cantidadBandejasDisponibles|round|default('-') }}
+                                                    /
+                                                    {{ producto.cantidadBandejasDisponiblesBase|round|default('-') }}
                                                 </div>
+
+                                                {# BOTÓN ACTUALIZAR #}
+                                                {% if producto.cantidadBandejasDisponibles|round != producto.cantidadBandejasDisponiblesBase|round %}
+                                                <button
+                                                        type="button"
+                                                        class="btn btn-sm btn-outline-secondary position-absolute js-actualizar-bandejas"
+                                                        style="bottom: 10px; right: 10px;"
+                                                        title="Actualizar cantidad disponible"
+                                                        data-id="{{ producto.id }}"
+                                                        data-href="{{ path('pedido_producto_actualizar_bandejas', {'id': producto.id}) }}"
+                                                >
+                                                    <i class="fas fa-sync-alt"></i>
+                                                </button>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
+
 
                                 </div>
                             </div>
