@@ -329,6 +329,7 @@ class PedidoProducto {
     {
         $this->cantidadBandejasReales = $cantidadBandejasReales;
         $this->cantidadBandejasDisponibles = $cantidadBandejasReales;
+
     }
 
     /**
