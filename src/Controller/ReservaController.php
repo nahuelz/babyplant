@@ -189,11 +189,9 @@ class ReservaController extends BaseController {
         $historico->setReserva($entity);
         $pedidoProducto->addHistoricoEstado($historico);
         $em->persist($historico);
-        $em->flush();
         $pedidoProducto->setCantidadBandejasDisponibles();
-
-
         $em->flush();
+
     }
 
     /**
@@ -278,6 +276,7 @@ class ReservaController extends BaseController {
             $estadoReserva = $em->getRepository(EstadoReserva::class)->findOneByCodigoInterno(ConstanteEstadoReserva::ENTREGADO);
             $this->estadoService->cambiarEstadoReserva($reserva, $estadoReserva, 'ENTREGA');
             $reserva->setEntrega($entrega);
+            $entreaProducto->getPedidoProducto()->setCantidadBandejasDisponibles();
             $em->flush();
             $this->get('session')->getFlashBag()->add('success', "Producto entregado.");
         }
@@ -499,7 +498,7 @@ class ReservaController extends BaseController {
         $historico->setMotivo('Cancelar Reserva.');
         $pedidoProducto->addHistoricoEstado($historico);
         $em->persist($historico);
-        $em->flush();
         $pedidoProducto->setCantidadBandejasDisponibles();
+        $em->flush();
     }
 }
