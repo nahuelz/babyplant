@@ -155,9 +155,13 @@
                                                      id="disponibles-{{ producto.id }}"
                                                      data-base="{{ producto.cantidadBandejasDisponiblesBase|round }}"
                                                 >
+                                                    {% if producto.cantidadBandejasDisponibles|round != producto.cantidadBandejasDisponiblesBase|round %}
                                                     {{ producto.cantidadBandejasDisponibles|round|default('-') }}
                                                     /
                                                     {{ producto.cantidadBandejasDisponiblesBase|round|default('-') }}
+                                                    {% else %}
+                                                        {{ producto.cantidadBandejasDisponibles|round|default('-') }}
+                                                    {% endif %}
                                                 </div>
 
                                                 {# BOTÓN ACTUALIZAR #}
