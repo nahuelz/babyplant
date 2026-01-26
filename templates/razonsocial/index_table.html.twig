@@ -11,7 +11,7 @@
         {
         "show": "{{ path('razonsocial_show',{id: entity.id}) }}",
         "edit": "{{ path('razonsocial_edit',{id: entity.id}) }}",
-        "situacion_cliente": "{{ path('situacioncliente_empresa_show',{id: entity.id}) }}"
+        "situacion_cliente": "{{ path('situacionempresa_show',{id: entity.id}) }}"
         }
         ]{{ (loop.last ? '' : ',') }}
     {% endfor %}

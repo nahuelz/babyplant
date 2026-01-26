@@ -22,6 +22,7 @@
                                         <thead>
                                         <tr>
                                             <th class="text-center nowrap">Pedido</th>
+                                            <th class="text-center nowrap">Adelanto</th>
                                             <th class="text-center nowrap">Estado</th>
                                             <th class="text-center nowrap"></th>
                                         </tr>
@@ -32,6 +33,9 @@
                                                 <tr>
                                                     <td class="v-middle nowrap text-center">
                                                         {{ producto|default('-') }}
+                                                    </td>
+                                                    <td class="v-middle nowrap text-center">
+                                                        {{ producto.adelanto|money_format|default('-') }}
                                                     </td>
                                                     <td class="v-middle nowrap text-center">
                                                         <div class="label label-inline font-size-10 font-dark font-weight-bold padding-15 {{ producto.estado.color|default('-') }}">

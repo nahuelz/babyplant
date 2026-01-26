@@ -125,13 +125,13 @@ function initAgregarAdelanto() {
         e.preventDefault();
         $.ajax({
             type: 'POST',
-            url: __HOMEPAGE_PATH__ + "situacion_cliente/adelanto/new",
+            url: __HOMEPAGE_PATH__ + "situacion_cliente/adelanto_pedido/new",
             data: {
                 idCliente: __ID_USUARIO__,
             },
         }).done(function (form) {
             showDialog({
-                titulo: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar Adelanto',
+                titulo: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar Adelanto Pedido',
                 contenido: form,
                 labelCancel: 'Cerrar',
                 labelSuccess: 'Guardar',
@@ -157,7 +157,7 @@ function initAgregarAdelanto() {
                             let token = $('#movimiento_token').val();
                             $.ajax({
                                 type: 'POST',
-                                url: __HOMEPAGE_PATH__ + "situacion_cliente/adelanto/create",
+                                url: __HOMEPAGE_PATH__ + "situacion_cliente/adelanto_pedido/create",
                                 dataType: 'json',
                                 data: {
                                     modoPago: modoPago,
@@ -224,11 +224,11 @@ function initAgregarAdelanto() {
 }
 
 function initAgregarSaldo() {
-    $('.add-saldo').on('click', function (e) {
+    $('.adelanto-cc').on('click', function (e) {
         e.preventDefault();
         $.ajax({
             type: 'POST',
-            url: __HOMEPAGE_PATH__ + "situacion_cliente/movimiento/new",
+            url: __HOMEPAGE_PATH__ + "situacion_cliente/adelanto_cc/new",
             data: {
                 idCuentaCorrienteUsuario: __ID_CUENTA_CORRIENTE__,
             },
@@ -259,7 +259,7 @@ function initAgregarSaldo() {
                             let token = $('#movimiento_token').val();
                             $.ajax({
                                 type: 'POST',
-                                url: __HOMEPAGE_PATH__ + "situacion_cliente/movimiento/create",
+                                url: __HOMEPAGE_PATH__ + "situacion_cliente/adelanto_cc/create",
                                 dataType: 'json',
                                 data: {
                                     modoPago: modoPago,

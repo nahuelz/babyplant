@@ -10,9 +10,9 @@ class ConstanteTipoMovimiento
 {
 
     /**
-     * ADELANTO
+     * ADELANTO PEDIDO
      */
-    const ADELANTO = 1;
+    const ADELANTO_PEDIDO = 1;
 
     /**
      * PAGO TRAMITE
@@ -20,12 +20,27 @@ class ConstanteTipoMovimiento
     const PAGO_TRAMITE = 2;
 
     /**
-     * INGRESO CC
+     * ADELANTO CC
      */
-    const INGRESO_CC = 3;
+    const ADELANTO_CC = 3;
 
     /**
      * ADELANTO RESERVA
      */
     const ADELANTO_RESERVA = 4;
+
+    /**
+     * AJUSTE
+     */
+    const AJUSTE_CC = 5;
+
+    /**
+     * AJUSTE
+     */
+    const AJUSTE_PEDIDO = 6;
+
+    /**
+     * AJUSTE
+     */
+    const AJUSTE_RESERVA = 7;
 }
