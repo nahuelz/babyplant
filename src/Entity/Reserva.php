@@ -273,4 +273,8 @@ class Reserva {
     public function getTieneMovimientos(){
         return (sizeof($this->getCuentaCorrienteReserva()->getMovimientos()) > 0);
     }
+
+    public function puedeAjustarse($monto){
+        return $this->getAdelanto() >= $monto;
+    }
 }

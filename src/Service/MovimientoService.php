@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Constants\ConstanteTipoMovimiento;
 use App\Entity\Movimiento;
 use App\Entity\ModoPago;
 use App\Entity\TipoMovimiento;
@@ -21,6 +22,11 @@ class MovimientoService
         $this->validarToken($data['token']);
 
         $monto = $this->normalizarMonto($data['monto']);
+
+        $monto = $this->aplicarSignoPorTipo(
+            $monto,
+            $data['tipoMovimiento']
+        );
 
         $modoPago = $this->em
             ->getRepository(ModoPago::class)
@@ -81,4 +87,14 @@ class MovimientoService
             );
         }
     }
+
+    private function aplicarSignoPorTipo(float $monto, int $tipoMovimiento): float
+    {
+        return match ($tipoMovimiento) {
+            ConstanteTipoMovimiento::AJUSTE_RESERVA => -abs($monto),
+            ConstanteTipoMovimiento::ADELANTO_RESERVA => abs($monto),
+            default => $monto,
+        };
+    }
+
 }

@@ -2,9 +2,22 @@
 {{ form_start(form, {'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
 {{ form_widget(form._token) }}
 <div class="row">
+    <div class="modal-body pt-0">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="label label-inline font-size-14 font-dark font-weight-bold {{ esAjuste ? 'label-light-danger' : 'label-light-success' }}" style="padding: 15px">
+                    SALDO RESERVA: {{ saldo|money_format }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
     <div class="modal-body" style="padding-top: 0;padding-bottom: 0;">
         <div class="row">
-            {{ macro_form._new_field(form.modoPago, "col-md-6") }}
+            {% if not esAjuste %}
+                {{ macro_form._new_field(form.modoPago, "col-md-6") }}
+            {% endif %}
             {{ macro_form._new_field(form.monto, "col-md-6") }}
             {{ macro_form._new_field(form.descripcion, "col-md-12") }}
             <input type="hidden" name="idReserva" id="idReserva" value="{{ idReserva }}">

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Constants\ConstanteModoPago;
 use App\Entity\Constants\ConstanteTipoMovimiento;
 use App\Entity\Movimiento;
 use App\Entity\Pedido;
@@ -187,7 +188,7 @@ class SituacionClienteController extends BaseController {
     }
 
     /**
-     * @Route("/adelanto_pedido/create", name="adelanto_create", methods={"POST"})
+     * @Route("/adelanto_pedido/create", name="adelanto_create", methods={"GET", "POST"})
      * @IsGranted("ROLE_SITUACION_CLIENTE")
      */
     public function adelantoCreateAction(
@@ -227,48 +228,99 @@ class SituacionClienteController extends BaseController {
     }
 
     /**
-     * @Route("/adelanto_reserva/new", name="adelanto_reserva_new", methods={"GET","POST"})
+     * @Route("/adelanto_reserva/new", name="adelanto_reserva_new", methods={"GET", "POST"})
      * @IsGranted("ROLE_SITUACION_CLIENTE")
      */
     public function adelantoReservaNewAction(Request $request): Response
     {
-        $movimiento = new Movimiento();
-        $idCliente = $request->request->get('idCliente');
-        $idReserva = $request->request->get('idReserva');
         $em = $this->doctrine->getManager();
+
+        $reserva = $em->getRepository(Reserva::class)
+            ->find($request->query->get('idReserva'));
+
+        if (!$reserva) {
+            throw $this->createNotFoundException('Reserva no encontrada');
+        }
+
+        $movimiento = new Movimiento();
+        $movimiento->setReserva($reserva);
+
+        $form = $this->createForm(MovimientoType::class, $movimiento, [
+            'action' => $this->generateUrl('adelanto_reserva_create'),
+            'method' => 'POST',
+            'idCliente' => $reserva->getCliente()->getId(),
+        ]);
+
+        return $this->render('situacion_cliente/movimiento_reserva_form.html.twig', [
+            'form' => $form->createView(),
+            'entity' => $movimiento,
+            'idReserva' => $reserva->getId(),
+            'modal' => true,
+            'esAjuste' => false,
+            'token' => bin2hex(random_bytes(16)),
+            'saldo' => $reserva->getAdelanto(),
+        ]);
+    }
+
+    /**
+     * @Route("/ajuste_reserva/new", name="ajuste_reserva_new", methods={"GET"})
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
+     */
+    public function ajusteReservaNewAction(Request $request): Response
+    {
+        $em = $this->doctrine->getManager();
+
+        $idReserva = $request->query->get('idReserva');
         $reserva = $em->getRepository(Reserva::class)->find($idReserva);
 
         if (!$reserva) {
             throw $this->createNotFoundException('Reserva no encontrada');
         }
 
+        $movimiento = new Movimiento();
         $movimiento->setReserva($reserva);
 
-        $form = $this->createForm(MovimientoType::class, $movimiento, array(
-            'action' => $this->generateUrl('adelanto_reserva_create'),
+        $form = $this->createForm(MovimientoType::class, $movimiento, [
+            'action' => $this->generateUrl('ajuste_reserva_create'),
             'method' => 'POST',
-            'idCliente' => $idCliente,
-        ));
+            'idCliente' => $reserva->getCliente()->getId(),
+        ]);
 
         return $this->render('situacion_cliente/movimiento_reserva_form.html.twig', [
             'form' => $form->createView(),
             'entity' => $movimiento,
-            'idReserva' => $idReserva,
+            'idReserva' => $reserva->getId(),
             'modal' => true,
-            'token' => bin2hex(random_bytes(16))
+            'esAjuste' => true,
+            'token' => bin2hex(random_bytes(16)),
+            'saldo' => $reserva->getAdelanto(),
         ]);
     }
+
 
     /**
      * @Route("/adelanto_reserva/create", name="adelanto_reserva_create", methods={"POST"})
      * @IsGranted("ROLE_SITUACION_CLIENTE")
      */
     public function adelantoReservaCreateAction(Request $request, MovimientoService $movimientoService): Response {
+        return $this->crearMovimientoReserva($request, $movimientoService, ConstanteTipoMovimiento::ADELANTO_RESERVA
+        );
+    }
+
+    /**
+     * @Route("/ajuste_reserva/create", name="ajuste_reserva_create", methods={"POST"})
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
+     */
+    public function ajusteReservaCreateAction(Request $request, MovimientoService $movimientoService): Response {
+        return $this->crearMovimientoReserva($request, $movimientoService, ConstanteTipoMovimiento::AJUSTE_RESERVA);
+    }
+
+
+    private function crearMovimientoReserva(Request $request, MovimientoService $movimientoService, int $tipoMovimiento): Response {
         try {
             $em = $this->doctrine->getManager();
 
-            $reserva = $em->getRepository(Reserva::class)
-                ->find($request->request->get('idReserva'));
+            $reserva = $em->getRepository(Reserva::class)->find($request->request->get('idReserva'));
 
             if (!$reserva) {
                 throw new \DomainException('Reserva no encontrada');
@@ -276,18 +328,28 @@ class SituacionClienteController extends BaseController {
 
             $movimientoData = $request->request->get('movimiento');
 
+            if (!isset($movimientoData['monto']) || $movimientoData['monto'] <= 0) {
+                throw new \DomainException('El monto debe ser mayor a 0');
+            }
+            if ($tipoMovimiento === ConstanteTipoMovimiento::AJUSTE_RESERVA){
+                if (!$reserva->puedeAjustarse($movimientoData['monto'])) {
+                    throw new \DomainException('El monto ingresado supera el saldo de la reserva.');
+                }
+
+                $movimientoData['modoPago'] = ConstanteModoPago::AJUSTE;
+            }
+
             $movimiento = $movimientoService->crear([
-                'monto'          => $movimientoData['monto'] ?? null,
+                'monto'          => $movimientoData['monto'],
                 'modoPago'       => $movimientoData['modoPago'] ?? null,
                 'descripcion'    => $movimientoData['descripcion'] ?? null,
                 'token'          => $request->request->get('token'),
-                'tipoMovimiento' => ConstanteTipoMovimiento::ADELANTO_RESERVA,
+                'tipoMovimiento' => $tipoMovimiento,
                 'reserva'        => $reserva,
             ]);
 
-
             return $this->json([
-                'message' => 'ADELANTO AGREGADO',
+                'message' => 'OPERACION REALIZADA',
                 'id' => $movimiento->getId(),
                 'statusCode' => 200,
             ]);
@@ -298,4 +360,5 @@ class SituacionClienteController extends BaseController {
             ], 400);
         }
     }
+
 }

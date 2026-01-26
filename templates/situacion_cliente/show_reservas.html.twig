@@ -69,6 +69,11 @@
                                                             <a href="#" class="dropdown-item add-adelanto-reserva" data-reserva="{{ reserva.id }}">
                                                                 <i class="la la-plus" style="margin-right: 5px;"></i> Agregar Adelanto
                                                             </a>
+                                                            {% if reserva.adelanto > 0 %}
+                                                                <a href="#" class="dropdown-item add-ajuste-reserva" data-reserva="{{ reserva.id }}">
+                                                                    <i class="la la-plus" style="margin-right: 5px;"></i> Eliminar Adelanto
+                                                                </a>
+                                                            {% endif %}
                                                             {% if reserva.cliente.celularValido %}
                                                                 <a href="https://api.whatsapp.com/send?phone={{ reserva.cliente.limpiarCelular }}&amp;text=Hola *{{ reserva.cliente.nombreCompleto }}*,%0ATe informamos que su reserva N° *{{ reserva.id }}* fue registrado correctamente.%0A{{ absolute_url(path('imprimir_reserva', {id: reserva.id|b64})) }}%0A%0A¡Gracias por tu compra! 🪴🌿%0A- *Vivero Babyplant*" target="_blank" class="dropdown-item">
                                                                     <i class="la la-whatsapp" style="margin-right: 5px; color: green;"></i> Enviar WhatsApp

@@ -4,7 +4,6 @@ $(document).ready(function () {
     initAgregarSaldo();
     initAgregarPago();
     initAgregarAdelanto();
-    initAgregarAdelantoReserva();
     initVerHistoricoEstadoRemitoHandler();
     initAdjudicarAdelanto();
     initAdjudicarAdelantoReserva();
@@ -14,6 +13,21 @@ $(document).ready(function () {
     initVerHistoricoEstadoReservaHandler();
     initCancelarButton();
     initVerHistoricoEstadoEntregaHandler();
+
+    initMovimientoReserva({
+        triggerSelector: '.add-adelanto-reserva',
+        urlNew: 'situacion_cliente/adelanto_reserva/new',
+        urlCreate: 'situacion_cliente/adelanto_reserva/create',
+        tituloModal: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar Adelanto Reserva'
+    });
+
+    initMovimientoReserva({
+        triggerSelector: '.add-ajuste-reserva',
+        urlNew: 'situacion_cliente/ajuste_reserva/new',
+        urlCreate: 'situacion_cliente/ajuste_reserva/create',
+        tituloModal: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar Ajuste'
+    });
+
 });
 
 function initReservaEntregar(){
@@ -771,101 +785,119 @@ function initMontoFormat() {
     }
 }
 
-function initAgregarAdelantoReserva() {
-    $('.add-adelanto-reserva').on('click', function (e) {
+function initMovimientoReserva(options) {
+    const {
+        triggerSelector,
+        urlNew,
+        urlCreate,
+        tituloModal
+    } = options;
+
+    $(document).on('click', triggerSelector, function (e) {
         e.preventDefault();
+        e.stopPropagation();
+
+        const idReserva = $(this).data('reserva');
+
         $.ajax({
-            type: 'POST',
-            url: __HOMEPAGE_PATH__ + "situacion_cliente/adelanto_reserva/new",
-            data: {
-                idCliente: __ID_USUARIO__,
-                idReserva: $(this).attr("data-reserva"),
-            },
+            type: 'GET',
+            url: __HOMEPAGE_PATH__ + urlNew,
+            data: { idReserva }
         }).done(function (form) {
+
             showDialog({
-                titulo: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar Adelanto Reserva',
+                titulo: tituloModal,
                 contenido: form,
                 labelCancel: 'Cerrar',
                 labelSuccess: 'Guardar',
                 closeButton: true,
-                callbackCancel: function () {
-                    return true;
-                },
+                callbackCancel: () => true,
                 callbackSuccess: function () {
+
                     fv.revalidateField('requiredFields');
-                    status = fv.validate().then((status) => {
-                        if (status === "Valid") {
-                            const form = document.querySelector('form[name="movimiento"]');
-                            const formData = new FormData(form);
 
-                            // Agregar campos adicionales si es necesario
-                            formData.append('idCliente', __ID_USUARIO__);
-                            formData.append('idReserva', $('#idReserva').val());
-
-                            fetch(__HOMEPAGE_PATH__ + "situacion_cliente/adelanto_reserva/create", {
-                                method: 'POST',
-                                body: formData
-                            })
-                                .then(response => {
-                                    if (!response.ok) {
-                                        throw new Error('Error en la respuesta del servidor');
-                                    }
-                                    return response.json();
-                                })
-                                .then(data => {
-                                    toastr.success(data.message);
-                                    $('.modal').modal('hide');
-
-                                    showDialog({
-                                        titulo: 'Imprimir Comprobante Pago',
-                                        contenido: '' +
-                                            '<a href="/situacion_cliente/imprimir-comprobante-movimiento/'+data.id+'" class="btn btn-light-primary blue" title="Imprimir comprobante">\n' +
-                                            '<i class="fa fa-file-pdf text-white"></i> Imprimir A4\n' +
-                                            '</a>'+
-                                            '<a href="/situacion_cliente/imprimir-comprobante-movimiento-ticket/'+data.id+'" class="btn btn-light-primary blue" style="float: right;" title="Imprimir comprobante">\n' +
-                                            '<i class="fa fa-file-pdf text-white"></i> Imprimir TICKET\n' +
-                                            '</a>',
-                                        labelCancel: 'Cerrar',
-                                        labelSuccess: 'Guardar',
-                                        closeButton: true,
-                                        callbackCancel: function () {
-                                            window.location.reload();
-                                            return true;
-                                        }
-                                    });
-
-                                    $('.submit-button').hide();
-                                    $('.bootbox-close-button').hide();
-                                })
-                                .catch(error => {
-                                    console.error('Error:', error);
-                                    toastr.error('Ocurrió un error al procesar la solicitud');
-                                });
+                    fv.validate().then((status) => {
+                        if (status !== "Valid") {
+                            return false;
                         }
-                        $btn.data('loading', false);
-                        $btn.prop('disabled', false);
+
+                        const formEl = document.querySelector('form[name="movimiento"]');
+                        const formData = new FormData(formEl);
+                        formData.append('idReserva', $('#idReserva').val());
+
+                        fetch(__HOMEPAGE_PATH__ + urlCreate, {
+                            method: 'POST',
+                            body: formData
+                        })
+                            .then(r => {
+                                if (!r.ok) throw new Error();
+                                return r.json();
+                            })
+                            .then(data => {
+                                toastr.success(data.message);
+                                $('.modal').modal('hide');
+
+                                mostrarComprobanteMovimiento(data.id);
+                            })
+                            .catch(() => {
+                                toastr.error('El monto ingresado supera el saldo de la reserva.');
+                            });
+
                         return false;
                     });
+
                     return false;
                 }
             });
-            $("#movimiento_modoPago>option[value='4']").attr('disabled','disabled');
-            $("#movimiento_modoPago>option[value='5']").attr('disabled','disabled');
-            $("#movimiento_modoPago>option[value='6']").attr('disabled','disabled');
-            let modal = $('.modal-dialog');
-            $('.modal-body').addClass('pt-1 pb-1');
-            modal.css('width', '80%');
-            modal.addClass('modal-xl');
-            modal.addClass('modal-fullscreen-xl-down');
-            $('#movimiento_modoPago').select2();
-            $('#movimiento_pedido').select2();
-            initFormValidation();
-            initMontoFormat();
+
+            prepararModalMovimiento();
         });
-        e.stopPropagation();
-        return true;
-    })
+    });
 }
+
+function prepararModalMovimiento() {
+    $("#movimiento_modoPago option[value='4']").prop('disabled', true);
+    $("#movimiento_modoPago option[value='5']").prop('disabled', true);
+    $("#movimiento_modoPago option[value='6']").prop('disabled', true);
+
+    const modal = $('.modal-dialog');
+    $('.modal-body').addClass('pt-1 pb-1');
+
+    modal
+        .css('width', '80%')
+        .addClass('modal-xl modal-fullscreen-xl-down');
+
+    $('#movimiento_modoPago').select2();
+    $('#movimiento_pedido').select2();
+
+    initFormValidation();
+    initMontoFormat();
+}
+
+function mostrarComprobanteMovimiento(idMovimiento) {
+    showDialog({
+        titulo: 'Imprimir Comprobante Pago',
+        contenido: `
+            <a href="/situacion_cliente/imprimir-comprobante-movimiento/${idMovimiento}"
+               class="btn btn-light-primary blue">
+                <i class="fa fa-file-pdf text-white"></i> Imprimir A4
+            </a>
+            <a href="/situacion_cliente/imprimir-comprobante-movimiento-ticket/${idMovimiento}"
+               class="btn btn-light-primary blue float-end">
+                <i class="fa fa-file-pdf text-white"></i> Imprimir TICKET
+            </a>
+        `,
+        labelCancel: 'Cerrar',
+        closeButton: true,
+        callbackCancel: () => {
+            window.location.reload();
+            return true;
+        }
+    });
+
+    $('.submit-button, .bootbox-close-button').hide();
+}
+
 
 /**
  *
