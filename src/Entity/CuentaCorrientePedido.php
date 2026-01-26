@@ -120,4 +120,8 @@ class CuentaCorrientePedido {
 
         return $this;
     }
+
+    public function puedeAjustarse($monto){
+        return $this->getSaldo() >= $monto;
+    }
 }

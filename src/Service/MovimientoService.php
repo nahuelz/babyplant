@@ -28,13 +28,9 @@ class MovimientoService
             $data['tipoMovimiento']
         );
 
-        $modoPago = $this->em
-            ->getRepository(ModoPago::class)
-            ->findOneByCodigoInterno($data['modoPago']);
+        $modoPago = $this->em->getRepository(ModoPago::class)->findOneByCodigoInterno($data['modoPago']);
 
-        $tipoMovimiento = $this->em
-            ->getRepository(TipoMovimiento::class)
-            ->findOneByCodigoInterno($data['tipoMovimiento']);
+        $tipoMovimiento = $this->em->getRepository(TipoMovimiento::class)->findOneByCodigoInterno($data['tipoMovimiento']);
 
         $movimiento = new Movimiento();
         $movimiento->setMonto($monto);
@@ -68,15 +64,17 @@ class MovimientoService
     {
         if (!empty($data['cuentaCorrienteUsuario'])) {
             $cc = $data['cuentaCorrienteUsuario'];
+            $movimiento->setCuentaCorrienteUsuario($cc);
             $cc->addMovimiento($movimiento);
             $movimiento->setSaldoCuenta($cc->getSaldo());
         }
 
-        if (!empty($data['pedido'])) {
-            $pedido = $data['pedido'];
-            $movimiento->setPedido($pedido);
-            $pedido->getCuentaCorrientePedido()->addMovimiento($movimiento);
-            $movimiento->setSaldoCuenta($pedido->getCuentaCorrientePedido()->getSaldo());
+        if (!empty($data['cuentaCorrienteUsuarioPedido'])) {
+            $cuentaCorrientePedido = $data['cuentaCorrienteUsuarioPedido'];
+            $movimiento->setPedido($cuentaCorrientePedido->getPedido());
+            $movimiento->setCuentaCorrientePedido($cuentaCorrientePedido);
+            $cuentaCorrientePedido->addMovimiento($movimiento);
+            $movimiento->setSaldoCuenta($cuentaCorrientePedido->getSaldo());
         }
 
         if (!empty($data['reserva'])) {
@@ -91,8 +89,7 @@ class MovimientoService
     private function aplicarSignoPorTipo(float $monto, int $tipoMovimiento): float
     {
         return match ($tipoMovimiento) {
-            ConstanteTipoMovimiento::AJUSTE_RESERVA => -abs($monto),
-            ConstanteTipoMovimiento::ADELANTO_RESERVA => abs($monto),
+            ConstanteTipoMovimiento::AJUSTE_RESERVA, ConstanteTipoMovimiento::AJUSTE_CC => -abs($monto),
             default => $monto,
         };
     }

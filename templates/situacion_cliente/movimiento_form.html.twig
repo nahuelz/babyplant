@@ -1,13 +1,33 @@
 {% import 'app/_macro_form.html.twig' as macro_form %}
 {{ form_start(form, {'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
 {{ form_widget(form._token) }}
+{% if mostrarSaldo %}
+    <div class="row">
+        <div class="modal-body pt-0">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="label label-inline font-size-14 font-dark font-weight-bold {{ esAjuste ? 'label-light-danger' : 'label-light-success' }}" style="padding: 15px">
+                        SALDO: {{ saldo|money_format }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
 <div class="row">
     <div class="modal-body" style="padding-top: 0;padding-bottom: 0;">
         <div class="row">
-            {{ macro_form._new_field(form.modoPago, "col-md-6") }}
+            {% if not esAjuste %}
+                {{ macro_form._new_field(form.modoPago, "col-md-6") }}
+            {% endif %}
             {{ macro_form._new_field(form.monto, "col-md-6") }}
-            {{ macro_form._new_field(form.pedido, "col-md-12") }}
+            {% if idCuentaCorrientePedido %}
+                {{ macro_form._new_field(form.pedido, "col-md-12") }}
+            {% endif %}
             {{ macro_form._new_field(form.descripcion, "col-md-12") }}
+            <input type="hidden" name="idReserva" id="idReserva" value="{{ idReserva|default('') }}">
+            <input type="hidden" name="idCuentaCorrienteUsuario" id="idCuentaCorrienteUsuario" value="{{ idCuentaCorrienteUsuario|default('') }}">
+            <input type="hidden" name="idCuentaCorrientePedido" id="idCuentaCorrientePedido" value="{{ idCuentaCorrientePedido|default('') }}">
             <input id="movimiento_token" type="hidden" name="token" value="{{ token }}">
         </div>
     </div>

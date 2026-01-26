@@ -8,7 +8,11 @@
                 {{ macro_form._new_field(form.modoPago, "col-md-6") }}
             {% endif %}
             {{ macro_form._new_field(form.monto, "col-md-6") }}
+            {{ macro_form._new_field(form.pedido, "col-md-12") }}
             {{ macro_form._new_field(form.descripcion, "col-md-12") }}
+            <input type="hidden" name="idReserva" id="idReserva" value="{{ idReserva }}">
+            <input type="hidden" name="idCuentaCorrienteUsuario" id="idCuentaCorrienteUsuario" value="{{ idCuentaCorrienteUsuario }}">
+            <input type="hidden" name="idCuentaCorrientePedido" id="idCuentaCorrientePedido" value="{{ idCuentaCorrientePedido }}">
             <input id="movimiento_token" type="hidden" name="token" value="{{ token }}">
         </div>
     </div>

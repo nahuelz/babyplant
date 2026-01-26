@@ -126,4 +126,8 @@ class CuentaCorrienteUsuario {
 
         return $this;
     }
+
+    public function puedeAjustarse($monto){
+        return $this->getSaldo() >= (float) $monto;
+    }
 }

@@ -1,34 +1,63 @@
 let fv;
 let fvPago;
 $(document).ready(function () {
-    initAgregarSaldo();
     initAgregarPago();
-    initAgregarAdelanto();
     initVerHistoricoEstadoRemitoHandler();
     initAdjudicarAdelanto();
     initAdjudicarAdelantoReserva();
-    initAdjudicarCC();
-    enviarCC();
     initReservaEntregar();
     initVerHistoricoEstadoReservaHandler();
     initCancelarButton();
     initVerHistoricoEstadoEntregaHandler();
+    initMovimientos();
+    initAdjudicarCC();
+});
 
-    initMovimientoReserva({
+
+
+function initMovimientos(){
+    initMovimiento({
+        triggerSelector: '.add-adelanto-pedido',
+        urlNew: 'situacion_cliente/adelanto_pedido/new',
+        urlCreate: 'situacion_cliente/adelanto_pedido/create',
+        tituloModal: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar Adelanto Pedido'
+    });
+
+    initMovimiento({
+        triggerSelector: '.add-ajuste-pedido',
+        urlNew: 'situacion_cliente/adelanto_pedido/new',
+        urlCreate: 'situacion_cliente/adelanto_pedido/create',
+        tituloModal: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar Ajuste Pedido'
+    });
+
+    initMovimiento({
+        triggerSelector: '.add-adelanto-cc',
+        urlNew: 'situacion_cliente/adelanto_cc/new',
+        urlCreate: 'situacion_cliente/adelanto_cc/create',
+        tituloModal: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar Adelanto Cuenta Corriente'
+    });
+
+    initMovimiento({
+        triggerSelector: '.add-ajuste-cc',
+        urlNew: 'situacion_cliente/ajuste_cc/new',
+        urlCreate: 'situacion_cliente/ajuste_cc/create',
+        tituloModal: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar Ajuste Cuenta Corriente'
+    });
+
+    initMovimiento({
         triggerSelector: '.add-adelanto-reserva',
         urlNew: 'situacion_cliente/adelanto_reserva/new',
         urlCreate: 'situacion_cliente/adelanto_reserva/create',
         tituloModal: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar Adelanto Reserva'
     });
 
-    initMovimientoReserva({
+    initMovimiento({
         triggerSelector: '.add-ajuste-reserva',
         urlNew: 'situacion_cliente/ajuste_reserva/new',
         urlCreate: 'situacion_cliente/ajuste_reserva/create',
-        tituloModal: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar Ajuste'
+        tituloModal: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar Ajuste Reserva'
     });
-
-});
+}
 
 function initReservaEntregar(){
     $(document).off('click', '.reserva-entregar').on('click', '.reserva-entregar', function (e) {
@@ -132,215 +161,6 @@ function initFormValidationPago() {
             submitButton: new FormValidation.plugins.SubmitButton(),
         }
     });
-}
-
-function initAgregarAdelanto() {
-    $('.add-adelanto').on('click', function (e) {
-        e.preventDefault();
-        $.ajax({
-            type: 'POST',
-            url: __HOMEPAGE_PATH__ + "situacion_cliente/adelanto_pedido/new",
-            data: {
-                idCliente: __ID_USUARIO__,
-            },
-        }).done(function (form) {
-            showDialog({
-                titulo: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar Adelanto Pedido',
-                contenido: form,
-                labelCancel: 'Cerrar',
-                labelSuccess: 'Guardar',
-                closeButton: true,
-                callbackCancel: function () {
-                    return true;
-                },
-                callbackSuccess: function () {
-                    const $btn = $('.submit-button');
-                    // Evita doble click
-                    if ($btn.data('loading')) {
-                        return false;
-                    }
-                    $btn.data('loading', true);
-                    $btn.prop('disabled', true);
-                    fv.revalidateField('requiredFields');
-                    status = fv.validate().then((status) => {
-                        if (status === "Valid") {
-                            let modoPago = $('#movimiento_modoPago').val();
-                            let monto = $('#movimiento_monto').val();
-                            let descripcion = $('#movimiento_descripcion').val();
-                            let idPedido = $('#movimiento_pedido').val();
-                            let token = $('#movimiento_token').val();
-                            $.ajax({
-                                type: 'POST',
-                                url: __HOMEPAGE_PATH__ + "situacion_cliente/adelanto_pedido/create",
-                                dataType: 'json',
-                                data: {
-                                    modoPago: modoPago,
-                                    monto: monto,
-                                    descripcion: descripcion,
-                                    idUsuario: __ID_USUARIO__,
-                                    idPedido: idPedido,
-                                    token: token,
-                                },
-                                success: function (data) {
-                                    toastr.success(data.message);
-                                    $('.modal').modal('hide'); // <- cierra el primer modal
-                                    showDialog({
-                                        titulo: 'Imprimir Comprobante Pago',
-                                        contenido: '' +
-                                            '<a href="/situacion_cliente/imprimir-comprobante-movimiento/'+data.id+'" class="btn btn-light-primary blue" title="Imprimir comprobante">\n' +
-                                            '<i class="fa fa-file-pdf text-white"></i> Imprimir A4\n' +
-                                            '</a>'+
-                                            '<a href="/situacion_cliente/imprimir-comprobante-movimiento-ticket/'+data.id+'" class="btn btn-light-primary blue" style=" float: right; " title="Imprimir comprobante">\n' +
-                                            '<i class="fa fa-file-pdf text-white"></i> Imprimir TICKET\n' +
-                                            '</a>',
-                                        labelCancel: 'Cerrar',
-                                        labelSuccess: 'Guardar',
-                                        closeButton: true,
-                                        callbackCancel: function () {
-                                            window.location.reload();
-                                            return true;
-                                        }
-                                    });
-                                    $('.submit-button').hide();
-                                    $('.bootbox-close-button').hide();
-
-                                },
-                                error: function () {
-                                    $btn.prop('disabled', false);
-                                    $btn.data('loading', false);
-                                    return true;
-                                }
-                            });
-                        } else {
-                            $btn.prop('disabled', false);
-                            $btn.data('loading', false);
-                            return false;
-                        }
-                    });
-                    return false;
-                }
-            });
-            $("#movimiento_modoPago>option[value='4']").attr('disabled','disabled');
-            $("#movimiento_modoPago>option[value='5']").attr('disabled','disabled');
-            $("#movimiento_modoPago>option[value='6']").attr('disabled','disabled');
-            let modal = $('.modal-dialog');
-            modal.css('width', '80%');
-            modal.addClass('modal-xl');
-            modal.addClass('modal-fullscreen-xl-down');
-            $('#movimiento_modoPago').select2();
-            $('#movimiento_pedido').select2();
-            initFormValidation();
-            initMontoFormat();
-        });
-        e.stopPropagation();
-        return true;
-    })
-}
-
-function initAgregarSaldo() {
-    $('.adelanto-cc').on('click', function (e) {
-        e.preventDefault();
-        $.ajax({
-            type: 'POST',
-            url: __HOMEPAGE_PATH__ + "situacion_cliente/adelanto_cc/new",
-            data: {
-                idCuentaCorrienteUsuario: __ID_CUENTA_CORRIENTE__,
-            },
-        }).done(function (form) {
-            showDialog({
-                titulo: '<i class="fa fa-list-ul margin-right-10"></i> Cuenta Corriente',
-                contenido: form,
-                labelCancel: 'Cerrar',
-                labelSuccess: 'Guardar',
-                closeButton: true,
-                callbackCancel: function () {
-                    return true;
-                },
-                callbackSuccess: function () {
-                    const $btn = $('.submit-button');
-                    // Evita doble click
-                    if ($btn.data('loading')) {
-                        return false;
-                    }
-                    $btn.data('loading', true);
-                    $btn.prop('disabled', true);
-                    fv.revalidateField('requiredFields');
-                    status = fv.validate().then((status) => {
-                        if (status === "Valid") {
-                            let modoPago = $('#movimiento_modoPago').val();
-                            let monto = $('#movimiento_monto').val();
-                            let descripcion = $('#movimiento_descripcion').val();
-                            let token = $('#movimiento_token').val();
-                            $.ajax({
-                                type: 'POST',
-                                url: __HOMEPAGE_PATH__ + "situacion_cliente/adelanto_cc/create",
-                                dataType: 'json',
-                                data: {
-                                    modoPago: modoPago,
-                                    monto: monto,
-                                    descripcion: descripcion,
-                                    idCuentaCorrienteUsuario: __ID_CUENTA_CORRIENTE__,
-                                    idUsuario: __ID_USUARIO__,
-                                    token: token,
-                                },
-                                success: function (data) {
-                                    if (data.statusCode === 200) {
-                                        toastr.success(data.message);
-                                        $('.modal').modal('hide'); // <- cierra el primer modal
-                                        showDialog({
-                                            titulo: 'Imprimir Comprobante Pago',
-                                            contenido: '' +
-                                                '<a href="/situacion_cliente/imprimir-comprobante-movimiento/'+data.id+'" class="btn btn-light-primary blue" title="Imprimir comprobante">\n' +
-                                                '<i class="fa fa-file-pdf text-white"></i> Imprimir A4\n' +
-                                                '</a>'+
-                                                '<a href="/situacion_cliente/imprimir-comprobante-movimiento-ticket/'+data.id+'" class="btn btn-light-primary blue" style=" float: right; " title="Imprimir comprobante">\n' +
-                                                '<i class="fa fa-file-pdf text-white"></i> Imprimir TICKET\n' +
-                                                '</a>',
-                                            labelCancel: 'Cerrar',
-                                            labelSuccess: 'Guardar',
-                                            closeButton: true,
-                                            callbackCancel: function () {
-                                                window.location.reload();
-                                                return true;
-                                            }
-                                        });
-                                        $('.submit-button').hide();
-                                        $('.bootbox-close-button').hide();
-                                    }else{
-                                        toastr.error(data.message);
-                                        $('.bootbox-close-button').click();
-                                    }
-                                },
-                                error: function () {
-                                    $btn.data('loading', false);
-                                    $btn.prop('disabled', false);
-                                    return true;
-                                }
-                            });
-                        } else {
-                            $btn.data('loading', false);
-                            $btn.prop('disabled', false);
-                            return false;
-                        }
-                    });
-                    return false;
-                }
-            });
-            $("#movimiento_modoPago>option[value='4']").attr('disabled','disabled');
-            $("#movimiento_modoPago>option[value='5']").attr('disabled','disabled');
-            $("#movimiento_modoPago>option[value='6']").attr('disabled','disabled');
-            let modal = $('.modal-dialog');
-            modal.css('width', '80%');
-            modal.addClass('modal-xl');
-            modal.addClass('modal-fullscreen-xl-down');
-            $('#movimiento_modoPago').select2();
-            $('#movimiento_pedido').select2();
-            initFormValidation();
-            initMontoFormat();
-        });
-        e.stopPropagation();
-        return true;
-    })
 }
 
 function initAdjudicarAdelanto() {
@@ -464,141 +284,6 @@ function initAdjudicarAdelantoReserva() {
                         }).done(function (form) {
                             Swal.fire({
                                 title: 'Se adjudicó el adelanto.',
-                                icon: "success",
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.location.reload();
-                                }
-                            });
-                        });
-                    }
-                });
-                let modal = $('.modal-dialog');
-                $('.modal-body').addClass('pt-1 pb-1');
-                modal.css('width', '80%');
-                modal.addClass('modal-xl');
-                modal.addClass('modal-fullscreen-xl-down');
-            });
-        }
-    });
-}
-
-function enviarCC() {
-    $('.enviar-cc').on('click', function (e) {
-        e.preventDefault();
-        let remito = $(this).data("remito");
-
-        Swal.fire({
-            title: '¿Está seguro?',
-            text: 'Se enviará el adelanto a la cuenta corriente.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Aceptar',
-            cancelButtonText: 'Cancelar',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    type: 'POST',
-                    url: __HOMEPAGE_PATH__ + "pago/enviarCC",
-                    data: { idRemito: remito },
-                    dataType: 'json'  // <--- esto es clave
-                }).done(function (result) {
-                    console.log(result);
-                    //{"message":"Se enviaron $2000 a la cuenta corriente","statusCode":200,"statusText":"OK"}
-                    Swal.fire({
-                        title: 'Envío exitoso',
-                        text: result.message,
-                        icon: 'success',
-                        confirmButtonText: 'Ok'
-                    }).then(() => {
-                        window.location.reload();
-                    });
-                });
-            }
-        });
-    });
-}
-
-
-function initAdjudicarCC() {
-    $('.add-pago-cc').on('click', function (e) {
-        e.preventDefault();
-
-        let row = $(this).closest("tr");
-
-        let adelantoTexto = row.find(".monto-adelanto").text();
-        let adelantoReservaTexto = row.find(".monto-adelanto-reserva").text();
-
-        // Limpiar el texto para obtener solo el número
-        let adelanto = adelantoTexto.replace(/[^0-9,-]+/g, "").replace(",", ".");
-        adelanto = parseFloat(adelanto);
-
-        // Limpiar el texto para obtener solo el número
-        let adelantoReserva = adelantoReservaTexto.replace(/[^0-9,-]+/g, "").replace(",", ".");
-        adelantoReserva = parseFloat(adelantoReserva);
-
-        if (adelanto > 0) {
-            Swal.fire({
-                title: 'Primero debe adjudicar el adelanto.',
-                icon: "warning",
-            });
-            return false;
-        }
-
-        if (adelantoReserva > 0) {
-            Swal.fire({
-                title: 'Primero debe adjudicar el adelanto reserva.',
-                icon: "warning",
-            });
-            return false;
-        }
-
-        let ccTexto = $(".saldo-cc").text();
-
-        // Limpiar el texto para obtener solo el número
-        let cc = ccTexto.replace(/[^0-9,-]+/g, "").replace(",", ".");
-        cc = parseFloat(cc);
-
-        if (cc === 0) {
-            Swal.fire({
-                title: 'El cliente no posee saldo en la Cuenta Corriente.',
-                icon: "warning",
-            });
-            return false;
-        } else {
-            let remito = $(this).attr("data-remito");
-            let monto = $(this).attr("data-monto");
-            $.ajax({
-                type: 'POST',
-                url: __HOMEPAGE_PATH__ + "pago/new",
-                data: {
-                    monto: monto,
-                    idRemito: remito,
-                    modoPago: 'CC',
-                    idCuentaCorrienteUsuario: __ID_CUENTA_CORRIENTE__,
-                },
-            }).done(function (form) {
-                showDialog({
-                    titulo: '<i class="fa fa-list-ul margin-right-10"></i>ADJUDICAR CUENTA CORRIENTE - REMITO N°' + remito,
-                    contenido: form,
-                    labelCancel: 'Cancelar',
-                    labelSuccess: 'Adjudicar Pago',
-                    closeButton: true,
-                    callbackCancel: function () {
-                        return true;
-                    },
-                    callbackSuccess: function () {
-                        $.ajax({
-                            type: 'POST',
-                            url: __HOMEPAGE_PATH__ + "pago/adjudicar",
-                            data: {
-                                idRemito: remito,
-                                modoPago: 'CC'
-                            },
-                        }).done(function (form) {
-                            Swal.fire({
-                                title: 'Se adjudicó el pago.',
                                 icon: "success",
                             }).then((result) => {
                                 if (result.isConfirmed) {
@@ -785,7 +470,7 @@ function initMontoFormat() {
     }
 }
 
-function initMovimientoReserva(options) {
+function initMovimiento(options) {
     const {
         triggerSelector,
         urlNew,
@@ -798,11 +483,13 @@ function initMovimientoReserva(options) {
         e.stopPropagation();
 
         const idReserva = $(this).data('reserva');
+        const idCuentaCorrienteUsuario = $(this).data('cuentacorrienteusuario');
+        const idCliente = $(this).data('idcliente');
 
         $.ajax({
             type: 'GET',
             url: __HOMEPAGE_PATH__ + urlNew,
-            data: { idReserva }
+            data: { idReserva, idCuentaCorrienteUsuario, idCliente }
         }).done(function (form) {
 
             showDialog({
@@ -824,6 +511,7 @@ function initMovimientoReserva(options) {
                         const formEl = document.querySelector('form[name="movimiento"]');
                         const formData = new FormData(formEl);
                         formData.append('idReserva', $('#idReserva').val());
+                        formData.append('idCuentaCorrienteUsuario', $('#idCuentaCorrienteUsuario').val());
 
                         fetch(__HOMEPAGE_PATH__ + urlCreate, {
                             method: 'POST',
@@ -992,6 +680,143 @@ function initVerHistoricoEstadoEntregaHandler() {
             $('.bs-popover-top').hide();
             $('.btn-submit').hide();
         });
+    });
+}
+
+
+function parseMonto(texto) {
+    if (!texto) return 0;
+
+    return parseFloat(
+        texto.replace(/[^0-9,-]+/g, "").replace(",", ".")
+    ) || 0;
+}
+
+function validarSaldosPrevios() {
+    const adelanto = parseMonto($(".monto-adelanto").text());
+    const adelantoReserva = parseMonto($(".monto-adelanto-reserva").text());
+
+    if (adelanto > 0) {
+        Swal.fire({ title: 'Primero debe adjudicar el adelanto.', icon: 'warning' });
+        return false;
+    }
+
+    if (adelantoReserva > 0) {
+        Swal.fire({ title: 'Primero debe adjudicar el adelanto reserva.', icon: 'warning' });
+        return false;
+    }
+
+    return true;
+}
+
+function validarSaldoCC() {
+    const saldo = parseMonto($(".saldo-cc").text());
+
+    if (saldo === 0) {
+        Swal.fire({
+            title: 'El cliente no posee saldo en la Cuenta Corriente.',
+            icon: 'warning'
+        });
+        return false;
+    }
+
+    return true;
+}
+
+function initAdjudicarCC() {
+    $('.add-pago-cc').on('click', function (e) {
+        e.preventDefault();
+
+        let row = $(this).closest("tr");
+
+        let adelantoTexto = row.find(".monto-adelanto").text();
+        let adelantoReservaTexto = row.find(".monto-adelanto-reserva").text();
+
+        // Limpiar el texto para obtener solo el número
+        let adelanto = adelantoTexto.replace(/[^0-9,-]+/g, "").replace(",", ".");
+        adelanto = parseFloat(adelanto);
+
+        // Limpiar el texto para obtener solo el número
+        let adelantoReserva = adelantoReservaTexto.replace(/[^0-9,-]+/g, "").replace(",", ".");
+        adelantoReserva = parseFloat(adelantoReserva);
+
+        if (adelanto > 0) {
+            Swal.fire({
+                title: 'Primero debe adjudicar el adelanto.',
+                icon: "warning",
+            });
+            return false;
+        }
+
+        if (adelantoReserva > 0) {
+            Swal.fire({
+                title: 'Primero debe adjudicar el adelanto reserva.',
+                icon: "warning",
+            });
+            return false;
+        }
+
+        let ccTexto = $(".saldo-cc").text();
+
+        // Limpiar el texto para obtener solo el número
+        let cc = ccTexto.replace(/[^0-9,-]+/g, "").replace(",", ".");
+        cc = parseFloat(cc);
+
+        if (cc === 0) {
+            Swal.fire({
+                title: 'El cliente no posee saldo en la Cuenta Corriente.',
+                icon: "warning",
+            });
+            return false;
+        } else {
+            let remito = $(this).attr("data-remito");
+            let monto = $(this).attr("data-monto");
+            $.ajax({
+                type: 'POST',
+                url: __HOMEPAGE_PATH__ + "pago/new",
+                data: {
+                    monto: monto,
+                    idRemito: remito,
+                    modoPago: 'CC',
+                    idCuentaCorrienteUsuario: __ID_CUENTA_CORRIENTE__,
+                },
+            }).done(function (form) {
+                showDialog({
+                    titulo: '<i class="fa fa-list-ul margin-right-10"></i>ADJUDICAR CUENTA CORRIENTE - REMITO N°' + remito,
+                    contenido: form,
+                    labelCancel: 'Cancelar',
+                    labelSuccess: 'Adjudicar Pago',
+                    closeButton: true,
+                    callbackCancel: function () {
+                        return true;
+                    },
+                    callbackSuccess: function () {
+                        $.ajax({
+                            type: 'POST',
+                            url: __HOMEPAGE_PATH__ + "pago/adjudicar",
+                            data: {
+                                idRemito: remito,
+                                modoPago: 'CC'
+                            },
+                        }).done(function (form) {
+                            Swal.fire({
+                                title: 'Se adjudicó el pago.',
+                                icon: "success",
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.reload();
+                                }
+                            });
+                        });
+                    }
+                });
+                let modal = $('.modal-dialog');
+                $('.modal-body').addClass('pt-1 pb-1');
+                modal.css('width', '80%');
+                modal.addClass('modal-xl');
+                modal.addClass('modal-fullscreen-xl-down');
+            });
+        }
     });
 }
 

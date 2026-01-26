@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Constants\ConstanteModoPago;
 use App\Entity\Constants\ConstanteTipoMovimiento;
+use App\Entity\CuentaCorrientePedido;
+use App\Entity\CuentaCorrienteUsuario;
 use App\Entity\Movimiento;
 use App\Entity\Pedido;
 use App\Entity\Reserva;
@@ -99,136 +101,7 @@ class SituacionClienteController extends BaseController {
     }
 
     /**
-     * @Route("/adelanto_cc/new", name="adelanto_cc_new", methods={"GET","POST"})
-     * @IsGranted("ROLE_SITUACION_CLIENTE")
-     */
-    public function movimientoNewAction(Request $request): Response
-    {
-        $movimiento = new Movimiento();
-
-        $form = $this->createForm(MovimientoType::class, $movimiento, [
-            'action' => $this->generateUrl('adelanto_cc_create'),
-            'method' => 'POST',
-        ]);
-
-        return $this->render('situacion_cliente/cuenta_corriente_form.html.twig', [
-            'form' => $form->createView(),
-            'entity' => $movimiento,
-            'modal' => true,
-            'token' => bin2hex(random_bytes(16)),
-            'idCuentaCorrienteUsuario' => $request->request->get('idCuentaCorrienteUsuario'),
-        ]);
-    }
-
-
-    /**
-     * @Route("/adelanto_cc/create", name="adelanto_cc_create", methods={"POST"})
-     * @IsGranted("ROLE_SITUACION_CLIENTE")
-     */
-    public function movimientoCreateAction(Request $request, MovimientoService $movimientoService): Response {
-        try {
-            $em = $this->doctrine->getManager();
-
-            $cuentaCorrienteUsuario = $em
-                ->getRepository(\App\Entity\CuentaCorrienteUsuario::class)
-                ->find($request->request->get('idCuentaCorrienteUsuario'));
-
-            if (!$cuentaCorrienteUsuario) {
-                throw new \DomainException('Cuenta corriente no encontrada');
-            }
-
-            $movimiento = $movimientoService->crear([
-                'token'                  => $request->request->get('token'),
-                'monto'                  => $request->request->get('monto'),
-                'modoPago'               => $request->request->get('modoPago'),
-                'descripcion'            => $request->request->get('descripcion'),
-                'tipoMovimiento'         => ConstanteTipoMovimiento::ADELANTO_CC,
-                'cuentaCorrienteUsuario' => $cuentaCorrienteUsuario,
-            ]);
-
-            // Este dato no estaba en el service (detalle CC)
-            $movimiento->setMontoDeuda($cuentaCorrienteUsuario->getPendiente());
-            $em->flush();
-
-            return $this->json([
-                'message' => 'SALDO AGREGADO',
-                'id' => $movimiento->getId(),
-                'statusCode' => 200,
-
-            ]);
-
-        } catch (\DomainException $e) {
-            return $this->json([
-                'message' => $e->getMessage(),
-            ], 400);
-        }
-    }
-
-    /**
-     * @Route("/adelanto_pedido/new", name="adelanto_pedido_new", methods={"GET","POST"})
-     * @IsGranted("ROLE_SITUACION_CLIENTE")
-     */
-    public function adelantoNewAction(Request $request): Response
-    {
-        $movimiento = new Movimiento();
-        $idCliente = $request->request->get('idCliente');
-
-        $form = $this->createForm(MovimientoType::class, $movimiento, array(
-            'action' => $this->generateUrl('adelanto_create'),
-            'method' => 'POST',
-            'idCliente' => $idCliente,
-        ));
-
-        return $this->render('situacion_cliente/movimiento_form.html.twig', [
-            'form' => $form->createView(),
-            'entity' => $movimiento,
-            'modal' => true,
-            'token' => bin2hex(random_bytes(16))
-        ]);
-    }
-
-    /**
-     * @Route("/adelanto_pedido/create", name="adelanto_create", methods={"GET", "POST"})
-     * @IsGranted("ROLE_SITUACION_CLIENTE")
-     */
-    public function adelantoCreateAction(
-        Request $request,
-        MovimientoService $movimientoService
-    ): Response {
-        try {
-            $em = $this->doctrine->getManager();
-
-            $pedido = $em->getRepository(Pedido::class)
-                ->find($request->request->get('idPedido'));
-
-            if (!$pedido) {
-                throw new \DomainException('Pedido no encontrado');
-            }
-
-            $movimiento = $movimientoService->crear([
-                'token'          => $request->request->get('token'),
-                'monto'          => $request->request->get('monto'),
-                'modoPago'       => $request->request->get('modoPago'),
-                'descripcion'    => $request->request->get('descripcion'),
-                'tipoMovimiento' => ConstanteTipoMovimiento::ADELANTO_PEDIDO,
-                'pedido'         => $pedido,
-            ]);
-
-            return $this->json([
-                'message' => 'ADELANTO AGREGADO',
-                'id' => $movimiento->getId(),
-                'statusCode' => 200,
-            ]);
-
-        } catch (\DomainException $e) {
-            return $this->json([
-                'message' => $e->getMessage(),
-            ], 400);
-        }
-    }
-
-    /**
-     * @Route("/adelanto_reserva/new", name="adelanto_reserva_new", methods={"GET", "POST"})
+     * @Route("/adelanto_reserva/new", name="adelanto_reserva_new", methods={"GET"})
      * @IsGranted("ROLE_SITUACION_CLIENTE")
      */
     public function adelantoReservaNewAction(Request $request): Response
@@ -251,13 +124,16 @@ class SituacionClienteController extends BaseController {
             'idCliente' => $reserva->getCliente()->getId(),
         ]);
 
-        return $this->render('situacion_cliente/movimiento_reserva_form.html.twig', [
+        return $this->render('situacion_cliente/movimiento_form.html.twig', [
             'form' => $form->createView(),
             'entity' => $movimiento,
             'idReserva' => $reserva->getId(),
+            'idCuentaCorrienteUsuario' => null,
+            'idCuentaCorrientePedido' => null,
             'modal' => true,
             'esAjuste' => false,
             'token' => bin2hex(random_bytes(16)),
+            'mostrarSaldo' => true,
             'saldo' => $reserva->getAdelanto(),
         ]);
     }
@@ -286,14 +162,17 @@ class SituacionClienteController extends BaseController {
             'idCliente' => $reserva->getCliente()->getId(),
         ]);
 
-        return $this->render('situacion_cliente/movimiento_reserva_form.html.twig', [
+        return $this->render('situacion_cliente/movimiento_form.html.twig', [
             'form' => $form->createView(),
             'entity' => $movimiento,
             'idReserva' => $reserva->getId(),
+            'idCuentaCorrienteUsuario' => null,
+            'idCuentaCorrientePedido' => null,
             'modal' => true,
             'esAjuste' => true,
             'token' => bin2hex(random_bytes(16)),
             'saldo' => $reserva->getAdelanto(),
+            'mostrarSaldo' => true,
         ]);
     }
 
@@ -361,4 +240,279 @@ class SituacionClienteController extends BaseController {
         }
     }
 
+
+    /**
+     * @Route("/adelanto_cc/new", name="adelanto_cc_new", methods={"GET"})
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
+     */
+    public function adelantoCCNewAction(Request $request): Response
+    {
+        $em = $this->doctrine->getManager();
+
+        $cuentaCorrienteUsuario = $em->getRepository(CuentaCorrienteUsuario::class)->find($request->query->get('idCuentaCorrienteUsuario'));
+
+        if (!$cuentaCorrienteUsuario) {
+            throw $this->createNotFoundException('Cuenta Corriente no encontrada');
+        }
+
+        $movimiento = new Movimiento();
+        $movimiento->setCuentaCorrienteUsuario($cuentaCorrienteUsuario);
+
+        $form = $this->createForm(MovimientoType::class, $movimiento, [
+            'action' => $this->generateUrl('adelanto_reserva_create'),
+            'method' => 'POST',
+            'idCliente' => $cuentaCorrienteUsuario->getCliente()->getId(),
+        ]);
+
+        return $this->render('situacion_cliente/movimiento_form.html.twig', [
+            'form' => $form->createView(),
+            'entity' => $movimiento,
+            'idCuentaCorrienteUsuario' => $cuentaCorrienteUsuario->getId(),
+            'idCuentaCorrientePedido' => null,
+            'idReserva' => null,
+            'modal' => true,
+            'esAjuste' => false,
+            'token' => bin2hex(random_bytes(16)),
+            'saldo' => $cuentaCorrienteUsuario->getSaldo(),
+            'mostrarSaldo' => true,
+        ]);
+    }
+
+    /**
+     * @Route("/ajuste_cc/new", name="ajuste_cc_new", methods={"GET"})
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
+     */
+    public function ajusteCCNewAction(Request $request): Response
+    {
+        $em = $this->doctrine->getManager();
+
+        $idCuentaCorrienteUsuario = $request->query->get('idCuentaCorrienteUsuario');
+        $cuentaCorrienteUsuario = $em->getRepository(CuentaCorrienteUsuario::class)->find($idCuentaCorrienteUsuario);
+
+        if (!$cuentaCorrienteUsuario) {
+            throw $this->createNotFoundException('Cuenta corriente no encontrada');
+        }
+
+        $movimiento = new Movimiento();
+        $movimiento->setCuentaCorrienteUsuario($cuentaCorrienteUsuario);
+
+        $form = $this->createForm(MovimientoType::class, $movimiento, [
+            'action' => $this->generateUrl('ajuste_reserva_create'),
+            'method' => 'POST',
+            'idCliente' => $cuentaCorrienteUsuario->getCliente()->getId(),
+        ]);
+
+        return $this->render('situacion_cliente/movimiento_form.html.twig', [
+            'form' => $form->createView(),
+            'entity' => $movimiento,
+            'idCuentaCorrienteUsuario' => $cuentaCorrienteUsuario->getId(),
+            'idCuentaCorrientePedido' => null,
+            'idReserva' => null,
+            'modal' => true,
+            'esAjuste' => true,
+            'token' => bin2hex(random_bytes(16)),
+            'saldo' => $cuentaCorrienteUsuario->getSaldo(),
+            'mostrarSaldo' => true,
+        ]);
+    }
+
+
+    /**
+     * @Route("/adelanto_cc/create", name="adelanto_cc_create", methods={"POST"})
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
+     */
+    public function adelantoCCCreateAction(Request $request, MovimientoService $movimientoService): Response {
+        return $this->crearMovimientoCC($request, $movimientoService, ConstanteTipoMovimiento::ADELANTO_CC
+        );
+    }
+
+    /**
+     * @Route("/ajuste_cc/create", name="ajuste_cc_create", methods={"POST"})
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
+     */
+    public function ajusteCCCreateAction(Request $request, MovimientoService $movimientoService): Response {
+        return $this->crearMovimientoCC($request, $movimientoService, ConstanteTipoMovimiento::AJUSTE_CC);
+    }
+
+
+    private function crearMovimientoCC(Request $request, MovimientoService $movimientoService, int $tipoMovimiento): Response {
+        try {
+            $em = $this->doctrine->getManager();
+
+            $cuentaCorrienteUsuario = $em->getRepository(CuentaCorrienteUsuario::class)->find($request->request->get('idCuentaCorrienteUsuario'));
+
+            if (!$cuentaCorrienteUsuario) {
+                throw new \DomainException('Cuenta Corriente no encontrada');
+            }
+
+            $movimientoData = $request->request->get('movimiento');
+            if (!isset($movimientoData['monto']) || $movimientoData['monto'] <= 0) {
+                throw new \DomainException('El monto debe ser mayor a 0');
+            }
+            if ($tipoMovimiento === ConstanteTipoMovimiento::AJUSTE_CC){
+                if (!$cuentaCorrienteUsuario->puedeAjustarse($movimientoData['monto'])) {
+                    dd('aca2424');
+                    throw new \DomainException('El monto ingresado supera el saldo de la cuenta corriente.');
+                }
+
+                $movimientoData['modoPago'] = ConstanteModoPago::AJUSTE;
+            }
+
+            $movimiento = $movimientoService->crear([
+                'monto'                     => $movimientoData['monto'],
+                'modoPago'                  => $movimientoData['modoPago'] ?? null,
+                'descripcion'               => $movimientoData['descripcion'] ?? null,
+                'token'                     => $request->request->get('token'),
+                'tipoMovimiento'            => $tipoMovimiento,
+                'cuentaCorrienteUsuario'    => $cuentaCorrienteUsuario,
+            ]);
+
+            return $this->json([
+                'message' => 'OPERACION REALIZADA',
+                'id' => $movimiento->getId(),
+                'statusCode' => 200,
+            ]);
+
+        } catch (\DomainException $e) {
+            return $this->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+
+    /**
+     * @Route("/adelanto_pedido/new", name="adelanto_pedido_new", methods={"GET"})
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
+     */
+    public function adelantoPedidoNewAction(Request $request): Response
+    {
+        $movimiento = new Movimiento();;
+
+        $form = $this->createForm(MovimientoType::class, $movimiento, [
+            'action' => $this->generateUrl('adelanto_pedido_create'),
+            'method' => 'POST',
+            'idCliente' => $request->query->get('idCliente'),
+        ]);
+
+        return $this->render('situacion_cliente/movimiento_form.html.twig', [
+            'form' => $form->createView(),
+            'entity' => $movimiento,
+            'idCuentaCorrienteUsuario' => null,
+            'idCuentaCorrientePedido' => true,
+            'idReserva' => null,
+            'modal' => true,
+            'esAjuste' => false,
+            'mostrarSaldo' => false,
+            'saldo' => false,
+            'token' => bin2hex(random_bytes(16)),
+        ]);
+    }
+
+    /**
+     * @Route("/ajuste_pedido/new", name="ajuste_pedido_new", methods={"GET"})
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
+     */
+    public function ajustePedidoNewAction(Request $request): Response
+    {
+        $em = $this->doctrine->getManager();
+
+        $idCuentaCorrientePedido = $request->query->get('idCuentaCorrienteUsuario');
+        $cuentaCorrientePedido = $em->getRepository(CuentaCorrientePedido::class)->find($idCuentaCorrientePedido);
+
+        if (!$cuentaCorrientePedido) {
+            throw $this->createNotFoundException('Cuenta corriente no encontrada');
+        }
+
+        $movimiento = new Movimiento();
+        $movimiento->setCuentaCorrienteUsuario($cuentaCorrientePedido);
+
+        $form = $this->createForm(MovimientoType::class, $movimiento, [
+            'action' => $this->generateUrl('ajuste_reserva_create'),
+            'method' => 'POST',
+            'idCliente' => $cuentaCorrientePedido->getCliente()->getId(),
+        ]);
+
+        return $this->render('situacion_cliente/movimiento_form.html.twig', [
+            'form' => $form->createView(),
+            'entity' => $movimiento,
+            'idCuentaCorrienteUsuario' => null,
+            'idCuentaCorrientePedido' => $cuentaCorrientePedido->getId(),
+            'idReserva' => null,
+            'modal' => true,
+            'esAjuste' => true,
+            'token' => bin2hex(random_bytes(16)),
+            'saldo' => $cuentaCorrientePedido->getSaldo(),
+            'mostrarSaldo' => true,
+        ]);
+    }
+
+
+    /**
+     * @Route("/adelanto_pedido/create", name="adelanto_pedido_create", methods={"POST"})
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
+     */
+    public function adelantoPedidoCreateAction(Request $request, MovimientoService $movimientoService): Response {
+        return $this->crearMovimientoPedido($request, $movimientoService, ConstanteTipoMovimiento::ADELANTO_PEDIDO
+        );
+    }
+
+    /**
+     * @Route("/ajuste_pedido/create", name="ajuste_pedido_create", methods={"POST"})
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
+     */
+    public function ajustePedidoCreateAction(Request $request, MovimientoService $movimientoService): Response {
+        return $this->crearMovimientoPedido($request, $movimientoService, ConstanteTipoMovimiento::AJUSTE_PEDIDO);
+    }
+
+
+    private function crearMovimientoPedido(Request $request, MovimientoService $movimientoService, int $tipoMovimiento): Response {
+        try {
+            $em = $this->doctrine->getManager();
+
+            $movimientoData = $request->request->get('movimiento');
+
+            $idPedido = $movimientoData['pedido'];
+
+            $pedido = $em->getRepository(Pedido::class)->find($idPedido);
+
+            if (!$pedido) {
+                throw new \DomainException('Pedido no encontrado');
+            }
+
+            if (!isset($movimientoData['monto']) || $movimientoData['monto'] <= 0) {
+                throw new \DomainException('El monto debe ser mayor a 0');
+            }
+
+            $cuentaCorrientePedido = $pedido->getCuentaCorrientePedido();
+
+            if ($tipoMovimiento === ConstanteTipoMovimiento::AJUSTE_PEDIDO){
+                if (!$cuentaCorrientePedido->puedeAjustarse($movimientoData['monto'])) {
+                    throw new \DomainException('El monto ingresado supera el saldo de la cuenta corriente.');
+                }
+
+                $movimientoData['modoPago'] = ConstanteModoPago::AJUSTE;
+            }
+
+            $movimiento = $movimientoService->crear([
+                'monto'                         => $movimientoData['monto'],
+                'modoPago'                      => $movimientoData['modoPago'] ?? null,
+                'descripcion'                   => $movimientoData['descripcion'] ?? null,
+                'token'                         => $request->request->get('token'),
+                'tipoMovimiento'                => $tipoMovimiento,
+                'cuentaCorrienteUsuarioPedido'  => $cuentaCorrientePedido,
+            ]);
+
+            return $this->json([
+                'message' => 'OPERACION REALIZADA',
+                'id' => $movimiento->getId(),
+                'statusCode' => 200,
+            ]);
+
+        } catch (\DomainException $e) {
+            return $this->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
 }
