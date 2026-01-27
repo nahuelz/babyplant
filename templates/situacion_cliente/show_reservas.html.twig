@@ -66,9 +66,11 @@
                                                             <a href="{{ path('imprimir_reserva',{id: reserva.id}) }}" class="dropdown-item">
                                                                 <i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Reserva
                                                             </a>
-                                                            <a href="#" class="dropdown-item add-adelanto-reserva" data-reserva="{{ reserva.id }}">
-                                                                <i class="la la-plus" style="margin-right: 5px;"></i> Agregar Adelanto
-                                                            </a>
+                                                            {% if reserva.estado != 'CANCELADO' %}
+                                                                <a href="#" class="dropdown-item add-adelanto-reserva" data-reserva="{{ reserva.id }}">
+                                                                    <i class="la la-plus" style="margin-right: 5px;"></i> Agregar Adelanto
+                                                                </a>
+                                                            {% endif %}
                                                             {% if reserva.adelanto > 0 %}
                                                                 <a href="#" class="dropdown-item add-ajuste-reserva" data-reserva="{{ reserva.id }}">
                                                                     <i class="la la-times" style="margin-right: 5px;"></i> Eliminar Adelanto

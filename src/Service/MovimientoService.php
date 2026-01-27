@@ -19,9 +19,14 @@ class MovimientoService
      */
     public function crear(array $data): Movimiento
     {
+
+        $this->validarMonto($data);
+
         $this->validarToken($data['token']);
 
         $monto = $this->normalizarMonto($data['monto']);
+
+        $this->validarAjuste($data, $monto);
 
         $monto = $this->aplicarSignoPorTipo(
             $monto,
@@ -86,12 +91,46 @@ class MovimientoService
         }
     }
 
+    private function validarMonto($movimientoData){
+        if (!isset($movimientoData['monto']) || $movimientoData['monto'] <= 0) {
+            throw new \DomainException('El monto debe ser mayor a 0');
+        }
+    }
+
     private function aplicarSignoPorTipo(float $monto, int $tipoMovimiento): float
     {
         return match ($tipoMovimiento) {
-            ConstanteTipoMovimiento::AJUSTE_RESERVA, ConstanteTipoMovimiento::AJUSTE_CC => -abs($monto),
+            ConstanteTipoMovimiento::AJUSTE_RESERVA, ConstanteTipoMovimiento::AJUSTE_CC, ConstanteTipoMovimiento::AJUSTE_PEDIDO => -abs($monto),
             default => $monto,
         };
     }
+
+    private function validarAjuste(array $data, float $monto): void
+    {
+        if (
+            $data['tipoMovimiento'] === ConstanteTipoMovimiento::AJUSTE_RESERVA
+            && !empty($data['reserva'])
+            && !$data['reserva']->puedeAjustarse($monto)
+        ) {
+            throw new \DomainException('El monto supera el saldo de la reserva');
+        }
+
+        if (
+            $data['tipoMovimiento'] === ConstanteTipoMovimiento::AJUSTE_CC
+            && !empty($data['cuentaCorrienteUsuario'])
+            && !$data['cuentaCorrienteUsuario']->puedeAjustarse($monto)
+        ) {
+            throw new \DomainException('Saldo insuficiente en la cuenta corriente');
+        }
+
+        if (
+            $data['tipoMovimiento'] === ConstanteTipoMovimiento::AJUSTE_PEDIDO
+            && !empty($data['cuentaCorrientePedido'])
+            && !$data['cuentaCorrientePedido']->puedeAjustarse($monto)
+        ) {
+            throw new \DomainException('Saldo insuficiente en la cuenta corriente del pedido');
+        }
+    }
+
 
 }

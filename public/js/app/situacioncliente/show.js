@@ -528,7 +528,7 @@ function initMovimiento(options) {
                                 mostrarComprobanteMovimiento(data.id);
                             })
                             .catch(() => {
-                                toastr.error('El monto ingresado supera el saldo de la reserva.');
+                                toastr.error('El monto ingresado supera el saldo disponible.');
                             });
 
                         return false;
@@ -547,6 +547,7 @@ function prepararModalMovimiento() {
     $("#movimiento_modoPago option[value='4']").prop('disabled', true);
     $("#movimiento_modoPago option[value='5']").prop('disabled', true);
     $("#movimiento_modoPago option[value='6']").prop('disabled', true);
+    $("#movimiento_modoPago option[value='7']").prop('disabled', true);
 
     const modal = $('.modal-dialog');
     $('.modal-body').addClass('pt-1 pb-1');

@@ -207,17 +207,6 @@ class SituacionClienteController extends BaseController {
 
             $movimientoData = $request->request->get('movimiento');
 
-            if (!isset($movimientoData['monto']) || $movimientoData['monto'] <= 0) {
-                throw new \DomainException('El monto debe ser mayor a 0');
-            }
-            if ($tipoMovimiento === ConstanteTipoMovimiento::AJUSTE_RESERVA){
-                if (!$reserva->puedeAjustarse($movimientoData['monto'])) {
-                    throw new \DomainException('El monto ingresado supera el saldo de la reserva.');
-                }
-
-                $movimientoData['modoPago'] = ConstanteModoPago::AJUSTE;
-            }
-
             $movimiento = $movimientoService->crear([
                 'monto'          => $movimientoData['monto'],
                 'modoPago'       => $movimientoData['modoPago'] ?? null,
@@ -346,17 +335,6 @@ class SituacionClienteController extends BaseController {
             }
 
             $movimientoData = $request->request->get('movimiento');
-            if (!isset($movimientoData['monto']) || $movimientoData['monto'] <= 0) {
-                throw new \DomainException('El monto debe ser mayor a 0');
-            }
-            if ($tipoMovimiento === ConstanteTipoMovimiento::AJUSTE_CC){
-                if (!$cuentaCorrienteUsuario->puedeAjustarse($movimientoData['monto'])) {
-                    dd('aca2424');
-                    throw new \DomainException('El monto ingresado supera el saldo de la cuenta corriente.');
-                }
-
-                $movimientoData['modoPago'] = ConstanteModoPago::AJUSTE;
-            }
 
             $movimiento = $movimientoService->crear([
                 'monto'                     => $movimientoData['monto'],
@@ -480,19 +458,7 @@ class SituacionClienteController extends BaseController {
                 throw new \DomainException('Pedido no encontrado');
             }
 
-            if (!isset($movimientoData['monto']) || $movimientoData['monto'] <= 0) {
-                throw new \DomainException('El monto debe ser mayor a 0');
-            }
-
             $cuentaCorrientePedido = $pedido->getCuentaCorrientePedido();
-
-            if ($tipoMovimiento === ConstanteTipoMovimiento::AJUSTE_PEDIDO){
-                if (!$cuentaCorrientePedido->puedeAjustarse($movimientoData['monto'])) {
-                    throw new \DomainException('El monto ingresado supera el saldo de la cuenta corriente.');
-                }
-
-                $movimientoData['modoPago'] = ConstanteModoPago::AJUSTE;
-            }
 
             $movimiento = $movimientoService->crear([
                 'monto'                         => $movimientoData['monto'],

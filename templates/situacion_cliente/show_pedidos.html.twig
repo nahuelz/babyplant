@@ -54,6 +54,16 @@
                                                                 <a href="#" class="dropdown-item link-ver-historico-pedido" data-href="{{ path('pedido_historico_estado',{id: pedido.id}) }}">
                                                                     <i class="la la-file-alt" style="margin-right: 5px;"></i> Histórico de estados
                                                                 </a>
+                                                                {% if producto.estado != 'CANCELADO' %}
+                                                                    <a href="#" class="dropdown-item add-adelanto-pedido" data-pedido="{{ pedido.id }}" data-idCliente="{{ pedido.cliente.id }}">
+                                                                        <i class="la la-plus" style="margin-right: 5px;"></i> Agregar Adelanto
+                                                                    </a>
+                                                                {% endif %}
+                                                                {% if pedido.adelanto > 0 %}
+                                                                    <a href="#" class="dropdown-item add-ajuste-pedido" data-pedido="{{ pedido.id }}" data-idCliente="{{ pedido.cliente.id }}">
+                                                                        <i class="la la-times" style="margin-right: 5px;"></i> Eliminar Adelanto
+                                                                    </a>
+                                                                {% endif %}
                                                                 <a href="{{ path('imprimir_pedido',{id: pedido.id}) }}" class="dropdown-item">
                                                                     <i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Pedido
                                                                 </a>
