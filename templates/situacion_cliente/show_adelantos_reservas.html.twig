@@ -1,0 +1,94 @@
+<div class="card card-detail">
+    <div class="card-header d-flex justify-content-between align-items-center padding-10">
+        <div class="card-title mb-0">
+            <h4 class="card-label mb-0">Adelantos Reservas</h4>
+        </div>
+        <div class="card-toolbar">
+            <a href="{{ path('imprimir_comprobante_movimiento_todos',{id: entity.id}) }}" target="_blank"
+               class="btn btn-light-primary btn-icon btn-sm blue" title="Imprimir comprobante" style="width: 150px; float: right">
+                <i class="fa fa-file-pdf text-white">&nbsp;</i> Imprimir todos
+            </a>
+        </div>
+    </div>
+    <div class="card-body padding-20">
+        <div class="row">
+            <div class="tab-content" style="width: 100%;">
+                <div class="tab-pane active" id="portlet_pedido_listado">
+                    <div class="portlet-body padding-0">
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% if entity.tieneMovimientos %}
+                                    <div class="table-scrollable" style="border: none;overflow-y:scroll; height:400px;">
+                                        <table class="table table-striped table-bordered table-advance table-hover" style="border: 1px solid #ddd;">
+                                            <thead>
+                                            <tr>
+                                                <th class="text-center nowrap">Monto</th>
+                                                <th class="text-center nowrap">Modo de pago</th>
+                                                <th class="text-center nowrap">Descripción</th>
+                                                <th class="text-center nowrap">Reserva</th>
+                                                <th class="text-center nowrap">Fecha</th>
+                                                <th class="text-center nowrap"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for reserva in entity.reservas %}
+                                                {% for movimiento in reserva.cuentaCorrienteReserva.movimientos %}
+                                                    <tr>
+                                                        <td class="v-middle nowrap text-center">
+                                                            {{ movimiento.monto|money_format }}
+                                                        </td>
+                                                        <td class="v-middle nowrap text-center">
+                                                            {{ movimiento.modoPago|default('-') }}
+                                                        </td>
+                                                        <td class="v-middle nowrap text-center">
+                                                            {{ movimiento.descripcion|default('-') }}
+                                                        </td>
+                                                        <td class="v-middle nowrap text-center">
+                                                            Reserva N° {{ reserva.id|default('-') }}
+                                                        </td>
+                                                        <td class="v-middle nowrap text-center">
+                                                            {{ movimiento.fechaCreacion is not null ? movimiento.fechaCreacion|date('d/m/Y') : '-' }}
+                                                        </td>
+                                                        <td class=" text-center dt-acciones">
+                                                            <div class="dropdown dropdown-inline">
+                                                                <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                    <i class="ki ki-bold-more-hor"></i>
+                                                                </button>
+                                                                <div class="dropdown-menu">
+                                                                    <a href="{{ path('imprimir_comprobante_movimiento',{id: movimiento.id}) }}" class="dropdown-item">
+                                                                        <i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Adelanto A4
+                                                                    </a>
+                                                                    <a href="{{ path('imprimir_comprobante_movimiento_ticket',{id: movimiento.id}) }}" class="dropdown-item">
+                                                                        <i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Adelanto TICKET
+                                                                    </a>
+                                                                    {% if entity.celularValido %}
+                                                                        <a href="https://api.whatsapp.com/send?phone={{ entity.limpiarCelular }}&amp;text=Hola *{{ entity.nombreCompleto }}*,%0ATe informamos que su adelanto fue registrado correctamente.%0A{{ absolute_url(path('imprimir_comprobante_movimiento', {id: movimiento.id|b64})) }}%0A%0A¡Gracias por tu compra! 🪴🌿%0A- *Vivero Babyplant*" target="_blank" class="dropdown-item">
+                                                                            <i class="la la-whatsapp" style="margin-right: 5px; color: green;"></i> Enviar WhatsApp
+                                                                        </a>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% else %}
+                                    <div class="row row-dictado-empty margin-top-20">
+                                        <div class="col-md-12">
+                                            <div class="note bg-grey-cararra font-size-13">
+                                                El cliente no presenta movimientos.
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
