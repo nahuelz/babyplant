@@ -2,9 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Constants\ConstanteModoPago;
 use App\Entity\Constants\ConstanteTipoMovimiento;
-use App\Entity\CuentaCorrientePedido;
 use App\Entity\CuentaCorrienteUsuario;
 use App\Entity\Movimiento;
 use App\Entity\Pedido;
@@ -367,6 +365,15 @@ class SituacionClienteController extends BaseController {
     {
         $movimiento = new Movimiento();;
 
+        $idPedido = $request->query->get('idPedido');
+        if ($idPedido) {
+            $em = $this->doctrine->getManager();
+            $pedido = $em->getRepository(Pedido::class)->find($idPedido);
+            if($pedido) {
+                $movimiento->setPedido($pedido);
+            }
+        }
+
         $form = $this->createForm(MovimientoType::class, $movimiento, [
             'action' => $this->generateUrl('adelanto_pedido_create'),
             'method' => 'POST',
@@ -395,32 +402,33 @@ class SituacionClienteController extends BaseController {
     {
         $em = $this->doctrine->getManager();
 
-        $idCuentaCorrientePedido = $request->query->get('idCuentaCorrienteUsuario');
-        $cuentaCorrientePedido = $em->getRepository(CuentaCorrientePedido::class)->find($idCuentaCorrientePedido);
+        $idPedido = $request->query->get('idPedido');
+        $pedido = $em->getRepository(Pedido::class)->find($idPedido);
 
-        if (!$cuentaCorrientePedido) {
-            throw $this->createNotFoundException('Cuenta corriente no encontrada');
+        if (!$pedido) {
+            throw $this->createNotFoundException('Pedido no encontrado');
         }
 
         $movimiento = new Movimiento();
-        $movimiento->setCuentaCorrienteUsuario($cuentaCorrientePedido);
+        $movimiento->setCuentaCorrientePedido($pedido->getCuentaCorrientePedido());
+        $movimiento->setPedido($pedido);
 
         $form = $this->createForm(MovimientoType::class, $movimiento, [
             'action' => $this->generateUrl('ajuste_reserva_create'),
             'method' => 'POST',
-            'idCliente' => $cuentaCorrientePedido->getCliente()->getId(),
+            'idCliente' => $pedido->getCliente()->getId(),
         ]);
 
         return $this->render('situacion_cliente/movimiento_form.html.twig', [
             'form' => $form->createView(),
             'entity' => $movimiento,
             'idCuentaCorrienteUsuario' => null,
-            'idCuentaCorrientePedido' => $cuentaCorrientePedido->getId(),
+            'idCuentaCorrientePedido' => $pedido->getCuentaCorrientePedido()->getId(),
             'idReserva' => null,
             'modal' => true,
             'esAjuste' => true,
             'token' => bin2hex(random_bytes(16)),
-            'saldo' => $cuentaCorrientePedido->getSaldo(),
+            'saldo' => $pedido->getCuentaCorrientePedido()->getSaldo(),
             'mostrarSaldo' => true,
         ]);
     }

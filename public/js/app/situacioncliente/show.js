@@ -25,8 +25,8 @@ function initMovimientos(){
 
     initMovimiento({
         triggerSelector: '.add-ajuste-pedido',
-        urlNew: 'situacion_cliente/adelanto_pedido/new',
-        urlCreate: 'situacion_cliente/adelanto_pedido/create',
+        urlNew: 'situacion_cliente/ajuste_pedido/new',
+        urlCreate: 'situacion_cliente/ajuste_pedido/create',
         tituloModal: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar Ajuste Pedido'
     });
 
@@ -484,12 +484,13 @@ function initMovimiento(options) {
 
         const idReserva = $(this).data('reserva');
         const idCuentaCorrienteUsuario = $(this).data('cuentacorrienteusuario');
+        const idPedido = $(this).data('pedido');
         const idCliente = $(this).data('idcliente');
 
         $.ajax({
             type: 'GET',
             url: __HOMEPAGE_PATH__ + urlNew,
-            data: { idReserva, idCuentaCorrienteUsuario, idCliente }
+            data: { idReserva, idCuentaCorrienteUsuario, idCliente, idPedido }
         }).done(function (form) {
 
             showDialog({
