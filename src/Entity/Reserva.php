@@ -275,6 +275,6 @@ class Reserva {
     }
 
     public function puedeAjustarse($monto){
-        return $this->getAdelanto() >= $monto;
+        return $this->getAdelanto() >= (float) $monto;
     }
 }
