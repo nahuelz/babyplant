@@ -92,10 +92,10 @@
                                 <div class="row text-center">
 
                                     <div class="col-md-2 mb-3">
-                                        <div class="card shadow-sm">
+                                        <div class="card shadow-sm border-primary">
                                             <div class="card-body py-4">
-                                                <small class="text-muted text-uppercase">Pedidas</small>
-                                                <div class="display-4 font-weight-bold">
+                                                <small class="font-size-16 text-uppercase">Pedidas</small>
+                                                <div class="display-4 font-weight-bold text-primary">
                                                     {{ producto.cantidadBandejasPedidas|default('-') }}
                                                 </div>
                                             </div>
@@ -103,10 +103,10 @@
                                     </div>
 
                                     <div class="col-md-2 mb-3">
-                                        <div class="card shadow-sm">
+                                        <div class="card shadow-sm border-primary">
                                             <div class="card-body py-4">
-                                                <small class="text-muted text-uppercase">Reales</small>
-                                                <div class="display-4 font-weight-bold">
+                                                <small class="font-size-16 text-uppercase">Reales</small>
+                                                <div class="display-4 font-weight-bold text-primary">
                                                     {{ producto.cantidadBandejasReales|default('-') }}
                                                 </div>
                                             </div>
@@ -116,7 +116,7 @@
                                     <div class="col-md-2 mb-3">
                                         <div class="card shadow-sm border-success">
                                             <div class="card-body py-4">
-                                                <small class="text-muted text-uppercase">Entregadas</small>
+                                                <small class="font-size-16 text-uppercase">Entregadas</small>
                                                 <div class="display-4 font-weight-bold text-success">
                                                     {{ producto.cantidadBandejasEntregadas|default('-') }}
                                                 </div>
@@ -127,7 +127,7 @@
                                     <div class="col-md-2 mb-3">
                                         <div class="card shadow-sm border-warning">
                                             <div class="card-body py-4">
-                                                <small class="text-muted text-uppercase">Sin entregar</small>
+                                                <small class="font-size-16 text-uppercase">Sin entregar</small>
                                                 <div class="display-4 font-weight-bold text-warning">
                                                     {{ producto.cantidadBandejasSinEntregar|default('-') }}
                                                 </div>
@@ -138,7 +138,7 @@
                                     <div class="col-md-2 mb-3">
                                         <div class="card shadow-sm border-info">
                                             <div class="card-body py-4">
-                                                <small class="text-muted text-uppercase">Reservadas</small>
+                                                <small class="font-size-16 text-uppercase">Reservadas</small>
                                                 <div class="display-4 font-weight-bold text-info">
                                                     {{ producto.cantidadBandejasReservadasSinEntregar|default('-') }}
                                                 </div>
@@ -149,7 +149,7 @@
                                     <div class="col-md-2 mb-3">
                                         <div class="card shadow-sm {{ producto.cantidadBandejasDisponibles == 0 ? 'border-danger' : 'border-success' }}">
                                             <div class="card-body py-4 position-relative">
-                                                <small class="text-muted text-uppercase">Disponibles</small>
+                                                <small class="font-size-16 text-uppercase">Disponibles</small>
 
                                                 <div class="display-4 font-weight-bold {{ producto.cantidadBandejasDisponibles == 0 ? 'text-danger' : 'text-success' }}"
                                                      id="disponibles-{{ producto.id }}"
