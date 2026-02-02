@@ -46,8 +46,7 @@
             <tr>
                 <th class="text-center">FECHA</th>
                 <th class="text-center">REMITO</th>
-                <th class="text-center">MONTO</th>
-                {# <th class="text-center">MODO PAGO</th> #}
+                <th class="text-center">PAGOS</th>
                 <th class="text-center">PENDIENTE REMITO</th>
                 <th class="text-center">DEUDA TOTAL</th>
                 <th class="text-center">A FAVOR</th>
@@ -59,7 +58,6 @@
                     <td width="130" align="center">{{ pago.fechaCreacion is not null ? pago.fechaCreacion|date('d/m/Y') : '-' }}</td>
                     <td width="130" align="center">{{ pago.remito }}</td>
                     <td width="130" align="center">{{ pago.monto|money_format  }}</td>
-                    {# <td width="130" align="center">{{ pago.modoPago  }}</td> #}
                     <td width="130" align="center">{{ pago.montoPendiente|money_format|default('-')  }}</td>
                     <td width="130" align="center">{{ pago.totalDeuda|money_format|default('-')  }}</td>
                     <td width="130" align="center">{{ pago.saldoCuentaCorriente|money_format|default('-')  }}</td>

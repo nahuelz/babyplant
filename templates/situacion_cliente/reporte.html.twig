@@ -63,7 +63,6 @@
             <th class="text-center">FECHA</th>
             <th class="text-center">MOVIMIENTO</th>
             <th class="text-center">MONTO</th>
-            {# <th class="text-center">MODO PAGO</th>#}
             <th class="text-center">A FAVOR</th>
             <th class="text-center">DEUDA</th>
         </tr>
@@ -74,7 +73,6 @@
                 <td width="110" align="center">{{ movimiento.fechaCreacion is not null ? movimiento.fechaCreacion|date('d/m/Y') : '-' }}</td>
                 <td width="200" align="center">{{  movimiento.tipoMovimiento }}</td>
                 <td width="110" align="center">{{ movimiento.monto|money_format  }}</td>
-                {#<td width="200" align="center">{{ movimiento.modoPago  }}</td>#}
                 <td width="120" align="center">{{ movimiento.saldoCuenta|money_format  }}</td>
                 <td width="120" align="center">{{ movimiento.montoDeuda|money_format|default('-')  }}</td>
             </tr>
