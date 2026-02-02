@@ -62,7 +62,7 @@
     </div>
     <div class="datos">
         Fecha: {{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}<br>
-        Cliente: Nahuel Zanelli
+        Cliente: {{ entity.remito.cliente }}
     </div>
 
     <div class="linea"></div>
