@@ -151,6 +151,12 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
+            name: 'fechaEntrega',
+            className: 'dt-center',
+            type: 'date'
+        },
+        {
+            targets: index++,
             name: 'nombreCliente',
             className: 'nowrap text-center margin-0 ',
             render: function (data, type, full, meta) {

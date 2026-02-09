@@ -78,6 +78,7 @@ class ReservaController extends BaseController {
         $rsm->addScalarResult('idPedidoProducto', 'idPedidoProducto');
         $rsm->addScalarResult('ordenSiembra', 'ordenSiembra');
         $rsm->addScalarResult('fechaCreacion', 'fechaCreacion');
+        $rsm->addScalarResult('fechaEntrega', 'fechaEntrega');
         $rsm->addScalarResult('cliente', 'cliente');
         $rsm->addScalarResult('clienteReserva', 'clienteReserva');
         $rsm->addScalarResult('idCliente', 'idCliente');

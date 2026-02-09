@@ -13,6 +13,7 @@
         },
         "{{ entity.ordenSiembra|default('-') }}",
         "{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}",
+        "{{ entity.fechaEntrega is not null ? entity.fechaEntrega|date('d/m/Y') : '-' }}",
         {
         "nombreCliente": "{{ entity.cliente|default('-') }}",
         "path": "{{ path('situacioncliente_show', { "id": entity.idCliente }) }}"
