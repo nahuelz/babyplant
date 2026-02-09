@@ -165,7 +165,7 @@ function initDataTable() {
                 title: '',
                 className: 'print',
                 exportOptions: {
-                    columns: ':not(.sorting_disabled)',
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
                     rows: ':visible'
                 }
             },
@@ -175,7 +175,7 @@ function initDataTable() {
                 title: '',
                 className: 'pagina',
                 exportOptions: {
-                    columns: ':not(.sorting_disabled)',
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
                     rows: ':visible'
                 }
             },
@@ -185,7 +185,7 @@ function initDataTable() {
                 title: '',
                 className: 'filtrados',
                 exportOptions: {
-                    columns: ':not(.sorting_disabled)',
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
                     filter: 'applied',
                     page: 'all'
                 }
@@ -196,7 +196,7 @@ function initDataTable() {
                 title: '',
                 className: 'todos',
                 exportOptions: {
-                    columns: ':not(.sorting_disabled)',
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
                     page: 'all',
                     rows: {
                         search: 'none'
@@ -212,12 +212,11 @@ function initDataTable() {
                 orientation: 'landscape',
                 pageSize: 'LEGAL',
                 exportOptions: {
-                    columns: ':not(.sorting_disabled)',
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
                     page: 'all',
                     filter: 'applied',
                     rows: {
                         search: 'none'
-
                     }
                 }
             }
