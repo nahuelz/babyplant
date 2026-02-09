@@ -34,7 +34,23 @@
 				{{ macro_form._new_field(form.domicilio, "col-md-4 datos-personales") }}
 				{{ macro_form._new_field(form.celular, "col-md-4 datos-personales") }}
 			</div>
-			<div class="row">
+
+			<div class="row mb-4 d-flex align-items-center razon-social">
+				<div class="col-md-3 mb-4 razon-social">
+					{{ macro_form._new_field(form.tieneRazonSocial) }}
+				</div>
+				<div class="col-md-4 mb-4 razonSocial">
+					{{ macro_form._new_field(form.razonSocial) }}
+				</div>
+				<div class="col-md-3 mb-4 razonSocial">
+					<button type="button" class="btn btn-success btn-sm w-100 link-agregar-razonsocial">
+						NUEVA RAZÓN SOCIAL
+					</button>
+				</div>
+			</div>
+
+
+			{# <div class="row">
 				{{ macro_form._new_field(form.tieneRazonSocial, "col-md-3 datos-personales") }}
 				{{ macro_form._new_field(form.razonSocial.razonSocial, "col-md-3 datos-personales razonSocial") }}
 				{{ macro_form._new_field(form.razonSocial.cuit, "col-md-3 datos-personales razonSocial") }}
@@ -44,7 +60,7 @@
 						NUEVO RAZON SOCIAL
 					</button>
 				</div>
-			</div>
+			</div>#}
 			<div class="row grupo">
 				{{ macro_form._new_field(form.grupos, "col-md-12") }}
 			</div>
@@ -88,5 +104,6 @@
 	{{ parent() }}
 	<script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}"></script>
 	<script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/usuario/new.js') }}"></script>
+	<script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/razonsocial/new.js') }}" ></script>
 
 {% endblock %}
