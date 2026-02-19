@@ -4,12 +4,9 @@
     {% for entity in entities %}
         [
         "{{ entity.id }}",
-{#        "{{ entity.email|escape_json|default('-')|raw }}",#}
         "{{ entity.nombre|escape_json|default('-')|raw }}",
         "{{ entity.apellido|escape_json|default('-')|raw }}",
-{#        "{{ entity.cuit|escape_json|default('-')|raw }}",#}
         "{{ entity.celular|escape_json|default('')|raw }}",
-{#        "{{ entity.razonSocial|escape_json|default('-')|raw }}",#}
         {
         "saldoAFavor": "{{ entity.saldoAFavor|default('0')|raw }}",
         "SaldoAFavorFormat": "{{ entity.saldoAFavor|money_format|default('0')|raw }}"

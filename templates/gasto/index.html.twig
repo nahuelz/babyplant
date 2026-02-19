@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+
+    {{ parent() }}
+
+    <link href="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css"/>
+
+    <style>
+        .label-light-secondary{
+            color:black !important;
+        }
+        td {
+            padding-top: 0.4rem !important;
+            padding-bottom: 0.4rem !important;
+        }
+    </style>
+
+{% endblock %}
+
+{% block body %}
+    <!--begin::Card-->
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon2-layers text-primary"></i></span>
+                <h3 class="card-label">Gastos</h3>
+            </div>
+            <div class="card-toolbar">
+                <a href="{{ path('gasto_new') }}" class="btn btn-primary font-weight-bolder mr-2">
+                    <i class="la la-plus"></i>
+                    Agregar
+                </a>
+                <div class="dropdown dropdown-inline">
+                    <div class="dropdown dropdown-inline  mr-2">
+                        <button type="button" class="btn btn-light-primary font-weight-bolder dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Exportar
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right" style="">
+                            <ul class="navi flex-column navi-hover py-2">
+                                <li class="navi-header font-weight-bolder text-uppercase font-size-sm text-primary pb-2">Elija una opci&oacute;n:</li>
+                                <li class="navi-item" onClick="exportarCustom('print');">
+                                    <a href="#" class="navi-link">
+                                        <span class="navi-icon">
+                                            <i class="la la-file-excel-o text-success"></i>
+                                        </span>
+                                        <span class="navi-text">Print</span>
+                                    </a>
+                                </li>
+                                <li class="navi-item" onClick="exportarCustom('pagina');">
+                                    <a href="#" class="navi-link">
+                                        <span class="navi-icon">
+                                            <i class="la la-file-excel-o text-success"></i>
+                                        </span>
+                                        <span class="navi-text">Excel - P&aacute;gina</span>
+                                    </a>
+                                </li>
+                                <li class="navi-item" onClick="exportarCustom('filtrados');">
+                                    <a href="#" class="navi-link">
+                                        <span class="navi-icon">
+                                            <i class="la la-file-excel-o text-success"></i>
+                                        </span>
+                                        <span class="navi-text">Excel - Filtrado</span>
+                                    </a>
+                                </li>
+                                <li class="navi-item" onClick="exportarCustom('todos');">
+                                    <a href="#" class="navi-link">
+                                        <span class="navi-icon">
+                                            <i class="la la-file-excel-o text-success"></i>
+                                        </span>
+                                        <span class="navi-text">Excel - Todo</span>
+                                    </a>
+                                </li>
+                                <li class="navi-item" onClick="exportarCustom('pdf');">
+                                    <a href="#" class="navi-link">
+                                        <span class="navi-icon">
+                                            <i class="la la-file-pdf-o text-danger"></i>
+                                        </span>
+                                        <span class="navi-text">PDF - Todo</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row padding-top-15">
+            <div class="col-md-6">
+                {% include 'gasto/filtros.html.twig' %}
+            </div>
+        </div>
+
+        <div class="card-body padding-top-15 padding-bottom-0">
+            <!--begin: Datatable-->
+            <table class="table table-bordered table-hover table-checkable" id="table-gasto">
+                <thead>
+                <tr>
+                    <th class="not-in-filter">ID</th>
+                    <th data-type="string" class="text-center">FECHA</th>
+                    <th data-type="string" class="text-center">CONCEPTO</th>
+                    <th data-type="string" class="text-center">MONTO</th>
+                    <th data-type="string" class="text-center">MODO PAGO</th>
+                    <th data-type="search" style="width: 20px;"></th>
+                </tr>
+                </thead>
+            </table>
+            <!--end: Datatable-->
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script type="text/javascript" src="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.js') }}"></script>
+
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}" ></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-datatables.js') }}" ></script>
+
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/gasto/index.js') }}" ></script>
+
+{% endblock %}
+

@@ -29,6 +29,10 @@
             <span class="menu-text">SALIDA CAMARA</span>
         </a>
     </li>
+
+{% endif %}
+{% if is_granted("ROLE_GASTO") %}
+    {% include 'menu/menu_gasto.html.twig' %}
 {% endif %}
 {% if is_granted("ROLE_MENU_CONFIGURACION") %}
     {% include 'menu/menu_configuracion.html.twig' %}

@@ -2,8 +2,8 @@
 
 namespace App\Service;
 
-use App\Entity\API;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\MockObject\Api;
 
 /**
  * Description of SelectService
@@ -28,6 +28,18 @@ class SelectService {
                 LEFT JOIN x.razonSocial r
                 WHERE x.fechaBaja IS NULL AND x.tipoUsuario = 1 AND x.habilitado = 1
                 ORDER BY x.apellido ASC";
+
+        $query = $this->em->createQuery($sql);
+        return $query->getResult();
+
+    }
+
+    public function getConceptoFilter() {
+
+        $sql = "SELECT x.id, x.nombre AS nombre
+                FROM App\Entity\TipoConcepto x 
+                WHERE x.fechaBaja IS NULL
+                ORDER BY x.nombre ASC";
 
         $query = $this->em->createQuery($sql);
         return $query->getResult();

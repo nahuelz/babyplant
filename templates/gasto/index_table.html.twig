@@ -1,0 +1,18 @@
+{% autoescape false %}
+    {
+    "data": [
+    {% for entity in entities %}
+        [
+        "{{ entity.id }}",
+        "{{ entity.fecha|escape_json|default('-')|raw }}",
+        "{{ entity.concepto|escape_json|default('-')|raw }}",
+        "{{ entity.monto|escape_json|default('')|raw }}",
+        "{{ entity.modoPago|escape_json|default('')|raw }}",
+        {
+        "show_cliente" : " {{ path( "situacioncliente_show", { "id": entity.id }) }}"
+        }
+        ]{{ (loop.last ? '' : ',') }}
+    {% endfor %}
+    ]
+    }
+{% endautoescape %}

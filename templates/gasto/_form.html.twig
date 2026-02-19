@@ -1,0 +1,7 @@
+{% import 'app/_macro_form.html.twig' as macro_form %}
+{{ macro_form._new_field(form.fecha, "col-md-3") }}
+{{ macro_form._new_field(form.concepto, "col-md-4") }}
+{{ macro_form._new_field(form.monto, "col-md-3") }}
+{{ macro_form._new_field(form.modoPago, "col-md-4") }}
+{{ form_widget(form._token) }}
+{{ form_end(form, {"render_rest": false}) }}
