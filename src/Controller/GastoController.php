@@ -33,6 +33,7 @@ class GastoController extends BaseController {
 
         return array(
             'conceptoSelect' => $conceptoSelect,
+            'indicadorGastoData' => $this->getIndicadorGastoData(),
             'page_title' => 'Gastos'
         );
     }
@@ -135,6 +136,37 @@ class GastoController extends BaseController {
     private function normalizarMonto(Gasto $gasto): float
     {
         return (float) str_replace(['.', ','], ['', '.'], $gasto->getMonto());
+    }
+
+    /**
+     *
+     * @return type
+     */
+    private function getIndicadorGastoData()
+    {
+        $em = $this->doctrine->getManager();
+
+        $rsm = new ResultSetMapping();
+
+        $rsm->addScalarResult('montoTotal', 'montoTotal');
+        $rsm->addScalarResult('cantidad', 'cantidad');
+        $rsm->addScalarResult('colorClass', 'colorClass');
+        $rsm->addScalarResult('color', 'color');
+        $rsm->addScalarResult('iconClass', 'iconClass');
+
+        $sql = '
+        SELECT
+            SUM(g.monto) AS montoTotal,
+            COUNT(g.id) AS cantidad,
+            "success" AS colorClass,
+            "success" AS color,
+            "fa-money-bill-wave" AS iconClass
+        FROM gasto AS g
+        WHERE g.fecha_baja IS NULL';
+
+        $nativeQuery = $em->createNativeQuery($sql, $rsm);
+
+        return $nativeQuery->getSingleResult();
     }
 
 }

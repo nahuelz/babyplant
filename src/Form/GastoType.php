@@ -34,7 +34,6 @@ class GastoType extends AbstractType
                     'label' => 'Tipo Concepto',
                     'class' => TipoConcepto::class,
                     'required' => true,
-                    'mapped' => false,
                     'attr' => array(
                         'placeholder' => '-- Elija el concepto --',
                         'class' => 'form-control choice',
@@ -54,7 +53,6 @@ class GastoType extends AbstractType
                     'label' => 'Sub Concepto',
                     'class' => TipoSubConcepto::class,
                     'required' => true,
-                    'mapped' => false,
                     'attr' => array(
                         'placeholder' => '-- Elija el sub concepto --',
                         'class' => 'form-control choice',
