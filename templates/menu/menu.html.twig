@@ -31,19 +31,11 @@
     </li>
 
 {% endif %}
-{% if is_granted("ROLE_GASTO") %}
-    {% include 'menu/menu_gasto.html.twig' %}
-{% endif %}
 {% if is_granted("ROLE_MENU_CONFIGURACION") %}
     {% include 'menu/menu_configuracion.html.twig' %}
 {% endif %}
 
 {# MENU ESTADISTICAS #}
 {% if is_granted("ROLE_ESTADISTICAS") %}
-    {% include 'menu/menu_estadisticas.html.twig' %}
-{% endif %}
-
-{# MENU SEGURIDAD #}
-{% if is_granted("ROLE_MENU_SEGURIDAD") %}
-    {% include 'menu/menu_seguridad.html.twig' %}    
+    {% include 'menu/menu_administracion.html.twig' %}
 {% endif %}

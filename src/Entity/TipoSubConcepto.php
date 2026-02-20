@@ -19,6 +19,12 @@ class TipoSubConcepto extends EntidadBasica
      */
     private $tipoConcepto;
 
+    public function setNombre(string $nombre): self
+    {
+        parent::setNombre(mb_strtoupper($nombre, 'UTF-8'));
+        return $this;
+    }
+
     /**
      * @return mixed
      */

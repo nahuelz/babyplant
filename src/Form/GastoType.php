@@ -52,7 +52,7 @@ class GastoType extends AbstractType
             ->add('subConcepto', EntityType::class, array(
                     'label' => 'Sub Concepto',
                     'class' => TipoSubConcepto::class,
-                    'required' => true,
+                    'required' => false,
                     'attr' => array(
                         'placeholder' => '-- Elija el sub concepto --',
                         'class' => 'form-control choice',

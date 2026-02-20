@@ -12,4 +12,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class TipoConcepto extends EntidadBasica {
 
+
+    public function setNombre(string $nombre): self
+    {
+        parent::setNombre(mb_strtoupper($nombre, 'UTF-8'));
+        return $this;
+    }
+
 }

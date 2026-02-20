@@ -23,6 +23,7 @@ class TipoConceptoType extends AbstractType
             ->add('habilitado', null, array(
                     'required' => false,
                     'label' => 'Habilitado',
+                    'data' => true,
                     'attr' => array(
                         'class' => 'form-control',
                         'tabindex' => '5'))
