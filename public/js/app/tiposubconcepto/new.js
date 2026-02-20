@@ -2,17 +2,17 @@
 jQuery(document).ready(function () {
 
     FormValidation.formValidation(
-        $("form[name=tipo_sub_producto]")[0],
+        $("form[name=tipo_sub_concepto]")[0],
         {
             fields: {
-                'tipo_sub_producto[nombre]': {
+                'tipo_sub_concepto[tipoConcepto]': {
                     validators: {
                         notEmpty: {
                             message: 'Este campo es requerido'
                         }
                     }
                 },
-                'tipo_sub_producto[tipoProducto]': {
+                'tipo_sub_concepto[nombre]': {
                     validators: {
                         notEmpty: {
                             message: 'Este campo es requerido'

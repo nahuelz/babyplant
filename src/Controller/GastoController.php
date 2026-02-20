@@ -8,9 +8,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\Type;
 
 
 /**
@@ -49,7 +52,7 @@ class GastoController extends BaseController {
         $rsm->addScalarResult('fecha', 'fecha');
         $rsm->addScalarResult('concepto', 'concepto');
         $rsm->addScalarResult('monto', 'monto');
-        $rsm->addScalarResult('modoPago', 'modoPAgo');
+        $rsm->addScalarResult('modoPago', 'modoPago');
 
         $nativeQuery = $em->createNativeQuery('call sp_index_gasto(?)', $rsm);
 
@@ -71,6 +74,9 @@ class GastoController extends BaseController {
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->validarMonto($form->getData());
+            $monto = $this->normalizarMonto($form->getData());
+            $gasto->setMonto($monto);
             $entityManager->persist($gasto);
             $entityManager->flush();
 
@@ -81,6 +87,54 @@ class GastoController extends BaseController {
             'gasto' => $gasto,
             'form' => $form,
         ]);
+    }
+
+    #[Route('/{id}', name: 'gasto_show', methods: ['GET'])]
+    public function show(Gasto $gasto): Response
+    {
+        return $this->render('gasto/show.html.twig', [
+            'gasto' => $gasto,
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/borrar", name="gasto_delete", methods={"GET"})
+     */
+    public function delete($id): RedirectResponse|JsonResponse|type
+    {
+        return parent::baseDeleteAction($id);
+    }
+
+
+    /**
+     * @Route("/{id}/edit", name="gasto_edit", methods={"GET|POST"})
+     */
+    public function edit(Request $request, Gasto $gasto, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(GastoType::class, $gasto);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('gasto_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('gasto/edit.html.twig', [
+            'gasto' => $gasto,
+            'form' => $form,
+        ]);
+    }
+
+    private function validarMonto(Gasto $gasto){
+        if (($gasto->getMonto() == null) || $gasto->getMonto() <= 0) {
+            throw new \DomainException('El monto debe ser mayor a 0');
+        }
+    }
+
+    private function normalizarMonto(Gasto $gasto): float
+    {
+        return (float) str_replace(['.', ','], ['', '.'], $gasto->getMonto());
     }
 
 }

@@ -137,8 +137,6 @@ class UsuarioController extends BaseController {
             $this->get('session')->getFlashBag()->add('error', 'No puedes eliminar este Usuario ya que tiene pedidos realizados. Utilice la funcion "DESHABILITAR".');
             return $this->getDeleteRedirectResponse($usuario);
         }
-
-
     }
 
     /**

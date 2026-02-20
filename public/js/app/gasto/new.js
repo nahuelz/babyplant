@@ -1,7 +1,10 @@
 jQuery(document).ready(function () {
     $('#gasto_modoPago').select2();
     $('#gasto_concepto').select2();
+    $('#gasto_subConcepto').select2();
     initMontoFormat();
+
+    initChainedSelect($('#gasto_concepto'), $('#gasto_subConcepto'), __HOMEPAGE_PATH__ + 'tipo/sub/concepto/lista/', 1);
 });
 
 

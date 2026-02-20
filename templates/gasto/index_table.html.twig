@@ -4,12 +4,14 @@
     {% for entity in entities %}
         [
         "{{ entity.id }}",
-        "{{ entity.fecha|escape_json|default('-')|raw }}",
+        "{{ entity.fecha is not null ? entity.fecha|date('d/m/Y') : '-' }}",
         "{{ entity.concepto|escape_json|default('-')|raw }}",
         "{{ entity.monto|escape_json|default('')|raw }}",
         "{{ entity.modoPago|escape_json|default('')|raw }}",
         {
-        "show_cliente" : " {{ path( "situacioncliente_show", { "id": entity.id }) }}"
+            "show" : " {{ path( "gasto_show", { "id": entity.id }) }}",
+            "edit" : " {{ path( "gasto_edit", { "id": entity.id }) }}",
+            "delete" : " {{ path( "gasto_delete", { "id": entity.id }) }}"
         }
         ]{{ (loop.last ? '' : ',') }}
     {% endfor %}

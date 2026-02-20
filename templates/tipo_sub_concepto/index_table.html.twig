@@ -1,0 +1,27 @@
+{
+"data": [
+{% for entity in entities %}
+    [
+    "{{ entity.id }}",
+    "{{ entity.concepto|default('-') }}",
+    "{{ entity.nombre|default('-') }}",
+    "{{ entity.habilitado|boolean_format }}",
+    {
+    {% if is_granted('ROLE_GASTO') %}
+        "show" : " {{ path( "app_tipo_sub_concepto_show", { "id": entity.id }) }}"
+        ,"edit" : " {{ path( "app_tipo_sub_concepto_edit", { "id": entity.id }) }}"
+        ,"delete" : " {{ path( "app_tipo_sub_concepto_delete", { "id": entity.id }) }}"
+    {% endif %}
+    {% if is_granted('ROLE_GASTO') and entity.habilitado %}
+        ,"deshabilitar": "{{ path('app_tipo_sub_concepto_habilitar_deshabilitar', { "id": entity.id }) }}"
+    {% elseif is_granted('ROLE_GASTO') and not entity.habilitado %}
+        ,"habilitar": "{{ path('app_tipo_sub_concepto_habilitar_deshabilitar', {"id": entity.id})}}"
+    {% endif %}
+    }
+    ]{{ (loop.last ? '' : ',') }}
+{% endfor %}
+],
+"draw": {{ draw }},
+"recordsTotal": {{ totalRows }},
+"recordsFiltered": {{ totalFiltered }}
+}

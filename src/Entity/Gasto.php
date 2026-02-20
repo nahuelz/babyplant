@@ -5,15 +5,16 @@ namespace App\Entity;
 use App\Entity\Traits\Auditoria;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="gasto")
+ * @Gedmo\SoftDeleteable(fieldName="fechaBaja")
  */
 class Gasto
 {
     use Auditoria;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -26,6 +27,12 @@ class Gasto
      * @ORM\JoinColumn(name="id_tipo_concepto", referencedColumnName="id", nullable=false)
      */
     private $concepto;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=TipoSubConcepto::class)
+     * @ORM\JoinColumn(name="id_tipo_sub_concepto", referencedColumnName="id", nullable=true)
+     */
+    private $subConcepto;
 
     /**
      * @ORM\Column(name="monto", type="decimal", precision=10, scale=2, nullable=false)
@@ -43,17 +50,23 @@ class Gasto
      */
     protected $fecha;
 
+
+    public function __toString(): string
+    {
+        return $this->concepto ? $this->concepto->getNombre() : 'Gasto';
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getConcepto(): ?string
+    public function getConcepto(): ?TipoConcepto
     {
         return $this->concepto;
     }
 
-    public function setConcepto(string $concepto): self
+    public function setConcepto(?TipoConcepto $concepto): self
     {
         $this->concepto = $concepto;
         return $this;
@@ -73,7 +86,7 @@ class Gasto
     /**
      * @return mixed
      */
-    public function getModoPago()
+    public function getModoPago(): ?ModoPago
     {
         return $this->modoPago;
     }
@@ -81,9 +94,10 @@ class Gasto
     /**
      * @param mixed $modoPago
      */
-    public function setModoPago($modoPago): void
+    public function setModoPago(?ModoPago $modoPago): self
     {
         $this->modoPago = $modoPago;
+        return $this;
     }
 
     /**
@@ -101,6 +115,24 @@ class Gasto
     {
         $this->fecha = $fecha;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getSubConcepto()
+    {
+        return $this->subConcepto;
+    }
+
+    /**
+     * @param mixed $subConcepto
+     */
+    public function setSubConcepto($subConcepto): void
+    {
+        $this->subConcepto = $subConcepto;
+    }
+
+
 
 
 
