@@ -102,15 +102,17 @@ class EntregaService {
             $mesadaUno->entregarBandejas($bandejasAEntregar);
             $this->cambiarEstadoMesada($em, $mesadaUno, $estadoMesada);
         }else{
-            $badejasRestantes = $bandejasAEntregar - $bandejasEnMesadaUno;
-            $mesadaUno->entregarBandejas($bandejasEnMesadaUno);
-            $this->cambiarEstadoMesada($em, $mesadaUno, $estadoMesada);
-            // SI QUEDAN MÁS BANDEJAS POR ENTREGAR QUE LAS QUE HAY EN LA MESADA HUBO ERROR, SE DESCUENTAN SOLO LAS QUE HAY
-            if ($badejasRestantes > $bandejasEnMesadaDos){
-                $badejasRestantes = $bandejasEnMesadaDos;
+            if($mesadaDos != null) {
+                $badejasRestantes = $bandejasAEntregar - $bandejasEnMesadaUno;
+                $mesadaUno->entregarBandejas($bandejasEnMesadaUno);
+                $this->cambiarEstadoMesada($em, $mesadaUno, $estadoMesada);
+                // SI QUEDAN MÁS BANDEJAS POR ENTREGAR QUE LAS QUE HAY EN LA MESADA HUBO ERROR, SE DESCUENTAN SOLO LAS QUE HAY
+                if ($badejasRestantes > $bandejasEnMesadaDos) {
+                    $badejasRestantes = $bandejasEnMesadaDos;
+                }
+                $mesadaDos->entregarBandejas($badejasRestantes);
+                $this->cambiarEstadoMesada($em, $mesadaDos, $estadoMesada);
             }
-            $mesadaDos->entregarBandejas($badejasRestantes);
-            $this->cambiarEstadoMesada($em, $mesadaDos, $estadoMesada);
         }
     }
 
