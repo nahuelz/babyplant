@@ -2,14 +2,12 @@
 "data": [
 {% for entity in entities %}
     [
+    "{{ entity.id }}",
     "{{ entity.email|default('-') }}",
     "{{ entity.nombre|default('-') }}",
     "{{ entity.apellido|default('-') }}",
     "{{ entity.celular|default('-') }}",
     "{{ entity.grupos|default('-') }}",
-    {#"{{ entity.last_seen != null ? entity.last_seen|date('d/m/Y H:i:s') }}",
-    "{{ entity.logueado|boolean_format }}",
-    "{{ entity.habilitado|boolean_format }}",#}
     {    
     {% if is_granted('ROLE_USUARIO_VIEW') %}                                    
         "show" : " {{ path( "usuario_show", { "id": entity.id }) }}"
@@ -32,4 +30,4 @@
 "draw": {{ draw }},
 "recordsTotal": {{ totalRows }},
 "recordsFiltered": {{ totalFiltered }}
-}
+}}
