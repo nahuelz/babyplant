@@ -50,6 +50,7 @@ class UsuarioController extends BaseController {
 
         $rsm = new ResultSetMapping();
 
+        $rsm->addScalarResult('id', 'id');
         $rsm->addScalarResult('email', 'email');
         $rsm->addScalarResult('nombre', 'nombre');
         $rsm->addScalarResult('apellido', 'apellido');
