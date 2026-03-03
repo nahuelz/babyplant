@@ -59,7 +59,6 @@ class UsuarioController extends BaseController {
         $rsm->addScalarResult('habilitado', 'habilitado');
 
         $columnDefinition = [
-            ['field' => 'id', 'type' => '', 'searchable' => false, 'sortable' => false],
             ['field' => 'email', 'type' => 'string', 'searchable' => true, 'sortable' => true],
             ['field' => 'nombre', 'type' => 'string', 'searchable' => true, 'sortable' => true],
             ['field' => 'apellido', 'type' => 'string', 'searchable' => true, 'sortable' => true],
