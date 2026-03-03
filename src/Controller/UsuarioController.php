@@ -50,7 +50,6 @@ class UsuarioController extends BaseController {
 
         $rsm = new ResultSetMapping();
 
-        $rsm->addScalarResult('id', 'id');
         $rsm->addScalarResult('email', 'email');
         $rsm->addScalarResult('nombre', 'nombre');
         $rsm->addScalarResult('apellido', 'apellido');
@@ -59,7 +58,6 @@ class UsuarioController extends BaseController {
         $rsm->addScalarResult('habilitado', 'habilitado');
 
         $columnDefinition = [
-            ['field' => 'id', 'type' => '', 'searchable' => false, 'sortable' => false],
             ['field' => 'email', 'type' => 'string', 'searchable' => true, 'sortable' => true],
             ['field' => 'nombre', 'type' => 'string', 'searchable' => true, 'sortable' => true],
             ['field' => 'apellido', 'type' => 'string', 'searchable' => true, 'sortable' => true],

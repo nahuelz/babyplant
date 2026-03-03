@@ -2,7 +2,6 @@
 "data": [
 {% for entity in entities %}
     [
-    "{{ entity.id }}",
     "{{ entity.email|default('-') }}",
     "{{ entity.nombre|default('-') }}",
     "{{ entity.apellido|default('-') }}",
