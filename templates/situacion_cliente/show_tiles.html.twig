@@ -19,9 +19,14 @@
     <div class="card card-custom bg-light-success card-stretch gutter-b border-1">
         <!--begin::Body-->
         <div class="card-body p-4">
-            <i class="fas fa-wallet icon-3x" style="color: cadetblue;"></i>
-            <button class="fas fa-plus-square icon-3x float-right add-adelanto-pedido" data-idCliente="{{ entity.id }}" style="color: cadetblue; background: none; border: none;"></button>
-{#            <button class="fas fa-minus-square icon-3x float-right add-ajuste-pedido" style="color: chocolate; background: none; border: none;"></button>#}
+            <div class="row">
+                <div class="col-md-6">
+                    <i class="fas fa-wallet icon-3x p-2" style="color: cadetblue;"></i>
+                </div>
+                <div class="col-md-6">
+                    <button class="fas fa-plus-square icon-3x float-right add-adelanto-pedido p-2" data-idCliente="{{ entity.id }}" style="color: cadetblue; background: none; border: none;"></button>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-6">
                     <span class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-0 mt-6 d-block">{{ entity.saldoAdelantos|money_format }}</span>
@@ -42,9 +47,15 @@
     <div class="card card-custom bg-light-danger card-stretch gutter-b border-1">
         <!--begin::Body-->
         <div class="card-body p-4">
-            <i class="fas fa-wallet icon-3x" style="color: chocolate;"></i>
-            <button class="fas fa-plus-square icon-3x float-right add-adelanto-cc" data-cuentaCorrienteUsuario="{{ entity.cuentaCorrienteUsuario.id }}" style="color: cadetblue; background: none; border: none;"></button>
-            <button class="fas fa-minus-square icon-3x float-right add-ajuste-cc" data-cuentaCorrienteUsuario="{{ entity.cuentaCorrienteUsuario.id }}" style="color: chocolate; background: none; border: none;"></button>
+            <div class="row">
+                <div class="col-md-3">
+                    <i class="fas fa-wallet icon-3x p-2" style="color: chocolate;"></i>
+                </div>
+                <div class="col-md-9">
+                    <button class="fas fa-plus-square icon-3x float-right add-adelanto-cc p-2" data-cuentaCorrienteUsuario="{{ entity.cuentaCorrienteUsuario.id }}" style="color: cadetblue; background: none; border: none;"></button>
+                    <button class="fas fa-minus-square icon-3x float-right add-ajuste-cc p-2" data-cuentaCorrienteUsuario="{{ entity.cuentaCorrienteUsuario.id }}" style="color: chocolate; background: none; border: none;"></button>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-6">
                     <span class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-0 mt-6 d-block">{{ entity.cuentaCorrienteUsuario.getPendiente|money_format }}</span>
