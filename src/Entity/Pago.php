@@ -9,6 +9,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity()
+ * @Gedmo\SoftDeleteable(fieldName="fechaBaja")
  */
 class Pago {
     use Auditoria;
