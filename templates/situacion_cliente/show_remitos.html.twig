@@ -31,6 +31,7 @@
                                             <thead>
                                             <tr>
                                                 <th class="text-center nowrap">Remito</th>
+                                                <th class="text-center nowrap">Fecha</th>
                                                 <th class="text-center nowrap">Monto Total</th>
                                                 <th class="text-center nowrap">Monto Pendiente</th>
                                                 <th class="text-center nowrap">Adelanto Pedido</th>
@@ -44,6 +45,9 @@
                                                     <tr>
                                                         <td class="v-middle nowrap text-center">
                                                             {{ remito|default('-') }}
+                                                        </td>
+                                                        <td class="v-middle nowrap text-center">
+                                                            {{ remito.fechaCreacion|date('d/m/Y') }}
                                                         </td>
                                                         <td class="v-middle nowrap text-center">
                                                             {{ remito.totalConDescuento|money_format }}

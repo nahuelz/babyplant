@@ -22,8 +22,10 @@
                                         <thead>
                                         <tr>
                                             <th class="text-center nowrap">Entrega</th>
+                                            <th class="text-center nowrap">Fecha</th>
                                             <th class="text-center nowrap">Bandejas</th>
                                             <th class="text-center nowrap">Estado</th>
+                                            <th class="text-center nowrap">Remito</th>
                                             <th class="text-center nowrap"></th>
                                         </tr>
                                         </thead>
@@ -33,7 +35,10 @@
                                                 {% set producto = entregaProducto.pedidoProducto %}
                                                 <tr>
                                                     <td class="v-middle nowrap text-center">
-                                                        {{ producto|default('-') }}
+                                                        Entrega N° {{ entrega.id }} {{ producto|default('-') }}
+                                                    </td>
+                                                    <td class="v-middle nowrap text-center">
+                                                        {{ entrega.fechaEntrega|date('d/m/Y') }}
                                                     </td>
                                                     <td class="v-middle nowrap text-center">
                                                         {{ entregaProducto.cantidadBandejas|default('-') }}
@@ -42,6 +47,9 @@
                                                         <div class="label label-inline font-size-10 font-dark font-weight-bold padding-15 {{ entrega.estado.color|default('-') }}">
                                                             {{ entrega.estado|default('-') }}
                                                         </div>
+                                                    </td>
+                                                    <td class="v-middle nowrap text-center">
+                                                        {{ entrega.remito ? entrega.remito : '-' }}
                                                     </td>
                                                     <td class=" text-center dt-acciones">
                                                         <div class="dropdown dropdown-inline">

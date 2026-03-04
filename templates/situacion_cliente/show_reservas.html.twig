@@ -22,9 +22,11 @@
                                         <thead>
                                         <tr>
                                             <th class="text-center nowrap">Reserva</th>
+                                            <th class="text-center nowrap">Fecha</th>
                                             <th class="text-center nowrap">Bandejas</th>
                                             <th class="text-center nowrap">Adelanto</th>
                                             <th class="text-center nowrap">Estado</th>
+                                            <th class="text-center nowrap">Entrega</th>
                                             <th class="text-center nowrap"></th>
                                         </tr>
                                         </thead>
@@ -32,7 +34,10 @@
                                         {% for reserva in entity.reservas %}
                                             <tr>
                                                 <td class="v-middle nowrap text-center">
-                                                    {{ reserva.pedidoProducto|default('-') }}
+                                                    Reserva N° {{ reserva.id }} {{ reserva.pedidoProducto|default('-') }}
+                                                </td>
+                                                <td class="v-middle nowrap text-center">
+                                                    {{ reserva.fechaEntregaEstimada|date('d/m/Y') }}
                                                 </td>
                                                 <td class="v-middle nowrap text-center">
                                                     {{ reserva.cantidadBandejas|default('-') }}
@@ -44,6 +49,9 @@
                                                     <div class="label label-inline font-size-10 font-dark font-weight-bold padding-15 {{ reserva.estado.color|default('-') }}">
                                                         {{ reserva.estado|default('-') }}
                                                     </div>
+                                                </td>
+                                                <td class="v-middle nowrap text-center">
+                                                    {{ reserva.entrega ? reserva.entrega : '-' }}
                                                 </td>
 
                                                 <td class=" text-center dt-acciones">
