@@ -284,7 +284,7 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'fechaCreacion',
-            orderable: false,
+            orderable: true,
             width: '50px',
             className: 'dt-center p-0',
             render: function (data, type, full, meta) {
