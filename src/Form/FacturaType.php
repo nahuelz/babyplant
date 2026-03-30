@@ -82,6 +82,7 @@ class FacturaType extends AbstractType
                     'attr' => array(
                         'class' => 'form-control monto-input',
                         'style' => 'font-size: 1.1rem; font-weight: bold;',
+                        'placeholder' => '0,00',
                         'tabindex' => '5'))
             )
             ->add('modoPago', EntityType::class, array(
