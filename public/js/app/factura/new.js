@@ -1,14 +1,16 @@
 jQuery(document).ready(function () {
-    $('#gasto_modoPago').select2();
-    $('#gasto_concepto').select2();
-    $('#gasto_subConcepto').select2();
+    // Inicialización de select2 en los campos
+    $('#factura_modoPago').select2();
+    $('#factura_concepto').select2();
+    $('#factura_subConcepto').select2();
+
     initMontoFormat();
 
-    $('#gasto_submit').on('click', function (e) {
+    $('#factura_submit').on('click', function (e) {
         e.preventDefault();
 
         // LIMPIAR EL MONTO ANTES DEL ENVÍO
-        const montoInput = $('#gasto_monto');
+        const montoInput = $('#factura_monto');
         const montoValue = montoInput.val();
 
         // Remover todos los puntos (separadores de miles)
@@ -21,7 +23,7 @@ jQuery(document).ready(function () {
         const isValid = validateForm();
 
         if (isValid) {
-            $('form[name="gasto"]')[0].submit();
+            $('form[name="factura"]')[0].submit();
         } else {
             showValidationSummary();
 
@@ -29,19 +31,21 @@ jQuery(document).ready(function () {
             montoInput.val(montoValue);
         }
     });
-
-    initChainedSelect($('#gasto_concepto'), $('#gasto_subConcepto'), __HOMEPAGE_PATH__ + 'tipo/sub/concepto/lista/', 1);
 });
 
+/**
+ * Validación de formulario
+ */
 function validateForm() {
     let isValid = true;
 
     // Lista de campos requeridos con sus mensajes de error
     const requiredFields = [
-        { selector: '#gasto_fecha', errorMessage: 'La fecha es obligatoria.' },
-        { selector: '#gasto_concepto', errorMessage: 'Debe seleccionar un concepto.' },
-        { selector: '#gasto_modoPago', errorMessage: 'Debe seleccionar un modo de pago.' },
-        { selector: '#gasto_monto', errorMessage: 'El monto es obligatorio y debe ser mayor a 0.' }
+        { selector: '#factura_numeroFactura', errorMessage: 'El número de factura es obligatorio.' },
+        { selector: '#factura_fecha', errorMessage: 'La fecha es obligatoria.' },
+        { selector: '#factura_concepto', errorMessage: 'Debe seleccionar un concepto.' },
+        { selector: '#factura_modoPago', errorMessage: 'Debe seleccionar un modo de pago.' },
+        { selector: '#factura_monto', errorMessage: 'El monto es obligatorio y debe ser mayor a 0.' }
     ];
 
     // Validar cada campo
@@ -50,7 +54,7 @@ function validateForm() {
         const value = element.val();
 
         // Validar si el campo está vacío o si es un número inválido
-        if (!value || value.trim() === '' || (field.selector === '#gasto_monto' && parseFloat(value.replace(',', '.')) <= 0)) {
+        if (!value || value.trim() === '' || (field.selector === '#factura_monto' && parseFloat(value.replace(',', '.')) <= 0)) {
             showError(element, field.errorMessage);
             isValid = false;
         } else {
@@ -61,16 +65,19 @@ function validateForm() {
     return isValid;
 }
 
-function clearError(element) {
-    element.removeClass('is-invalid'); // Quitar estilo de error
-    const feedback = element.next('.invalid-feedback'); // Buscar mensaje de error
-    if (feedback.length > 0) {
-        feedback.remove(); // Eliminar mensaje de error
-    }
+/**
+ * Limpiar todos los errores del formulario
+ */
+function clearAllErrors() {
+    $('form[name="factura"] .is-invalid').removeClass('is-invalid');
+    $('form[name="factura"] .invalid-feedback').remove();
 }
 
+/**
+ * Mostrar resumen de errores
+ */
 function showValidationSummary() {
-    const errorCount = $('form[name="gasto"] .is-invalid').length;
+    const errorCount = $('form[name="factura"] .is-invalid').length;
 
     if (typeof Swal !== 'undefined') {
         Swal.fire({
@@ -85,7 +92,7 @@ function showValidationSummary() {
     }
 
     // Hacer scroll al primer error
-    const firstError = $('form[name="gasto"] .is-invalid').first();
+    const firstError = $('form[name="factura"] .is-invalid').first();
     if (firstError.length > 0) {
         $('html, body').animate({
             scrollTop: firstError.offset().top - 100
@@ -94,12 +101,33 @@ function showValidationSummary() {
     }
 }
 
-function clearAllErrors() {
-    $('form[name="gasto"] .is-invalid').removeClass('is-invalid');
-    $('form[name="gasto"] .invalid-feedback').remove();
+/**
+ * Mostrar error en un campo
+ */
+function showError(element, message) {
+    element.addClass('is-invalid'); // Cambiar estilo del campo
+    let feedback = element.next('.invalid-feedback'); // Buscar contenedor de error
+    if (feedback.length === 0) {
+        feedback = $('<div class="invalid-feedback"></div>'); // Crear contenedor de error si no existe
+        element.after(feedback);
+    }
+    feedback.text(message); // Agregar mensaje de error
 }
 
+/**
+ * Limpiar error de un campo
+ */
+function clearError(element) {
+    element.removeClass('is-invalid'); // Quitar estilo de error
+    const feedback = element.next('.invalid-feedback'); // Buscar mensaje de error
+    if (feedback.length > 0) {
+        feedback.remove(); // Eliminar mensaje de error
+    }
+}
 
+/**
+ * Formatear el campo "monto"
+ */
 function initMontoFormat() {
     const montoInput = document.querySelector('.monto-input');
 

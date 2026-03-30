@@ -23,6 +23,17 @@ class TipoProducto extends EntidadBasica {
     private $cantDiasCamara;
 
     /**
+     * @ORM\Column(name="catidad_dias_invernaculo", type="string", length=50, nullable=true)
+     */
+    private $cantDiasInvernaculo;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=TipoBandeja::class)
+     * @ORM\JoinColumn(name="id_tipo_bandeja", referencedColumnName="id", nullable=true)
+     */
+    private TipoBandeja|null $tipoBandeja = null;
+
+    /**
      * @ORM\ManyToOne(targetEntity=TipoMesada::class)
      * @ORM\JoinColumn(name="id_ultima_mesada", referencedColumnName="id", nullable=true)
      */
@@ -79,9 +90,29 @@ class TipoProducto extends EntidadBasica {
         $this->ultimaMesada = $ultimaMesada;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getCantDiasInvernaculo()
+    {
+        return $this->cantDiasInvernaculo;
+    }
 
+    /**
+     * @param mixed $cantDiasInvernaculo
+     */
+    public function setCantDiasInvernaculo($cantDiasInvernaculo): void
+    {
+        $this->cantDiasInvernaculo = $cantDiasInvernaculo;
+    }
 
+    public function getTipoBandeja(): ?TipoBandeja
+    {
+        return $this->tipoBandeja;
+    }
 
-
-
+    public function setTipoBandeja(?TipoBandeja $tipoBandeja): void
+    {
+        $this->tipoBandeja = $tipoBandeja;
+    }
 }

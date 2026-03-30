@@ -2,30 +2,41 @@
 
 namespace App\Form;
 
-use App\Entity\Gasto;
+use App\Entity\Factura;
 use App\Entity\TipoConcepto;
 use App\Entity\TipoSubConcepto;
+use App\Entity\ModoPago;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class GastoType extends AbstractType
+class FacturaType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('numeroFactura', TextType::class, array(
+                'required' => true,
+                'label' => 'Número de Factura',
+                'attr' => array(
+                    'class' => 'form-control',
+                    'placeholder' => 'Ingrese número de factura',
+                    'tabindex' => '1'
+                )
+            ))
             ->add('fecha', DateType::class, array(
                 'required' => true,
                 'label' => 'Fecha',
                 'widget' => 'single_text',
                 'attr' => array(
                     'class' => 'form-control',
-                    'tabindex' => '1'),
-                'data' => new \DateTime() // Fecha actual por defecto
+                    'tabindex' => '2'),
+                'data' => new \DateTime()
             ))
             ->add('concepto', EntityType::class, array(
                     'label' => 'Tipo Concepto',
@@ -35,7 +46,7 @@ class GastoType extends AbstractType
                         'placeholder' => '-- Elija el concepto --',
                         'class' => 'form-control choice',
                         'data-placeholder' => '-- Elija el concepto --',
-                        'tabindex' => '5'
+                        'tabindex' => '3'
                     ),
                     'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('x')
@@ -54,7 +65,7 @@ class GastoType extends AbstractType
                         'placeholder' => '-- Elija el sub concepto --',
                         'class' => 'form-control choice',
                         'data-placeholder' => '-- Elija el sub concepto --',
-                        'tabindex' => '5'
+                        'tabindex' => '4'
                     ),
                     'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('x')
@@ -65,25 +76,34 @@ class GastoType extends AbstractType
                     'placeholder' => '-- Elija el sub concepto --',
                     'auto_initialize' => false)
             )
-            ->add('monto', MoneyType::class, array(
+            ->add('monto', null, array(
+                    'required' => true,
+                    'label' => 'Monto',
+                    'attr' => array(
+                        'class' => 'form-control monto-input',
+                        'style' => 'font-size: 1.1rem; font-weight: bold;',
+                        'tabindex' => '5'))
+            )
+            ->add('modoPago', EntityType::class, array(
                 'required' => true,
-                'label' => 'Monto',
-                'currency' => '',  // O la moneda que uses
+                'label' => 'Modo de Pago',
+                'class' => ModoPago::class,
+                'attr' => array(
+                    'class' => 'form-control',
+                    'tabindex' => '6')
+            ))
+            ->add('tipoCambio', MoneyType::class, array(
+                'required' => false,
+                'label' => 'Tipo de Cambio',
+                'currency' => '',
                 'scale' => 2,
                 'grouping' => false,
                 'attr' => array(
                     'class' => 'form-control monto-input',
                     'style' => 'font-size: 1.1rem; font-weight: bold;',
                     'placeholder' => '0,00',
-                    'tabindex' => '6'
+                    'tabindex' => '7'
                 )
-            ))
-            ->add('modoPago', null, array(
-                'required' => true,
-                'label' => 'Modo de Pago',
-                'attr' => array(
-                    'class' => 'form-control',
-                    'tabindex' => '4')
             ))
         ;
     }
@@ -91,7 +111,7 @@ class GastoType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Gasto::class,
+            'data_class' => Factura::class,
         ]);
     }
 }

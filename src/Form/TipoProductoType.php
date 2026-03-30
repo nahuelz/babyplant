@@ -2,7 +2,10 @@
 
 namespace App\Form;
 
+use App\Entity\TipoBandeja;
 use App\Entity\TipoProducto;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ColorType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -28,6 +31,34 @@ class TipoProductoType extends AbstractType
                     'attr' => array(
                         'class' => 'form-control',
                         'tabindex' => '5'))
+            )
+            ->add('cantDiasInvernaculo', IntegerType::class, array(
+                    'required' => false,
+                    'label' => 'Dias en Invernaculo',
+                    'attr' => array(
+                        'class' => 'form-control',
+                        'tabindex' => '5'))
+            )
+            ->add(
+                'tipoBandeja',
+                EntityType::class,
+                array(
+                    'class' => TipoBandeja::class,
+                    'required' => false,
+                    'label' => 'Bandeja estandar',
+                    'placeholder' => '-- Elija la bandeja --',
+                    'attr' => array(
+                        'placeholder' => 'Escriba el tipo aquí.',
+                        'class' => 'form-control choice',
+                        'data-placeholder' => '-- Elija --',
+                        'tabindex' => '5'
+                    ),
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('x')
+                            ->where('x.habilitado = 1')
+                            ->orderBy('x.nombre', 'ASC');
+                    },
+                )
             )
             ->add('habilitado', null, array(
                     'required' => false,

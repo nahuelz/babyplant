@@ -27,7 +27,7 @@
                 <h3 class="card-label">Gastos</h3>
             </div>
             <div class="card-toolbar">
-                <a href="{{ path('gasto_new') }}" class="btn btn-primary font-weight-bolder mr-2">
+                <a href="{{ path('factura_new') }}" class="btn btn-primary font-weight-bolder mr-2">
                     <i class="la la-plus"></i>
                     Agregar
                 </a>
@@ -72,16 +72,16 @@
 
         <div class="row padding-top-15">
             <div class="col-md-12" id="filtros">
-                {% include 'gasto/tiles.html.twig' %}
+                {% include 'factura/tiles.html.twig' %}
             </div>
             <div class="col-md-6">
-                {% include 'gasto/filtros.html.twig' %}
+                {% include 'factura/filtros.html.twig' %}
             </div>
         </div>
 
         <div class="card-body padding-top-15 padding-bottom-0">
             <!--begin: Datatable-->
-            <table class="table table-bordered table-hover table-checkable" id="table-gasto">
+            <table class="table table-bordered table-hover table-checkable" id="table-factura">
                 <thead>
                 <tr>
                     <th class="not-in-filter">ID</th>
@@ -107,7 +107,7 @@
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}" ></script>
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-datatables.js') }}" ></script>
 
-    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/gasto/index.js') }}" ></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/factura/index.js') }}" ></script>
 
 {% endblock %}
 
