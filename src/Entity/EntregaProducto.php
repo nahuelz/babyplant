@@ -37,7 +37,7 @@ class EntregaProducto {
      * @ORM\ManyToOne(targetEntity=PedidoProducto::class, inversedBy="entregasProductos")
      * @ORM\JoinColumn(name="id_pedido_producto", referencedColumnName="id", nullable=false)
      */
-    private mixed $pedidoProducto;
+    private mixed $pedidoProducto = null;
 
     /**
      * @ORM\Column(name="cantidad_bandejas", type="decimal", precision=6, scale=1, nullable=true)
