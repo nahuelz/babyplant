@@ -74,7 +74,14 @@
                             {{ macro_show._show_detail('Numero Orden', producto.getNumeroOrdenCompleto|default('-'), 'col-md-2') }}
                             {{ macro_show._show_detail('Bandejas Entregadas', entregaProducto.cantidadBandejas|default('-'), 'col-md-2') }}
                             {% set mesadaContent %}
-                                {{ producto.mesadaNumero }}
+                                {% if producto.mesadaUno and producto.mesadaUno.tipoMesada %}
+                                    MESADA N° {{ producto.mesadaUno.tipoMesada.numero }}
+                                    {% if producto.mesadaDos and producto.mesadaDos.tipoMesada %}
+                                        </br>MESADA N° {{ producto.mesadaDos.tipoMesada.numero }}
+                                    {% endif %}
+                                {% else %}
+                                    -
+                                {% endif %}
                                 {% if producto.mesadaUno and producto.mesadaUno.tipoMesada %}
                                     <a href="{{ path('app_tipo_mesada_show', {'id': producto.mesadaUno.tipoMesada.id}) }}" class="btn btn-xs btn-icon" style="max-height: 15px" title="Ver pedido">
                                         <i class="la la-search" style="color: #0a6aa1"></i>
