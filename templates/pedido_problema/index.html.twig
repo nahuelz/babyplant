@@ -1,0 +1,201 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+
+    {{ parent() }}
+
+    <link href="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css"/>
+
+    <style>
+        .label-light-secondary{
+            color:black !important;
+        }
+
+        .container-fluid, .card-body{
+            padding: 0 15px !important;
+        }
+
+        td {
+            padding-top: 0 !important;
+            padding-bottom: 0.4rem !important;
+        }
+        .w-0{
+            width: 0 !important;
+        }
+        .p-0{
+            padding: 15px 0 !important;
+        }
+
+        .select2{
+            min-width: 200px !important;
+        }
+    </style>
+
+{% endblock %}
+
+{% block body %}
+    <!--begin::Card-->
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon2-layers text-primary"></i></span>
+                <h3 class="card-label">Pedidos registrados</h3>
+            </div>
+            <div class="card-toolbar">
+                {% if is_granted('ROLE_PEDIDO') %}
+                    <a href="{{ path('pedido_new') }}" class="btn btn-primary font-weight-bolder mr-2">
+                        <i class="la la-plus"></i>
+                        Agregar
+                    </a>
+                {% endif %}
+                <div class="dropdown dropdown-inline">
+                    <div class="dropdown dropdown-inline  mr-2">
+                        <button type="button" class="btn btn-light-primary font-weight-bolder dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Exportar
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right" style="">
+                            <ul class="navi flex-column navi-hover py-2">
+                                <li class="navi-header font-weight-bolder text-uppercase font-size-sm text-primary pb-2">Elija una opci&oacute;n:</li>
+                                <li class="navi-item" onClick="exportarCustom('print');">
+                                    <a href="#" class="navi-link">
+                                        <span class="navi-icon">
+                                            <i class="la la-file-excel-o text-success"></i>
+                                        </span>
+                                        <span class="navi-text">Print</span>
+                                    </a>
+                                </li>
+                                <li class="navi-item" onClick="exportarCustom('pagina');">
+                                    <a href="#" class="navi-link">
+                                        <span class="navi-icon">
+                                            <i class="la la-file-excel-o text-success"></i>
+                                        </span>
+                                        <span class="navi-text">Excel - P&aacute;gina</span>
+                                    </a>
+                                </li>
+                                <li class="navi-item" onClick="exportarCustom('filtrados');">
+                                    <a href="#" class="navi-link">
+                                        <span class="navi-icon">
+                                            <i class="la la-file-excel-o text-success"></i>
+                                        </span>
+                                        <span class="navi-text">Excel - Filtrado</span>
+                                    </a>
+                                </li>
+                                <li class="navi-item" onClick="exportarCustom('todos');">
+                                    <a href="#" class="navi-link">
+                                        <span class="navi-icon">
+                                            <i class="la la-file-excel-o text-success"></i>
+                                        </span>
+                                        <span class="navi-text">Excel - Todo</span>
+                                    </a>
+                                </li>
+                                <li class="navi-item" onClick="exportarCustom('pdf');">
+                                    <a href="#" class="navi-link">
+                                        <span class="navi-icon">
+                                            <i class="la la-file-pdf-o text-danger"></i>
+                                        </span>
+                                        <span class="navi-text">PDF - Todo</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="dropdown dropdown-inline">
+                    <div class="dropdown dropdown-inline ">
+                        <button type="button" class="btn btn-light-primary font-weight-bolder dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Filtros
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right" style="">
+                            <ul class="navi flex-column navi-hover py-2">
+                                <li class="navi-header font-weight-bolder text-uppercase font-size-sm text-primary pb-2">Elija una opci&oacute;n:</li>
+                                <li class="navi-item">
+                                    <a href="#" class="navi-link">
+                                        <span class="navi-text mostrar-filtros">Mostrar Tiles</span>
+                                    </a>
+                                </li>
+                                <li class="navi-item">
+                                    <a href="#" class="navi-link">
+                                        <span class="navi-text mostrar-actividad-reciente">Mostrar Filtros</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row padding-top-15">
+            <div class="col-md-12" id="filtros">
+                {% include 'pedido/index_panel.html.twig' %}
+            </div>
+            <div class="col-md-6 actividad-reciente">
+                {% include 'pedido/filtros.html.twig' %}
+            </div>
+            <div class="col-md-6 actividad-reciente">
+                {% include 'pedido/index_actividad_reciente.html.twig' %}
+            </div>
+        </div>
+
+        <div class="card-body padding-top-0 padding-bottom-0">
+            <!--begin: Datatable-->
+            <table class="table table-bordered table-hover" id="table-pedido">
+                <thead>
+                <tr>
+                    <th class="w-0 p-0"></th>
+                    <th data-type="string" class="text-center p-0">PEDIDO</th>
+                    <th data-type="string" class="text-center p-0">PRODUCTO</th>
+                    <th data-type="string" class="text-center p-0">F. PEDIDO</th>
+                    <th data-type="string" class="text-center p-0">PRODUCTO</th>
+                    <th data-type="string" class="text-center p-0">CLIENTE</th>
+                    <th data-type="string" class="text-center p-0">B. SEMBRADAS</th>
+                    <th data-type="select" data-select="{{ origenSemillaSelect }}" class="text-center p-0">ORIGEN SEMILLA</th>
+                    <th data-type="string" class="text-center p-0">CANT. SEMILLAS</th>
+                    <th data-type="string" class="text-center p-0">F. SIEMBRA</th>
+                    <th data-type="string" class="text-center p-0">F. ENTREGA</th>
+                    <th data-type="select" data-select="{{ estadoSelect }}" class="text-center p-0">ESTADO</th>
+                    <th data-type="string" class="text-center p-0">DIAS CAMARA</th>
+                    <th data-type="string" class="text-center p-0">DIAS INVERN</th>
+                    <th data-type="string" class="text-center p-0">O. SIEMBRA</th>
+                    <th data-type="string" class="text-center p-0">MESADA</th>
+                    <th data-type="search" style="width: 5px; padding: 0"></th>
+                </tr>
+                </thead>
+            </table>
+            <!--end: Datatable-->
+        </div>
+    </div>
+
+    <!-- Modal-->
+    <div class="modal fade" id="exampleModalCustomScrollable" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Historico Estados</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i aria-hidden="true" class="ki ki-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div data-scroll="false" data-height="300">
+                        {% include 'pedido/historico_estados.html.twig' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script type="text/javascript" src="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.js') }}"></script>
+
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}" ></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-datatables.js') }}" ></script>
+
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/pedido/index.js') }}" ></script>
+
+{% endblock %}
+

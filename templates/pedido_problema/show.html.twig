@@ -1,0 +1,375 @@
+{% extends 'base.html.twig' %}
+
+{% import 'app/_macro_show.html.twig' as macro_show %}
+
+{% block stylesheets %}
+
+    {{ parent() }}
+
+    <style type="text/css">
+        .card.card-detail .card-header {
+            padding: 15px;
+            background-color: #f5f5f5;
+        }
+
+        .card.card-detail {
+            margin-bottom: 20px;
+        }
+    </style>
+
+{% endblock %}
+
+{% block body %}
+<div class="card card-custom">
+    <div class="card-header">
+        <div class="card-title">
+            <span class="card-icon"><i class="flaticon-search text-primary"></i></span>
+            <h3 class="card-label">{{ entity }}</h3>
+        </div>
+        <div class="card-toolbar">
+            {#  include 'pedido/header_acciones_button.html.twig' with {'entity': entity } #}
+        </div>
+    </div>
+    <div class="card-body">
+        {% for producto in entity.pedidosProductos %}
+            <div class="card card-detail" id="{{ producto.id }}">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-10"><h4>Producto N° {{producto.id }}</h4></div>
+                        <div class="col-md-1">
+                            <div class="dropdown dropdown-inline col-md-1">
+                                <button type="button" class="btn btn-light-primary font-weight-bolder dropdown-toggle" data-toggle="dropdown"> Acciones
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+                                    <ul class="navi flex-column navi-hover py-2">
+                                        {% if is_granted('ROLE_PEDIDO') %}
+                                            <li class="navi-item">
+                                                <a href="#" data-href="{{ path( "pedido_historico_estado", { "id": producto.id }) }}" class="navi-link link-ver-historico-pedido">
+                                                        <span class="navi-icon">
+                                                            <i class="la la-refresh"></i>
+                                                        </span>
+                                                    <span class="navi-text">Historico estados</span>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="card mb-4 col-md-12">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-3">Detalle del producto</h6>
+                                <div class="row">
+                                    {{ macro_show._show_detail('Número Orden', producto.numeroOrdenCompleto|default('-'), 'col-md-3') }}
+                                    {{ macro_show._show_detail('Nombre producto', producto.nombreCompleto|default('-'), 'col-md-3') }}
+                                    {{ macro_show._show_detail('Bandejas', producto.cantidadtipoBandejas|default('-'), 'col-md-3') }}
+                                    {{ macro_show._show_detail('Semillas', producto.cantSemillas|default('-'), 'col-md-3') }}
+                                    {{ macro_show._show_detail('Origen', producto.tipoOrigenSemilla.nombre|default('-'), 'col-md-3') }}
+                                    {{ macro_show._show_detail('Siembra pedido', producto.fechaSiembraPedido ? producto.fechaSiembraPedido|date("d/m/Y") : '-', 'col-md-3') }}
+                                    {{ macro_show._show_detail('Entrega pedido', producto.fechaEntregaPedido ? producto.fechaEntregaPedido|date("d/m/Y") : '-', 'col-md-3') }}
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label d-block">
+                                                Estado
+                                            </label>
+                                            <span class="label label-inline font-weight-bold font-size-14 {{ producto.estado.color|default('') }}" style="padding: 20px;">{{ producto.estado.nombre|default('') }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="card mb-5 col-md-12">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-4">Bandejas</h6>
+
+                                <div class="row text-center">
+
+                                    <div class="col-md-2 mb-3">
+                                        <div class="card shadow-sm border-primary">
+                                            <div class="card-body py-4">
+                                                <small class="font-size-16 text-uppercase">Pedidas</small>
+                                                <div class="display-4 font-weight-bold text-primary">
+                                                    {{ producto.cantidadBandejasPedidas|default('-') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 mb-3">
+                                        <div class="card shadow-sm border-primary">
+                                            <div class="card-body py-4">
+                                                <small class="font-size-16 text-uppercase">Reales</small>
+                                                <div class="display-4 font-weight-bold text-primary">
+                                                    {{ producto.cantidadBandejasReales|default('-') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 mb-3">
+                                        <div class="card shadow-sm border-success">
+                                            <div class="card-body py-4">
+                                                <small class="font-size-16 text-uppercase">Entregadas</small>
+                                                <div class="display-4 font-weight-bold text-success">
+                                                    {{ producto.cantidadBandejasEntregadas|default('-') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 mb-3">
+                                        <div class="card shadow-sm border-warning">
+                                            <div class="card-body py-4">
+                                                <small class="font-size-16 text-uppercase">Sin entregar</small>
+                                                <div class="display-4 font-weight-bold text-warning">
+                                                    {{ producto.cantidadBandejasSinEntregar|default('-') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 mb-3">
+                                        <div class="card shadow-sm border-info">
+                                            <div class="card-body py-4">
+                                                <small class="font-size-16 text-uppercase">Reservadas</small>
+                                                <div class="display-4 font-weight-bold text-info">
+                                                    {{ producto.cantidadBandejasReservadasSinEntregar|default('-') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 mb-3">
+                                        <div class="card shadow-sm {{ producto.cantidadBandejasDisponibles == 0 ? 'border-danger' : 'border-success' }}">
+                                            <div class="card-body py-4 position-relative">
+                                                <small class="font-size-16 text-uppercase">Disponibles</small>
+
+                                                <div class="display-4 font-weight-bold {{ producto.cantidadBandejasDisponibles == 0 ? 'text-danger' : 'text-success' }}"
+                                                     id="disponibles-{{ producto.id }}"
+                                                     data-base="{{ producto.cantidadBandejasDisponiblesBase|round }}"
+                                                >
+                                                    {% if producto.cantidadBandejasDisponibles|round != producto.cantidadBandejasDisponiblesBase|round %}
+                                                    {{ producto.cantidadBandejasDisponibles|round|default('-') }}
+                                                    /
+                                                    {{ producto.cantidadBandejasDisponiblesBase|round|default('-') }}
+                                                    {% else %}
+                                                        {{ producto.cantidadBandejasDisponibles|round|default('-') }}
+                                                    {% endif %}
+                                                </div>
+
+                                                {# BOTÓN ACTUALIZAR #}
+                                                {% if producto.cantidadBandejasDisponibles|round != producto.cantidadBandejasDisponiblesBase|round %}
+                                                <button
+                                                        type="button"
+                                                        class="btn btn-sm btn-outline-secondary position-absolute js-actualizar-bandejas"
+                                                        style="bottom: 10px; right: 10px;"
+                                                        title="Actualizar cantidad disponible"
+                                                        data-id="{{ producto.id }}"
+                                                        data-href="{{ path('pedido_producto_actualizar_bandejas', {'id': producto.id}) }}"
+                                                >
+                                                    <i class="fas fa-sync-alt"></i>
+                                                </button>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% for historicoEstados in producto.historicoEstados %}
+                        {% if historicoEstados.estado.id == 2 %}
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <span class="label label-inline label-light-warning font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-list-ul padding-right-5"></span> PLANIFICADO</span>
+                                </div>
+                                {{ macro_show._show_detail('Fecha de planificacion', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                                {{ macro_show._show_detail('Codigo Sobre', producto.codigoSobre|default('-'), 'col-md-3') }}
+                            </div>
+                        {% endif %}
+                        {% if historicoEstados.estado.id == 3 %}
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <span class="label label-inline label-light-success font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-leaf padding-right-5"></span> SEMBRADO</span>
+                                </div>
+                                {{ macro_show._show_detail('Fecha de siembra', producto.fechaSiembraReal is not null ? producto.fechaSiembraReal|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                            </div>
+                        {% endif %}
+                        {% if historicoEstados.estado.id == 4 %}
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <span class="label label-inline label-light-primary font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-list-ul padding-right-5"></span> EN CAMARA</span>
+                                </div>
+                                {{ macro_show._show_detail('Fecha de entrada a camara', producto.fechaEntradaCamaraReal is not null ? producto.fechaEntradaCamaraReal|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                                {{ macro_show._show_detail('Fecha de salida de camara', producto.fechaSalidaCamaraReal is not null ? producto.fechaSalidaCamaraReal|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                                {{ macro_show._show_detail('Tiempo en camara', producto.cantidadDiasEnCamara|default('-'), 'col-md-3') }}
+                            </div>
+                        {% endif %}
+                        {% if historicoEstados.estado.id == 5 %}
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <span class="label label-inline label-light-info font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-home padding-right-5"></span> EN INVERNACULO</span>
+                                </div>
+                                {{ macro_show._show_detail('Fecha de entrada a invernaculo', producto.fechaSalidaCamaraReal is not null ? producto.fechaSalidaCamaraReal|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                                {{ macro_show._show_detail('Mesada', producto.mesada|default('-'), 'col-md-3') }}
+                                {{ macro_show._show_detail('Dias en invernaculo', producto.cantidadDiasEnInvernaculo|default('-'), 'col-md-3') }}
+                            </div>
+                        {% endif %}
+                        {% if historicoEstados.estado.id == 6 %}
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <span class="label label-inline {{ historicoEstados.estado.color }} font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-check padding-right-5"></span> {{ historicoEstados.estado.nombre }} </span>
+                                </div>
+
+                                {{ macro_show._show_detail('N° Reserva', historicoEstados.reserva is not null ? historicoEstados.reserva.id : '-', 'col-md-1 text-center') }}
+                                {{ macro_show._show_detail('Fecha', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-2') }}
+                                {{ macro_show._show_detail('Bandejas Reservadas', historicoEstados.reserva is not null ? historicoEstados.reserva.cantidadBandejas : '-', 'col-md-2') }}
+                                <div class="col-md-1 d-flex align-items-center justify-content-between">
+                                    <a href="{{ path('reserva_show', {'id': historicoEstados.reserva.id}) }}"
+                                       class="btn btn-sm btn-light-info"
+                                       title="Ver detalle de la reserva">
+                                        <i class="fas fa-search"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if historicoEstados.estado.id == 7 %}
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <span class="label label-inline {{ historicoEstados.estado.color }} font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-check padding-right-5"></span> {{ historicoEstados.estado.nombre }}</span>
+                                </div>
+                                {{ macro_show._show_detail('N° Entrega', historicoEstados.DatosEntrega is not null ? historicoEstados.DatosEntrega.entrega.id : '-', 'col-md-1 text-center') }}
+                                {{ macro_show._show_detail('Fecha', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-2') }}
+                                {{ macro_show._show_detail('Bandejas Entregadas', historicoEstados.DatosEntrega is not null ? historicoEstados.DatosEntrega.cantidadBandejasAEntregar : '-', 'col-md-2') }}
+                                {# {{ macro_show._show_detail('Bandejas Pendientes de Entrega', historicoEstados.DatosEntrega is not null ? historicoEstados.DatosEntrega.cantidadBandejasSinEntregar : '-', 'col-md-2') }}#}
+                                {% if historicoEstados.DatosEntrega is not null %}
+                                    <div class="col-md-1 d-flex align-items-center justify-content-between">
+                                        <a href="{{ path('entrega_show', {'id': historicoEstados.DatosEntrega.entrega.id}) }}"
+                                           class="btn btn-sm btn-light-warning"
+                                           title="Ver detalle de la entrega">
+                                            <i class="fas fa-search"></i>
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        {% if historicoEstados.estado.id == 8 %}
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <span class="label label-inline {{ historicoEstados.estado.color }} font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-check padding-right-5"></span> {{ historicoEstados.estado.nombre }} </span>
+                                </div>
+                                {{ macro_show._show_detail('N° Entrega', historicoEstados.DatosEntrega is not null ? historicoEstados.DatosEntrega.entrega.id : '-', 'col-md-1 text-center') }}
+                                {{ macro_show._show_detail('Fecha', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-2') }}
+                                {{ macro_show._show_detail('Bandejas Entregadas', historicoEstados.DatosEntrega is not null ? historicoEstados.DatosEntrega.cantidadBandejasAEntregar : '-', 'col-md-2') }}
+                                {# {{ macro_show._show_detail('Bandejas Pendientes de Entrega', historicoEstados.DatosEntrega is not null ? historicoEstados.DatosEntrega.cantidadBandejasSinEntregar : '-', 'col-md-2') }}#}
+                                {% if historicoEstados.DatosEntrega is not null %}
+                                    <div class="col-md-1 d-flex align-items-center justify-content-between">
+                                        <a href="{{ path('entrega_show', {'id': historicoEstados.DatosEntrega.entrega.id}) }}"
+                                           class="btn btn-sm btn-light-success"
+                                           title="Ver detalle de la entrega">
+                                            <i class="fas fa-search"></i>
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        {% if historicoEstados.estado.id == 11 %}
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <span class="label label-inline label-light-danger font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-exclamation-triangle padding-right-5"></span> {{ historicoEstados.estado.nombre }} </span>
+                                </div>
+                                {{ macro_show._show_detail('Reserva Cancelada', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                            </div>
+                        {% endif %}
+                        {% if historicoEstados.estado.id == 10 %}
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <span class="label label-inline label-light-danger font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-exclamation-triangle padding-right-5"></span> {{ historicoEstados.estado.nombre }} </span>
+                                </div>
+                                {{ macro_show._show_detail('Entrega Cancelada', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                            </div>
+                        {% endif %}
+                        {% if historicoEstados.estado.id == 9 %}
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <span class="label label-inline label-light-danger font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-exclamation-triangle padding-right-5"></span> {{ historicoEstados.estado.nombre }} </span>
+                                </div>
+                                {{ macro_show._show_detail('Fecha Cancelado', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-3') }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="card card-detail">
+            <h4 class="card-header">Datos Cliente</h4>
+            <div class="card-body">
+                <div class="row">
+                    {{ macro_show._show_detail('Apellido', entity.cliente.apellido|default('-'), 'col-md-4') }}
+                    {{ macro_show._show_detail('Nombre', entity.cliente.nombre|default('-'), 'col-md-4') }}
+                    {{ macro_show._show_detail('CUIT', entity.cliente.cuit|default('-'), 'col-md-4') }}
+                    {{ macro_show._show_detail('Email', entity.cliente.email|default('-'), 'col-md-4') }}
+                    {{ macro_show._show_detail('Celular', entity.cliente.celular|default('-'), 'col-md-4') }}
+                    {{ macro_show._show_detail('Domicilio', entity.cliente.domicilio|default('-'), 'col-md-4') }}
+                </div>
+                <div class="row">
+                    {{ macro_show._show_detail('Razon Social', entity.cliente.razonSocial.razonSocial|default('-'), 'col-md-2') }}
+                    {{ macro_show._show_detail('CUIT Razon Social', entity.cliente.razonSocial.cuit|default('-'), 'col-md-2') }}
+                </div>
+            </div>
+        </div>
+        <div class="card card-detail">
+            <h4 class="card-header">Observaciones</h4>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="detalle_show">{{ entity.observacion|default('-') }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('pedido_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
+        </div>
+    </div>
+    <!-- Modal-->
+    <div class="modal fade" id="exampleModalCustomScrollable" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Historico Estados</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i aria-hidden="true" class="ki ki-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div data-scroll="false" data-height="300">
+                        {% include 'pedido/historico_estados.html.twig' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/pedido/show.js') }}" ></script>
+
+{% endblock %}
+

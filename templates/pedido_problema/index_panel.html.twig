@@ -1,0 +1,21 @@
+{% import _self as panel %}
+<div class="row margin-right-20 margin-left-20">
+    {% for data in indicadorEstadoData %}
+        <div class="col-xl-2">
+            {{ panel._panel(data) }}
+        </div>
+    {% endfor %}
+</div>
+
+{% macro _panel(data) %}
+    <div class="card card-custom card-stretch gutter-b bg-light-{{ data.color }}">
+        <div class="card-body d-flex align-items-center py-0 {{ data.color }}">
+            <div class="d-flex flex-column flex-grow-1 py-2 py-lg-5">
+                <a href="#" class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-2 text-hover-primary">{{ data.cantidad }}</a>
+                <span class="font-weight-bold text-dark  font-size-lg">{{ data.estado }}</span>
+            </div>
+            <i class="fa {{ data.iconClass }}  icon-3x text-dark"></i>
+        </div>
+    </div>
+{% endmacro %}
+

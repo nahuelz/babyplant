@@ -419,28 +419,6 @@ class PedidoController extends BaseController {
     }
 
     /**
-     * @Route("/{id}/pedido_producto", name="pedido_producto", methods={"GET","POST"})
-     * @Template("pedido/producto_show.html.twig")
-     */
-    public function showPedidoProductoAction($id) {
-
-        $em = $this->doctrine->getManager();
-
-        /* @var $pedidoProducto PedidoProducto */
-        $pedidoProducto = $em->getRepository('App\Entity\PedidoProducto')->find($id);
-
-        if (!$pedidoProducto) {
-            throw $this->createNotFoundException('No se puede encontrar el producto.');
-        }
-
-        return array(
-            'entity' => $pedidoProducto,
-            'page_title' => 'Pedido Producto'
-        );
-    }
-
-
-    /**
      * Print a Pedido Entity.
      *
      * @Route("/imprimir-pedido/{id}", name="imprimir_pedido", methods={"GET"})
