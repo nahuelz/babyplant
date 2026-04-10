@@ -4,11 +4,23 @@ var init = false;
 var $table = $('#table-pedido');
 
 $(document).ready(function () {
+    // Limpiar bandera global al cargar la página
+    window.isGuardingColumnas = false;
+    
+    // Mostrar mensaje de éxito si existe en sessionStorage
+    const successMessage = sessionStorage.getItem('successMessage');
+    if (successMessage) {
+        toastr.success(successMessage);
+        sessionStorage.removeItem('successMessage'); // Limpiar después de mostrar
+    }
+    
     initTable();
     initVerHistoricoEstadoHandler();
     initFiltrosHandler();
     initColumnsHandler();
-    $('#multiple').select2();
+    $('#multiple').select2({
+        closeOnSelect: false
+    });
     setSameHeight('.portlet-nivel-1');
     initCancelarButton();
     initClienteSelect2();
@@ -49,8 +61,26 @@ function setSameHeight(target) {
 }
 
 function initColumnsHandler () {
-    $('#multiple').on('change', function (e) {
+    // Remover el evento change automático
+    $('#multiple').off('change');
+    
+    // Remover cualquier evento previo del botón para prevenir duplicados
+    $('#guardar_columnas').off('click').on('click', function (e) {
         e.preventDefault();
+        e.stopPropagation();
+        
+        // Prevenir múltiples ejecuciones con una bandera global
+        if (window.isGuardingColumnas) {
+            return false;
+        }
+        window.isGuardingColumnas = true;
+        
+        const $button = $(this);
+        const originalText = $button.html();
+        
+        // Deshabilitar botón y mostrar indicador de carga
+        $button.prop('disabled', true).html('<i class="la la-spinner la-spin"></i> Guardando...');
+        
         $.ajax({
             type: 'post',
             dataType: 'json',
@@ -59,13 +89,23 @@ function initColumnsHandler () {
             },
             url: __HOMEPAGE_PATH__ + "pedido/save_columns/",
             success: function (response) {
-                toastr.success(response.message);
-                location.reload();
+                // Guardar el mensaje en sessionStorage para mostrarlo después del refresco
+                sessionStorage.setItem('successMessage', response.message);
+                // Usar setTimeout para asegurar que el AJAX termine completamente
+                setTimeout(function() {
+                    location.reload();
+                }, 100);
             },
-            error: function () {
-                alert('ah ocurrido un error.');
+            error: function (xhr, status, error) {
+                console.error('Error al guardar columnas:', error);
+                alert('Ocurrió un error al guardar las columnas.');
+                // Restaurar botón en caso de error
+                $button.prop('disabled', false).html(originalText);
+                window.isGuardingColumnas = false;
             }
         });
+        
+        return false;
     });
 }
 
