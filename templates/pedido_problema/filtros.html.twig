@@ -36,26 +36,32 @@
             </button>
         </div>
     </div>
-
-    <div class="col-md-12 padding-left-0 padding-top-6">
-        Columnas ocultas
-        <select class="form-control" multiple="multiple" id="multiple" style="min-width: 100px !important;">
-            <option value="1" {% if 1 in columnasOcultas %}selected="selected"{% endif %}>ID Pedido</option>
-            <option value="2" {% if 2 in columnasOcultas %}selected="selected"{% endif %}>ID Producto</option>
-            <option value="3" {% if 3 in columnasOcultas %}selected="selected"{% endif %}>Fecha Pedido</option>
-            <option value="4" {% if 4 in columnasOcultas %}selected="selected"{% endif %}>Producto</option>
-            <option value="5" {% if 5 in columnasOcultas %}selected="selected"{% endif %}>Cliente</option>
-            <option value="6" {% if 6 in columnasOcultas %}selected="selected"{% endif %}>Bandejas Pedidas</option>
-            <option value="7" {% if 7 in columnasOcultas %}selected="selected"{% endif %}>Origen Semillas</option>
-            <option value="8" {% if 8 in columnasOcultas %}selected="selected"{% endif %}>Cantidad Semillas</option>
-            <option value="9" {% if 9 in columnasOcultas %}selected="selected"{% endif %}>Fecha Siembra</option>
-            <option value="10" {% if 10 in columnasOcultas %}selected="selected"{% endif %}>Fecha Entrega</option>
-            <option value="11" {% if 11 in columnasOcultas %}selected="selected"{% endif %}>Estado</option>
-            <option value="12" {% if 12 in columnasOcultas %}selected="selected"{% endif %}>Dias en camara</option>
-            <option value="13" {% if 13 in columnasOcultas %}selected="selected"{% endif %}>Dias en invernaculo</option>
-            <option value="14" {% if 14 in columnasOcultas %}selected="selected"{% endif %}>Orden Siembra</option>
-            <option value="15" {% if 15 in columnasOcultas %}selected="selected"{% endif %}>Mesada</option>
-
-        </select>
+    <div class="row">
+        <div class="col-md-9">
+            Columnas ocultas
+            <select class="form-control" multiple="multiple" id="multiple" style="min-width: 100px !important;">
+                <option value="1" {% if 1 in columnasOcultas %}selected="selected"{% endif %}>ID Pedido</option>
+                <option value="2" {% if 2 in columnasOcultas %}selected="selected"{% endif %}>ID Producto</option>
+                <option value="3" {% if 3 in columnasOcultas %}selected="selected"{% endif %}>Fecha Pedido</option>
+                <option value="4" {% if 4 in columnasOcultas %}selected="selected"{% endif %}>Producto</option>
+                <option value="5" {% if 5 in columnasOcultas %}selected="selected"{% endif %}>Cliente</option>
+                <option value="6" {% if 6 in columnasOcultas %}selected="selected"{% endif %}>Bandejas Pedidas</option>
+                <option value="7" {% if 7 in columnasOcultas %}selected="selected"{% endif %}>Origen Semillas</option>
+                <option value="8" {% if 8 in columnasOcultas %}selected="selected"{% endif %}>Cantidad Semillas</option>
+                <option value="9" {% if 9 in columnasOcultas %}selected="selected"{% endif %}>Fecha Siembra</option>
+                <option value="10" {% if 10 in columnasOcultas %}selected="selected"{% endif %}>Fecha Entrega</option>
+                <option value="11" {% if 11 in columnasOcultas %}selected="selected"{% endif %}>Estado</option>
+                <option value="12" {% if 12 in columnasOcultas %}selected="selected"{% endif %}>Dias en camara</option>
+                <option value="13" {% if 13 in columnasOcultas %}selected="selected"{% endif %}>Dias en invernaculo</option>
+                <option value="14" {% if 14 in columnasOcultas %}selected="selected"{% endif %}>Orden Siembra</option>
+                <option value="15" {% if 15 in columnasOcultas %}selected="selected"{% endif %}>Mesada</option>
+            </select>
+        </div>
+        <div class="col-md-2 pt-5">
+            <button type="button" class="btn btn-success btn-sm mt-2" id="guardar_columnas">
+                <i class="la la-save"></i>
+                Guardar
+            </button>
+        </div>
     </div>
 </div>

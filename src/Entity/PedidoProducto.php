@@ -156,6 +156,18 @@ class PedidoProducto {
      */
     private mixed $observacion;
 
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="tiene_problema", type="boolean", options={"default": false})
+     */
+    private bool $tieneProblema = false;
+
+    /**
+     * @ORM\Column(name="observacion_problema", type="string", length=255, nullable=true)
+     */
+    private mixed $observacionProblema;
+
 
     /**
      * @ORM\Column(name="observacion_camara", type="string", length=255, nullable=true)
@@ -909,5 +921,25 @@ class PedidoProducto {
 
     public function getCantidadTipoBandejas(){
         return ($this->getCantidadBandejasReales() . ' (x'.$this->getTipoBandeja().')');
+    }
+
+    public function isTieneProblema(): bool
+    {
+        return $this->tieneProblema;
+    }
+
+    public function setTieneProblema(bool $tieneProblema): void
+    {
+        $this->tieneProblema = $tieneProblema;
+    }
+
+    public function getObservacionProblema(): mixed
+    {
+        return $this->observacionProblema;
+    }
+
+    public function setObservacionProblema(mixed $observacionProblema): void
+    {
+        $this->observacionProblema = $observacionProblema;
     }
 }

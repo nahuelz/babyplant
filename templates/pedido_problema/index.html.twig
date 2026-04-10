@@ -39,15 +39,9 @@
         <div class="card-header">
             <div class="card-title">
                 <span class="card-icon"><i class="flaticon2-layers text-primary"></i></span>
-                <h3 class="card-label">Pedidos registrados</h3>
+                <h3 class="card-label">Pedidos con problemas</h3>
             </div>
             <div class="card-toolbar">
-                {% if is_granted('ROLE_PEDIDO') %}
-                    <a href="{{ path('pedido_new') }}" class="btn btn-primary font-weight-bolder mr-2">
-                        <i class="la la-plus"></i>
-                        Agregar
-                    </a>
-                {% endif %}
                 <div class="dropdown dropdown-inline">
                     <div class="dropdown dropdown-inline  mr-2">
                         <button type="button" class="btn btn-light-primary font-weight-bolder dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -127,13 +121,10 @@
 
         <div class="row padding-top-15">
             <div class="col-md-12" id="filtros">
-                {% include 'pedido/index_panel.html.twig' %}
+                {% include 'pedido_problema/index_panel.html.twig' %}
             </div>
             <div class="col-md-6 actividad-reciente">
-                {% include 'pedido/filtros.html.twig' %}
-            </div>
-            <div class="col-md-6 actividad-reciente">
-                {% include 'pedido/index_actividad_reciente.html.twig' %}
+                {% include 'pedido_problema/filtros.html.twig' %}
             </div>
         </div>
 
@@ -195,7 +186,7 @@
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}" ></script>
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-datatables.js') }}" ></script>
 
-    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/pedido/index.js') }}" ></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/pedidoproblema/index.js') }}" ></script>
 
 {% endblock %}
 

@@ -29,6 +29,13 @@ class GlobalConfig{
     protected $columnasOcultas;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="columnas_ocultas_problemas", type="string", length=512, nullable=false)
+     */
+    protected $columnasOcultasProblemas;
+
+    /**
      * @ORM\OneToOne(targetEntity=Usuario::class)
      * @ORM\JoinColumn(name="id_usuario", referencedColumnName="id")
      */
@@ -78,6 +85,18 @@ class GlobalConfig{
     {
         $this->usuario = $usuario;
     }
+
+    public function getColumnasOcultasProblemas(): string
+    {
+        return $this->columnasOcultasProblemas;
+    }
+
+    public function setColumnasOcultasProblemas(string $columnasOcultasProblemas): void
+    {
+        $this->columnasOcultasProblemas = $columnasOcultasProblemas;
+    }
+
+
 
 
 

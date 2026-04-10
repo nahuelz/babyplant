@@ -25,8 +25,6 @@ class PedidoProblemaController extends BaseController {
      */
     public function index(): array
     {
-        // dd('aca'); die();
-
         $clienteSelect = $this->getSelectService()->getClienteFilter();
         $estadoSelect = $this->getSelectService()->getEstadoSelect();
         $origenSemillaSelect = $this->getSelectService()->getOrigenSemillaSelect();
@@ -43,7 +41,7 @@ class PedidoProblemaController extends BaseController {
         }
 
         return array(
-            'columnasOcultas' => $columnasOcultas->getColumnasOcultas(),
+            'columnasOcultas' => $columnasOcultas->getColumnasOcultasProblemas(),
             'indicadorEstadoData' => $this->getIndicadorEstadoData(),
             'actividadReciente' => $this->getActividadRecienteData(),
             'clienteSelect' => $clienteSelect,
@@ -66,6 +64,7 @@ class PedidoProblemaController extends BaseController {
         $fechaDesde = $request->get('fechaDesde') ? DateTime::createFromFormat('d/m/Y H:i:s', $request->get('fechaDesde') . ' 00:00:00') : (new DateTime())->sub(new DateInterval('P7D'));
         $fechaHasta = $request->get('fechaHasta') ? DateTime::createFromFormat('d/m/Y H:i:s', $request->get('fechaHasta') . ' 23:59:59') : new DateTime();
         $cliente = $request->get('idCliente') ?: NULL;
+        $tieneProblema = $request->get('tieneProblema') !== null ? filter_var($request->get('tieneProblema'), FILTER_VALIDATE_BOOLEAN) : true;
 
         $rsm = new ResultSetMapping();
 
@@ -94,12 +93,14 @@ class PedidoProblemaController extends BaseController {
         $rsm->addScalarResult('celular', 'celular');
         $rsm->addScalarResult('origenSemilla', 'origenSemilla');
         $rsm->addScalarResult('cantidadSemillas', 'cantidadSemillas');
+        $rsm->addScalarResult('observacionProblema', 'observacionProblema');
 
-        $nativeQuery = $em->createNativeQuery('call sp_index_pedido_problema(?,?,?)', $rsm);
+        $nativeQuery = $em->createNativeQuery('call sp_index_pedido_problema(?,?,?,?)', $rsm);
 
         $nativeQuery->setParameter(1, $fechaDesde, 'datetime');
         $nativeQuery->setParameter(2, $fechaHasta, 'datetime');
         $nativeQuery->setParameter(3, $cliente);
+        $nativeQuery->setParameter(4, $tieneProblema);
 
         $entities = $nativeQuery->getResult();
 
@@ -124,44 +125,19 @@ class PedidoProblemaController extends BaseController {
         $rsm->addScalarResult('color', 'color');
         $rsm->addScalarResult('iconClass', 'iconClass');
 
-        $estadosValidos = [
-            ConstanteEstadoPedidoProducto::PENDIENTE,
-            ConstanteEstadoPedidoProducto::PLANIFICADO,
-            ConstanteEstadoPedidoProducto::SEMBRADO,
-            ConstanteEstadoPedidoProducto::EN_CAMARA,
-            ConstanteEstadoPedidoProducto::EN_INVERNACULO,
-            ConstanteEstadoPedidoProducto::ENTREGADO,
-            ConstanteEstadoPedidoProducto::CANCELADO
-        ];
-
         $sql = '
-            SELECT
-                est.nombre AS estado,
-                COUNT(pp.id) AS cantidad,
-                est.color AS colorClass,
-                est.color_icono AS color,
-                CASE
-                    WHEN est.id = 0 THEN "fa-circle-o-notch"
-                    WHEN est.id = 1 THEN "fa-spinner"
-                    WHEN est.id = 2 THEN "fa-clipboard-list"
-                    WHEN est.id = 3 THEN "fa-leaf"
-                    WHEN est.id = 4 THEN "fa-border-all"
-                    WHEN est.id = 5 THEN "fa-home"
-                    WHEN est.id = 6 THEN "fa-tasks"
-                    WHEN est.id = 9 THEN "fa-check"
-                    WHEN est.id = 10 THEN "fa-exclamation-triangle"
-                    ELSE "fa-check"
-                    END AS iconClass,
-                est.id
-            FROM pedido_producto AS pp
-                     INNER JOIN estado_pedido_producto AS est ON pp.id_estado_pedido_producto = est.id
-            WHERE pp.fecha_baja IS NULL
-              AND est.codigo_interno IN (?)
-            GROUP BY est.id';
+        SELECT
+            1 AS id,
+            "Productos Con Problemas" AS estado,
+            COUNT(pp.id) AS cantidad,
+            "label-light-warning" AS colorClass,
+            "warning" AS color,
+            "fa-exclamation-triangle" AS iconClass
+        FROM pedido_producto AS pp
+        WHERE pp.fecha_baja IS NULL
+          AND pp.tiene_problema = 1';
 
         $nativeQuery = $em->createNativeQuery($sql, $rsm);
-
-        $nativeQuery->setParameter(1, $estadosValidos, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
 
         return $nativeQuery->getResult();
     }
@@ -199,6 +175,35 @@ class PedidoProblemaController extends BaseController {
         $nativeQuery = $em->createNativeQuery($sql, $rsm);
 
         return $nativeQuery->getResult();
+    }
+
+    /**
+     * @Route("/save_columns/", name="problema_save_columns", methods={"GET","POST"})
+     */
+    public function guardarColumnas(Request $request): Response {
+
+        $em = $this->doctrine->getManager();
+
+        /* @var $columnas GlobalConfig */
+        $columnas = $em->getRepository('App\Entity\GlobalConfig')->find($this->getUser()->getId());
+
+        if (!$columnas) {
+            throw $this->createNotFoundException('No se configuraron las columnas visibles en la base de datos.');
+        }
+
+        $columnasOcultas = json_decode($request->request->get('columns'), false);
+        $columnas->setColumnasOcultasProblemas(implode(",", $columnasOcultas));
+        $em->flush();
+
+        $message = 'Se guardó la configuración de columnas.';
+        $response = new Response();
+        $response->setContent(json_encode(array(
+            'message' => $message,
+            'statusCode' => 200,
+            'statusText' => 'OK'
+        )));
+
+        return $response;
     }
 
 }
