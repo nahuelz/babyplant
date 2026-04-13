@@ -88,7 +88,7 @@ class GlobalConfig{
 
     public function getColumnasOcultasProblemas(): array
     {
-        return explode(",", $this->columnasOcultas);
+        return explode(",", $this->columnasOcultasProblemas);
     }
 
     public function setColumnasOcultasProblemas(string $columnasOcultasProblemas): void
