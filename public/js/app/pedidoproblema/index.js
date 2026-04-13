@@ -27,6 +27,7 @@ $(document).ready(function () {
     initFiltrosHandler();
     initBusquedaHandler();
     initColumnasHandler();
+    initProblemasFilter();
     initSubmitMesada();
 
     initCambiarMesadaHandler();
@@ -51,6 +52,15 @@ function initBusquedaHandler(){
 function initColumnasHandler(){
     $('.mostrar-columnas').on('click', function (){
         $('#columnas').toggle();
+    });
+}
+
+function initProblemasFilter() {
+    // Evento para el checkbox de filtro de problemas
+    $('#filtro_problema').on('change', function() {
+        if (init) {
+            $table.DataTable().ajax.reload();
+        }
     });
 }
 

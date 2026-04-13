@@ -40,16 +40,7 @@
         "{{ entity.mesada|default('-') }}",
         "{{ entity.codigoSobre|default('-') }}",
         {
-        "show_pedido" : " {{ path( "pedido_show", { "id": entity.id }) }}",
-        "historico_estado": "{{ path( "pedido_historico_estado", { 'id': entity.idProducto }) }}",
-        "print" : "{{ path( "imprimir_pedido", { "id": entity.id }) }}",
-        "situacion_cliente" : "{{ path( "situacioncliente_show", { "id": entity.idCliente }) }}"
-        {% if entity.idEstado ==  PENDIENTE or entity.idEstado ==  PLANIFICADO %}
-            ,"cancelar" : " {{ path( "pedido_producto_cancelar", { "id": entity.idProducto }) }}"
-        {% endif %}
-        {% if entity.celular != '' %}
-            ,"celular" : " {{ entity.celular }}"
-        {% endif %}
+        "show_pedido" : " {{ path( "pedido_show", { "id": entity.id }) }}"
         }]{{ (loop.last ? '' : ',') }}
     {% endfor %}
     ]
