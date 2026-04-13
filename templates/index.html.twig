@@ -85,6 +85,11 @@
                     {% if is_granted("ROLE_STOCK") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-archive icon-3x text-dark', 'nombreModulo': 'STOCK','action': path('stock_index'), 'descripcionModulo': 'Aqui podra ver el stock' } %}
                     {% endif %}
+
+                    {# PEDIDOS CON PROBLEMAS #}
+                    {% if is_granted("ROLE_STOCK") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-exclamation-triangle icon-3x text-dark', 'nombreModulo': 'PEDIDOS CON PROBLEMAS','action': path('pedidoproblema_index'), 'descripcionModulo': 'Aqui podra ver los pedidos con problemas' } %}
+                    {% endif %}
                 </div>
             </div>
         </div>
