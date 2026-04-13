@@ -427,7 +427,7 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
-            name: 'ordenSiembra p-0',
+            name: 'ordenSiembra',
             orderable: false,
             width: '75px',
             className: 'dt-center font-weight-bold p-0',
@@ -457,6 +457,14 @@ function datatablesGetColDef() {
                 }
                 return data;
             }
+        },
+        {
+            targets: index++,
+            name: 'codigoSobre',
+            orderable: false,
+            width: '75px',
+            className: 'dt-center font-weight-bold p-0',
+            searchable: true,
         },
         {
             targets: -1,

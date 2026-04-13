@@ -38,6 +38,7 @@
         "{{ entity.diasEnInvernaculo|default('-') }}",
         "{{ entity.ordenSiembra|default('-') }}",
         "{{ entity.mesada|default('-') }}",
+        "{{ entity.codigoSobre|default('-') }}",
         {
         "show_pedido" : " {{ path( "pedido_show", { "id": entity.id }) }}",
         "historico_estado": "{{ path( "pedido_historico_estado", { 'id': entity.idProducto }) }}",

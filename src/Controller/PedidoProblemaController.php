@@ -94,6 +94,7 @@ class PedidoProblemaController extends BaseController {
         $rsm->addScalarResult('origenSemilla', 'origenSemilla');
         $rsm->addScalarResult('cantidadSemillas', 'cantidadSemillas');
         $rsm->addScalarResult('observacionProblema', 'observacionProblema');
+        $rsm->addScalarResult('codigoSobre', 'codigoSobre');
 
         $nativeQuery = $em->createNativeQuery('call sp_index_pedido_problema(?,?,?,?)', $rsm);
 
