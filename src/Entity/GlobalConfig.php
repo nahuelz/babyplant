@@ -86,9 +86,9 @@ class GlobalConfig{
         $this->usuario = $usuario;
     }
 
-    public function getColumnasOcultasProblemas(): string
+    public function getColumnasOcultasProblemas(): array
     {
-        return $this->columnasOcultasProblemas;
+        return explode(",", $this->columnasOcultas);
     }
 
     public function setColumnasOcultasProblemas(string $columnasOcultasProblemas): void
