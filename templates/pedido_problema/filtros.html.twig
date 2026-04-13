@@ -12,7 +12,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <label for="reporte_filtro_cliente" class="control-label">Cliente</label>
             <select class="choice form-control datatable-input" id="reporte_filtro_cliente" name="reporte_filtro[cliente]">
                 <option value="">TODOS</option>
@@ -20,6 +20,10 @@
                     <option value="{{ cliente.id }}"> {{ cliente.nombre }} {{ cliente.razon_social }}</option>
                 {% endfor %}
             </select>
+        </div>
+        <div class="col-md-6">
+            <label for="filtro_codigo_sobre" class="control-label">Código Sobre</label>
+            <input type="text" class="form-control" id="filtro_codigo_sobre" name="filtro_codigo_sobre" placeholder="Ingrese código de sobre...">
         </div>
         <div class="col-md-5 padding-top-25">
             <button class="btn btn-primary btn-primary--icon" id="kt_search">
@@ -39,7 +43,7 @@
     <div class="row">
         <div class="col-md-9">
             Columnas ocultas
-            <select class="form-control" multiple="multiple" id="multiple" style="min-width: 100px !important;">
+            <select class="form-control" multiple="multiple" id="multiple" style="min-height: 70px;min-width: 100px !important;">
                 <option value="1" {% if 1 in columnasOcultas %}selected="selected"{% endif %}>ID Pedido</option>
                 <option value="2" {% if 2 in columnasOcultas %}selected="selected"{% endif %}>ID Producto</option>
                 <option value="3" {% if 3 in columnasOcultas %}selected="selected"{% endif %}>Fecha Pedido</option>
@@ -58,10 +62,19 @@
             </select>
         </div>
         <div class="col-md-2 pt-5">
-            <button type="button" class="btn btn-success btn-sm mt-2" id="guardar_columnas">
+            <button type="button" class="btn btn-success btn-sm mt-2" id="guardar_columnas" style="min-height: 60px">
                 <i class="la la-save"></i>
                 Guardar
             </button>
+        </div>
+    </div>
+    <div class="row mt-5 mb-5" style="margin-left: -10px">
+        <div class="col-md-12">
+            <label class="checkbox checkbox-outline checkbox-danger mr-5">
+                <input type="checkbox" id="filtro_problema" name="filtro_problema">
+                <span style="transform: scale(1.5);-webkit-transform: scale(1.5);margin-right: 8px;"></span>
+                <strong> MOSTRAR SOLO PEDIDOS CON PROBLEMAS </strong>
+            </label>
         </div>
     </div>
 </div>

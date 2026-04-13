@@ -26,7 +26,6 @@ $(document).ready(function () {
     initEditarMesadaHandler();
     initSubmitMesada();
 
-
     initCambiarMesadaHandler();
 
 
@@ -141,6 +140,7 @@ function initTable() {
         e.preventDefault();
         $('.datatable-input').each(function () {
             $(this).val('').trigger('change');
+            $('#filtro_codigo_sobre').val('');
             if (init) {
                 $table.DataTable().column($(this).data('col-index')).search('', false, false);
             }
@@ -169,7 +169,9 @@ function initDataTable() {
                 "data": {
                     "fechaDesde": $('#reporte_filtro_fechaDesde').val(),
                     "fechaHasta": $('#reporte_filtro_fechaHasta').val(),
-                    "idCliente": $('#reporte_filtro_cliente').val()
+                    "idCliente": $('#reporte_filtro_cliente').val(),
+                    "codigoSobre": $('#filtro_codigo_sobre').val(),
+                    "tieneProblema": $('#filtro_problema').is(':checked') ? 1 : 0
                 },
                 "success": fnCallback
             });

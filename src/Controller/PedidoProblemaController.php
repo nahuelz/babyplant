@@ -65,6 +65,7 @@ class PedidoProblemaController extends BaseController {
         $fechaHasta = $request->get('fechaHasta') ? DateTime::createFromFormat('d/m/Y H:i:s', $request->get('fechaHasta') . ' 23:59:59') : new DateTime();
         $cliente = $request->get('idCliente') ?: NULL;
         $tieneProblema = $request->get('tieneProblema') !== null ? filter_var($request->get('tieneProblema'), FILTER_VALIDATE_BOOLEAN) : true;
+        $codigoSobre = $request->get('codigoSobre') ?: NULL;
 
         $rsm = new ResultSetMapping();
 
@@ -96,12 +97,13 @@ class PedidoProblemaController extends BaseController {
         $rsm->addScalarResult('observacionProblema', 'observacionProblema');
         $rsm->addScalarResult('codigoSobre', 'codigoSobre');
 
-        $nativeQuery = $em->createNativeQuery('call sp_index_pedido_problema(?,?,?,?)', $rsm);
+        $nativeQuery = $em->createNativeQuery('call sp_index_pedido_problema(?,?,?,?,?)', $rsm);
 
         $nativeQuery->setParameter(1, $fechaDesde, 'datetime');
         $nativeQuery->setParameter(2, $fechaHasta, 'datetime');
         $nativeQuery->setParameter(3, $cliente);
         $nativeQuery->setParameter(4, $tieneProblema);
+        $nativeQuery->setParameter(5, $codigoSobre);
 
         $entities = $nativeQuery->getResult();
 
