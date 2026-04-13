@@ -24,6 +24,9 @@ $(document).ready(function () {
     initCancelarButton();
     initClienteSelect2();
     initEditarMesadaHandler();
+    initFiltrosHandler();
+    initBusquedaHandler();
+    initColumnasHandler();
     initSubmitMesada();
 
     initCambiarMesadaHandler();
@@ -32,6 +35,24 @@ $(document).ready(function () {
     var table = $table.DataTable();
 
 });
+
+function initFiltrosHandler(){
+    $('.mostrar-tiles').on('click', function (){
+        $('#tiles').toggle();
+    });
+}
+
+function initBusquedaHandler(){
+    $('.mostrar-busqueda').on('click', function (){
+        $('#busqueda').toggle();
+    });
+}
+
+function initColumnasHandler(){
+    $('.mostrar-columnas').on('click', function (){
+        $('#columnas').toggle();
+    });
+}
 
 
 /**

@@ -1,5 +1,8 @@
 <div class="portlet light bordered portlet-nivel-1"
      style="padding: 5px 10px; margin-left: 30px;border-radius: 5px;background-color: #E1F0FF">
+    <h5 class="text-dark mb-3">
+        <i class="la la-search"></i> Filtro de busqueda
+    </h5>
     <div class="col-md-12 padding-0">
         <label>Fecha</label>
         <div class="input-daterange input-group" id="kt_datepicker">
@@ -26,13 +29,15 @@
                 {% endfor %}
             </select>
         </div>
+    </div>
+    <div class="row">
         <div class="col-md-6">
             <label for="filtro_codigo_sobre" class="control-label">Código Sobre</label>
             <input type="text" class="form-control" id="filtro_codigo_sobre" name="filtro_codigo_sobre"
                    placeholder="Ingrese código de sobre...">
         </div>
-        <div class="col-md-5 padding-top-25">
-            <button class="btn btn-primary btn-primary--icon" id="kt_search">
+        <div class="col-md-6 mt-8">
+            <button class="btn btn-primary btn-primary--icon mr-10" id="kt_search">
                 <span>
                     <i class="la la-search"></i>
                     <span>Buscar</span>
@@ -46,8 +51,8 @@
             </button>
         </div>
     </div>
-    <div class="row mt-5 mb-5" style="margin-left: -10px">
-        <div class="col-md-12">
+    <div class="row mb-5">
+        <div class="col-md-6 mt-5 ml-1">
             <label class="checkbox checkbox-outline checkbox-danger mr-5">
                 <input type="checkbox" id="filtro_problema" name="filtro_problema">
                 <span style="transform: scale(1.5);-webkit-transform: scale(1.5);margin-right: 8px;"></span>

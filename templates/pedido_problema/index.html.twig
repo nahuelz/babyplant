@@ -104,12 +104,17 @@
                                 <li class="navi-header font-weight-bolder text-uppercase font-size-sm text-primary pb-2">Elija una opci&oacute;n:</li>
                                 <li class="navi-item">
                                     <a href="#" class="navi-link">
-                                        <span class="navi-text mostrar-filtros">Mostrar Tiles</span>
+                                        <span class="navi-text mostrar-tiles">Mostrar Tiles</span>
                                     </a>
                                 </li>
                                 <li class="navi-item">
                                     <a href="#" class="navi-link">
-                                        <span class="navi-text mostrar-actividad-reciente">Mostrar Filtros</span>
+                                        <span class="navi-text mostrar-busqueda">Mostrar Busqueda</span>
+                                    </a>
+                                </li>
+                                <li class="navi-item">
+                                    <a href="#" class="navi-link">
+                                        <span class="navi-text mostrar-columnas">Config. de Columnas</span>
                                     </a>
                                 </li>
                             </ul>
@@ -120,16 +125,16 @@
         </div>
 
         <div class="row padding-top-15">
-            <div class="col-md-12" id="filtros">
+            <div class="col-md-12" id="tiles">
                 {% include 'pedido_problema/index_panel.html.twig' %}
             </div>
         </div>
         
         <div class="row padding-top-15">
-            <div class="col-md-6">
+            <div class="col-md-6" id="busqueda">
                 {% include 'pedido_problema/filtros_busqueda.html.twig' %}
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6" id="columnas" style="display: none;">
                 {% include 'pedido_problema/config_columnas.html.twig' %}
             </div>
         </div>
