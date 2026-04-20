@@ -207,6 +207,13 @@ function initDataTable() {
                 "success": fnCallback
             });
         },
+        "drawCallback": function(settings) {
+            // Se ejecuta cada vez que la tabla se dibuja
+            if (!window.filtroProblemaMarcado) {
+                $('#filtro_problema').click();
+                window.filtroProblemaMarcado = true;
+            }
+        },
         lengthMenu: [5, 10, 25, 50, 100, 500, 1000],
         pageLength: 50,
         scrollX: false,
@@ -312,6 +319,7 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'id',
             width: '5px',
+            visible: false,
             className: 'nowrap text-center margin-0 padding-0 p-0',
             orderable: false,
             render: function (data, type, full, meta) {
