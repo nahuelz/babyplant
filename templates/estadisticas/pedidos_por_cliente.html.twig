@@ -137,7 +137,7 @@
             <div class="card card-custom gutter-b">
                 <div class="card-header">
                     <div class="card-title">
-                        <h3 class="card-label">Productos Entregados</h3>
+                        <h3 class="card-label">Pedidos por Cliente</h3>
                     </div>
                 </div>
                 <div class="card-body">
@@ -183,8 +183,8 @@
                     <tr>
                         <th class="text-center">#</th>
                         <th>Cliente</th>
-                        <th class="text-end">Cantidad de productos pedidos</th>
-                        <th class="text-end">Total de bandejas</th>
+                        <th class="text-center">Cantidad de productos pedidos</th>
+                        <th class="text-center">Total de bandejas</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -205,12 +205,12 @@
                                 <td>
                                     <strong>{{ row.nombre }} {{ row.apellido }}</strong>
                                 </td>
-                                <td class="text-end">
+                                <td class="text-center">
                                 <span class="badge bg-primary fs-6">
                                     {{ row.cantidad }}
                                 </span>
                                 </td>
-                                <td class="text-end">
+                                <td class="text-center">
                                     <span class="badge bg-success fs-6">
                                         {{ row.total_bandejas|round }}
                                     </span>
@@ -229,10 +229,10 @@
                         <tr>
                             <th></th>
                             <th>Total</th>
-                            <th class="text-end">
+                            <th class="text-center">
                                 {{ total }}
                             </th>
-                            <th class="text-end">
+                            <th class="text-center">
                                 {{ total_bandejas }}
                             </th>
                         </tr>
