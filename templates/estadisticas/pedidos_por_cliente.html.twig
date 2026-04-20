@@ -51,15 +51,16 @@
                 <table class="table table-hover mb-0 align-middle">
                     <thead class="table-light">
                     <tr>
+                        <th class="text-center">#</th>
                         <th>Cliente</th>
-                        <th class="text-end">Cantidad de pedidos</th>
+                        <th class="text-end">Cantidad de productos pedidos</th>
                         <th class="text-end">Total de bandejas</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% if resultados is empty %}
                         <tr>
-                            <td colspan="3" class="text-center text-muted py-4">
+                            <td colspan="4" class="text-center text-muted py-4">
                                 No hay pedidos en el rango seleccionado
                             </td>
                         </tr>
@@ -68,6 +69,9 @@
                         {% for row in resultados %}
                             {% set total = total + row.cantidad %}
                             <tr>
+                                <td class="text-center">
+                                    {{ loop.index }}
+                                </td>
                                 <td>
                                     <strong>{{ row.nombre }} {{ row.apellido }}</strong>
                                 </td>
@@ -78,7 +82,7 @@
                                 </td>
                                 <td class="text-end">
                                     <span class="badge bg-success fs-6">
-                                        {{ row.total_bandejas }}
+                                        {{ row.total_bandejas|round }}
                                     </span>
                                 </td>
                             </tr>
@@ -93,6 +97,7 @@
                         {% endfor %}
                         <tfoot class="table-light">
                         <tr>
+                            <th></th>
                             <th>Total</th>
                             <th class="text-end">
                                 {{ total }}
@@ -106,6 +111,56 @@
                 </table>
             </div>
         </div>
+
+        {# Paginación #}
+        {% if total_paginas > 1 %}
+            <div class="card shadow-sm mt-4">
+                <div class="card-body">
+                    <nav>
+                        <ul class="pagination justify-content-center mb-0">
+                            {% set start_page = max(1, pagina_actual - 2) %}
+                            {% set end_page = min(total_paginas, pagina_actual + 2) %}
+                            
+                            {% if pagina_actual > 1 %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ path('estadisticas_pedidos_cliente', {'desde': desde|date('Y-m-d'), 'hasta': hasta|date('Y-m-d'), 'pagina': pagina_actual - 1}) }}">
+                                        &laquo;
+                                    </a>
+                                </li>
+                            {% endif %}
+                            
+                            {% for page in range(start_page, end_page) %}
+                                {% if page == pagina_actual %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ page }}</span>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ path('estadisticas_pedidos_cliente', {'desde': desde|date('Y-m-d'), 'hasta': hasta|date('Y-m-d'), 'pagina': page}) }}">
+                                            {{ page }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if pagina_actual < total_paginas %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ path('estadisticas_pedidos_cliente', {'desde': desde|date('Y-m-d'), 'hasta': hasta|date('Y-m-d'), 'pagina': pagina_actual + 1}) }}">
+                                        &raquo;
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            Mostrando {{ resultados|length }} de {{ total_resultados }} clientes
+                        </small>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
 
     </div>
 {% endblock %}

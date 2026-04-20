@@ -170,7 +170,8 @@ class EstadisticasController extends AbstractController
     public function pedidosPorCliente(
         Request $request,
         PedidoRepository $pedidoRepository
-    ) {
+    )
+    {
         $desde = $request->query->get('desde')
             ? new \DateTime($request->query->get('desde'))
             : new \DateTime('first day of this month');
@@ -179,12 +180,24 @@ class EstadisticasController extends AbstractController
             ? new \DateTime($request->query->get('hasta'))
             : new \DateTime();
 
-        $resultados = $pedidoRepository->getPedidosPorCliente($desde, $hasta);
+        // Paginación
+        $pagina = $request->query->get('pagina', 1);
+        $limite = 20;
+        $offset = ($pagina - 1) * $limite;
+
+        $resultados = $pedidoRepository->getPedidosPorClientePaginado($desde, $hasta, $limite, $offset);
+
+        // Obtener total para paginación
+        $totalResultados = $pedidoRepository->getTotalPedidosPorCliente($desde, $hasta);
+        $totalPaginas = ceil($totalResultados / $limite);
 
         return $this->render('estadisticas/pedidos_por_cliente.html.twig', [
             'resultados' => $resultados,
             'desde' => $desde,
             'hasta' => $hasta,
+            'pagina_actual' => $pagina,
+            'total_paginas' => $totalPaginas,
+            'total_resultados' => $totalResultados,
         ]);
     }
 
