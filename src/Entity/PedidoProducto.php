@@ -222,6 +222,42 @@ class PedidoProducto {
      */
     private ?string $camaraDestino = null;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=TipoRevision::class)
+     * @ORM\JoinColumn(name="id_tipo_revision", referencedColumnName="id", nullable=true)
+     */
+    private ?TipoRevision $revision = null;
+
+    /**
+     * @ORM\Column(name="observacion_revision", type="string", length=255, nullable=true)
+     */
+    private mixed $observacionRevision;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=TipoSolucion::class)
+     * @ORM\JoinColumn(name="id_tipo_solucion", referencedColumnName="id", nullable=true)
+     */
+    private ?TipoSolucion $solucion = null;
+
+    /**
+     * @ORM\Column(name="observacion_solucion", type="string", length=255, nullable=true)
+     */
+    private mixed $observacionSolucion;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="tiene_solucion", type="boolean", options={"default": false})
+     */
+    private bool $tieneSolucion = false;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="tiene_revision", type="boolean", options={"default": false})
+     */
+    private bool $tieneRevision = false;
+
     public function __construct()
     {
         $this->reservas = new ArrayCollection();
@@ -942,4 +978,70 @@ class PedidoProducto {
     {
         $this->observacionProblema = $observacionProblema;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getRevision()
+    {
+        return $this->revision;
+    }
+
+    public function setRevision(?TipoRevision $revision): self
+    {
+        $this->revision = $revision;
+        return $this;
+    }
+
+    public function getObservacionRevision(): mixed
+    {
+        return $this->observacionRevision;
+    }
+
+    public function setObservacionRevision(mixed $observacionRevision): void
+    {
+        $this->observacionRevision = $observacionRevision;
+    }
+
+    public function getSolucion(): ?TipoSolucion
+    {
+        return $this->solucion;
+    }
+
+    public function setSolucion(?TipoSolucion $solucion): void
+    {
+        $this->solucion = $solucion;
+    }
+
+    public function getObservacionSolucion(): mixed
+    {
+        return $this->observacionSolucion;
+    }
+
+    public function setObservacionSolucion(mixed $observacionSolucion): void
+    {
+        $this->observacionSolucion = $observacionSolucion;
+    }
+
+    public function isTieneSolucion(): bool
+    {
+        return $this->tieneSolucion;
+    }
+
+    public function setTieneSolucion(bool $tieneSolucion): void
+    {
+        $this->tieneSolucion = $tieneSolucion;
+    }
+
+    public function isTieneRevision(): bool
+    {
+        return $this->tieneRevision;
+    }
+
+    public function setTieneRevision(bool $tieneRevision): void
+    {
+        $this->tieneRevision = $tieneRevision;
+    }
+
+
 }

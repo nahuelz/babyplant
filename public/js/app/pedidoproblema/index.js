@@ -29,8 +29,13 @@ $(document).ready(function () {
     initColumnasHandler();
     initProblemasFilter();
     initSubmitMesada();
-
+    initMarcarSolucionHandler();
     initCambiarMesadaHandler();
+    initMarcarProblemaHandler();
+    initMarcarRevisionHandler();
+    initQuitarRevisionHandler();
+    initQuitarSolucionHandler();
+    initQuitarProblemaHandler();
 
 
     var table = $table.DataTable();
@@ -213,6 +218,9 @@ function initDataTable() {
                 $('#filtro_problema').click();
                 window.filtroProblemaMarcado = true;
             }
+            
+            // Resaltar filas con problemas
+            resaltarFilasConProblemas();
         },
         lengthMenu: [5, 10, 25, 50, 100, 500, 1000],
         pageLength: 50,
@@ -229,7 +237,7 @@ function initDataTable() {
                 title: '',
                 className: 'print',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
                     rows: ':visible'
                 }
             },
@@ -239,7 +247,7 @@ function initDataTable() {
                 title: '',
                 className: 'pagina',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
                     rows: ':visible'
                 }
             },
@@ -249,7 +257,7 @@ function initDataTable() {
                 title: '',
                 className: 'filtrados',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
                     filter: 'applied',
                     page: 'all'
                 }
@@ -260,7 +268,7 @@ function initDataTable() {
                 title: '',
                 className: 'todos',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
                     page: 'all',
                     rows: {
                         search: 'none'
@@ -276,7 +284,7 @@ function initDataTable() {
                 orientation: 'landscape',
                 pageSize: 'LEGAL',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
                     page: 'all',
                     filter: 'applied',
                     rows: {
@@ -538,42 +546,20 @@ function encodeId(id) {
  * @returns {String}
  */
 function dataTablesActionFormatter(data, type, full, meta) {
+    // Los datos de acciones están en full[18], no en el parámetro data
+    const actionData = full[20];
+
     let actions = '';
 
-    if (!jQuery.isEmptyObject(data)) {
-
-        // Generar botón de WhatsApp si el número es válido
-        let botonWhatsapp = '';
-        if (data.celular !== undefined) {
-            if (esNumeroWhatsappValido(data.celular)) {
-                let idEncriptado = encodeId(full[5].idPedido);
-                let mensaje =
-                    `Hola *${full[5].nombreCliente}*,%0A` +
-                    `Te informamos que tu pedido N° *${full[5].idPedido}* fue registrado correctamente.%0A` +
-                    `Podés ver el detalle y estado de tu pedido en el siguiente enlace:%0A` +
-                    `https://dev.babyplant.com.ar/pedido/imprimir-pedido/${idEncriptado}%0A%0A` +
-                    `¡Gracias por tu compra! 🪴🌿%0A` +
-                    `- *Vivero Babyplant*`;
-                botonWhatsapp =
-                    '<a class="dropdown-item" href="https://api.whatsapp.com/send?phone='
-                    + limpiarNumeroCelular(data.celular)
-                    + '&text='
-                    + mensaje
-                    + '" target="_blank">'
-                    + '<i class="la la-whatsapp" style="margin-right: 5px; color: green;"></i> Enviar WhatsApp</a>';
-            }
-        }
-
+    if (actionData && !jQuery.isEmptyObject(actionData)) {
         actions +=
-            (data.show_pedido !== undefined ? '<a class="dropdown-item" href="' + data.show_pedido + '"><i class="la la-search" style="margin-right: 5px;"></i> Ver Pedido</a>' : '') +
-            (data.show_producto !== undefined ? '<a class="dropdown-item" href="' + data.show_producto + '"><i class="la la-search" style="margin-right: 5px;"></i> Ver Producto</a>' : '') +
-            (data.edit !== undefined ? '<a class="dropdown-item" href="' + data.edit + '"><i class="la la-edit" style="margin-right: 5px;"></i> Editar</a>' : '') +
-            (data.historico_estado !== undefined ? '<a class="dropdown-item link-ver-historico-pedido" href="#" data-href="' + data.historico_estado + '"><i class="la la-file-alt" style="margin-right: 5px;" data-original-title="Hist&oacute;rico de estados"></i>Hist&oacute;rico de estados</a>' : '') +
-            (data.print !== undefined ? '<a class="dropdown-item" href="' + data.print + '"><i class="la la-edit" style="margin-right: 5px;"></i> Imprimir pedido</a>' : '') +
-            (data.situacion_cliente !== undefined ? '<a class="dropdown-item" href="' + data.situacion_cliente + '"><i class="la la-user" style="margin-right: 5px;"></i> Situacion Cliente</a>' : '') +
-            (data.remito !== undefined ? '<a class="dropdown-item" href="' + data.remito + '"><i class="la la-edit" style="margin-right: 5px;"></i> Remito</a>' : '') +
-            (data.cancelar !== undefined ? '<a class="dropdown-item accion-cancelar" href="' + data.cancelar + '"><i class="la la-remove" style="margin-right: 5px;"></i> Cancelar</a>' : '') +
-            botonWhatsapp;
+            (actionData.show_pedido !== undefined ? '<a class="dropdown-item" href="' + actionData.show_pedido + '"><i class="la la-search" style="margin-right: 5px;"></i> Ver Pedido</a>' : '') +
+            (actionData.pedido_producto_quitar_revision !== undefined ? '<a class="dropdown-item quitar-revision-btn" href="#" data-id="' + full[2].idProducto + '" data-tiene-problema="true" data-observacion=""><i class="la la-times" style="margin-right: 5px;"></i> Quitar Revisión</a>' : '') +
+            (actionData.pedido_producto_marcar_revision !== undefined ? '<a class="dropdown-item marcar-revision-btn" href="#" data-id="' + full[2].idProducto + '" data-tiene-problema="true" data-observacion=""><i class="la la-clipboard-check" style="margin-right: 5px;"></i> Marcar Revisión</a>' : '') +
+            (actionData.pedido_producto_marcar_problema !== undefined ? '<a class="dropdown-item marcar-problema-btn" href="#" data-id="' + full[2].idProducto + '" data-tiene-problema="false" data-observacion=""><i class="la la-exclamation-triangle" style="margin-right: 5px;"></i> Marcar Problema</a>' : '') +
+            (actionData.pedido_producto_quitar_problema !== undefined ? '<a class="dropdown-item quitar-problema-btn" href="#" data-id="' + full[2].idProducto + '" data-tiene-problema="true" data-observacion=""><i class="la la-times" style="margin-right: 5px;"></i> Quitar Problema</a>' : '') +
+            (actionData.pedido_producto_marcar_solucion !== undefined ? '<a class="dropdown-item marcar-solucion-btn" href="#" data-id="' + full[2].idProducto + '" data-tiene-problema="true" data-observacion=""><i class="la la-check" style="margin-right: 5px;"></i> Marcar Solución</a>' : '') +
+            (actionData.pedido_producto_quitar_solucion !== undefined ? '<a class="dropdown-item quitar-solucion-btn" href="#" data-id="' + full[2].idProducto + '" data-tiene-problema="true" data-observacion=""><i class="la la-times" style="margin-right: 5px;"></i> Quitar Solución</a>' : '');
 
         actions = ' <div class="dropdown dropdown-inline">\
                         <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\
@@ -799,5 +785,547 @@ function removeMesadaHandler(){
         $('#cambiar_mesada_mesadaDos_cantidadBandejas').val('');
         $('.add-mesada').show();
     })
+}
+
+// Funciones para manejar problemas en pedidos
+function initMarcarProblemaHandler() {
+    $(document).off('click', '.marcar-problema-btn').on('click', '.marcar-problema-btn', function (e) {
+        e.preventDefault();
+        
+        const id = $(this).data('id');
+        const tieneProblema = $(this).data('tiene-problema');
+        const observacionActual = $(this).data('observacion') || '';
+        
+        // Crear modal para marcar problema
+        const modalHtml = `
+            <div class="modal fade" id="modalProblema" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="la la-exclamation-triangle"></i>
+                                Marcar Problema
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span>&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="formProblema">
+                                <div class="form-group">
+                                    <label for="observacionProblema">Observación del problema:</label>
+                                    <textarea class="form-control" id="observacionProblema" 
+                                              name="observacionProblema" rows="4" 
+                                              placeholder="Describa el problema..." required></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" id="guardarProblema">
+                                <i class="la la-save"></i> Guardar Problema
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Eliminar modal si ya existe
+        $('#modalProblema').remove();
+        
+        // Agregar nuevo modal
+        $('body').append(modalHtml);
+        
+        // Mostrar modal
+        $('#modalProblema').modal('show');
+        
+        // Manejar envío del formulario
+        $('#guardarProblema').off('click').on('click', function() {
+            const observacion = $('#observacionProblema').val().trim();
+            
+            // Validar que se ingrese una observación
+            if (!observacion) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Debe ingresar una observación del problema',
+                    icon: 'error'
+                });
+                return;
+            }
+            
+            // Enviar datos via AJAX
+            $.ajax({
+                url: __HOMEPAGE_PATH__ + `pedidoproblema/${id}/marcar-problema`,
+                method: 'POST',
+                contentType: 'application/json',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                data: JSON.stringify({
+                    tieneProblema: true,
+                    observacionProblema: observacion
+                }),
+                success: function(response) {
+                    if (response.success) {
+                        $('#modalProblema').modal('hide');
+                        toastr.success('Problema marcado correctamente');
+                        // Recargar la tabla
+                        $('#table-pedido').DataTable().ajax.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'No se pudo marcar el problema',
+                            icon: 'error'
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Ocurrió un error al marcar el problema',
+                        icon: 'error'
+                    });
+                }
+            });
+        });
+    });
+}
+function initMarcarSolucionHandler() {
+    $.ajax({
+        url: __HOMEPAGE_PATH__ + 'tipo/solucion/api/todos-habilitados',
+        method: 'GET',
+        success: function(response) {
+            window.tiposSolucion = response.data || [];
+        },
+        error: function() {
+            console.error('Error al cargar tipos de solución');
+            window.tiposSolucion = [];
+        }
+    });
+
+    $(document).off('click', '.marcar-solucion-btn').on('click', '.marcar-solucion-btn', function (e) {
+        e.preventDefault();
+
+        const id = $(this).data('id');
+        const solucionActual = $(this).data('solucion') || '';
+
+        let opcionesSolucion = '<option value="">Seleccionar tipo de solución...</option>';
+        if (window.tiposSolucion && window.tiposSolucion.length > 0) {
+            window.tiposSolucion.forEach(function(tipo) {
+                const selected = tipo.id == solucionActual ? 'selected' : '';
+                opcionesSolucion += `<option value="${tipo.id}" ${selected}>${tipo.nombre}</option>`;
+            });
+        }
+
+        // Crear modal para marcar solución
+        const modalHtml = `
+            <div class="modal fade" id="modalSolucion" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="la la-clipboard-check"></i>
+                                Marcar Solución
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span>&​times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="formSolucion">
+                                <div class="form-group">
+                                    <label for="tipoSolucion">Tipo de Solución:</label>
+                                    <select class="form-control" id="tipoSolucion" name="tipoSolucion" required>
+                                        ${opcionesSolucion}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="observacionSolucion">Observación de la solución:</label>
+                                    <textarea class="form-control" id="observacionSolucion" 
+                                              name="observacionSolucion" rows="4" 
+                                              placeholder="Describa la solución..."></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" id="guardarSolucion">
+                                <i class="la la-save"></i> Guardar Solución
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Eliminar modal si ya existe
+        $('#modalSolucion').remove();
+
+        // Agregar nuevo modal
+        $('body').append(modalHtml);
+
+        // Mostrar modal
+        $('#modalSolucion').modal('show');
+
+        // Manejar envío del formulario
+        $('#guardarSolucion').off('click').on('click', function() {
+            const tipoSolucion = $('#tipoSolucion').val();
+            const observacion = $('#observacionSolucion').val().trim();
+
+            if (!tipoSolucion) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Debe seleccionar un tipo de solución',
+                    icon: 'error'
+                });
+                return;
+            }
+
+            // Enviar datos via AJAX
+            $.ajax({
+                url: __HOMEPAGE_PATH__ + `pedidoproblema/${id}/marcar-solucion`,
+                method: 'POST',
+                contentType: 'application/json',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                data: JSON.stringify({
+                    solucion: tipoSolucion,
+                    observacionSolucion: observacion
+                }),
+                success: function(response) {
+                    if (response.success) {
+                        $('#modalSolucion').modal('hide');
+                        toastr.success('Solución marcada correctamente');
+                        // Recargar la tabla
+                        $('#table-pedido').DataTable().ajax.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'No se pudo marcar la solución',
+                            icon: 'error'
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Ocurrió un error al marcar la solución',
+                        icon: 'error'
+                    });
+                }
+            });
+        });
+    });
+}
+
+function initQuitarRevisionHandler() {
+    $(document).off('click', '.quitar-revision-btn').on('click', '.quitar-revision-btn', function (e) {
+        e.preventDefault();
+
+        const id = $(this).data('id');
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Se eliminará la revisión del pedido',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, quitar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (!result.isConfirmed) return;
+
+            $.ajax({
+                url: __HOMEPAGE_PATH__ + `pedidoproblema/${id}/quitar-revision`,
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success('Revisión eliminada correctamente');
+
+                        // recargar tabla
+                        $('#table-pedido').DataTable().ajax.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: response.message || 'No se pudo quitar la revisión',
+                            icon: 'error'
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Ocurrió un error al quitar la revisión',
+                        icon: 'error'
+                    });
+                }
+            });
+        });
+    });
+
+}
+
+function initQuitarSolucionHandler() {
+    $(document).off('click', '.quitar-solucion-btn').on('click', '.quitar-solucion-btn', function (e) {
+        e.preventDefault();
+
+        const id = $(this).data('id');
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Se eliminará la solución del pedido',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, quitar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (!result.isConfirmed) return;
+
+            $.ajax({
+                url: __HOMEPAGE_PATH__ + `pedidoproblema/${id}/quitar-solucion`,
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success('Solución eliminada correctamente');
+
+                        // recargar tabla
+                        $('#table-pedido').DataTable().ajax.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: response.message || 'No se pudo quitar la solución',
+                            icon: 'error'
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Ocurrió un error al quitar la solución',
+                        icon: 'error'
+                    });
+                }
+            });
+        });
+    });
+
+}
+
+function initQuitarProblemaHandler() {
+    $(document).off('click', '.quitar-problema-btn').on('click', '.quitar-problema-btn', function (e) {
+        e.preventDefault();
+
+        const id = $(this).data('id');
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Se eliminará el problema del pedido',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, quitar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (!result.isConfirmed) return;
+
+            $.ajax({
+                url: __HOMEPAGE_PATH__ + `pedidoproblema/${id}/quitar-problema`,
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success('Problema eliminado correctamente');
+
+                        // recargar tabla
+                        $('#table-pedido').DataTable().ajax.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: response.message || 'No se pudo quitar el problema',
+                            icon: 'error'
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Ocurrió un error al quitar el problema',
+                        icon: 'error'
+                    });
+                }
+            });
+        });
+    });
+
+}
+
+
+// Función para resaltar filas con revision
+function resaltarFilasConProblemas() {
+    // Obtener todas las filas de la tabla
+    $('#table-pedido tbody tr').each(function() {
+        const $row = $(this);
+        
+        // Obtener los datos de la fila usando DataTables API
+        const table = $('#table-pedido').DataTable();
+        const data = table.row($row).data();
+
+        // El valor de tieneRevision está en el índice 17 del array
+        if (data && data[19] === "1") {
+            // Agregar clase CSS para resaltar en amarillo
+            $row.addClass('fila-con-problema');
+        } else {
+            // Remover clase si no tiene problema
+            $row.removeClass('fila-con-problema');
+        }
+
+        if (data && data[18] === "1") {
+            // Agregar clase CSS para resaltar en amarillo
+            $row.addClass('fila-con-solucion');
+            $row.removeClass('fila-con-problema');
+        } else {
+            // Remover clase si no tiene problema
+            $row.removeClass('fila-con-solucion');
+        }
+    });
+}
+
+function initMarcarRevisionHandler() {
+    $.ajax({
+        url: __HOMEPAGE_PATH__ + 'tipo/revision/api/todos-habilitados',
+        method: 'GET',
+        success: function(response) {
+            window.tiposRevision = response.data || [];
+        },
+        error: function() {
+            console.error('Error al cargar tipos de revisión');
+            window.tiposRevision = [];
+        }
+    });
+
+    $(document).off('click', '.marcar-revision-btn').on('click', '.marcar-revision-btn', function (e) {
+        e.preventDefault();
+
+        const id = $(this).data('id');
+        const revisionActual = $(this).data('revision') || '';
+
+        let opcionesRevision = '<option value="">Seleccionar tipo de revisión...</option>';
+        if (window.tiposRevision && window.tiposRevision.length > 0) {
+            window.tiposRevision.forEach(function(tipo) {
+                const selected = tipo.id == revisionActual ? 'selected' : '';
+                opcionesRevision += `<option value="${tipo.id}" ${selected}>${tipo.nombre}</option>`;
+            });
+        }
+
+        const modalHtml = `
+            <div class="modal fade" id="modalRevision" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="la la-clipboard-check"></i>
+                                Marcar Revisión
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span>&​times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="formRevision">
+                                <div class="form-group">
+                                    <label for="tipoRevision">Tipo de Revisión:</label>
+                                    <select class="form-control" id="tipoRevision" name="tipoRevision" required>
+                                        ${opcionesRevision}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="observacionRevision">Observación de la revisión:</label>
+                                    <textarea class="form-control" id="observacionRevision" 
+                                              name="observacionRevision" rows="4" 
+                                              placeholder="Describa la revisión..."></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" id="guardarRevision">
+                                <i class="la la-save"></i> Guardar Revisión
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Eliminar modal si ya existe
+        $('#modalRevision').remove();
+
+        // Agregar nuevo modal
+        $('body').append(modalHtml);
+
+        // Mostrar modal
+        $('#modalRevision').modal('show');
+
+        // Manejar envío del formulario
+        $('#guardarRevision').off('click').on('click', function() {
+            const tipoRevision = $('#tipoRevision').val();
+            const observacion = $('#observacionRevision').val().trim();
+
+            if (!tipoRevision) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Debe seleccionar un tipo de revisión',
+                    icon: 'error'
+                });
+                return;
+            }
+
+            // Enviar datos via AJAX
+            $.ajax({
+                url: __HOMEPAGE_PATH__ + `pedidoproblema/${id}/marcar-revision`,
+                method: 'POST',
+                contentType: 'application/json',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                data: JSON.stringify({
+                    revision: tipoRevision,
+                    observacionRevision: observacion
+                }),
+                success: function(response) {
+                    if (response.success) {
+                        $('#modalRevision').modal('hide');
+                        toastr.success('Revisión marcada correctamente');
+                        // Recargar la tabla
+                        $('#table-pedido').DataTable().ajax.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'No se pudo marcar la revisión',
+                            icon: 'error'
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Ocurrió un error al marcar la revisión',
+                        icon: 'error'
+                    });
+                }
+            });
+        });
+    });
 }
 

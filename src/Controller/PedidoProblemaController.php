@@ -3,13 +3,17 @@
 namespace App\Controller;
 
 
-use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\GlobalConfig;
+use App\Entity\PedidoProducto;
+use App\Entity\TipoRevision;
+use App\Entity\TipoSolucion;
 use DateInterval;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -66,7 +70,7 @@ class PedidoProblemaController extends BaseController {
         $cliente = $request->get('idCliente') ?: NULL;
         $tieneProblema = $request->get('tieneProblema') !== null ? filter_var($request->get('tieneProblema'), FILTER_VALIDATE_BOOLEAN) : true;
         $codigoSobre = $request->get('codigoSobre') ?: NULL;
-
+        $tieneProblema == false ? $tieneProblema = null : $tieneProblema = true;
         $rsm = new ResultSetMapping();
 
         $rsm->addScalarResult('id', 'id');
@@ -96,6 +100,9 @@ class PedidoProblemaController extends BaseController {
         $rsm->addScalarResult('cantidadSemillas', 'cantidadSemillas');
         $rsm->addScalarResult('observacionProblema', 'observacionProblema');
         $rsm->addScalarResult('codigoSobre', 'codigoSobre');
+        $rsm->addScalarResult('tieneProblema', 'tieneProblema');
+        $rsm->addScalarResult('tieneSolucion', 'tieneSolucion');
+        $rsm->addScalarResult('tieneRevision', 'tieneRevision');
 
         $nativeQuery = $em->createNativeQuery('call sp_index_pedido_problema(?,?,?,?,?)', $rsm);
 
@@ -207,6 +214,182 @@ class PedidoProblemaController extends BaseController {
         )));
 
         return $response;
+    }
+
+    #[Route('/{id}/marcar-problema', name: 'pedido_producto_marcar_problema', methods: ['POST'])]
+    public function marcarProblema(Request $request, PedidoProducto $pedidoProducto, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $observacionProblema = $data['observacionProblema'] ?? null;
+
+        // Setear los valores en la entidad
+        $pedidoProducto->setTieneProblema(true);
+        $pedidoProducto->setObservacionProblema($observacionProblema);
+        $entityManager->flush();
+
+        return $this->json([
+            'success' => true,
+            'tieneProblema' => $pedidoProducto->isTieneProblema(),
+            'observacionProblema' => $pedidoProducto->getObservacionProblema()
+        ]);
+    }
+
+    #[Route('/{id}/quitar-problema', name: 'pedido_producto_quitar_problema', methods: ['POST'])]
+    public function quitarProblema(
+        Request $request,
+        PedidoProducto $pedidoProducto,
+        EntityManagerInterface $entityManager
+    ): JsonResponse
+    {
+
+        $pedidoProducto->setTieneProblema(false);
+        $pedidoProducto->setObservacionProblema(null);
+        $entityManager->flush();
+
+        return $this->json([
+            'success' => true,
+            'tieneProblema' => $pedidoProducto->isTieneProblema(),
+            'observacionProblema' => $pedidoProducto->getObservacionProblema()
+        ]);
+    }
+
+    #[Route('/{id}/marcar-revision', name: 'pedido_producto_marcar_revision', methods: ['POST'])]
+    public function marcarRevision(
+        Request $request,
+        PedidoProducto $pedidoProducto,
+        EntityManagerInterface $entityManager
+    ): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $revisionId = $data['revision'] ?? null;
+        $observacionRevision = $data['observacionRevision'] ?? null;
+
+        if (!$revisionId) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Debe enviar una revisión'
+            ], 400);
+        }
+
+        $tipoRevision = $entityManager->getRepository(TipoRevision::class)
+            ->find($revisionId);
+
+        if (!$tipoRevision) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Tipo de revisión no encontrado'
+            ], 404);
+        }
+
+        // 🔥 acá cambiamos: ahora seteás la entidad
+        $pedidoProducto->setRevision($tipoRevision);
+        $pedidoProducto->setTieneRevision(true);
+        $pedidoProducto->setObservacionRevision($observacionRevision);
+
+        $entityManager->flush();
+
+        return $this->json([
+            'success' => true,
+            'revision' => [
+                'id' => $tipoRevision->getId(),
+                'nombre' => $tipoRevision->getNombre()
+            ],
+            'observacionRevision' => $pedidoProducto->getObservacionRevision()
+        ]);
+    }
+
+    #[Route('/{id}/marcar-solucion', name: 'pedido_producto_marcar_solucion', methods: ['POST'])]
+    public function marcarSolucion(
+        Request $request,
+        PedidoProducto $pedidoProducto,
+        EntityManagerInterface $entityManager
+    ): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $solucionId = $data['solucion'] ?? null;
+        $observacion = $data['observacion'] ?? null;
+
+        if (!$solucionId) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Debe enviar una revisión'
+            ], 400);
+        }
+
+        $tipoSolucion = $entityManager->getRepository(Tiposolucion::class)
+            ->find($solucionId);
+
+        if (!$tipoSolucion) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Tipo de revisión no encontrado'
+            ], 404);
+        }
+
+        // 🔥 acá cambiamos: ahora seteás la entidad
+        $pedidoProducto->setSolucion($tipoSolucion);
+        $pedidoProducto->setTieneSolucion(true);
+        $pedidoProducto->setObservacionSolucion($observacion);
+
+        $entityManager->flush();
+
+        return $this->json([
+            'success' => true,
+            'revision' => [
+                'id' => $tipoSolucion->getId(),
+                'nombre' => $tipoSolucion->getNombre()
+            ],
+            'observacionRevision' => $pedidoProducto->getObservacionSolucion()
+        ]);
+    }
+
+    #[Route('/{id}/quitar-revision', name: 'pedido_producto_quitar_revision', methods: ['POST'])]
+    public function quitarRevision(
+        PedidoProducto $pedidoProducto,
+        EntityManagerInterface $entityManager
+    ): JsonResponse
+    {
+        // limpiar relación
+        $pedidoProducto->setRevision(null);
+        $pedidoProducto->setTieneRevision(false);
+        $pedidoProducto->setObservacionRevision(null);
+
+        // solucion en null
+        $pedidoProducto->setTieneSolucion(false);
+        $pedidoProducto->setSolucion(null);
+
+
+        $entityManager->flush();
+
+        return $this->json([
+            'success' => true,
+            'message' => 'Revisión eliminada correctamente',
+            'revision' => null,
+            'observacionRevision' => null
+        ]);
+    }
+
+    #[Route('/{id}/quitar-solucion', name: 'pedido_producto_quitar_solucion', methods: ['POST'])]
+    public function quitarSolucion(
+        PedidoProducto $pedidoProducto,
+        EntityManagerInterface $entityManager
+    ): JsonResponse
+    {
+
+        $pedidoProducto->setSolucion(null);
+        $pedidoProducto->setTieneSolucion(false);
+        $pedidoProducto->setObservacionSolucion(null);
+        $entityManager->flush();
+
+        return $this->json([
+            'success' => true,
+            'message' => 'Solución eliminada correctamente',
+            'solucion' => null,
+            'observacionSolucion' => null
+        ]);
     }
 
 }

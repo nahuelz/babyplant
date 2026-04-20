@@ -88,7 +88,7 @@
 
                     {# PEDIDOS CON PROBLEMAS #}
                     {% if is_granted("ROLE_STOCK") %}
-                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-exclamation-triangle icon-3x text-dark', 'nombreModulo': 'PEDIDOS CON PROBLEMAS','action': path('pedidoproblema_index'), 'descripcionModulo': 'Aqui podra ver los pedidos con problemas' } %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-exclamation-triangle icon-3x text-dark', 'nombreModulo': 'PEDIDOS CON PROBLEMAS (<span style="color: red; font-weight: bold;">' ~ pedidos_con_problemas_count ~ '</span>)'|raw,'action': path('pedidoproblema_index'), 'descripcionModulo': 'Aqui podra ver los pedidos con problemas' } %}
                     {% endif %}
                 </div>
             </div>

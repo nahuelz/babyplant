@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Constants\ConstanteTipoConsulta;
-use App\Entity\TipoConcepto;
-use App\Form\TipoConceptoType;
+use App\Entity\TipoRevision;
+use App\Form\TipoRevisionType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -13,12 +13,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/tipo/concepto")
+ * @Route("/tipo/revision")
  * @IsGranted("ROLE_PRODUCTO_CRUD")
  */
-class TipoConceptoController extends BaseController
+class TipoRevisionController extends BaseController
 {
-    #[Route('/', name: 'tipoconcepto_index', methods: ['GET'])]
+    #[Route('/', name: 'tiporevision_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
         return $this->render('tipo_revision/index.html.twig', [
@@ -54,15 +54,15 @@ class TipoConceptoController extends BaseController
     #[Route('/new', name: 'app_tipo_revision_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $tipoProducto = new TipoConcepto();
-        $form = $this->createForm(TipoConceptoType::class, $tipoProducto);
+        $tipoProducto = new TipoRevision();
+        $form = $this->createForm(TipoRevisionType::class, $tipoProducto);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($tipoProducto);
             $entityManager->flush();
 
-            return $this->redirectToRoute('tipoconcepto_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('tiporevision_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('tipo_revision/new.html.twig', [
@@ -72,7 +72,7 @@ class TipoConceptoController extends BaseController
     }
 
     #[Route('/{id}', name: 'app_tipo_revision_show', methods: ['GET'])]
-    public function show(TipoConcepto $tipoProducto): Response
+    public function show(TipoRevision $tipoProducto): Response
     {
         return $this->render('tipo_revision/show.html.twig', [
             'tipo_revision' => $tipoProducto,
@@ -80,15 +80,15 @@ class TipoConceptoController extends BaseController
     }
 
     #[Route('/{id}/edit', name: 'app_tipo_revision_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, TipoConcepto $tipoProducto, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, TipoRevision $tipoProducto, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(TipoConceptoType::class, $tipoProducto);
+        $form = $this->createForm(TipoRevisionType::class, $tipoProducto);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('tipoconcepto_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('tiporevision_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('tipo_revision/new.html.twig', [
@@ -98,14 +98,14 @@ class TipoConceptoController extends BaseController
     }
 
     #[Route('/{id}', name: 'app_tipo_revision_delete', methods: ['POST'])]
-    public function delete(Request $request, TipoConcepto $tipoProducto, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, TipoRevision $tipoProducto, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$tipoProducto->getId(), $request->request->get('_token'))) {
             $entityManager->remove($tipoProducto);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('tipoconcepto_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('tiporevision_index', [], Response::HTTP_SEE_OTHER);
     }
 
     /**
@@ -113,13 +113,38 @@ class TipoConceptoController extends BaseController
      */
     public function tipoUsuarioHabilitarDeshabilitar($id) {
         $em = $this->doctrine->getManager();
-        $tipo = $em->getRepository(TipoConcepto::class)->findOneBy(array('id' => $id));
+        $tipo = $em->getRepository(TipoRevision::class)->findOneBy(array('id' => $id));
         $tipo->setHabilitado(!$tipo->getHabilitado());
         $message = ($tipo->getHabilitado()) ? 'habilitó' : 'deshabilitó';
         $em->flush();
-        $this->get('session')->getFlashBag()->add('success', "Se " . $message . " correctamente al tipo concepto");
+        $this->get('session')->getFlashBag()->add('success', "Se " . $message . " correctamente al tipo revision");
 
-        return $this->redirectToRoute('tipoconcepto_index');
+        return $this->redirectToRoute('tiporevision_index');
+    }
+
+    /**
+     * @Route("/api/todos-habilitados", name="tipo_revision_todos_habilitados", methods={"GET"})
+     */
+    public function obtenerTodosHabilitados(): Response
+    {
+        $em = $this->doctrine->getManager();
+        $tiposRevision = $em->getRepository(TipoRevision::class)->findBy(
+            ['habilitado' => true],
+            ['nombre' => 'ASC']
+        );
+
+        $data = [];
+        foreach ($tiposRevision as $tipo) {
+            $data[] = [
+                'id' => $tipo->getId(),
+                'nombre' => $tipo->getNombre()
+            ];
+        }
+
+        return $this->json([
+            'success' => true,
+            'data' => $data
+        ]);
     }
 }
 
