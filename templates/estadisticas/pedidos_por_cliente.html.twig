@@ -70,7 +70,7 @@
                             {% set total = total + row.cantidad %}
                             <tr>
                                 <td class="text-center">
-                                    {{ loop.index }}
+                                    {{ (pagina_actual - 1) * 20 + loop.index }}
                                 </td>
                                 <td>
                                     <strong>{{ row.nombre }} {{ row.apellido }}</strong>
