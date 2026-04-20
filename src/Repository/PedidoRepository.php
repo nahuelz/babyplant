@@ -65,7 +65,7 @@ class PedidoRepository extends ServiceEntityRepository {
             ->setParameter('hasta', $hasta->format('Y-m-d 23:59:59'))
             ->setParameter('stockFilter', '%STOCK%')
             ->groupBy('u.id, u.nombre, u.apellido')
-            ->orderBy('cantidad', 'DESC')
+            ->orderBy('total_bandejas', 'DESC')
             ->setFirstResult($offset)
             ->setMaxResults($limite)
             ->getQuery()

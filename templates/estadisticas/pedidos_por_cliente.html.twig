@@ -183,8 +183,8 @@
                     <tr>
                         <th class="text-center">#</th>
                         <th>Cliente</th>
+                        <th class="text-center">Cantidad de bandejas pedidas</th>
                         <th class="text-center">Cantidad de productos pedidos</th>
-                        <th class="text-center">Total de bandejas</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -206,14 +206,14 @@
                                     <strong>{{ row.nombre }} {{ row.apellido }}</strong>
                                 </td>
                                 <td class="text-center">
-                                <span class="badge bg-primary fs-6">
-                                    {{ row.cantidad }}
-                                </span>
-                                </td>
-                                <td class="text-center">
                                     <span class="badge bg-success fs-6">
                                         {{ row.total_bandejas|round }}
                                     </span>
+                                </td>
+                                <td class="text-center">
+                                <span class="badge bg-primary fs-6">
+                                    {{ row.cantidad }}
+                                </span>
                                 </td>
                             </tr>
                         {% endfor %}
