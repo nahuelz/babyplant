@@ -8,7 +8,7 @@
         <div class="mb-4">
             <h2 class="fw-bold">📋 Pedidos por cliente</h2>
             <p class="text-muted mb-0">
-                Cantidad de pedidos realizados por cada cliente en el período seleccionado
+                Cantidad de pedidos y bandejas realizados por cada cliente en el período seleccionado
             </p>
         </div>
 
@@ -53,12 +53,13 @@
                     <tr>
                         <th>Cliente</th>
                         <th class="text-end">Cantidad de pedidos</th>
+                        <th class="text-end">Total de bandejas</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% if resultados is empty %}
                         <tr>
-                            <td colspan="2" class="text-center text-muted py-4">
+                            <td colspan="3" class="text-center text-muted py-4">
                                 No hay pedidos en el rango seleccionado
                             </td>
                         </tr>
@@ -75,17 +76,29 @@
                                     {{ row.cantidad }}
                                 </span>
                                 </td>
+                                <td class="text-end">
+                                    <span class="badge bg-success fs-6">
+                                        {{ row.total_bandejas }}
+                                    </span>
+                                </td>
                             </tr>
                         {% endfor %}
                     {% endif %}
                     </tbody>
 
                     {% if resultados is not empty %}
+                        {% set total_bandejas = 0 %}
+                        {% for row in resultados %}
+                            {% set total_bandejas = total_bandejas + row.total_bandejas %}
+                        {% endfor %}
                         <tfoot class="table-light">
                         <tr>
                             <th>Total</th>
                             <th class="text-end">
                                 {{ total }}
+                            </th>
+                            <th class="text-end">
+                                {{ total_bandejas }}
                             </th>
                         </tr>
                         </tfoot>
