@@ -172,29 +172,58 @@ class EstadisticasController extends AbstractController
         PedidoRepository $pedidoRepository
     )
     {
-        $desde = $request->query->get('desde')
-            ? new \DateTime($request->query->get('desde'))
-            : new \DateTime('first day of this month');
+        // Obtener fechas del request o usar valores por defecto (últimos 30 días)
+        $fechaFin = new \DateTime();
+        $fechaInicio = (clone $fechaFin)->modify('-30 days');
 
-        $hasta = $request->query->get('hasta')
-            ? new \DateTime($request->query->get('hasta'))
-            : new \DateTime();
+        // Si se enviaron fechas en el request, usarlas
+        $fechaInicioStr = $request->query->get('fecha_inicio') ?? $request->query->get('fecha_inicio');
+        $fechaFinStr = $request->query->get('fecha_fin') ?? $request->query->get('fecha_fin');
+
+        if ($fechaInicioStr && $fechaFinStr) {
+            try {
+                // Convertir fechas del formato dd/mm/yyyy a DateTime
+                $fechaInicio = \DateTime::createFromFormat('d/m/Y', $fechaInicioStr);
+                $fechaFin = \DateTime::createFromFormat('d/m/Y', $fechaFinStr);
+
+                if ($fechaInicio === false || $fechaFin === false) {
+                    throw new \Exception('Formato de fecha inválido');
+                }
+
+                // Asegurar que la fecha de inicio no sea mayor a la de fin
+                if ($fechaInicio > $fechaFin) {
+                    $temp = $fechaInicio;
+                    $fechaInicio = $fechaFin;
+                    $fechaFin = $temp;
+                }
+
+                // Asegurar que las fechas tengan la hora correcta
+                $fechaInicio->setTime(0, 0, 0);
+                $fechaFin->setTime(23, 59, 59);
+
+            } catch (\Exception $e) {
+                // En caso de error en el formato de fechas, usar valores por defecto
+                $this->addFlash('error', 'Formato de fechas inválido. Mostrando últimos 30 días.');
+                $fechaInicio = (new \DateTime())->modify('-30 days');
+                $fechaFin = new \DateTime();
+            }
+        }
 
         // Paginación
         $pagina = $request->query->get('pagina', 1);
         $limite = 20;
         $offset = ($pagina - 1) * $limite;
 
-        $resultados = $pedidoRepository->getPedidosPorClientePaginado($desde, $hasta, $limite, $offset);
+        $resultados = $pedidoRepository->getPedidosPorClientePaginado($fechaInicio, $fechaFin, $limite, $offset);
 
         // Obtener total para paginación
-        $totalResultados = $pedidoRepository->getTotalPedidosPorCliente($desde, $hasta);
+        $totalResultados = $pedidoRepository->getTotalPedidosPorCliente($fechaInicio, $fechaFin);
         $totalPaginas = ceil($totalResultados / $limite);
 
         return $this->render('estadisticas/pedidos_por_cliente.html.twig', [
             'resultados' => $resultados,
-            'desde' => $desde,
-            'hasta' => $hasta,
+            'fecha_inicio' => $fechaInicio,
+            'fecha_fin' => $fechaFin,
             'pagina_actual' => $pagina,
             'total_paginas' => $totalPaginas,
             'total_resultados' => $totalResultados,

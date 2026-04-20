@@ -1,49 +1,179 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Estadísticas · Pedidos por Cliente{% endblock %}
+{% block title %}Estadísticas de Ventas{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .stats-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1.5rem;
+        }
+        .stats-table thead th {
+            background-color: #f3f6f9;
+            color: #3f4254;
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid #ebedf3;
+        }
+        .stats-table tbody td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #ebedf3;
+            vertical-align: middle;
+        }
+        .stats-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .stats-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        .text-end {
+            text-align: right !important;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        // Inicializar datepicker
+        $(document).ready(function() {
+            // Inicializar datepickers
+            $('#fecha_inicio, #fecha_fin').datepicker({
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+                todayHighlight: true,
+                language: 'es',
+                orientation: 'bottom auto',
+                clearBtn: true
+            });
+
+            // Establecer fechas por defecto
+            var fechaFin = new Date();
+            var fechaInicio = new Date();
+            fechaInicio.setMonth(fechaInicio.getMonth() - 1); // Un mes atrás por defecto
+
+            // Formatear fechas
+            var fechaInicioStr = ('0' + fechaInicio.getDate()).slice(-2) + '/' +
+                ('0' + (fechaInicio.getMonth() + 1)).slice(-2) + '/' +
+                fechaInicio.getFullYear();
+
+            var fechaFinStr = ('0' + fechaFin.getDate()).slice(-2) + '/' +
+                ('0' + (fechaFin.getMonth() + 1)).slice(-2) + '/' +
+                fechaFin.getFullYear();
+
+            // Establecer valores iniciales si no están definidos
+            if (!$('#fecha_inicio').val()) {
+                $('#fecha_inicio').val(fechaInicioStr);
+            }
+
+            if (!$('#fecha_fin').val()) {
+                $('#fecha_fin').val(fechaFinStr);
+            }
+
+            // Validar que la fecha de inicio no sea mayor a la fecha fin
+            document.getElementById('rangoFechasForm').addEventListener('submit', function(e) {
+                var fechaInicioStr = $('#fecha_inicio').val().split('/');
+                var fechaFinStr = $('#fecha_fin').val().split('/');
+
+                // Convertir a objeto Date (año, mes-1, día)
+                var fechaInicio = new Date(fechaInicioStr[2], fechaInicioStr[1] - 1, fechaInicioStr[0]);
+                var fechaFin = new Date(fechaFinStr[2], fechaFinStr[1] - 1, fechaFinStr[0]);
+
+                if (fechaInicio > fechaFin) {
+                    e.preventDefault();
+                    alert('La fecha de inicio no puede ser mayor a la fecha fin');
+                    return false;
+                }
+
+                // Formatear fechas a YYYY-MM-DD para el envío
+                function formatDate(date) {
+                    var d = new Date(date),
+                        month = '' + (d.getMonth() + 1),
+                        day = '' + d.getDate(),
+                        year = d.getFullYear();
+
+                    if (month.length < 2) month = '0' + month;
+                    if (day.length < 2) day = '0' + day;
+
+                    return [year, month, day].join('-');
+                }
+
+                // Asegurar que las fechas se envíen en el formato correcto
+                var form = this;
+
+                // Crear inputs ocultos con el formato correcto
+                var fechaInicioInput = document.createElement('input');
+                fechaInicioInput.type = 'hidden';
+                fechaInicioInput.name = 'fecha_inicio';
+                fechaInicioInput.value = formatDate(fechaInicio);
+
+                var fechaFinInput = document.createElement('input');
+                fechaFinInput.type = 'hidden';
+                fechaFinInput.name = 'fecha_fin';
+                fechaFinInput.value = formatDate(fechaFin);
+
+                // Eliminar cualquier input oculto previo
+                $('input[type="hidden"][name^="fecha_"]').remove();
+
+                // Agregar los nuevos inputs
+                form.appendChild(fechaInicioInput);
+                form.appendChild(fechaFinInput);
+
+                return true;
+            });
+        });
+    </script>
+{% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-
-        <div class="mb-4">
-            <h2 class="fw-bold">📋 Pedidos por cliente</h2>
-            <p class="text-muted mb-0">
-                Cantidad de pedidos y bandejas realizados por cada cliente en el período seleccionado
-            </p>
-        </div>
-
-        {# Filtros #}
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
-                <form method="get" class="row g-3 align-items-end">
-                    <div class="col-md-4">
-                        <label class="form-label">Desde</label>
-                        <input type="date"
-                               name="desde"
-                               class="form-control"
-                               value="{{ desde|date('Y-m-d') }}">
+<div class="container-fluid">
+    <div class="d-flex flex-column-fluid">
+        <div class="container">
+            <div class="card card-custom gutter-b">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3 class="card-label">Productos Entregados</h3>
                     </div>
-
-                    <div class="col-md-4">
-                        <label class="form-label">Hasta</label>
-                        <input type="date"
-                               name="hasta"
-                               class="form-control"
-                               value="{{ hasta|date('Y-m-d') }}">
-                    </div>
-
-                    <div class="col-md-4 d-flex gap-2">
-                        <button class="btn btn-primary w-100">
-                            Filtrar
-                        </button>
-                        <a href="{{ path('estadisticas_pedidos_cliente') }}"
-                           class="btn btn-outline-secondary w-100">
-                            Limpiar
-                        </a>
-                    </div>
-                </form>
-            </div>
-        </div>
+                </div>
+                <div class="card-body">
+                    <form method="get" action="{{ path('estadisticas_pedidos_cliente') }}" class="form" id="rangoFechasForm">
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <label>Rango de Fechas</label>
+                                <div class="input-daterange input-group" id="kt_datepicker">
+                                    <input type="text"
+                                           class="form-control datepicker"
+                                           id="fecha_inicio"
+                                           name="fecha_inicio"
+                                           placeholder="Desde"
+                                           value="{{ app.request.query.get('fecha_inicio', fecha_inicio|date('d/m/Y')) }}"
+                                           autocomplete="off" />
+                                    <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="la la-ellipsis-h"></i>
+                                            </span>
+                                    </div>
+                                    <input type="text"
+                                           class="form-control datepicker"
+                                           id="fecha_fin"
+                                           name="fecha_fin"
+                                           placeholder="Hasta"
+                                           value="{{ app.request.query.get('fecha_fin', fecha_fin is defined ? fecha_fin|date('d/m/Y') : 'now'|date('d/m/Y')) }}"
+                                           autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary font-weight-bold w-100">
+                                    <i class="la la-search"></i> Buscar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
 
         {# Grilla #}
         <div class="card shadow-sm">
@@ -123,7 +253,7 @@
                             
                             {% if pagina_actual > 1 %}
                                 <li class="page-item">
-                                    <a class="page-link" href="{{ path('estadisticas_pedidos_cliente', {'desde': desde|date('Y-m-d'), 'hasta': hasta|date('Y-m-d'), 'pagina': pagina_actual - 1}) }}">
+                                    <a class="page-link" href="{{ path('estadisticas_pedidos_cliente', {'fecha_inicio': fecha_inicio|date('d/m/Y'), 'fecha_fin': fecha_fin|date('d/m/Y'), 'pagina': pagina_actual - 1}) }}">
                                         &laquo;
                                     </a>
                                 </li>
@@ -136,7 +266,7 @@
                                     </li>
                                 {% else %}
                                     <li class="page-item">
-                                        <a class="page-link" href="{{ path('estadisticas_pedidos_cliente', {'desde': desde|date('Y-m-d'), 'hasta': hasta|date('Y-m-d'), 'pagina': page}) }}">
+                                        <a class="page-link" href="{{ path('estadisticas_pedidos_cliente', {'fecha_inicio': fecha_inicio|date('d/m/Y'), 'fecha_fin': fecha_fin|date('d/m/Y'), 'pagina': page}) }}">
                                             {{ page }}
                                         </a>
                                     </li>
@@ -145,7 +275,7 @@
                             
                             {% if pagina_actual < total_paginas %}
                                 <li class="page-item">
-                                    <a class="page-link" href="{{ path('estadisticas_pedidos_cliente', {'desde': desde|date('Y-m-d'), 'hasta': hasta|date('Y-m-d'), 'pagina': pagina_actual + 1}) }}">
+                                    <a class="page-link" href="{{ path('estadisticas_pedidos_cliente', {'fecha_inicio': fecha_inicio|date('d/m/Y'), 'fecha_fin': fecha_fin|date('d/m/Y'), 'pagina': pagina_actual + 1}) }}">
                                         &raquo;
                                     </a>
                                 </li>
