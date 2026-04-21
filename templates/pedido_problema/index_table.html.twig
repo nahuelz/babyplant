@@ -41,27 +41,19 @@
         "{{ entity.codigoSobre|default('-') }}",
         "{{ entity.tieneProblema == 1 ? '1' : '0' }}", {# 17 #}
         "{{ entity.tieneSolucion == 1 ? '1' : '0' }}", {# 18 #}
-        "{{ entity.tieneRevision == 1 ? '1' : '0' }}", {# 19 #}
         {
         "show_pedido" : " {{ path( "pedido_show", { "id": entity.id }) }}",
         {% if entity.tieneProblema == 1 %}
             "pedido_producto_quitar_problema": "{{ path( "pedido_producto_quitar_problema", { "id": entity.idProducto })}}",
-        {% else %}
-            "pedido_producto_marcar_problema": "{{ path( "pedido_producto_marcar_problema", { "id": entity.idProducto })}}",
-        {% endif %}
-        {% if entity.tieneSolucion == 1 %}
-            "pedido_producto_quitar_solucion": "{{ path( "pedido_producto_quitar_solucion", { "id": entity.idProducto })}}",
-        {% endif %}
-        {% if entity.tieneRevision == 1 %}
-            {% if entity.tieneSolucion == 0 %}
-                "pedido_producto_marcar_solucion": "{{ path( "pedido_producto_marcar_solucion", { "id": entity.idProducto })}}",
+            {% if entity.tieneSolucion == 1 %}
+                "pedido_producto_quitar_solucion": "{{ path( "pedido_producto_quitar_solucion", { "id": entity.idProducto })}}"
+            {% else %}
+                "pedido_producto_marcar_solucion": "{{ path( "pedido_producto_marcar_solucion", { "id": entity.idProducto })}}"
             {% endif %}
-            "pedido_producto_quitar_revision": "{{ path( "pedido_producto_quitar_revision", { "id": entity.idProducto })}}"
         {% else %}
-            "pedido_producto_marcar_revision": "{{ path( "pedido_producto_marcar_revision", { "id": entity.idProducto })}}"
+            "pedido_producto_marcar_problema": "{{ path( "pedido_producto_marcar_problema", { "id": entity.idProducto })}}"
         {% endif %}
-        }
-        ]
+        }]
         {{ (loop.last ? '' : ',') }}
     {% endfor %}
     ]

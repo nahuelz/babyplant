@@ -102,7 +102,7 @@ class PedidoProblemaController extends BaseController {
         $rsm->addScalarResult('codigoSobre', 'codigoSobre');
         $rsm->addScalarResult('tieneProblema', 'tieneProblema');
         $rsm->addScalarResult('tieneSolucion', 'tieneSolucion');
-        $rsm->addScalarResult('tieneRevision', 'tieneRevision');
+        $rsm->addScalarResult('tipoRevision', 'tipoRevision');
 
         $nativeQuery = $em->createNativeQuery('call sp_index_pedido_problema(?,?,?,?,?)', $rsm);
 
@@ -222,10 +222,20 @@ class PedidoProblemaController extends BaseController {
         $data = json_decode($request->getContent(), true);
 
         $observacionProblema = $data['observacionProblema'] ?? null;
+        $revisionId = $data['revision'] ?? null;
 
-        // Setear los valores en la entidad
+        if (!$revisionId) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Debe enviar un problema'
+            ], 400);
+        }
+
+        $tipoRevision = $entityManager->getRepository(TipoRevision::class)->find($revisionId);
+
         $pedidoProducto->setTieneProblema(true);
         $pedidoProducto->setObservacionProblema($observacionProblema);
+        $pedidoProducto->setRevision($tipoRevision);
         $entityManager->flush();
 
         return $this->json([
@@ -244,6 +254,7 @@ class PedidoProblemaController extends BaseController {
     {
 
         $pedidoProducto->setTieneProblema(false);
+        $pedidoProducto->setTieneSolucion(false);
         $pedidoProducto->setObservacionProblema(null);
         $entityManager->flush();
 
@@ -251,52 +262,6 @@ class PedidoProblemaController extends BaseController {
             'success' => true,
             'tieneProblema' => $pedidoProducto->isTieneProblema(),
             'observacionProblema' => $pedidoProducto->getObservacionProblema()
-        ]);
-    }
-
-    #[Route('/{id}/marcar-revision', name: 'pedido_producto_marcar_revision', methods: ['POST'])]
-    public function marcarRevision(
-        Request $request,
-        PedidoProducto $pedidoProducto,
-        EntityManagerInterface $entityManager
-    ): JsonResponse
-    {
-        $data = json_decode($request->getContent(), true);
-
-        $revisionId = $data['revision'] ?? null;
-        $observacionRevision = $data['observacionRevision'] ?? null;
-
-        if (!$revisionId) {
-            return $this->json([
-                'success' => false,
-                'message' => 'Debe enviar una revisión'
-            ], 400);
-        }
-
-        $tipoRevision = $entityManager->getRepository(TipoRevision::class)
-            ->find($revisionId);
-
-        if (!$tipoRevision) {
-            return $this->json([
-                'success' => false,
-                'message' => 'Tipo de revisión no encontrado'
-            ], 404);
-        }
-
-        // 🔥 acá cambiamos: ahora seteás la entidad
-        $pedidoProducto->setRevision($tipoRevision);
-        $pedidoProducto->setTieneRevision(true);
-        $pedidoProducto->setObservacionRevision($observacionRevision);
-
-        $entityManager->flush();
-
-        return $this->json([
-            'success' => true,
-            'revision' => [
-                'id' => $tipoRevision->getId(),
-                'nombre' => $tipoRevision->getNombre()
-            ],
-            'observacionRevision' => $pedidoProducto->getObservacionRevision()
         ]);
     }
 
@@ -343,32 +308,6 @@ class PedidoProblemaController extends BaseController {
                 'nombre' => $tipoSolucion->getNombre()
             ],
             'observacionRevision' => $pedidoProducto->getObservacionSolucion()
-        ]);
-    }
-
-    #[Route('/{id}/quitar-revision', name: 'pedido_producto_quitar_revision', methods: ['POST'])]
-    public function quitarRevision(
-        PedidoProducto $pedidoProducto,
-        EntityManagerInterface $entityManager
-    ): JsonResponse
-    {
-        // limpiar relación
-        $pedidoProducto->setRevision(null);
-        $pedidoProducto->setTieneRevision(false);
-        $pedidoProducto->setObservacionRevision(null);
-
-        // solucion en null
-        $pedidoProducto->setTieneSolucion(false);
-        $pedidoProducto->setSolucion(null);
-
-
-        $entityManager->flush();
-
-        return $this->json([
-            'success' => true,
-            'message' => 'Revisión eliminada correctamente',
-            'revision' => null,
-            'observacionRevision' => null
         ]);
     }
 

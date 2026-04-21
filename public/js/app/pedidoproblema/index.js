@@ -32,8 +32,8 @@ $(document).ready(function () {
     initMarcarSolucionHandler();
     initCambiarMesadaHandler();
     initMarcarProblemaHandler();
-    initMarcarRevisionHandler();
-    initQuitarRevisionHandler();
+    //initMarcarRevisionHandler();
+    //initQuitarRevisionHandler();
     initQuitarSolucionHandler();
     initQuitarProblemaHandler();
 
@@ -547,7 +547,7 @@ function encodeId(id) {
  */
 function dataTablesActionFormatter(data, type, full, meta) {
     // Los datos de acciones están en full[18], no en el parámetro data
-    const actionData = full[20];
+    const actionData = full[19];
 
     let actions = '';
 
@@ -789,12 +789,32 @@ function removeMesadaHandler(){
 
 // Funciones para manejar problemas en pedidos
 function initMarcarProblemaHandler() {
+    $.ajax({
+        url: __HOMEPAGE_PATH__ + 'tipo/revision/api/todos-habilitados',
+        method: 'GET',
+        success: function(response) {
+            window.tiposRevision = response.data || [];
+        },
+        error: function() {
+            console.error('Error al cargar tipos de revisión');
+            window.tiposRevision = [];
+        }
+    });
     $(document).off('click', '.marcar-problema-btn').on('click', '.marcar-problema-btn', function (e) {
         e.preventDefault();
         
         const id = $(this).data('id');
         const tieneProblema = $(this).data('tiene-problema');
         const observacionActual = $(this).data('observacion') || '';
+        const revisionActual = $(this).data('revision') || '';
+
+        let opcionesRevision = '<option value="">Seleccionar tipo de problema...</option>';
+        if (window.tiposRevision && window.tiposRevision.length > 0) {
+            window.tiposRevision.forEach(function(tipo) {
+                const selected = tipo.id == revisionActual ? 'selected' : '';
+                opcionesRevision += `<option value="${tipo.id}" ${selected}>${tipo.nombre}</option>`;
+            });
+        }
         
         // Crear modal para marcar problema
         const modalHtml = `
@@ -812,6 +832,12 @@ function initMarcarProblemaHandler() {
                         </div>
                         <div class="modal-body">
                             <form id="formProblema">
+                                <div class="form-group">
+                                    <label for="tipoRevision">Tipo de Problema:</label>
+                                    <select class="form-control" id="tipoRevision" name="tipoRevision" required>
+                                        ${opcionesRevision}
+                                    </select>
+                                </div>
                                 <div class="form-group">
                                     <label for="observacionProblema">Observación del problema:</label>
                                     <textarea class="form-control" id="observacionProblema" 
@@ -843,12 +869,12 @@ function initMarcarProblemaHandler() {
         // Manejar envío del formulario
         $('#guardarProblema').off('click').on('click', function() {
             const observacion = $('#observacionProblema').val().trim();
-            
-            // Validar que se ingrese una observación
-            if (!observacion) {
+            const tipoRevision = $('#tipoRevision').val();
+
+            if (!tipoRevision) {
                 Swal.fire({
                     title: 'Error',
-                    text: 'Debe ingresar una observación del problema',
+                    text: 'Debe seleccionar un tipo de problema',
                     icon: 'error'
                 });
                 return;
@@ -864,6 +890,7 @@ function initMarcarProblemaHandler() {
                 },
                 data: JSON.stringify({
                     tieneProblema: true,
+                    revision: tipoRevision,
                     observacionProblema: observacion
                 }),
                 success: function(response) {
@@ -1181,7 +1208,7 @@ function resaltarFilasConProblemas() {
         const data = table.row($row).data();
 
         // El valor de tieneRevision está en el índice 17 del array
-        if (data && data[19] === "1") {
+        if (data && data[17] === "1") {
             // Agregar clase CSS para resaltar en amarillo
             $row.addClass('fila-con-problema');
         } else {
@@ -1199,133 +1226,3 @@ function resaltarFilasConProblemas() {
         }
     });
 }
-
-function initMarcarRevisionHandler() {
-    $.ajax({
-        url: __HOMEPAGE_PATH__ + 'tipo/revision/api/todos-habilitados',
-        method: 'GET',
-        success: function(response) {
-            window.tiposRevision = response.data || [];
-        },
-        error: function() {
-            console.error('Error al cargar tipos de revisión');
-            window.tiposRevision = [];
-        }
-    });
-
-    $(document).off('click', '.marcar-revision-btn').on('click', '.marcar-revision-btn', function (e) {
-        e.preventDefault();
-
-        const id = $(this).data('id');
-        const revisionActual = $(this).data('revision') || '';
-
-        let opcionesRevision = '<option value="">Seleccionar tipo de revisión...</option>';
-        if (window.tiposRevision && window.tiposRevision.length > 0) {
-            window.tiposRevision.forEach(function(tipo) {
-                const selected = tipo.id == revisionActual ? 'selected' : '';
-                opcionesRevision += `<option value="${tipo.id}" ${selected}>${tipo.nombre}</option>`;
-            });
-        }
-
-        const modalHtml = `
-            <div class="modal fade" id="modalRevision" tabindex="-1" role="dialog">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">
-                                <i class="la la-clipboard-check"></i>
-                                Marcar Revisión
-                            </h5>
-                            <button type="button" class="close" data-dismiss="modal">
-                                <span>&​times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="formRevision">
-                                <div class="form-group">
-                                    <label for="tipoRevision">Tipo de Revisión:</label>
-                                    <select class="form-control" id="tipoRevision" name="tipoRevision" required>
-                                        ${opcionesRevision}
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="observacionRevision">Observación de la revisión:</label>
-                                    <textarea class="form-control" id="observacionRevision" 
-                                              name="observacionRevision" rows="4" 
-                                              placeholder="Describa la revisión..."></textarea>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary" id="guardarRevision">
-                                <i class="la la-save"></i> Guardar Revisión
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        // Eliminar modal si ya existe
-        $('#modalRevision').remove();
-
-        // Agregar nuevo modal
-        $('body').append(modalHtml);
-
-        // Mostrar modal
-        $('#modalRevision').modal('show');
-
-        // Manejar envío del formulario
-        $('#guardarRevision').off('click').on('click', function() {
-            const tipoRevision = $('#tipoRevision').val();
-            const observacion = $('#observacionRevision').val().trim();
-
-            if (!tipoRevision) {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Debe seleccionar un tipo de revisión',
-                    icon: 'error'
-                });
-                return;
-            }
-
-            // Enviar datos via AJAX
-            $.ajax({
-                url: __HOMEPAGE_PATH__ + `pedidoproblema/${id}/marcar-revision`,
-                method: 'POST',
-                contentType: 'application/json',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                data: JSON.stringify({
-                    revision: tipoRevision,
-                    observacionRevision: observacion
-                }),
-                success: function(response) {
-                    if (response.success) {
-                        $('#modalRevision').modal('hide');
-                        toastr.success('Revisión marcada correctamente');
-                        // Recargar la tabla
-                        $('#table-pedido').DataTable().ajax.reload();
-                    } else {
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'No se pudo marcar la revisión',
-                            icon: 'error'
-                        });
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'Ocurrió un error al marcar la revisión',
-                        icon: 'error'
-                    });
-                }
-            });
-        });
-    });
-}
-

@@ -157,19 +157,6 @@ class PedidoProducto {
     private mixed $observacion;
 
     /**
-     * @var bool
-     *
-     * @ORM\Column(name="tiene_problema", type="boolean", options={"default": false})
-     */
-    private bool $tieneProblema = false;
-
-    /**
-     * @ORM\Column(name="observacion_problema", type="string", length=255, nullable=true)
-     */
-    private mixed $observacionProblema;
-
-
-    /**
      * @ORM\Column(name="observacion_camara", type="string", length=255, nullable=true)
      */
     private mixed $observacionCamara;
@@ -223,10 +210,11 @@ class PedidoProducto {
     private ?string $camaraDestino = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=TipoRevision::class)
-     * @ORM\JoinColumn(name="id_tipo_revision", referencedColumnName="id", nullable=true)
+     * @var bool
+     *
+     * @ORM\Column(name="tiene_solucion", type="boolean", options={"default": false})
      */
-    private ?TipoRevision $revision = null;
+    private bool $tieneSolucion = false;
 
     /**
      * @ORM\ManyToOne(targetEntity=TipoSolucion::class)
@@ -242,16 +230,21 @@ class PedidoProducto {
     /**
      * @var bool
      *
-     * @ORM\Column(name="tiene_solucion", type="boolean", options={"default": false})
+     * @ORM\Column(name="tiene_problema", type="boolean", options={"default": false})
      */
-    private bool $tieneSolucion = false;
+    private bool $tieneProblema = false;
 
     /**
-     * @var bool
-     *
-     * @ORM\Column(name="tiene_revision", type="boolean", options={"default": false})
+     * @ORM\ManyToOne(targetEntity=TipoRevision::class)
+     * @ORM\JoinColumn(name="id_tipo_revision", referencedColumnName="id", nullable=true)
      */
-    private bool $tieneRevision = false;
+    private ?TipoRevision $revision = null;
+
+    /**
+     * @ORM\Column(name="observacion_problema", type="string", length=255, nullable=true)
+     */
+    private mixed $observacionProblema;
+
 
     public function __construct()
     {
@@ -1017,16 +1010,5 @@ class PedidoProducto {
     {
         $this->tieneSolucion = $tieneSolucion;
     }
-
-    public function isTieneRevision(): bool
-    {
-        return $this->tieneRevision;
-    }
-
-    public function setTieneRevision(bool $tieneRevision): void
-    {
-        $this->tieneRevision = $tieneRevision;
-    }
-
 
 }
