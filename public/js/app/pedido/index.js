@@ -346,10 +346,106 @@ function datatablesGetColDef() {
             width: '50px',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
+
+                    let badges = '';
+
+                    if (data.tieneRevision === '1') {
+                        badges += '<span class="badge badge-warning badge-sm ml-1" style="margin-bottom: 5px">REVIS</span>';
+                    }
+
+                    if (data.tieneProblema === '1') {
+                        badges += '<span class="badge badge-danger badge-sm ml-1" style="margin-bottom: 5px">PROB</span>';
+                    }
+
+                    if (data.tieneSolucion === '1') {
+                        badges += '<span class="badge badge-success badge-sm ml-1">SOLU</span>';
+                    }
+
+                    return `
+            <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+                
+                <span class="label label-inline margin-0 font-weight-bold p-6"
+                      style="font-size: 11px; font-weight: bold !important; width: 220px; color: black !important; background-color: ${data.colorProducto}">
+                    ${data.nombreProductoCompleto}
+                </span>
+
+                <div style="display: flex; flex-direction: column; align-items: flex-start;font-size: 12px">
+                    ${badges}
+                </div>
+
+            </div>
+        `;
+                }
+
+                return data.nombreProductoCompleto;
+            }
+            /*render: function (data, type, full, meta) {
+                if (type === 'display') {
                     return '<span class="label label-inline margin-0 font-weight-bold p-6" style="font-size: 11px; font-weight: bold !important;width: 220px;color: black !important;background-color: ' + data.colorProducto + '">' + data.nombreProductoCompleto + '</span>';
                 }
                 return data.nombreProductoCompleto;
+            }*/
+            /*
+                        render: function (data, type, full, meta) {
+                if (type === 'display') {
+
+                    let badges = '';
+
+                    if (data.tieneRevision) {
+                        badges += '<span class="badge badge-warning mb-1">REVISION</span>';
+                    }
+
+                    if (data.tieneProblema) {
+                        badges += '<span class="badge badge-danger mb-1">PROBLEMA</span>';
+                    }
+
+                    if (data.tieneSolucion) {
+                        badges += '<span class="badge badge-success mb-1">SOLUCION</span>';
+                    }
+
+                    return `
+            <div style="
+                display: flex;
+                align-items: stretch;
+                width: 220px;
+                font-size: 11px;
+                font-weight: bold;
+                color: black;
+                background-color: ${data.colorProducto};
+                border-radius: 4px;
+                overflow: hidden;
+            ">
+
+                <div style="
+                    width: 80%;
+                    padding: 6px;
+                    display: flex;
+                    align-items: center;
+                    word-break: break-word;
+                ">
+                    ${data.nombreProductoCompleto}
+                </div>
+
+                <div style="
+                    width: 20%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: flex-end;
+                    padding: 4px;
+                    gap: 2px;
+                ">
+                    ${badges}
+                </div>
+
+            </div>
+        `;
+                }
+
+                return data.nombreProductoCompleto;
             }
+        },
+             */
         },
         {
             targets: index++,
