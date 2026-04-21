@@ -229,11 +229,6 @@ class PedidoProducto {
     private ?TipoRevision $revision = null;
 
     /**
-     * @ORM\Column(name="observacion_revision", type="string", length=255, nullable=true)
-     */
-    private mixed $observacionRevision;
-
-    /**
      * @ORM\ManyToOne(targetEntity=TipoSolucion::class)
      * @ORM\JoinColumn(name="id_tipo_solucion", referencedColumnName="id", nullable=true)
      */
@@ -991,18 +986,6 @@ class PedidoProducto {
     {
         $this->revision = $revision;
         return $this;
-    }
-
-
-
-    public function getObservacionRevision(): mixed
-    {
-        return $this->observacionRevision;
-    }
-
-    public function setObservacionRevision(mixed $observacionRevision): void
-    {
-        $this->observacionRevision = $observacionRevision;
     }
 
     public function getSolucion(): ?TipoSolucion
