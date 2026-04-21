@@ -190,6 +190,10 @@ function initDataTable() {
                 "success": fnCallback
             });
         },
+        "drawCallback": function(settings) {
+            // Resaltar filas con problemas
+            resaltarFilasConProblemas();
+        },
         lengthMenu: [5, 10, 25, 50, 100, 500, 1000],
         pageLength: 50,
         scrollX: false,
@@ -767,4 +771,34 @@ function removeMesadaHandler(){
         $('.add-mesada').show();
     })
 }
+
+function resaltarFilasConProblemas() {
+    // Obtener todas las filas de la tabla
+    $('#table-pedido tbody tr').each(function() {
+        const $row = $(this);
+
+        // Obtener los datos de la fila usando DataTables API
+        const table = $('#table-pedido').DataTable();
+        const data = table.row($row).data();
+
+        // El valor de tieneRevision está en el índice 17 del array
+        if (data && data[4].tieneProblema === "1") {
+            // Agregar clase CSS para resaltar en amarillo
+            $row.addClass('fila-con-problema');
+        } else {
+            // Remover clase si no tiene problema
+            $row.removeClass('fila-con-problema');
+        }
+
+        if (data && data[4].tieneSolucion === "1") {
+            // Agregar clase CSS para resaltar en amarillo
+            $row.addClass('fila-con-solucion');
+            $row.removeClass('fila-con-problema');
+        } else {
+            // Remover clase si no tiene problema
+            $row.removeClass('fila-con-solucion');
+        }
+    });
+}
+
 

@@ -1,7 +1,32 @@
 $(document).ready(function () {
     initVerHistoricoEstadoHandler();
     initActualizarBandejas();
+    setSameHeight('.portlet-nivel-1');
 });
+
+/**
+ *
+ * @param {type} target
+ * @returns {undefined}
+ */
+function setSameHeight(target) {
+
+    var maxHeight = 0;
+
+    $(target).each(function () {
+        $(this).css('min-height', '0px');
+    });
+
+    $(target).each(function () {
+        if ($(this)[0].offsetHeight > maxHeight) {
+            maxHeight = $(this)[0].offsetHeight;
+        }
+    });
+
+    $(target).each(function () {
+        $(this).css('min-height', maxHeight + 'px');
+    });
+}
 
 /**
  *

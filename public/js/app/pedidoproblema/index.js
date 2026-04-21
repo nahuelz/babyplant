@@ -371,11 +371,11 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'nombreVariedad',
             orderable: false,
-            className: 'nowrap text-center margin-0 padding-0 p-0',
+            className: 'nowrap text-center margin-0 p-0',
             width: '50px',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<span class="label label-inline margin-0 font-weight-bold p-6" style="font-size: 11px; font-weight: bold !important;width: 220px;color: black !important;background-color: ' + data.colorProducto + '">' + data.nombreProductoCompleto + '</span>';
+                    return '<span class="label label-inline margin-0 font-weight-bold p-6" style="font-size: 11px; font-weight: bold !important;width: 420px;color: black !important;background-color: ' + data.colorProducto + '">' + data.nombreProductoCompleto + '</span>';
                 }
                 return data.nombreProductoCompleto;
             }
