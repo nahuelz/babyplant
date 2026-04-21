@@ -350,15 +350,15 @@ function datatablesGetColDef() {
                     let badges = '';
 
                     if (data.tieneRevision === '1') {
-                        badges += '<span class="badge badge-warning badge-sm ml-1" style="margin-bottom: 5px">REVIS</span>';
+                        badges += '<span class="badge badge-warning badge-sm ml-1" title="REVISIÓN" style="margin-bottom: 5px">REVIS</span>';
                     }
 
                     if (data.tieneProblema === '1') {
-                        badges += '<span class="badge badge-danger badge-sm ml-1" style="margin-bottom: 5px">PROB</span>';
+                        badges += '<span class="badge badge-danger badge-sm ml-1" title="PROBLEMA" style="margin-bottom: 5px">PROB</span>';
                     }
 
                     if (data.tieneSolucion === '1') {
-                        badges += '<span class="badge badge-success badge-sm ml-1">SOLU</span>';
+                        badges += '<span class="badge badge-success badge-sm ml-1" title="SOLUCIÓN">SOLU</span>';
                     }
 
                     return `
