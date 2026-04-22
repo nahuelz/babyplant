@@ -96,8 +96,13 @@
                                             <div class="alert alert-danger portlet-nivel-1">
                                                 <small class="font-size-16">PROBLEMA</small><br>
                                                 <strong class="font-size-20">
-                                                    {{ producto.observacionProblema|default('Sin observaciones') }}<br>
+                                                    {{ producto.getRevision.nombre }}<br>
                                                 </strong>
+                                                {% if producto.observacionProblema != '' %}
+                                                    <small class="font-size-12">
+                                                        [{{ producto.observacionProblema }}]
+                                                    </small>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     {% endif %}
@@ -107,7 +112,7 @@
                                             <div class="alert alert-success portlet-nivel-1">
                                                 <small class="font-size-16">SOLUCÓN</small><br>
                                                 <strong class="font-size-20">
-                                                    {{ producto.getRevision.nombre }}<br>
+                                                    {{ producto.getSolucion.nombre }}<br>
                                                 </strong>
                                                 {% if producto.observacionSolucion != '' %}
                                                     <small class="font-size-12">
