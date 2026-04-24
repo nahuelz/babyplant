@@ -33,10 +33,11 @@ $(document).ready(function () {
     initMarcarSolucionHandler();
     initCambiarMesadaHandler();
     initMarcarProblemaHandler();
-    //initMarcarRevisionHandler();
-    //initQuitarRevisionHandler();
     initQuitarSolucionHandler();
+    initEditarProblemaHandler();
     initQuitarProblemaHandler();
+    initEditarSolucionHandler();
+
 
 
     var table = $table.DataTable();
@@ -570,8 +571,10 @@ function dataTablesActionFormatter(data, type, full, meta) {
             (actionData.pedido_producto_marcar_revision !== undefined ? '<a class="dropdown-item marcar-revision-btn" href="#" data-id="' + full[2].idProducto + '" data-tiene-problema="true" data-observacion=""><i class="la la-clipboard-check" style="margin-right: 5px;"></i> Marcar Revisión</a>' : '') +
             (actionData.pedido_producto_marcar_problema !== undefined ? '<a class="dropdown-item marcar-problema-btn" href="#" data-id="' + full[2].idProducto + '" data-tiene-problema="false" data-observacion=""><i class="la la-exclamation-triangle" style="margin-right: 5px;"></i> Marcar Problema</a>' : '') +
             (actionData.pedido_producto_quitar_problema !== undefined ? '<a class="dropdown-item quitar-problema-btn" href="#" data-id="' + full[2].idProducto + '" data-tiene-problema="true" data-observacion=""><i class="la la-times" style="margin-right: 5px;"></i> Quitar Problema</a>' : '') +
+            (actionData.pedido_producto_editar_problema !== undefined ? '<a class="dropdown-item editar-problema-btn" href="#" data-id="' + full[2].idProducto + '" data-tiene-problema="true" data-observacion="' + (full[2].observacionProblema || '') + '" data-revision="' + (full[2].tipoRevision || '') + '"><i class="la la-edit" style="margin-right: 5px;"></i> Editar Problema</a>' : '') +
             (actionData.pedido_producto_marcar_solucion !== undefined ? '<a class="dropdown-item marcar-solucion-btn" href="#" data-id="' + full[2].idProducto + '" data-tiene-problema="true" data-observacion=""><i class="la la-check" style="margin-right: 5px;"></i> Marcar Solución</a>' : '') +
-            (actionData.pedido_producto_quitar_solucion !== undefined ? '<a class="dropdown-item quitar-solucion-btn" href="#" data-id="' + full[2].idProducto + '" data-tiene-problema="true" data-observacion=""><i class="la la-times" style="margin-right: 5px;"></i> Quitar Solución</a>' : '');
+            (actionData.pedido_producto_quitar_solucion !== undefined ? '<a class="dropdown-item quitar-solucion-btn" href="#" data-id="' + full[2].idProducto + '" data-tiene-problema="true" data-observacion=""><i class="la la-times" style="margin-right: 5px;"></i> Quitar Solución</a>' : '') +
+            (actionData.pedido_producto_editar_solucion !== undefined ? '<a class="dropdown-item editar-solucion-btn" href="#" data-id="' + full[2].idProducto + '" data-solucion="' + (full[2].solucion || '') + '" data-observacion="' + (full[2].observacionSolucion || '') + '"><i class="la la-edit" style="margin-right: 5px;"></i> Editar Solución</a>' : '');
 
         actions = ' <div class="dropdown dropdown-inline">\
                         <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\
@@ -1060,54 +1063,123 @@ function initMarcarSolucionHandler() {
         });
     });
 }
-
-function initQuitarRevisionHandler() {
-    $(document).off('click', '.quitar-revision-btn').on('click', '.quitar-revision-btn', function (e) {
+function initEditarSolucionHandler() {
+    $(document).off('click', '.editar-solucion-btn').on('click', '.editar-solucion-btn', function (e) {
         e.preventDefault();
 
         const id = $(this).data('id');
+        const solucionActual = $(this).data('solucion') || '';
+        const observacionActual = $(this).data('observacion') || '';
 
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: 'Se eliminará la revisión del pedido',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Sí, quitar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (!result.isConfirmed) return;
+        let opcionesSolucion = '<option value="">Seleccionar tipo de solución...</option>';
+        if (window.tiposSolucion && window.tiposSolucion.length > 0) {
+            window.tiposSolucion.forEach(function(tipo) {
+                const selected = tipo.id == solucionActual ? 'selected' : '';
+                opcionesSolucion += `<option value="${tipo.id}" ${selected}>${tipo.nombre}</option>`;
+            });
+        }
 
+        // Crear modal para editar solución
+        const modalHtml = `
+            <div class="modal fade" id="modalEditarSolucion" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="la la-edit"></i>
+                                Editar Solución
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span>&​times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="formEditarSolucion">
+                                <div class="form-group">
+                                    <label for="tipoSolucionEditar">Tipo de Solución:</label>
+                                    <select class="form-control" id="tipoSolucionEditar" name="tipoSolucionEditar" required>
+                                        ${opcionesSolucion}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="observacionSolucionEditar">Observación de la solución:</label>
+                                    <textarea class="form-control" id="observacionSolucionEditar" 
+                                              name="observacionSolucionEditar" rows="4" 
+                                              placeholder="Describa la solución..." required>${observacionActual}</textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" id="guardarEditarSolucion">
+                                <i class="la la-save"></i> Guardar Cambios
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Eliminar modal si ya existe
+        $('#modalEditarSolucion').remove();
+
+        // Agregar nuevo modal
+        $('body').append(modalHtml);
+
+        // Mostrar modal
+        $('#modalEditarSolucion').modal('show');
+
+        // Manejar envío del formulario
+        $('#guardarEditarSolucion').off('click').on('click', function() {
+            const observacion = $('#observacionSolucionEditar').val().trim();
+            const tipoSolucion = $('#tipoSolucionEditar').val();
+
+            if (!tipoSolucion) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Debe seleccionar un tipo de solución',
+                    icon: 'error'
+                });
+                return;
+            }
+
+            // Enviar datos via AJAX
             $.ajax({
-                url: __HOMEPAGE_PATH__ + `pedidoproblema/${id}/quitar-revision`,
+                url: __HOMEPAGE_PATH__ + `pedidoproblema/${id}/editar-solucion`,
                 method: 'POST',
+                contentType: 'application/json',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
                 },
-                success: function (response) {
+                data: JSON.stringify({
+                    solucion: tipoSolucion,
+                    observacionSolucion: observacion
+                }),
+                success: function(response) {
                     if (response.success) {
-                        toastr.success('Revisión eliminada correctamente');
-
-                        // recargar tabla
+                        $('#modalEditarSolucion').modal('hide');
+                        toastr.success('Solución actualizada correctamente');
+                        // Recargar la tabla
                         $('#table-pedido').DataTable().ajax.reload();
                     } else {
                         Swal.fire({
                             title: 'Error',
-                            text: response.message || 'No se pudo quitar la revisión',
+                            text: 'No se pudo actualizar la solución',
                             icon: 'error'
                         });
                     }
                 },
-                error: function () {
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
                     Swal.fire({
                         title: 'Error',
-                        text: 'Ocurrió un error al quitar la revisión',
+                        text: 'Ocurrió un error al actualizar la solución',
                         icon: 'error'
                     });
                 }
             });
         });
     });
-
 }
 
 function initQuitarSolucionHandler() {
@@ -1206,6 +1278,126 @@ function initQuitarProblemaHandler() {
         });
     });
 
+}
+
+function initEditarProblemaHandler() {
+    $(document).off('click', '.editar-problema-btn').on('click', '.editar-problema-btn', function (e) {
+        e.preventDefault();
+
+        const id = $(this).data('id');
+        const observacionActual = $(this).data('observacion') || '';
+        const revisionActual = $(this).data('revision') || '';
+
+        let opcionesRevision = '<option value="">Seleccionar tipo de problema...</option>';
+        if (window.tiposRevision && window.tiposRevision.length > 0) {
+            window.tiposRevision.forEach(function(tipo) {
+                const selected = tipo.id == revisionActual ? 'selected' : '';
+                opcionesRevision += `<option value="${tipo.id}" ${selected}>${tipo.nombre}</option>`;
+            });
+        }
+
+        // Crear modal para editar problema
+        const modalHtml = `
+            <div class="modal fade" id="modalEditarProblema" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="la la-edit"></i>
+                                Editar Problema
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span>&​times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="formEditarProblema">
+                                <div class="form-group">
+                                    <label for="tipoRevisionEditar">Tipo de Problema:</label>
+                                    <select class="form-control" id="tipoRevisionEditar" name="tipoRevisionEditar" required>
+                                        ${opcionesRevision}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="observacionProblemaEditar">Observación del problema:</label>
+                                    <textarea class="form-control" id="observacionProblemaEditar" 
+                                              name="observacionProblemaEditar" rows="4" 
+                                              placeholder="Describa el problema..." required>${observacionActual}</textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" id="guardarEditarProblema">
+                                <i class="la la-save"></i> Guardar Cambios
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Eliminar modal si ya existe
+        $('#modalEditarProblema').remove();
+
+        // Agregar nuevo modal
+        $('body').append(modalHtml);
+
+        // Mostrar modal
+        $('#modalEditarProblema').modal('show');
+
+        // Manejar envío del formulario
+        $('#guardarEditarProblema').off('click').on('click', function() {
+            const observacion = $('#observacionProblemaEditar').val().trim();
+            const tipoRevision = $('#tipoRevisionEditar').val();
+
+            if (!tipoRevision) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Debe seleccionar un tipo de problema',
+                    icon: 'error'
+                });
+                return;
+            }
+
+            // Enviar datos via AJAX
+            $.ajax({
+                url: __HOMEPAGE_PATH__ + `pedidoproblema/${id}/editar-problema`,
+                method: 'POST',
+                contentType: 'application/json',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                data: JSON.stringify({
+                    tieneProblema: true,
+                    revision: tipoRevision,
+                    observacionProblema: observacion
+                }),
+                success: function(response) {
+                    if (response.success) {
+                        $('#modalEditarProblema').modal('hide');
+                        toastr.success('Problema actualizado correctamente');
+                        // Recargar la tabla
+                        $('#table-pedido').DataTable().ajax.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'No se pudo actualizar el problema',
+                            icon: 'error'
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Ocurrió un error al actualizar el problema',
+                        icon: 'error'
+                    });
+                }
+            });
+        });
+    });
 }
 
 

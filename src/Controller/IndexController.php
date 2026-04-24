@@ -22,7 +22,9 @@ class IndexController extends BaseController {
             ->createQueryBuilder('pp')
             ->select('COUNT(pp.id)')
             ->where('pp.tieneProblema = :tieneProblema')
+            ->andWhere('pp.tieneSolucion = :tieneSolucion')
             ->setParameter('tieneProblema', true)
+            ->setParameter('tieneSolucion', false)
             ->getQuery()
             ->getSingleScalarResult();
 

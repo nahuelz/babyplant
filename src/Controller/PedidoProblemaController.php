@@ -47,7 +47,6 @@ class PedidoProblemaController extends BaseController {
         return array(
             'columnasOcultas' => $columnasOcultas->getColumnasOcultasProblemas(),
             'indicadorEstadoData' => $this->getIndicadorEstadoData(),
-            'actividadReciente' => $this->getActividadRecienteData(),
             'clienteSelect' => $clienteSelect,
             'estadoSelect' => $estadoSelect,
             'origenSemillaSelect' => $origenSemillaSelect,
@@ -101,10 +100,13 @@ class PedidoProblemaController extends BaseController {
         $rsm->addScalarResult('origenSemilla', 'origenSemilla');
         $rsm->addScalarResult('cantidadSemillas', 'cantidadSemillas');
         $rsm->addScalarResult('observacionProblema', 'observacionProblema');
+        $rsm->addScalarResult('observacionSolucion', 'observacionSolucion');
+        $rsm->addScalarResult('tipoRevision', 'tipoRevision');
         $rsm->addScalarResult('codigoSobre', 'codigoSobre');
         $rsm->addScalarResult('tieneProblema', 'tieneProblema');
         $rsm->addScalarResult('tieneSolucion', 'tieneSolucion');
         $rsm->addScalarResult('tipoRevision', 'tipoRevision');
+        $rsm->addScalarResult('solucion', 'solucion');
 
         $nativeQuery = $em->createNativeQuery('call sp_index_pedido_problema(?,?,?,?,?,?)', $rsm);
 
@@ -138,56 +140,42 @@ class PedidoProblemaController extends BaseController {
         $rsm->addScalarResult('color', 'color');
         $rsm->addScalarResult('iconClass', 'iconClass');
 
-        $sql = '
-        SELECT
-            1 AS id,
-            "Productos Con Problemas" AS estado,
-            COUNT(pp.id) AS cantidad,
-            "label-light-warning" AS colorClass,
-            "warning" AS color,
-            "fa-exclamation-triangle" AS iconClass
-        FROM pedido_producto AS pp
-        WHERE pp.fecha_baja IS NULL
-          AND pp.tiene_problema = 1';
+        // Primera consulta: Productos con problemas sin solución
+        $sql1 = '
+    SELECT
+        1 AS id,
+        "Productos Con Problemas (Sin Solución)" AS estado,
+        COUNT(pp.id) AS cantidad,
+        "label-light-warning" AS colorClass,
+        "warning" AS color,
+        "fa-exclamation-triangle" AS iconClass
+    FROM pedido_producto AS pp
+    WHERE pp.fecha_baja IS NULL
+      AND pp.tiene_problema = 1
+      AND pp.tiene_solucion = 0';
 
-        $nativeQuery = $em->createNativeQuery($sql, $rsm);
+        // Segunda consulta: Productos con solución
+        $sql2 = '
+    SELECT
+        2 AS id,
+        "Productos Con Solución" AS estado,
+        COUNT(pp.id) AS cantidad,
+        "label-light-success" AS colorClass,
+        "success" AS color,
+        "fa-check-circle" AS iconClass
+    FROM pedido_producto AS pp
+    WHERE pp.fecha_baja IS NULL
+      AND pp.tiene_solucion = 1';
 
-        return $nativeQuery->getResult();
-    }
+        // Ejecutar ambas consultas y combinar resultados
+        $nativeQuery1 = $em->createNativeQuery($sql1, $rsm);
+        $result1 = $nativeQuery1->getResult();
 
-    /**
-     *
-     * @return type
-     */
-    private function getActividadRecienteData() {
+        $nativeQuery2 = $em->createNativeQuery($sql2, $rsm);
+        $result2 = $nativeQuery2->getResult();
 
-        $em = $this->doctrine->getManager();
-
-        $rsm = new ResultSetMapping();
-
-        $rsm->addScalarResult('actividad', 'actividad');
-        $rsm->addScalarResult('fecha', 'fecha');
-        $rsm->addScalarResult('id', 'id');
-        $rsm->addScalarResult('colorClass', 'colorClass');
-
-        $sql = '
-            SELECT
-                p.id AS id,
-                CONCAT_WS(" ", "El pedido producto nº", LPAD(pp.id, 5, 0), "cambió su estado a", est.nombre) AS actividad,
-                h.fecha_creacion AS fecha,
-                est.color_icono as colorClass
-            FROM estado_pedido_producto_historico AS h
-                     INNER JOIN pedido_producto AS pp ON pp.id = h.id_pedido_producto
-                     INNER JOIN pedido AS p ON p.id = pp.id_pedido
-                     INNER JOIN estado_pedido_producto AS est ON h.id_estado_pedido_producto = est.id
-            WHERE pp.fecha_baja IS NULL
-              AND h.fecha_baja IS NULL
-            ORDER BY h.id DESC
-            LIMIT 0, 20';
-
-        $nativeQuery = $em->createNativeQuery($sql, $rsm);
-
-        return $nativeQuery->getResult();
+        // Combinar ambos resultados
+        return array_merge($result1, $result2);
     }
 
     /**
@@ -265,6 +253,103 @@ class PedidoProblemaController extends BaseController {
             'success' => true,
             'tieneProblema' => $pedidoProducto->isTieneProblema(),
             'observacionProblema' => $pedidoProducto->getObservacionProblema()
+        ]);
+    }
+
+    #[Route('/{id}/editar-solucion', name: 'pedido_producto_editar_solucion', methods: ['POST'])]
+    public function editarSolucion(Request $request, PedidoProducto $pedidoProducto, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $observacionSolucion = $data['observacionSolucion'] ?? null;
+        $solucionId = $data['solucion'] ?? null;
+
+        if (!$solucionId) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Debe enviar un tipo de solución'
+            ], 400);
+        }
+
+        // Verificar que el pedido producto tenga una solución
+        if (!$pedidoProducto->isTieneSolucion()) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Este pedido producto no tiene una solución para editar'
+            ], 400);
+        }
+
+        $tipoSolucion = $entityManager->getRepository(TipoSolucion::class)->find($solucionId);
+
+        if (!$tipoSolucion) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Tipo de solución no encontrado'
+            ], 404);
+        }
+
+        // Actualizar los datos de la solución
+        $pedidoProducto->setObservacionSolucion($observacionSolucion);
+        $pedidoProducto->setSolucion($tipoSolucion);
+
+        $entityManager->flush();
+
+        return $this->json([
+            'success' => true,
+            'solucion' => [
+                'id' => $tipoSolucion->getId(),
+                'nombre' => $tipoSolucion->getNombre()
+            ],
+            'observacionSolucion' => $pedidoProducto->getObservacionSolucion()
+        ]);
+    }
+
+    #[Route('/{id}/editar-problema', name: 'pedido_producto_editar_problema', methods: ['POST'])]
+    public function editarProblema(Request $request, PedidoProducto $pedidoProducto, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $observacionProblema = $data['observacionProblema'] ?? null;
+        $revisionId = $data['revision'] ?? null;
+
+        if (!$revisionId) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Debe enviar un tipo de problema'
+            ], 400);
+        }
+
+        // Verificar que el pedido producto tenga un problema
+        if (!$pedidoProducto->isTieneProblema()) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Este pedido producto no tiene un problema para editar'
+            ], 400);
+        }
+
+        $tipoRevision = $entityManager->getRepository(TipoRevision::class)->find($revisionId);
+
+        if (!$tipoRevision) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Tipo de problema no encontrado'
+            ], 404);
+        }
+
+        // Actualizar los datos del problema
+        $pedidoProducto->setObservacionProblema($observacionProblema);
+        $pedidoProducto->setRevision($tipoRevision);
+
+        $entityManager->flush();
+
+        return $this->json([
+            'success' => true,
+            'tieneProblema' => $pedidoProducto->isTieneProblema(),
+            'observacionProblema' => $pedidoProducto->getObservacionProblema(),
+            'revision' => [
+                'id' => $tipoRevision->getId(),
+                'nombre' => $tipoRevision->getNombre()
+            ]
         ]);
     }
 
