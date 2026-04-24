@@ -28,6 +28,7 @@ $(document).ready(function () {
     initBusquedaHandler();
     initColumnasHandler();
     initProblemasFilter();
+    initProblemasSinSolucionFilter();
     initSubmitMesada();
     initMarcarSolucionHandler();
     initCambiarMesadaHandler();
@@ -63,6 +64,15 @@ function initColumnasHandler(){
 function initProblemasFilter() {
     // Evento para el checkbox de filtro de problemas
     $('#filtro_problema').on('change', function() {
+        if (init) {
+            $table.DataTable().ajax.reload();
+        }
+    });
+}
+
+function initProblemasSinSolucionFilter() {
+    // Evento para el checkbox de filtro de problemas sin solución
+    $('#filtro_problema_sin_solucion').on('change', function() {
         if (init) {
             $table.DataTable().ajax.reload();
         }
@@ -177,6 +187,7 @@ function initTable() {
         $('.datatable-input').each(function () {
             $(this).val('').trigger('change');
             $('#filtro_codigo_sobre').val('');
+            $('#filtro_problema_sin_solucion').prop('checked', false);
             if (init) {
                 $table.DataTable().column($(this).data('col-index')).search('', false, false);
             }
@@ -207,7 +218,8 @@ function initDataTable() {
                     "fechaHasta": $('#reporte_filtro_fechaHasta').val(),
                     "idCliente": $('#reporte_filtro_cliente').val(),
                     "codigoSobre": $('#filtro_codigo_sobre').val(),
-                    "tieneProblema": $('#filtro_problema').is(':checked') ? 1 : 0
+                    "tieneProblema": $('#filtro_problema').is(':checked') ? 1 : 0,
+                    "problemaSinSolucion": $('#filtro_problema_sin_solucion').is(':checked') ? 1 : 0
                 },
                 "success": fnCallback
             });

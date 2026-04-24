@@ -71,6 +71,8 @@ class PedidoProblemaController extends BaseController {
         $tieneProblema = $request->get('tieneProblema') !== null ? filter_var($request->get('tieneProblema'), FILTER_VALIDATE_BOOLEAN) : true;
         $codigoSobre = $request->get('codigoSobre') ?: NULL;
         $tieneProblema == false ? $tieneProblema = null : $tieneProblema = true;
+        $problemaSinSolucion = $request->get('problemaSinSolucion') !== null ? filter_var($request->get('problemaSinSolucion'), FILTER_VALIDATE_BOOLEAN) : false;
+        $problemaSinSolucion == false ? $problemaSinSolucion = null : $problemaSinSolucion = true;
         $rsm = new ResultSetMapping();
 
         $rsm->addScalarResult('id', 'id');
@@ -104,13 +106,14 @@ class PedidoProblemaController extends BaseController {
         $rsm->addScalarResult('tieneSolucion', 'tieneSolucion');
         $rsm->addScalarResult('tipoRevision', 'tipoRevision');
 
-        $nativeQuery = $em->createNativeQuery('call sp_index_pedido_problema(?,?,?,?,?)', $rsm);
+        $nativeQuery = $em->createNativeQuery('call sp_index_pedido_problema(?,?,?,?,?,?)', $rsm);
 
         $nativeQuery->setParameter(1, $fechaDesde, 'datetime');
         $nativeQuery->setParameter(2, $fechaHasta, 'datetime');
         $nativeQuery->setParameter(3, $cliente);
         $nativeQuery->setParameter(4, $tieneProblema);
         $nativeQuery->setParameter(5, $codigoSobre);
+        $nativeQuery->setParameter(6, $problemaSinSolucion);
 
         $entities = $nativeQuery->getResult();
 
