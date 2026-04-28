@@ -50,14 +50,14 @@
         {% if entity.tieneProblema == 1 %}
             "pedido_producto_quitar_problema": "{{ path( "pedido_producto_quitar_problema", { "id": entity.idProducto })}}",
             "pedido_producto_editar_problema": "{{ path( "pedido_producto_editar_problema", { "id": entity.idProducto })}}",
-            {% if entity.tieneSolucion == 1 %}
-                "pedido_producto_quitar_solucion": "{{ path( "pedido_producto_quitar_solucion", { "id": entity.idProducto })}}",
-                "pedido_producto_editar_solucion": "{{ path( "pedido_producto_editar_solucion", { "id": entity.idProducto })}}"
-            {% else %}
-                "pedido_producto_marcar_solucion": "{{ path( "pedido_producto_marcar_solucion", { "id": entity.idProducto })}}"
-            {% endif %}
         {% else %}
-            "pedido_producto_marcar_problema": "{{ path( "pedido_producto_marcar_problema", { "id": entity.idProducto })}}"
+            "pedido_producto_marcar_problema": "{{ path( "pedido_producto_marcar_problema", { "id": entity.idProducto })}}",
+        {% endif %}
+        {% if entity.tieneSolucion == 1 %}
+            "pedido_producto_quitar_solucion": "{{ path( "pedido_producto_quitar_solucion", { "id": entity.idProducto })}}",
+            "pedido_producto_editar_solucion": "{{ path( "pedido_producto_editar_solucion", { "id": entity.idProducto })}}"
+        {% else %}
+            "pedido_producto_marcar_solucion": "{{ path( "pedido_producto_marcar_solucion", { "id": entity.idProducto })}}"
         {% endif %}
         }]
         {{ (loop.last ? '' : ',') }}

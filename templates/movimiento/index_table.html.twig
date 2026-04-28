@@ -7,7 +7,7 @@
         "{{ entity.id }}",
         "{{ entity.tipoMovimiento }}",
         "{{ entity.modoPago }}",
-        "{{ entity.monto }}",
+        "{{ entity.monto|money_format }}",
         "{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}",
         "{{ entity.nombreCliente }}",
         {

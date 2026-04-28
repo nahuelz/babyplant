@@ -133,18 +133,22 @@ function initDataTable() {
         footerCallback: function (row, data, start, end, display) {
             var api = this.api();
 
-            // Función para limpiar y convertir a número
+            // Función para limpiar y convertir a número (formato es-AR)
             var parseMonto = function (monto) {
-                return typeof monto === 'string'
-                    ? parseFloat(monto.replace(/[\$,]/g, '')) || 0
-                    : typeof monto === 'number'
-                        ? monto
-                        : 0;
+                if (typeof monto === 'string') {
+                    return parseFloat(
+                        monto
+                            .replace(/\./g, '')   // quitar separador de miles
+                            .replace(',', '.')   // convertir decimal a punto
+                            .replace(/[^0-9.-]/g, '') // limpiar $ u otros símbolos
+                    ) || 0;
+                }
+                return typeof monto === 'number' ? monto : 0;
             };
 
             // Total general
             var total = api
-                .column(4, { search: 'applied' }) // columna 3 es 'monto'
+                .column(4, { search: 'applied' })
                 .data()
                 .reduce(function (a, b) {
                     return parseMonto(a) + parseMonto(b);
