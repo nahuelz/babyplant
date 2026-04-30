@@ -165,6 +165,7 @@ class PedidoProblemaController extends BaseController {
         "fa-check-circle" AS iconClass
     FROM pedido_producto AS pp
     WHERE pp.fecha_baja IS NULL
+      AND pp.tiene_problema = 1
       AND pp.tiene_solucion = 1';
 
         // Ejecutar ambas consultas y combinar resultados
