@@ -37,6 +37,7 @@ $(document).ready(function () {
     initEditarProblemaHandler();
     initQuitarProblemaHandler();
     initEditarSolucionHandler();
+    initOkCheckeoHandler();
 
 
 
@@ -231,9 +232,17 @@ function initDataTable() {
                 $('#filtro_problema').click();
                 window.filtroProblemaMarcado = true;
             }
-            
+
             // Resaltar filas con problemas
             resaltarFilasConProblemas();
+
+            // Marcar filas ya chequeadas
+            this.api().rows().every(function() {
+                const data = this.data();
+                if (data[2].visto === "1") {
+                    $(this.node()).addClass('fila-chequeada');
+                }
+            });
         },
         lengthMenu: [5, 10, 25, 50, 100, 500, 1000],
         pageLength: 50,
@@ -403,7 +412,7 @@ function datatablesGetColDef() {
                 if (type === 'display') {
                     return '<a href="' + data.path + '">' + data.nombreCliente + '</a>';
                 }
-                // Para búsqueda: nombre normal + nombre invertido, todo en minúsculas y sin comas
+                // Para búsqueda: nombre normal + nombre invertido, tdo en minúsculas y sin comas
                 let nombreSinComas = data.nombreCliente.replace(/,/g, '').toLowerCase();
                 let nombreInvertido = nombreSinComas.split(/\s+/).reverse().join(' ');
                 return nombreSinComas + ' ' + nombreInvertido;
@@ -529,6 +538,24 @@ function datatablesGetColDef() {
             searchable: true,
         },
         {
+            targets: index++,
+            name: 'checkeo',
+            width: '80px',
+            className: 'text-center p-0',
+            orderable: false,
+            render: function (data, type, full, meta) {
+                const visto = full[2].visto;
+
+                if (visto === "1") {
+                    // Ya fue chequeado - mostrar botón deshabilitado
+                    return '<button type="button" class="btn btn-sm btn-secondary" disabled title="Ya fue chequeado"><i class="la la-check" style="width: 2em;margin: auto;display: block"></i></button>';
+                } else {
+                    // No fue chequeado - mostrar botón activo
+                    return '<button type="button" class="btn btn-sm btn-success btn-ok-checkeo" data-id="' + full[2].idProducto + '" title="Checkeo"><i class="la la-check" style="width: 2em;margin: auto;display: block"></i></button>';
+                }
+            }
+        },
+        {
             targets: -1,
             name: '',
             title: '',
@@ -544,10 +571,6 @@ function datatablesGetColDef() {
             visible: false,
         },
     ];
-}
-
-function encodeId(id) {
-    return btoa(id.toString());
 }
 
 /**
@@ -1428,5 +1451,46 @@ function resaltarFilasConProblemas() {
             // Remover clase si no tiene problema
             $row.removeClass('fila-con-solucion');
         }
+    });
+}
+
+function initOkCheckeoHandler() {
+    $(document).off('click', '.btn-ok-checkeo').on('click', '.btn-ok-checkeo', function (e) {
+        e.preventDefault();
+        const $button = $(this);
+        const id = $button.data('id');
+
+        // Deshabilitar botón y mostrar loading
+        $button.prop('disabled', true).html('<i class="la la-spinner la-spin" style="width: 2em;margin: auto;display: block"></i>');
+
+        $.ajax({
+            url: __HOMEPAGE_PATH__ + `pedidoproblema/${id}/checkeo`,
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function(response) {
+                if (response.success) {
+                    toastr.success('Checkeo realizado correctamente');
+
+                    // Cambiar el botón a estado "chequeado"
+                    $button.removeClass('btn-success').addClass('btn-secondary')
+                        .prop('disabled', true)
+                        .html('<i class="la la-check" style="width: 2em;margin: auto;display: block"></i>')
+                        .attr('title', 'Ya fue chequeado');
+
+                    // Opcional: cambiar el estilo de la fila para indicar que fue chequeado
+                    $button.closest('tr').addClass('fila-chequeada');
+                } else {
+                    toastr.error('No se pudo realizar el checkeo');
+                    $button.prop('disabled', false).html('<i class="la la-check" style="width: 2em;margin: auto;display: block"></i>');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                toastr.error('Ocurrió un error al realizar el checkeo');
+                $button.prop('disabled', false).html('<i class="la la-check" style="width: 2em;margin: auto;display: block"></i>');
+            }
+        });
     });
 }

@@ -15,7 +15,8 @@
         "tipoRevision": "{{ entity.tipoRevision|default('') }}",
         "observacionProblema": "{{ entity.observacionProblema|escape_json|default('') }}",
         "solucion": "{{ entity.solucion|default('') }}",
-        "observacionSolucion": "{{ entity.observacionSolucion|escape_json|default('') }}"
+        "observacionSolucion": "{{ entity.observacionSolucion|escape_json|default('') }}",
+        "visto": "{{ entity.visto }}"
         },
         "{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}",
         {

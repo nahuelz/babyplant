@@ -107,6 +107,7 @@ class PedidoProblemaController extends BaseController {
         $rsm->addScalarResult('tieneSolucion', 'tieneSolucion');
         $rsm->addScalarResult('tipoRevision', 'tipoRevision');
         $rsm->addScalarResult('solucion', 'solucion');
+        $rsm->addScalarResult('visto', 'visto');
 
         $nativeQuery = $em->createNativeQuery('call sp_index_pedido_problema(?,?,?,?,?,?)', $rsm);
 
@@ -417,6 +418,23 @@ class PedidoProblemaController extends BaseController {
             'message' => 'Solución eliminada correctamente',
             'solucion' => null,
             'observacionSolucion' => null
+        ]);
+    }
+
+    #[Route('/{id}/checkeo', name: 'pedido_producto_checkeo', methods: ['POST'])]
+    public function checkeo(
+        PedidoProducto $pedidoProducto,
+        EntityManagerInterface $entityManager
+    ): JsonResponse
+    {
+        // Marcar como visto
+        $pedidoProducto->setVisto(true);
+        $entityManager->flush();
+
+        return $this->json([
+            'success' => true,
+            'message' => 'Checkeo realizado correctamente',
+            'visto' => true
         ]);
     }
 

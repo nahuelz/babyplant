@@ -245,6 +245,13 @@ class PedidoProducto {
      */
     private mixed $observacionProblema;
 
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="visto", type="boolean", options={"default": false})
+     */
+    private bool $visto = false;
+
 
     public function __construct()
     {
@@ -1010,5 +1017,17 @@ class PedidoProducto {
     {
         $this->tieneSolucion = $tieneSolucion;
     }
+
+    public function isVisto(): bool
+    {
+        return $this->visto;
+    }
+
+    public function setVisto(bool $visto): void
+    {
+        $this->visto = $visto;
+    }
+
+
 
 }
