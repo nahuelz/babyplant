@@ -235,14 +235,6 @@ function initDataTable() {
 
             // Resaltar filas con problemas
             resaltarFilasConProblemas();
-
-            // Marcar filas ya chequeadas
-            this.api().rows().every(function() {
-                const data = this.data();
-                if (data[2].visto === "1") {
-                    $(this.node()).addClass('fila-chequeada');
-                }
-            });
         },
         lengthMenu: [5, 10, 25, 50, 100, 500, 1000],
         pageLength: 50,
@@ -397,7 +389,7 @@ function datatablesGetColDef() {
             width: '50px',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<span class="label label-inline margin-0 font-weight-bold p-6" style="font-size: 11px; font-weight: bold !important;width: 420px;color: black !important;background-color: ' + data.colorProducto + '">' + data.nombreProductoCompleto + '</span>';
+                    return '<span class="label label-inline margin-0 font-weight-bold p-6" style="font-size: 11px; font-weight: bold !important;width: 220px !important;color: black !important;background-color: ' + data.colorProducto + '">' + data.nombreProductoCompleto + '</span>';
                 }
                 return data.nombreProductoCompleto;
             }
@@ -1478,9 +1470,6 @@ function initOkCheckeoHandler() {
                         .prop('disabled', true)
                         .html('<i class="la la-check" style="width: 2em;margin: auto;display: block"></i>')
                         .attr('title', 'Ya fue chequeado');
-
-                    // Opcional: cambiar el estilo de la fila para indicar que fue chequeado
-                    $button.closest('tr').addClass('fila-chequeada');
                 } else {
                     toastr.error('No se pudo realizar el checkeo');
                     $button.prop('disabled', false).html('<i class="la la-check" style="width: 2em;margin: auto;display: block"></i>');
