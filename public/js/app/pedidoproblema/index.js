@@ -389,7 +389,8 @@ function datatablesGetColDef() {
             width: '50px',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<span class="label label-inline margin-0 font-weight-bold p-6" style="font-size: 11px; font-weight: bold !important;width: 220px !important;color: black !important;background-color: ' + data.colorProducto + '">' + data.nombreProductoCompleto + '</span>';
+                    // Reemplazar la línea del render con:
+                    return '<span class="label label-inline margin-0 font-weight-bold p-6" style="font-size: 11px; font-weight: bold !important;width: 220px !important;color: black !important;background-color: ' + data.colorProducto + '; display: inline-block; min-height: auto; height: auto; white-space: normal; line-height: 1.3;">' + data.nombreProductoCompleto + '</span>';
                 }
                 return data.nombreProductoCompleto;
             }
