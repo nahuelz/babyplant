@@ -3,15 +3,15 @@
 namespace App\Form;
 
 use App\Entity\Factura;
-use App\Entity\TipoConcepto;
-use App\Entity\TipoSubConcepto;
 use App\Entity\ModoPago;
+use App\Form\FacturaDetalleType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -38,61 +38,23 @@ class FacturaType extends AbstractType
                     'tabindex' => '2'),
                 'data' => new \DateTime()
             ))
-            ->add('concepto', EntityType::class, array(
-                    'label' => 'Tipo Concepto',
-                    'class' => TipoConcepto::class,
-                    'required' => true,
-                    'attr' => array(
-                        'placeholder' => '-- Elija el concepto --',
-                        'class' => 'form-control choice',
-                        'data-placeholder' => '-- Elija el concepto --',
-                        'tabindex' => '3'
-                    ),
-                    'query_builder' => function (EntityRepository $er) {
-                        return $er->createQueryBuilder('x')
-                            ->where('x.habilitado = 1')
-                            ->orderBy('x.nombre', 'ASC');
-                    },
-                    'label_attr' => array('class' => 'control-label'),
-                    'placeholder' => '-- Elija el concepto --',
-                    'auto_initialize' => false)
-            )
-            ->add('subConcepto', EntityType::class, array(
-                    'label' => 'Sub Concepto',
-                    'class' => TipoSubConcepto::class,
-                    'required' => false,
-                    'attr' => array(
-                        'placeholder' => '-- Elija el sub concepto --',
-                        'class' => 'form-control choice',
-                        'data-placeholder' => '-- Elija el sub concepto --',
-                        'tabindex' => '4'
-                    ),
-                    'query_builder' => function (EntityRepository $er) {
-                        return $er->createQueryBuilder('x')
-                            ->where('x.habilitado = 1')
-                            ->orderBy('x.nombre', 'ASC');
-                    },
-                    'label_attr' => array('class' => 'control-label'),
-                    'placeholder' => '-- Elija el sub concepto --',
-                    'auto_initialize' => false)
-            )
-            ->add('monto', null, array(
-                    'required' => true,
-                    'label' => 'Monto',
-                    'attr' => array(
-                        'class' => 'form-control monto-input',
-                        'style' => 'font-size: 1.1rem; font-weight: bold;',
-                        'placeholder' => '0,00',
-                        'tabindex' => '5'))
-            )
-            ->add('modoPago', EntityType::class, array(
+            ->add('detalle', FacturaDetalleType::class, [
+                'label' => false,
+                'required' => false,
+                'mapped' => false
+            ])
+            ->add('tipoMoneda', \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, [
                 'required' => true,
-                'label' => 'Modo de Pago',
-                'class' => ModoPago::class,
+                'label' => 'Tipo de Moneda',
+                'choices' => [
+                    'Pesos Argentinos (ARS)' => 'ARS',
+                    'Dólares Estadounidenses (USD)' => 'USD'
+                ],
                 'attr' => array(
                     'class' => 'form-control',
-                    'tabindex' => '6')
-            ))
+                    'tabindex' => '3'
+                )
+            ])
             ->add('tipoCambio', MoneyType::class, array(
                 'required' => false,
                 'label' => 'Tipo de Cambio',
@@ -103,7 +65,7 @@ class FacturaType extends AbstractType
                     'class' => 'form-control monto-input',
                     'style' => 'font-size: 1.1rem; font-weight: bold;',
                     'placeholder' => '0,00',
-                    'tabindex' => '7'
+                    'tabindex' => '4'
                 )
             ))
         ;

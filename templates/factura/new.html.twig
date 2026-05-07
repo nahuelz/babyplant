@@ -1,6 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% set edit = form.vars.value.id != null %}
+{% set entity = form.vars.value %}
+
+{% import 'app/_macro_form.html.twig' as macro_form %}
 
 {% block body %}
     {{ form_start(form, {'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
@@ -17,7 +20,19 @@
         </div>
         <div class="card-body">
             <div class="row">
-                {{ include('factura/_form.html.twig') }}
+                {{ macro_form._new_field(form.numeroFactura, 'col-md-6') }}
+                {{ macro_form._new_field(form.fecha, 'col-md-6') }}
+            </div>
+            <div class="row">
+                {{ macro_form._new_field(form.tipoMoneda, 'col-md-6') }}
+                <div class="col-md-6" id="tipo-cambio-container" style="display: {% if form.vars.value.tipoMoneda == 'USD' %}block{% else %}none{% endif %};">
+                    {{ macro_form._new_field(form.tipoCambio, 'col-md-12') }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    {% include 'factura/new.detalle.html.twig' with {'detalleForm': form.detalle, 'entity': entity} %}
+                </div>
             </div>
         </div>
         <div class="card-footer d-flex justify-content-between">

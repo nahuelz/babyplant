@@ -1,0 +1,91 @@
+{% import 'app/_macro_form.html.twig' as macro_form %}
+
+{% set tieneFacturaDetalle = entity.detalles|length > 0 %}
+
+<div class="row row-factura-detalle-empty margin-top-20">
+    <div class="col-md-12">
+        <div class="alert alert-danger alert-form-error" style="background-color: #fbe1e3;color: brown;">
+            Debe ingresar al menos un concepto.
+        </div>
+    </div>
+</div>
+
+<div class="row-form-factura-detalle">
+<div class="row">
+    {{ macro_form._new_field(detalleForm.concepto, 'col-md-3') }}
+    {{ macro_form._new_field(detalleForm.subConcepto, 'col-md-3') }}
+    {{ macro_form._new_field(detalleForm.descripcion, 'col-md-2') }}
+    {{ macro_form._new_field(detalleForm.monto, 'col-md-2') }}
+    <div class="col-md-2">
+        <div class="form-group">
+            <button class="btn btn-success font-weight-bold margin-top-25 link-save-factura-detalle spinner-primary">
+                AGREGAR CONCEPTO
+            </button>
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+<div class="col-md-12 row row-factura-detalle margin-top-15" {{ tieneFacturaDetalle ? '' : 'style="display:none;"' }}>
+<div class="col-md-12">
+    <div class="table-scrollable">
+        <table class="table table-striped table-bordered table-advance table-hover">
+            <thead>
+            <tr>
+                <th class="text-center">Concepto</th>
+                <th class="text-center">Subconcepto</th>
+                <th class="text-center">Descripción</th>
+                <th class="text-center">Monto</th>
+                <th class="nowrap text-center"></th>
+            </tr>
+            </thead>
+            <tbody class="tbody-factura-detalle">
+
+            {% for detalle in entity.detalles %}
+                <tr class="tr-factura-detalle">
+                    <td class="hidden">
+                        <input type="hidden" name="factura[detalles][{{ loop.index0 }}][concepto]" value="{{ detalle.concepto }}">
+                    </td>
+                    <td class="hidden">
+                        <input type="hidden" name="factura[detalles][{{ loop.index0 }}][subConcepto]" value="{{ detalle.subConcepto }}">
+                    </td>
+                    <td class="hidden">
+                        <input type="hidden" name="factura[detalles][{{ loop.index0 }}][monto]" value="{{ detalle.monto }}">
+                    </td>
+                    <td class="hidden">
+                        <input type="hidden" name="factura[detalles][{{ loop.index0 }}][descripcion]" value="{{ detalle.descripcion }}">
+                    </td>
+
+                    <td class="v-middle text-center">{{ detalle.concepto }}</td>
+                    <td class="v-middle text-center">{{ detalle.subConcepto }}</td>
+                    <td class="v-middle text-center">{{ detalle.descripcion }}</td>
+                    <td class="v-middle text-center">${{ detalle.monto|number_format(2, ',', '.') }}</td>
+
+                    <td class="text-center v-middle">
+                        <a href="#" class="btn btn-sm delete-link-inline link-delete-factura-detalle factura-detalle-borrar tooltips"
+                           data-placement="top" data-original-title="Eliminar">
+                            <i class="fa fa-trash text-danger"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+
+<div class="card-footer">
+    <div class="row">
+        <div class="col-md-9 text-right">
+            <strong>Total:</strong>
+        </div>
+        <div class="col-md-3">
+            <div class="form-control-plaintext text-right font-weight-bold" id="total-factura">
+                $0.00
+            </div>
+        </div>
+    </div>
+</div>

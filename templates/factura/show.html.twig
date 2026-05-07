@@ -24,10 +24,51 @@
 
         <div class="card-body">
             <div class="row">
+                {{ macro_show._show_detail('Número de Factura', factura.numeroFactura, 'col-md-3') }}
                 {{ macro_show._show_detail('Fecha', factura.fecha|date('d/m/Y'), 'col-md-3') }}
-                {{ macro_show._show_detail('Concepto', factura.concepto, 'col-md-3') }}
-                {{ macro_show._show_detail('Monto', factura.monto|money_format, 'col-md-3') }}
                 {{ macro_show._show_detail('Modo de Pago', factura.modoPago, 'col-md-3') }}
+                {{ macro_show._show_detail('Tipo de Cambio', factura.tipoCambio ? factura.tipoCambio|money_format : 'N/A', 'col-md-3') }}
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h5 class="mb-3">Detalles de la Factura</h5>
+                    {% if factura.detalles|length > 0 %}
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Concepto</th>
+                                        <th>Subconcepto</th>
+                                        <th>Descripción</th>
+                                        <th class="text-right">Monto</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for detalle in factura.detalles %}
+                                        <tr>
+                                            <td>{{ detalle.concepto }}</td>
+                                            <td>{{ detalle.subConcepto ?: '-' }}</td>
+                                            <td>{{ detalle.descripcion ?: '-' }}</td>
+                                            <td class="text-right font-weight-bold">{{ detalle.monto|money_format }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr class="table-active">
+                                        <td colspan="3" class="text-right font-weight-bold">Total:</td>
+                                        <td class="text-right font-weight-bold">{{ factura.getTotal()|money_format }}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <i class="la la-exclamation-triangle"></i>
+                            Esta factura no tiene detalles configurados.
+                        </div>
+                    {% endif %}
+                </div>
             </div>
 
         </div>

@@ -1,149 +1,262 @@
+var fv;
+
 jQuery(document).ready(function () {
-    // Inicialización de select2 en los campos
-    $('#factura_modoPago').select2();
-    $('#factura_concepto').select2();
-    $('#factura_subConcepto').select2();
-
+    initFormValidation();
+    initFacturaDetalleHandler();
     initMontoFormat();
+    $('.row-factura-detalle-empty').hide();
+    initSelect2();
+    calcularTotal();
+});
 
-    $('#factura_submit').on('click', function (e) {
-        e.preventDefault();
-
-        // LIMPIAR EL MONTO ANTES DEL ENVÍO
-        const montoInput = $('#factura_monto');
-        const montoValue = montoInput.val();
-
-        // Remover todos los puntos (separadores de miles)
-        const cleanMonto = montoValue.replace(/\./g, '');
-
-        // Establecer el valor limpio en el campo
-        montoInput.val(cleanMonto);
-
-        clearAllErrors();
-        const isValid = validateForm();
-
-        if (isValid) {
-            $('form[name="factura"]')[0].submit();
+function initSelect2() {
+    $('#factura_modoPago').select2();
+    $('#factura_detalle_concepto').select2();
+    $('#factura_detalle_subConcepto').select2();
+    
+    // Manejar cambio de tipo de moneda
+    $('#factura_tipoMoneda').on('change', function() {
+        const tipoMoneda = $(this).val();
+        const tipoCambioContainer = $('#tipo-cambio-container');
+        
+        if (tipoMoneda === 'USD') {
+            tipoCambioContainer.show();
         } else {
-            showValidationSummary();
-
-            // Restaurar el formato original si hay error
-            montoInput.val(montoValue);
+            tipoCambioContainer.hide();
+            // Limpiar el campo de tipo de cambio cuando no es USD
+            $('#factura_tipoCambio').val('');
         }
     });
-});
+    
+    // Inicializar el estado del campo tipoCambio según el valor actual
+    const currentTipoMoneda = $('#factura_tipoMoneda').val();
+    if (currentTipoMoneda !== 'USD') {
+        $('#tipo-cambio-container').hide();
+    }
+}
 
 /**
  * Validación de formulario
  */
-function validateForm() {
-    let isValid = true;
-
-    // Lista de campos requeridos con sus mensajes de error
-    const requiredFields = [
-        { selector: '#factura_numeroFactura', errorMessage: 'El número de factura es obligatorio.' },
-        { selector: '#factura_fecha', errorMessage: 'La fecha es obligatoria.' },
-        { selector: '#factura_concepto', errorMessage: 'Debe seleccionar un concepto.' },
-        { selector: '#factura_modoPago', errorMessage: 'Debe seleccionar un modo de pago.' },
-        { selector: '#factura_monto', errorMessage: 'El monto es obligatorio y debe ser mayor a 0.' }
-    ];
-
-    // Validar cada campo
-    requiredFields.forEach(field => {
-        const element = $(field.selector);
-        const value = element.val();
-
-        // Validar si el campo está vacío o si es un número inválido
-        if (!value || value.trim() === '' || (field.selector === '#factura_monto' && parseFloat(value.replace(',', '.')) <= 0)) {
-            showError(element, field.errorMessage);
-            isValid = false;
-        } else {
-            clearError(element);
+function initFormValidation() {
+    fv = FormValidation.formValidation($("form[name=factura]")[0], {
+        fields: {
+            requiredFields: {
+                selector: '[required="required"]',
+                validators: {
+                    notEmpty: {
+                        message: 'Este campo es requerido'
+                    }
+                }
+            }
+        },
+        plugins: {
+            trigger: new FormValidation.plugins.Trigger(),
+            bootstrap: new FormValidation.plugins.Bootstrap(),
+            submitButton: new FormValidation.plugins.SubmitButton(),
         }
     });
-
-    return isValid;
 }
 
 /**
- * Limpiar todos los errores del formulario
+ * Manejador de detalles de factura
  */
-function clearAllErrors() {
-    $('form[name="factura"] .is-invalid').removeClass('is-invalid');
-    $('form[name="factura"] .invalid-feedback').remove();
-}
+function initFacturaDetalleHandler() {
+    $('.tbody-factura-detalle').data('index', $('.tr-factura-detalle').length);
 
-/**
- * Mostrar resumen de errores
- */
-function showValidationSummary() {
-    const errorCount = $('form[name="factura"] .is-invalid').length;
+    updateDeleteLinkFacturaDetalle($(".link-delete-factura-detalle"), '.tr-factura-detalle');
 
-    if (typeof Swal !== 'undefined') {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error de validación',
-            text: `Por favor, corrija los ${errorCount} errores antes de continuar.`,
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: 'Entendido'
+    // Save FacturaDetalle handler
+    $(document).off('click', '.link-save-factura-detalle').on('click', '.link-save-factura-detalle', function (e) {
+        e.preventDefault();
+
+        const conceptoSelect = $('#factura_detalle_concepto');
+        const subConceptoSelect = $('#factura_detalle_subConcepto');
+        const montoInput = $('#factura_detalle_monto');
+        const descripcionInput = $('#factura_detalle_descripcion');
+
+        const concepto = conceptoSelect.val();
+        const subConcepto = subConceptoSelect.val();
+        const monto = montoInput.val();
+        const descripcion = descripcionInput.val();
+
+        // Validación
+        if (!concepto || !monto || parseFloat(monto.replace(/\./g, '').replace(',', '.')) <= 0) {
+            Swal.fire({
+                title: "Debe completar los datos requeridos del concepto.",
+                icon: "warning"
+            });
+            return;
+        }
+
+        const index = $('.tbody-factura-detalle').data('index');
+
+        const removeLink = `
+            <a href="#" class="btn btn-sm delete-link-inline link-delete-factura-detalle factura-detalle-borrar tooltips" 
+               data-placement="top" data-original-title="Eliminar">
+                <i class="fa fa-trash text-danger"></i>
+            </a>`;
+
+        const item = `
+            <tr class="tr-factura-detalle">
+                <td class="hidden"><input type="hidden" name="factura[detalles][${index}][concepto]" value="${concepto}"></td>
+                <td class="hidden"><input type="hidden" name="factura[detalles][${index}][subConcepto]" value="${subConcepto}"></td>
+                <td class="hidden"><input type="hidden" name="factura[detalles][${index}][monto]" value="${monto}"></td>
+                <td class="hidden"><input type="hidden" name="factura[detalles][${index}][descripcion]" value="${descripcion}"></td>
+                
+                <td class="text-center v-middle">${conceptoSelect.find('option:selected').text()}</td>
+                <td class="text-center v-middle">${subConceptoSelect.find('option:selected').text()}</td>
+                <td class="text-center v-middle">${descripcion}</td>
+                <td class="text-center v-middle">$${parseFloat(monto.replace(/\./g, '').replace(',', '.')).toLocaleString('es-AR', {minimumFractionDigits: 2})}</td>
+                <td class="text-center v-middle">${removeLink}</td>
+            </tr>`;
+
+        $('.tbody-factura-detalle').append(item);
+        $('.tbody-factura-detalle').data('index', index + 1);
+
+        $('.tbody-factura-detalle tr.tr-factura-detalle:last').hide();
+        $('.tbody-factura-detalle tr.tr-factura-detalle').fadeIn("slow");
+
+        updateDeleteLinkFacturaDetalle($(".link-delete-factura-detalle"), '.tr-factura-detalle');
+
+        $('.row-factura-detalle-empty').hide('slow');
+        $('.row-factura-detalle').show('slow');
+
+        // Reset form
+        clearDetalleForm();
+        calcularTotal();
+    });
+
+    // Submit button handler
+    $("#factura_submit").off('click').on('click', function (e) {
+        e.preventDefault();
+
+        fv.revalidateField('requiredFields');
+        
+        if ($('.tr-factura-detalle').length === 0) {
+            $('.row-factura-detalle-empty').show('slow');
+            $('.row-factura-detalle').hide('slow');
+            return false;
+        }
+
+        fv.validate().then((status) => {
+            if (status === "Valid") {
+                // Limpiar montos antes del envío
+                limpiarMontosParaEnvio();
+                $('form[name="factura"]')[0].submit();
+            }
         });
-    } else {
-        alert(`Por favor, corrija los ${errorCount} errores antes de continuar.`);
-    }
 
-    // Hacer scroll al primer error
-    const firstError = $('form[name="factura"] .is-invalid').first();
-    if (firstError.length > 0) {
-        $('html, body').animate({
-            scrollTop: firstError.offset().top - 100
-        }, 500);
-        firstError.focus();
-    }
+        e.stopPropagation();
+    });
 }
 
 /**
- * Mostrar error en un campo
+ * Limpiar formulario de detalle
  */
-function showError(element, message) {
-    element.addClass('is-invalid'); // Cambiar estilo del campo
-    let feedback = element.next('.invalid-feedback'); // Buscar contenedor de error
-    if (feedback.length === 0) {
-        feedback = $('<div class="invalid-feedback"></div>'); // Crear contenedor de error si no existe
-        element.after(feedback);
-    }
-    feedback.text(message); // Agregar mensaje de error
+function clearDetalleForm() {
+    $('#factura_detalle_concepto').val('').select2();
+    $('#factura_detalle_subConcepto').val('').select2();
+    $('#factura_detalle_monto').val('');
+    $('#factura_detalle_descripcion').val('');
 }
 
 /**
- * Limpiar error de un campo
+ * Actualizar enlaces de eliminación
  */
-function clearError(element) {
-    element.removeClass('is-invalid'); // Quitar estilo de error
-    const feedback = element.next('.invalid-feedback'); // Buscar mensaje de error
-    if (feedback.length > 0) {
-        feedback.remove(); // Eliminar mensaje de error
+function updateDeleteLinkFacturaDetalle(deleteLink, closestClassName) {
+    closestClassName = typeof closestClassName !== 'undefined' ? closestClassName : '.row';
+    deleteLink.each(function () {
+        $(this).tooltip();
+        $(this).off("click").on('click', function (e) {
+            e.preventDefault();
+            const deletableRow = $(this).closest(closestClassName);
+            
+            show_confirm({
+                title: 'Confirmar',
+                type: 'warning',
+                msg: '¿Confirma la eliminación?',
+                callbackOK: function () {
+                    deletableRow.hide('slow', function () {
+                        deletableRow.remove();
+                        if ($('.tr-factura-detalle').length === 0) {
+                            $('.row-factura-detalle-empty').show('slow');
+                            $('.row-factura-detalle').hide('slow');
+                        }
+                        calcularTotal();
+                    });
+                }
+            });
+
+            e.stopPropagation();
+        });
+    });
+}
+
+/**
+ * Calcular total de la factura
+ */
+function calcularTotal() {
+    let total = 0;
+    
+    $('.tr-factura-detalle').each(function() {
+        const montoText = $(this).find('td').eq(3).text(); // Columna de monto
+        if (montoText && montoText !== '') {
+            const cleanValue = montoText.replace('$', '').replace(/\./g, '').replace(',', '.');
+            const monto = parseFloat(cleanValue) || 0;
+            total += monto;
+        }
+    });
+    
+    $('#total-factura').text('$' + total.toLocaleString('es-AR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }));
+}
+
+/**
+ * Limpiar montos para envío del formulario
+ */
+function limpiarMontosParaEnvio() {
+    $('input[name*="[monto]"]').each(function() {
+        const value = $(this).val();
+        if (value) {
+            const cleanValue = value.replace(/\./g, '').replace(',', '.');
+            $(this).val(cleanValue);
+        }
+    });
+    
+    // También limpiar el tipo de cambio si existe
+    const tipoCambioInput = $('#factura_tipoCambio');
+    if (tipoCambioInput.length > 0 && tipoCambioInput.val()) {
+        const cleanValue = tipoCambioInput.val().replace(/\./g, '').replace(',', '.');
+        tipoCambioInput.val(cleanValue);
     }
 }
 
 /**
- * Formatear el campo "monto"
+ * Formatear campos de monto
  */
 function initMontoFormat() {
-    const montoInput = document.querySelector('.monto-input');
+    $('.monto-input').on('input', function(e) {
+        if (e.target.value === '') return;
 
-    if (montoInput) {
-        montoInput.addEventListener('input', function(e) {
+        // Eliminar todo lo que no sea número o coma
+        let value = e.target.value.replace(/[^\d,]/g, '');
+        
+        // Asegurar que solo haya una coma
+        const parts = value.split(',');
+        if (parts.length > 2) {
+            value = parts[0] + ',' + parts.slice(1).join('');
+        }
 
-            if (e.target.value === '') return;
+        // Formatear la parte entera con separadores de miles
+        if (parts[0]) {
+            const integerPart = parts[0].replace(/\D/g, '');
+            parts[0] = parseInt(integerPart || '0', 10).toLocaleString('es-AR');
+            value = parts.join(',');
+        }
 
-            // Eliminar todo lo que no sea número
-            let value = e.target.value.replace(/[^\d]/g, '');
-
-            // Convertir a número
-            const number = parseInt(value || '0', 10);
-
-            // Formatear sin decimales
-            e.target.value = number.toLocaleString('es-AR');
-        });
-    }
+        e.target.value = value;
+    });
 }

@@ -1,0 +1,84 @@
+<?php
+
+namespace App\Form;
+
+use App\Entity\FacturaDetalle;
+use App\Entity\TipoConcepto;
+use App\Entity\TipoSubConcepto;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class FacturaDetalleType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+            ->add('concepto', EntityType::class, [
+                'label' => 'Concepto',
+                'class' => TipoConcepto::class,
+                'required' => true,
+                'attr' => [
+                    'placeholder' => '-- Elija el concepto --',
+                    'class' => 'form-control choice concepto-select',
+                    'data-placeholder' => '-- Elija el concepto --',
+                ],
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('x')
+                        ->where('x.habilitado = 1')
+                        ->orderBy('x.nombre', 'ASC');
+                },
+                'label_attr' => ['class' => 'control-label'],
+                'placeholder' => '-- Elija el concepto --',
+            ])
+            ->add('subConcepto', EntityType::class, [
+                'label' => 'Sub Concepto',
+                'class' => TipoSubConcepto::class,
+                'required' => false,
+                'attr' => [
+                    'placeholder' => '-- Elija el sub concepto --',
+                    'class' => 'form-control choice subconcepto-select',
+                    'data-placeholder' => '-- Elija el sub concepto --',
+                ],
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('x')
+                        ->where('x.habilitado = 1')
+                        ->orderBy('x.nombre', 'ASC');
+                },
+                'label_attr' => ['class' => 'control-label'],
+                'placeholder' => '-- Elija el sub concepto --',
+            ])
+            ->add('monto', MoneyType::class, [
+                'required' => true,
+                'label' => 'Monto',
+                'currency' => '',
+                'scale' => 2,
+                'grouping' => false,
+                'attr' => [
+                    'class' => 'form-control monto-input detalle-monto',
+                    'style' => 'font-size: 1.1rem; font-weight: bold;',
+                    'placeholder' => '0,00',
+                ]
+            ])
+            ->add('descripcion', TextType::class, [
+                'required' => false,
+                'label' => 'Descripción',
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Ingrese una descripción opcional',
+                ]
+            ])
+        ;
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => FacturaDetalle::class,
+        ]);
+    }
+}

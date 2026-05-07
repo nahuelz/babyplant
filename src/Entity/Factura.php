@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Entity\Traits\Auditoria;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Entity
@@ -23,25 +25,13 @@ class Factura
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=TipoConcepto::class)
-     * @ORM\JoinColumn(name="id_tipo_concepto", referencedColumnName="id", nullable=false)
+     * @ORM\OneToMany(targetEntity=FacturaDetalle::class, mappedBy="factura", cascade={"persist", "remove"})
      */
-    private $concepto;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=TipoSubConcepto::class)
-     * @ORM\JoinColumn(name="id_tipo_sub_concepto", referencedColumnName="id", nullable=true)
-     */
-    private $subConcepto;
-
-    /**
-     * @ORM\Column(name="monto", type="decimal", precision=10, scale=2, nullable=false)
-     */
-    private $monto;
+    private $detalles;
 
     /**
      * @ORM\ManyToOne(targetEntity=ModoPago::class)
-     * @ORM\JoinColumn(name="id_modo_pago", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="id_modo_pago", referencedColumnName="id", nullable=true)
      */
     private $modoPago;
 
@@ -56,9 +46,52 @@ class Factura
     private $tipoCambio;
 
     /**
+     * @ORM\Column(name="tipo_moneda", type="string", length=3, nullable=false, options={"default"="ARS"})
+     */
+    private $tipoMoneda;
+
+    /**
      * @ORM\Column(name="numero_factura", type="string", length=50, unique=true)
      */
     private $numeroFactura;
+
+    public function __construct()
+    {
+        $this->detalles = new ArrayCollection();
+    }
+
+    public function getDetalles(): Collection
+    {
+        return $this->detalles;
+    }
+
+    public function addDetalle(FacturaDetalle $detalle): self
+    {
+        if (!$this->detalles->contains($detalle)) {
+            $this->detalles[] = $detalle;
+            $detalle->setFactura($this);
+        }
+        return $this;
+    }
+
+    public function removeDetalle(FacturaDetalle $detalle): self
+    {
+        if ($this->detalles->removeElement($detalle)) {
+            if ($detalle->getFactura() === $this) {
+                $detalle->setFactura(null);
+            }
+        }
+        return $this;
+    }
+
+    public function getTotal(): float
+    {
+        $total = 0;
+        foreach ($this->detalles as $detalle) {
+            $total += (float) $detalle->getMonto();
+        }
+        return $total;
+    }
 
     public function getNumeroFactura(): ?string
     {
@@ -71,12 +104,9 @@ class Factura
         return $this;
     }
 
-
-
-
     public function __toString(): string
     {
-        return $this->concepto ? $this->concepto->getNombre() : 'Factura';
+        return $this->numeroFactura ? 'Factura #' . $this->numeroFactura : 'Factura';
     }
 
     public function getId(): ?int
@@ -84,77 +114,25 @@ class Factura
         return $this->id;
     }
 
-    public function getConcepto(): ?TipoConcepto
-    {
-        return $this->concepto;
-    }
-
-    public function setConcepto(?TipoConcepto $concepto): self
-    {
-        $this->concepto = $concepto;
-        return $this;
-    }
-
-    public function getMonto(): ?string
-    {
-        return $this->monto;
-    }
-
-    /**
-     * @param mixed $monto
-     */
-    public function setMonto($monto): void
-    {
-        $this->monto = $monto;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getModoPago(): ?ModoPago
     {
         return $this->modoPago;
     }
 
-    /**
-     * @param mixed $modoPago
-     */
     public function setModoPago(?ModoPago $modoPago): self
     {
         $this->modoPago = $modoPago;
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
     public function getFecha()
     {
         return $this->fecha;
     }
 
-    /**
-     * @param mixed $fecha
-     */
     public function setFecha($fecha): void
     {
         $this->fecha = $fecha;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSubConcepto()
-    {
-        return $this->subConcepto;
-    }
-
-    /**
-     * @param mixed $subConcepto
-     */
-    public function setSubConcepto($subConcepto): void
-    {
-        $this->subConcepto = $subConcepto;
     }
 
     public function getTipoCambio(): ?string
@@ -165,6 +143,17 @@ class Factura
     public function setTipoCambio(?string $tipoCambio): self
     {
         $this->tipoCambio = $tipoCambio;
+        return $this;
+    }
+
+    public function getTipoMoneda(): string
+    {
+        return $this->tipoMoneda ?? 'ARS';
+    }
+
+    public function setTipoMoneda(string $tipoMoneda): self
+    {
+        $this->tipoMoneda = $tipoMoneda;
         return $this;
     }
 
