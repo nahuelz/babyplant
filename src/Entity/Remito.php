@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Constants\ConstanteEstadoRemito;
 use App\Entity\Traits;
 use App\Entity\Traits\Auditoria;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -331,6 +332,10 @@ class Remito {
      */
     public function getPendiente()
     {
+        if ($this->getEstado()->getId() == ConstanteEstadoRemito::PAGO){
+            return 0;
+        }
+
         $pendiente = $this->getTotalConDescuento();
         foreach ($this->pagos as $pago) {
             $pendiente -=$pago->getMonto();
