@@ -421,15 +421,22 @@ class PedidoProblemaController extends BaseController {
         ]);
     }
 
-    #[Route('/{id}/checkeo', name: 'pedido_producto_checkeo', methods: ['POST'])]
+    #[Route('/{id}/checkeo', name: 'pedido_producto_checkeo', methods: ['GET', 'POST'])]
     public function checkeo(
         PedidoProducto $pedidoProducto,
-        EntityManagerInterface $entityManager
-    ): JsonResponse
+        EntityManagerInterface $entityManager,
+        Request $request
+    ): Response
     {
         // Marcar como visto
         $pedidoProducto->setVisto(true);
         $entityManager->flush();
+
+        $tipoMesadaId = $request->query->get('tipo_mesada_id');
+        if ($tipoMesadaId) {
+            $this->addFlash('success', 'Producto marcado como visto correctamente');
+            return $this->redirectToRoute('app_tipo_mesada_show', ['id' => $tipoMesadaId]);
+        }
 
         return $this->json([
             'success' => true,
@@ -437,5 +444,4 @@ class PedidoProblemaController extends BaseController {
             'visto' => true
         ]);
     }
-
 }

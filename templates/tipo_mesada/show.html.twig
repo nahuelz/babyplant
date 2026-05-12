@@ -61,10 +61,22 @@
                                                         <td class="text-center v-middle">{{ mesada.pedidoProducto }}</td>
                                                         <td class="text-center v-middle">{{ mesada.cantidadBandejas }}</td>
                                                         <td class="text-center v-middle">{{ mesada.pedidoProducto.visto == 1 ? 'Si' : 'No' }}</td>
-                                                        <td class="text-center v-middle">
-                                                            <a href="{{ path( "pedido_show", { "id": mesada.pedidoProducto.pedido.id }) }}/#{{ mesada.pedidoProducto.id}}" target="_blank">
-                                                                <button type="button" class="btn btn-sm btn-primary" style="padding: 5px"><i class="fa fa-search" style="padding: 0;"></i></button>
-                                                            </a>
+                                                        <td class=" text-center dt-acciones">
+                                                            <div class="dropdown dropdown-inline">
+                                                                <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                    <i class="ki ki-bold-more-hor"></i>
+                                                                </button>
+                                                                <div class="dropdown-menu">
+                                                                    <a class="dropdown-item" href="{{ path('pedido_show', {'id': mesada.pedidoProducto.pedido.id}) }}">
+                                                                        <i class="la la-search" style="margin-right: 5px;"></i> Ver Pedido
+                                                                    </a>
+                                                                    {% if not mesada.pedidoProducto.visto %}
+                                                                        <a class="dropdown-item" href="{{ path('pedido_producto_checkeo', {'id': mesada.pedidoProducto.id, 'tipo_mesada_id': tipo_mesada.id}) }}">
+                                                                            <i class="la la-check" style="margin-right: 5px;"></i> Marcar Visto
+                                                                        </a>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 {% endif %}
@@ -89,5 +101,14 @@
 
     </div>
 
+
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script type="text/javascript" src="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.js') }}"></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-datatables.js') }}"></script>
 
 {% endblock %}
