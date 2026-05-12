@@ -39,9 +39,9 @@ class FacturaType extends AbstractType
                 'data' => new \DateTime()
             ))
             ->add('detalle', FacturaDetalleType::class, [
-                'label' => false,
                 'required' => false,
-                'mapped' => false
+                'mapped' => false,
+                'data_class' => 'App\Entity\FacturaDetalle'
             ])
             ->add('tipoMoneda', \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, [
                 'required' => true,

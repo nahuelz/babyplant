@@ -21,6 +21,8 @@ function initSelect2() {
         
         if (tipoMoneda === 'USD') {
             tipoCambioContainer.show();
+            // Obtener valor del dólar blue automáticamente
+            obtenerValorDolarBlue();
         } else {
             tipoCambioContainer.hide();
             // Limpiar el campo de tipo de cambio cuando no es USD
@@ -232,6 +234,65 @@ function limpiarMontosParaEnvio() {
         const cleanValue = tipoCambioInput.val().replace(/\./g, '').replace(',', '.');
         tipoCambioInput.val(cleanValue);
     }
+}
+
+/**
+ * Obtener valor del dólar blue desde la API
+ */
+function obtenerValorDolarBlue() {
+    // Mostrar indicador de carga
+    const tipoCambioInput = $('#factura_tipoCambio');
+    tipoCambioInput.attr('placeholder', 'Cargando...');
+
+    $.ajax({
+        url: '/api/dolar-blue/precio-compra',
+        method: 'GET',
+        success: function(response) {
+            if (response.success) {
+                // Formatear el valor con separadores de miles
+                const valorFormateado = response.price.toLocaleString('es-AR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                tipoCambioInput.val(valorFormateado);
+                
+                // Mostrar notificación de éxito
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Valor actualizado',
+                        text: `Tipo de cambio actualizado: ${response.formatted}`,
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                }
+            } else {
+                // Mostrar error
+                tipoCambioInput.attr('placeholder', '0,00');
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'No se pudo obtener el valor',
+                        text: response.message,
+                        confirmButtonColor: '#3085d6'
+                    });
+                }
+            }
+        },
+        error: function() {
+            tipoCambioInput.attr('placeholder', '0,00');
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de conexión',
+                    text: 'No se pudo conectar con el servicio de cotización',
+                    confirmButtonColor: '#3085d6'
+                });
+            }
+        }
+    });
 }
 
 /**
