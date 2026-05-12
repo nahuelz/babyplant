@@ -51,7 +51,7 @@ class Factura
     private $tipoMoneda;
 
     /**
-     * @ORM\Column(name="numero_factura", type="string", length=50, unique=true)
+     * @ORM\Column(name="numero_factura", type="string", length=50)
      */
     private $numeroFactura;
 
@@ -63,6 +63,18 @@ class Factura
     public function getDetalles(): Collection
     {
         return $this->detalles;
+    }
+
+    /**
+     * @param mixed $detalles
+     */
+    public function setDetalles($detalles): void
+    {
+        $this->detalles = $detalles;
+
+        foreach ($detalles as $detalle){
+            $detalle->setFactura($this);
+        }
     }
 
     public function addDetalle(FacturaDetalle $detalle): self
@@ -146,9 +158,9 @@ class Factura
         return $this;
     }
 
-    public function getTipoMoneda(): string
+    public function getTipoMoneda(): ?string
     {
-        return $this->tipoMoneda ?? 'ARS';
+        return $this->tipoMoneda;
     }
 
     public function setTipoMoneda(string $tipoMoneda): self

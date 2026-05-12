@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% set edit = form.vars.value.id != null %}
-{% set entity = form.vars.value %}
 
 {% import 'app/_macro_form.html.twig' as macro_form %}
 
@@ -15,7 +14,7 @@
 				<span class="card-icon">
 					<i class="flaticon-search text-primary"></i>
 				</span>
-                <h3 class="card-label">{% if edit %}Editar Factura{% else %}Nuevo Factura{% endif %}</h3>
+                <h3 class="card-label">{% if edit %}Editar Factura{% else %}Nueva Factura{% endif %}</h3>
             </div>
         </div>
         <div class="card-body">
@@ -25,21 +24,23 @@
             </div>
             <div class="row">
                 {{ macro_form._new_field(form.tipoMoneda, 'col-md-6') }}
-                <div class="col-md-6" id="tipo-cambio-container" style="display: {% if form.vars.value.tipoMoneda == 'USD' %}block{% else %}none{% endif %};">
+                <div class="col-md-6" id="tipo-cambio-container" style="display: {% if form.tipoMoneda == 'USD' %}block{% else %}none{% endif %};">
                     {{ macro_form._new_field(form.tipoCambio, 'col-md-12') }}
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    {% include 'factura/new.detalle.html.twig' with {'detalleForm': form.detalle, 'entity': entity} %}
+                    {% include 'factura/new.detalle.html.twig' %}
                 </div>
             </div>
         </div>
         <div class="card-footer d-flex justify-content-between">
             <a href="{{ path('factura_index') }}" class="btn btn-light-dark font-weight-bold">Volver</a>
-            <button type="submit" id="factura_submit" name="factura[submit]" class="btn btn-light-primary font-weight-bold submit-button">{{ button_label|default('Guardar') }}</button>
+            {{ form_widget(form.submit) }}
         </div>
     </div>
+    {{ form_widget(form._token) }}
+    {{ form_end(form, {"render_rest": false}) }}
 
 {% endblock %}
 

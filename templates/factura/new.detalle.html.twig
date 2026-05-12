@@ -12,10 +12,10 @@
 
 <div class="row-form-factura-detalle">
 <div class="row">
-    {{ macro_form._new_field(detalleForm.concepto, 'col-md-3') }}
-    {{ macro_form._new_field(detalleForm.subConcepto, 'col-md-3') }}
-    {{ macro_form._new_field(detalleForm.descripcion, 'col-md-2') }}
-    {{ macro_form._new_field(detalleForm.monto, 'col-md-2') }}
+    {{ macro_form._new_field(form.detalle.concepto, 'col-md-3') }}
+    {{ macro_form._new_field(form.detalle.subConcepto, 'col-md-3') }}
+    {{ macro_form._new_field(form.detalle.descripcion, 'col-md-2') }}
+    {{ macro_form._new_field(form.detalle.monto, 'col-md-2') }}
     <div class="col-md-2">
         <div class="form-group">
             <button class="btn btn-success font-weight-bold margin-top-25 link-save-factura-detalle spinner-primary">
@@ -27,8 +27,7 @@
 
 </div>
 
-
-<div class="col-md-12 row row-factura-detalle margin-top-15" {{ tieneFacturaDetalle ? '' : 'style="display:none;"' }}>
+<div class="col-md-12 row row-factura-detalle margin-top-15" {{ tieneFacturaDetalle ? '' : 'style="display:none;"' }}">
 <div class="col-md-12">
     <div class="table-scrollable">
         <table class="table table-striped table-bordered table-advance table-hover">
@@ -52,19 +51,19 @@
                         <input type="hidden" name="factura[detalles][{{ loop.index0 }}][subConcepto]" value="{{ detalle.subConcepto }}">
                     </td>
                     <td class="hidden">
-                        <input type="hidden" name="factura[detalles][{{ loop.index0 }}][monto]" value="{{ detalle.monto }}">
+                        <input type="hidden" name="factura[detalles][{{ loop.index0 }}][descripcion]" value="{{ detalle.descripcion }}">
                     </td>
                     <td class="hidden">
-                        <input type="hidden" name="factura[detalles][{{ loop.index0 }}][descripcion]" value="{{ detalle.descripcion }}">
+                        <input type="hidden" name="factura[detalles][{{ loop.index0 }}][monto]" value="{{ detalle.monto }}">
                     </td>
 
                     <td class="v-middle text-center">{{ detalle.concepto }}</td>
                     <td class="v-middle text-center">{{ detalle.subConcepto }}</td>
                     <td class="v-middle text-center">{{ detalle.descripcion }}</td>
-                    <td class="v-middle text-center">${{ detalle.monto|number_format(2, ',', '.') }}</td>
+                    <td class="v-middle text-center">{{ detalle.monto }}</td>
 
                     <td class="text-center v-middle">
-                        <a href="#" class="btn btn-sm delete-link-inline link-delete-factura-detalle factura-detalle-borrar tooltips"
+                        <a href="#" class="btn btn-sm delete-link-inline link-delete-factura-detalle tooltips"
                            data-placement="top" data-original-title="Eliminar">
                             <i class="fa fa-trash text-danger"></i>
                         </a>
@@ -75,17 +74,4 @@
         </table>
     </div>
 </div>
-</div>
-
-<div class="card-footer">
-    <div class="row">
-        <div class="col-md-9 text-right">
-            <strong>Total:</strong>
-        </div>
-        <div class="col-md-3">
-            <div class="form-control-plaintext text-right font-weight-bold" id="total-factura">
-                $0.00
-            </div>
-        </div>
-    </div>
 </div>

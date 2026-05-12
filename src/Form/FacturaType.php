@@ -43,6 +43,15 @@ class FacturaType extends AbstractType
                 'mapped' => false,
                 'data_class' => 'App\Entity\FacturaDetalle'
             ])
+            ->add('detalles', CollectionType::class, [
+                'entry_type' => FacturaDetalleType::class,
+                'allow_delete' => true,
+                'allow_add' => true,
+                'label' => 'Detalles',
+                'prototype_name' => '__detalles__',
+                'label_attr' => array('class' => 'hidden'),
+                'attr' => array('class' => 'hidden')
+            ])
             ->add('tipoMoneda', \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, [
                 'required' => true,
                 'label' => 'Tipo de Moneda',

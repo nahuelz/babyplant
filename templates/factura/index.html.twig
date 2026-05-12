@@ -24,7 +24,7 @@
         <div class="card-header">
             <div class="card-title">
                 <span class="card-icon"><i class="flaticon2-layers text-primary"></i></span>
-                <h3 class="card-label">Gastos</h3>
+                <h3 class="card-label">Facturas</h3>
             </div>
             <div class="card-toolbar">
                 <a href="{{ path('factura_new') }}" class="btn btn-primary font-weight-bolder mr-2">
@@ -72,10 +72,10 @@
 
         <div class="row padding-top-15">
             <div class="col-md-12" id="filtros">
-                {% include 'factura/tiles.html.twig' %}
+                {#  include 'factura/tiles.html.twig' #}
             </div>
             <div class="col-md-6">
-                {% include 'factura/filtros.html.twig' %}
+                {# include 'factura/filtros.html.twig' #}
             </div>
         </div>
 
@@ -86,9 +86,6 @@
                 <tr>
                     <th class="not-in-filter">ID</th>
                     <th data-type="string" class="text-center">FECHA</th>
-                    <th data-type="string" class="text-center">CONCEPTO</th>
-                    <th data-type="string" class="text-center">MONTO</th>
-                    <th data-type="string" class="text-center">MODO PAGO</th>
                     <th data-type="search" style="width: 20px;"></th>
                 </tr>
                 </thead>

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Factura;
+use App\Entity\FacturaDetalle;
 use App\Form\FacturaType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -45,19 +46,12 @@ class FacturaController extends BaseController {
 
         $em = $this->doctrine->getManager();
 
-        $factura = $request->get('idConcepto') ?: NULL;
-
         $rsm = new ResultSetMapping();
 
         $rsm->addScalarResult('id', 'id');
         $rsm->addScalarResult('fecha', 'fecha');
-        $rsm->addScalarResult('concepto', 'concepto');
-        $rsm->addScalarResult('monto', 'monto');
-        $rsm->addScalarResult('modoPago', 'modoPago');
 
-        $nativeQuery = $em->createNativeQuery('call sp_index_factura(?)', $rsm);
-
-        $nativeQuery->setParameter(1, $factura);
+        $nativeQuery = $em->createNativeQuery('call sp_index_factura()', $rsm);
 
         $entities = $nativeQuery->getResult();
 
@@ -66,28 +60,22 @@ class FacturaController extends BaseController {
 
 
     /**
-     * @Route("/new", name="factura_new", methods={"GET|POST"})
+     * @Route("/new", name="factura_new", methods={"GET","POST"})
+     * @Template("factura/new.html.twig")
+     * @IsGranted("ROLE_GASTO")
      */
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $factura = new Factura();
-        $form = $this->createForm(FacturaType::class, $factura);
-        $form->handleRequest($request);
+    public function new(): Array {
+        $entity = new Factura();
+        return parent::baseNewAction($entity);
+    }
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->validarMonto($form->getData());
-            $monto = $this->normalizarMonto($form->getData());
-            $factura->setMonto($monto);
-            $entityManager->persist($factura);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('factura_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('factura/new.html.twig', [
-            'factura' => $factura,
-            'form' => $form,
-        ]);
+    /**
+     * @Route("/insertar", name="factura_create", methods={"GET","POST"})
+     * @Template("factura/new.html.twig")
+     * @IsGranted("ROLE_GASTO")
+     */
+    public function createAction(Request $request) {
+        return parent::baseCreateAction($request, true);
     }
 
     #[Route('/{id}', name: 'factura_show', methods: ['GET'])]
@@ -116,9 +104,6 @@ class FacturaController extends BaseController {
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->validarMonto($form->getData());
-            $monto = $this->normalizarMonto($form->getData());
-            $factura->setMonto($monto);
             $entityManager->flush();
 
             return $this->redirectToRoute('factura_index', [], Response::HTTP_SEE_OTHER);
@@ -130,17 +115,17 @@ class FacturaController extends BaseController {
         ]);
     }
 
-    private function validarMonto(Factura $factura){
-        if (($factura->getMonto() == null) || $factura->getMonto() <= 0) {
-            throw new \DomainException('El monto debe ser mayor a 0');
-        }
-    }
-
-    private function normalizarMonto(Factura $factura): float
+    function execPrePersistAction($entity, $request): bool
     {
-        return (float) str_replace(['.', ','], ['', '.'], $factura->getMonto());
-    }
+        /** @var Factura $entity */
+        // Establecer la relación con los detalles de la factura
+        /** @var FacturaDetalle $detalle */
+        foreach ($entity->getDetalles() as $detalle) {
+            $detalle->setFactura($entity);
+        }
 
+        return true;
+    }
     /**
      *
      * @return type
@@ -151,7 +136,6 @@ class FacturaController extends BaseController {
 
         $rsm = new ResultSetMapping();
 
-        $rsm->addScalarResult('montoTotal', 'montoTotal');
         $rsm->addScalarResult('cantidad', 'cantidad');
         $rsm->addScalarResult('colorClass', 'colorClass');
         $rsm->addScalarResult('color', 'color');
@@ -159,7 +143,6 @@ class FacturaController extends BaseController {
 
         $sql = '
         SELECT
-            SUM(g.monto) AS montoTotal,
             COUNT(g.id) AS cantidad,
             "success" AS colorClass,
             "success" AS color,

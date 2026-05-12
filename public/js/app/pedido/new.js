@@ -232,22 +232,6 @@ function initBaseSubmitButton() {
                         }).then((result) => {
                             window.location.reload();
                         });
-                        /*showDialog({
-                            titulo: '<i class="fa fa-list-ul margin-right-10"></i> PEDIDO AGREGADO',
-                            contenido: '' +
-                                '<a href="/pedido/imprimir-pedido/'+result.message+'" target="_blank" class="btn btn-light-primary blue mr-10" title="Imprimir comprobante">\n' +
-                                    '<i class="fas fa-file-pdf text-white"></i> Imprimir A4\n' +
-                                '</a>'+
-                                '<a href="/pedido/imprimir-pedido-ticket/'+result.message+'" target="_blank" class="btn btn-light-primary blue mr-10" title="Imprimir comprobante">\n' +
-                                    '<i class="fas fa-receipt text-white"></i> Imprimir TICKET\n' +
-                                '</a>'+
-                                '<a href="/pedido/new" class="btn btn-light-primary blue mr-10" title="Agregar Nuevo Pedido">\n' +
-                                    '<i class="fas fa-plus text-white"></i> Agregar Nuevo Pedido\n' +
-                                '</a>'+
-                                '<a href="/pedido/" class="btn btn-light-primary blue mr-10" title="Ver Pedidos">\n' +
-                                    '<i class="fas fa-search text-white"></i> Ver los pedidos\n' +
-                                '</a>',
-                        });*/
                         $('.modal-dialog').css('width', '80%');
                         $('.modal-dialog').addClass('modal-xl');
                         $('.modal-dialog').addClass('modal-fullscreen-xl-down');

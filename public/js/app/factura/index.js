@@ -101,24 +101,6 @@ function datatablesGetColDef() {
             type: 'string'
         },
         {
-            targets: index++,
-            name: 'concepto',
-            className: 'dt-center',
-            type: 'string'
-        },
-        {
-            targets: index++,
-            name: 'monto',
-            className: 'dt-center',
-            type: 'string'
-        },
-        {
-            targets: index++,
-            name: 'modoPago',
-            className: 'dt-center',
-            type: 'string'
-        },
-        {
             targets: -1,
             name: '',
             title: '',

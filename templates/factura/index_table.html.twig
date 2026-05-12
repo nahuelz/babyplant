@@ -5,12 +5,8 @@
         [
         "{{ entity.id }}",
         "{{ entity.fecha is not null ? entity.fecha|date('d/m/Y') : '-' }}",
-        "{{ entity.concepto|escape_json|default('-')|raw }}",
-        "{{ entity.monto|escape_json|money_format|default('')|raw }}",
-        "{{ entity.modoPago|escape_json|default('')|raw }}",
         {
         "show" : " {{ path( "factura_show", { "id": entity.id }) }}",
-        "edit" : " {{ path( "factura_edit", { "id": entity.id }) }}",
         "delete" : " {{ path( "factura_delete", { "id": entity.id }) }}"
         }
         ]{{ (loop.last ? '' : ',') }}

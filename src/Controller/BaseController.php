@@ -1002,7 +1002,11 @@ class BaseController extends AbstractController {
 
         $form = $this->baseCreateCreateForm($entity);
         $form->handleRequest($request);
-
+        if (!$form->isValid()) {
+            foreach ($form->getErrors(true) as $error) {
+                dd($error->getMessage());
+            }
+        }
         if ($form->isValid()) {
 
             $isValid = $this->execPrePersistAction($entity, $request);

@@ -7,6 +7,7 @@ jQuery(document).ready(function () {
     $('.row-factura-detalle-empty').hide();
     initSelect2();
     calcularTotal();
+    initBaseSubmitButton();
 });
 
 function initSelect2() {
@@ -127,29 +128,6 @@ function initFacturaDetalleHandler() {
         // Reset form
         clearDetalleForm();
         calcularTotal();
-    });
-
-    // Submit button handler
-    $("#factura_submit").off('click').on('click', function (e) {
-        e.preventDefault();
-
-        fv.revalidateField('requiredFields');
-        
-        if ($('.tr-factura-detalle').length === 0) {
-            $('.row-factura-detalle-empty').show('slow');
-            $('.row-factura-detalle').hide('slow');
-            return false;
-        }
-
-        fv.validate().then((status) => {
-            if (status === "Valid") {
-                // Limpiar montos antes del envío
-                limpiarMontosParaEnvio();
-                $('form[name="factura"]')[0].submit();
-            }
-        });
-
-        e.stopPropagation();
     });
 }
 
@@ -319,5 +297,78 @@ function initMontoFormat() {
         }
 
         e.target.value = value;
+    });
+}
+
+/**
+ *
+ * @returns {undefined}
+ */
+function initBaseSubmitButton() {
+
+    $("#factura_submit").off('click').on('click', function (e) {
+
+        e.preventDefault();
+
+        fv.revalidateField('requiredFields');
+        if ($('.tr-factura-detalle').length === 0) {
+            $('.row-factura-detalle-empty').show('slow');
+            $('.row-factura-detalle').hide('slow');
+            return false;
+        }
+
+        fv.validate().then((status) => {
+
+            if (status === "Valid") {
+                $.post({
+                    url: __HOMEPAGE_PATH__ + "factura/insertar",
+                    type: 'post',
+                    dataType: 'json',
+                    data: $('form[name="factura"]').serialize()
+                }).done(function (result) {
+                    if (result.statusText !== 'OK') {
+                        Swal.fire({
+                            title: result.statusCode,
+                            text: result.statusText,
+                            icon: "warning"
+                        });
+
+                        return false;
+                    } else {
+                        Swal.fire({
+                            width: '800px',
+                            title: '<strong>FACTURA AGREGADA!</strong>',
+                            color: "#716add",
+                            allowOutsideClick: false,
+                            backdrop: false,
+                            confirmButtonText: 'Agregar Nueva Factura',
+                            html: '<div class="d-flex flex-row justify-content-center align-items-center w-100">' +
+                                '<a href="/factura/imprimir-factura/'+result.message+'" class="swal2-confirm swal2-styled" title="Imprimir comprobante">\n' +
+                                '<i class="fas fa-file-pdf text-white"></i> Imprimir A4\n' +
+                                '</a>'+
+                                '<a href="/factura/imprimir-factura-ticket/'+result.message+'" class="swal2-confirm swal2-styled" title="Imprimir comprobante">\n' +
+                                '<i class="fas fa-receipt text-white"></i> Imprimir TICKET\n' +
+                                '</a>'+
+                                '<a href="/factura/" class="swal2-confirm swal2-styled" title="Ver Facturas">\n' +
+                                '<i class="fas fa-search text-white"></i> Ver Facturas\n' +
+                                '</a>'+
+                                '</div>',
+                            icon: "success"
+                        }).then((result) => {
+                            window.location.reload();
+                        });
+                        $('.modal-dialog').css('width', '80%');
+                        $('.modal-dialog').addClass('modal-xl');
+                        $('.modal-dialog').addClass('modal-fullscreen-xl-down');
+                        $('.submit-button').hide();
+                        $('.btn-light-dark').hide();
+                        $('.bootbox-close-button').hide();
+                    }
+                });
+                return false;
+            }
+        });
+
+        e.stopPropagation();
     });
 }
