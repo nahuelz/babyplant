@@ -1,3 +1,4 @@
+
 /*! DataTables 1.10.24
  * Â©2008-2021 SpryMedia Ltd - datatables.net/license
  */

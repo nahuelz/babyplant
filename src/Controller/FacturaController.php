@@ -49,7 +49,10 @@ class FacturaController extends BaseController {
         $rsm = new ResultSetMapping();
 
         $rsm->addScalarResult('id', 'id');
+        $rsm->addScalarResult('numeroFactura', 'numeroFactura');
         $rsm->addScalarResult('fecha', 'fecha');
+        $rsm->addScalarResult('montoTotal', 'montoTotal');
+        $rsm->addScalarResult('tipoMoneda', 'tipoMoneda');
 
         $nativeQuery = $em->createNativeQuery('call sp_index_factura()', $rsm);
 
@@ -154,5 +157,4 @@ class FacturaController extends BaseController {
 
         return $nativeQuery->getSingleResult();
     }
-
 }

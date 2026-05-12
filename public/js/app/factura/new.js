@@ -320,6 +320,7 @@ function initBaseSubmitButton() {
         fv.validate().then((status) => {
 
             if (status === "Valid") {
+                limpiarMontosParaEnvio();
                 $.post({
                     url: __HOMEPAGE_PATH__ + "factura/insertar",
                     type: 'post',

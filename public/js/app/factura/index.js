@@ -96,9 +96,35 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
+            name: 'numeroFactura',
+            className: 'dt-center',
+            type: 'string'
+        },
+        {
+            targets: index++,
             name: 'fecha',
             className: 'dt-center',
             type: 'string'
+        },
+        {
+            targets: index++,
+            name: 'montoTotal',
+            className: 'dt-center',
+            render: function (data, type, full, meta) {
+
+                const monto = parseFloat(data.montoTotal || 0);
+
+                const montoFormateado = monto.toLocaleString('es-AR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+
+                const simbolo = data.tipoMoneda === 'USD'
+                    ? 'U$S'
+                    : '$';
+
+                return simbolo + ' ' + montoFormateado;
+            }
         },
         {
             targets: -1,

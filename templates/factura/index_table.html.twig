@@ -4,7 +4,12 @@
     {% for entity in entities %}
         [
         "{{ entity.id }}",
+        "{{ entity.numeroFactura }}",
         "{{ entity.fecha is not null ? entity.fecha|date('d/m/Y') : '-' }}",
+        {
+            "montoTotal": "{{ entity.montoTotal }}",
+            "tipoMoneda": "{{ entity.tipoMoneda }}"
+        },
         {
         "show" : " {{ path( "factura_show", { "id": entity.id }) }}",
         "delete" : " {{ path( "factura_delete", { "id": entity.id }) }}"
