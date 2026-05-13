@@ -19,6 +19,7 @@
         "nombreProducto": "{{ entity.nombreProducto|default('default') }}",
         "colorProducto": "{{ entity.colorProducto|default('default') }}",
         "tieneProblema": "{{ entity.tieneProblema == 1 ? '1' : '0' }}",
+        "visto": "{{ entity.visto == 1 ? '1' : '0' }}",
         "tieneSolucion": "{{ entity.tieneSolucion == 1 ? entity.tieneProblema == 1 ? '1' : '0' }}"
         },
         {
