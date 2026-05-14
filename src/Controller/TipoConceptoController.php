@@ -21,18 +21,18 @@ class TipoConceptoController extends BaseController
     #[Route('/', name: 'tipoconcepto_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
-        return $this->render('tipo_revision/index.html.twig', [
+        return $this->render('tipo_concepto/index.html.twig', [
             'select_boolean' => $this->selectService->getBooleanSelect(true)
         ]);
     }
 
     /**
      *
-     * @Route("/index_table/", name="tipo_revision_table", methods={"GET|POST"})
+     * @Route("/index_table/", name="tipo_concepto_table", methods={"GET|POST"})
      *
      */
     public function indexTableAction(Request $request): Response {
-        $entityTable = 'view_tipo_revision';
+        $entityTable = 'view_tipo_concepto';
 
         $rsm = new ResultSetMapping();
 
@@ -47,11 +47,11 @@ class TipoConceptoController extends BaseController
             ['field' => 'acciones', 'type' => '', 'searchable' => false, 'sortable' => false]
         ];
 
-        $renderPage = "tipo_revision/index_table.html.twig";
+        $renderPage = "tipo_concepto/index_table.html.twig";
         return parent::baseIndexTableAction($request, $columnDefinition, $entityTable, ConstanteTipoConsulta::VIEW, $rsm, $renderPage);
     }
 
-    #[Route('/new', name: 'app_tipo_revision_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_tipo_concepto_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $tipoProducto = new TipoConcepto();
@@ -65,21 +65,21 @@ class TipoConceptoController extends BaseController
             return $this->redirectToRoute('tipoconcepto_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('tipo_revision/new.html.twig', [
-            'tipo_revision' => $tipoProducto,
+        return $this->renderForm('tipo_concepto/new.html.twig', [
+            'tipo_concepto' => $tipoProducto,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_tipo_revision_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_tipo_concepto_show', methods: ['GET'])]
     public function show(TipoConcepto $tipoProducto): Response
     {
-        return $this->render('tipo_revision/show.html.twig', [
-            'tipo_revision' => $tipoProducto,
+        return $this->render('tipo_concepto/show.html.twig', [
+            'tipo_concepto' => $tipoProducto,
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_tipo_revision_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_tipo_concepto_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, TipoConcepto $tipoProducto, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(TipoConceptoType::class, $tipoProducto);
@@ -91,13 +91,13 @@ class TipoConceptoController extends BaseController
             return $this->redirectToRoute('tipoconcepto_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('tipo_revision/new.html.twig', [
-            'tipo_revision' => $tipoProducto,
+        return $this->renderForm('tipo_concepto/new.html.twig', [
+            'tipo_concepto' => $tipoProducto,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_tipo_revision_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_tipo_concepto_delete', methods: ['POST'])]
     public function delete(Request $request, TipoConcepto $tipoProducto, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$tipoProducto->getId(), $request->request->get('_token'))) {
@@ -109,7 +109,7 @@ class TipoConceptoController extends BaseController
     }
 
     /**
-     * @Route("/{id}/habilitar_deshabilitar", name="app_tipo_revision_habilitar_deshabilitar", methods={"GET"})
+     * @Route("/{id}/habilitar_deshabilitar", name="app_tipo_concepto_habilitar_deshabilitar", methods={"GET"})
      */
     public function tipoUsuarioHabilitarDeshabilitar($id) {
         $em = $this->doctrine->getManager();
