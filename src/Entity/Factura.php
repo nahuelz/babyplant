@@ -100,7 +100,7 @@ class Factura
     {
         $total = 0;
         foreach ($this->detalles as $detalle) {
-            $total += (float) $detalle->getMonto();
+            $total += (float) $detalle->getMontoTotal();
         }
         return $total;
     }

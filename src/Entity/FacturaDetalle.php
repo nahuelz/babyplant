@@ -36,9 +36,14 @@ class FacturaDetalle
     private $subConcepto;
 
     /**
-     * @ORM\Column(name="monto", type="decimal", precision=10, scale=2, nullable=false)
+     * @ORM\Column(name="cantidad", type="integer", nullable=true)
      */
-    private $monto;
+    private $cantidad;
+
+    /**
+     * @ORM\Column(name="precio_unitario", type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $precioUnitario;
 
     /**
      * @ORM\Column(name="descripcion", type="string", length=255, nullable=true)
@@ -83,15 +88,9 @@ class FacturaDetalle
         return $this;
     }
 
-    public function getMonto(): ?string
+    public function getMontoTotal(): ?string
     {
-        return $this->monto;
-    }
-
-    public function setMonto(string $monto): self
-    {
-        $this->monto = $monto;
-        return $this;
+        return $this->cantidad * $this->precioUnitario;
     }
 
     public function getDescripcion(): ?string
@@ -113,4 +112,22 @@ class FacturaDetalle
         }
         return $nombre . ' ($' . $this->monto . ')';
     }
+
+    /**
+     * @return mixed
+     */
+    public function getCantidad()
+    {
+        return $this->cantidad;
+    }
+
+    /**
+     * @param mixed $cantidad
+     */
+    public function setCantidad($cantidad): void
+    {
+        $this->cantidad = $cantidad;
+    }
+
+
 }

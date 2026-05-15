@@ -26,7 +26,7 @@
             <div class="row">
                 {{ macro_show._show_detail('Número de Factura', factura.numeroFactura, 'col-md-3') }}
                 {{ macro_show._show_detail('Fecha', factura.fecha|date('d/m/Y'), 'col-md-3') }}
-                {{ macro_show._show_detail('Modo de Pago', factura.modoPago, 'col-md-3') }}
+                {{ macro_show._show_detail('Moneda', factura.tipoMoneda, 'col-md-3') }}
                 {{ macro_show._show_detail('Tipo de Cambio', factura.tipoCambio ? factura.tipoCambio|money_format : 'N/A', 'col-md-3') }}
             </div>
             
@@ -50,7 +50,7 @@
                                             <td>{{ detalle.concepto }}</td>
                                             <td>{{ detalle.subConcepto ?: '-' }}</td>
                                             <td>{{ detalle.descripcion ?: '-' }}</td>
-                                            <td class="text-right font-weight-bold">{{ detalle.monto|money_format }}</td>
+                                            <td class="text-right font-weight-bold">{{ detalle.montoTotal|money_format }}</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>

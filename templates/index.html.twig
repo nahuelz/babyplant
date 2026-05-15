@@ -95,6 +95,11 @@
                     {% if is_granted("ROLE_PROBLEMA") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-exclamation-triangle icon-3x text-dark', 'nombreModulo': 'PEDIDOS CON PROBLEMAS (<span style="color: red; font-weight: bold;">' ~ pedidos_con_problemas_count ~ '</span>)'|raw,'action': path('pedidoproblema_index'), 'descripcionModulo': 'Aqui podra ver los pedidos con problemas' } %}
                     {% endif %}
+
+                    {# GASTOS #}
+                    {% if is_granted("ROLE_GASTO") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-dollar-sign icon-3x text-dark', 'nombreModulo': 'GASTO','action': path('gasto_index'), 'descripcionModulo': 'Aqui podra ver los gastos' } %}
+                    {% endif %}
                 </div>
             </div>
         </div>
