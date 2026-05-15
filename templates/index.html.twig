@@ -62,7 +62,7 @@
                     {% endif %}
 
                     {# AGENDA ENTREGA #}
-                    {% if is_granted("ROLE_AGENDA") %}
+                    {% if is_granted("ROLE_RESERVA") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-calendar-alt icon-3x text-dark', 'nombreModulo': 'RESERVAS','action': path('reserva_index'), 'descripcionModulo': 'Aqui podra ver las reservas' } %}
                     {% endif %}
 
@@ -72,12 +72,17 @@
                     {% endif %}
 
                     {# SITUACION CLIENTE #}
-                    {% if is_granted("ROLE_REMITO") %}
+                    {% if is_granted("ROLE_SITUACION_CLIENTE") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-users icon-3x text-dark', 'nombreModulo': 'SITUACION CLIENTE','action': path('situacioncliente_index'), 'descripcionModulo': 'Aqui podra ver la situacion de los clientes' } %}
                     {% endif %}
 
+                    {# SITUACION CLIENTE #}
+                    {% if is_granted("ROLE_SITUACION_CLIENTE") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-users icon-3x text-dark', 'nombreModulo': 'SITUACION EMPRESA','action': path('situacionempresa_index'), 'descripcionModulo': 'Aqui podra ver la situacion de las empresas' } %}
+                    {% endif %}
+
                     {# CAJA #}
-                    {% if is_granted("ROLE_REMITO") %}
+                    {% if is_granted("ROLE_CAJA") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-cash-register icon-3x text-dark', 'nombreModulo': 'CAJA','action': path('movimiento_index'), 'descripcionModulo': 'Aqui podra ver los movimientos' } %}
                     {% endif %}
 
@@ -87,7 +92,7 @@
                     {% endif %}
 
                     {# PEDIDOS CON PROBLEMAS #}
-                    {% if is_granted("ROLE_STOCK") %}
+                    {% if is_granted("ROLE_PROBLEMA") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-exclamation-triangle icon-3x text-dark', 'nombreModulo': 'PEDIDOS CON PROBLEMAS (<span style="color: red; font-weight: bold;">' ~ pedidos_con_problemas_count ~ '</span>)'|raw,'action': path('pedidoproblema_index'), 'descripcionModulo': 'Aqui podra ver los pedidos con problemas' } %}
                     {% endif %}
                 </div>
