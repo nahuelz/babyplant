@@ -4,6 +4,8 @@
 
 {% block body %}
 
+    {% set simboloMoneda = factura.tipoMoneda == 'USD' ? 'U$S' : '$' %}
+
     <div class="card card-custom">
         <div class="card-header">
             <div class="card-title">
@@ -24,10 +26,15 @@
 
         <div class="card-body">
             <div class="row">
-                {{ macro_show._show_detail('Número de Factura', factura.numeroFactura, 'col-md-3') }}
-                {{ macro_show._show_detail('Fecha', factura.fecha|date('d/m/Y'), 'col-md-3') }}
-                {{ macro_show._show_detail('Moneda', factura.tipoMoneda, 'col-md-3') }}
-                {{ macro_show._show_detail('Tipo de Cambio', factura.tipoCambio ? factura.tipoCambio|money_format : 'N/A', 'col-md-3') }}
+                {{ macro_show._show_detail('Número de Factura', factura.numeroFactura, 'col-md-2') }}
+                {{ macro_show._show_detail('Fecha', factura.fecha|date('d/m/Y'), 'col-md-2') }}
+                {{ macro_show._show_detail('Moneda', factura.tipoMoneda, 'col-md-2') }}
+                {{ macro_show._show_detail('Tipo de Cambio', factura.tipoCambio ? factura.tipoCambio|money_format : 'N/A', 'col-md-2') }}
+                {% if factura.tipoMoneda == 'USD' %}
+                    {{ macro_show._show_detail('Monto total (ARS)', (factura.getTotal() * factura.tipoCambio)|money_format, 'col-md-2') }}
+                {% else %}
+                    {{ macro_show._show_detail('Monto total (ARS)', factura.getTotal()|money_format, 'col-md-2') }}
+                {% endif %}
             </div>
             
             <div class="row mt-4">
@@ -53,15 +60,15 @@
                                             <td>{{ detalle.subConcepto ?: '-' }}</td>
                                             <td>{{ detalle.descripcion ?: '-' }}</td>
                                             <td class="text-center">{{ detalle.cantidad ?: '-' }}</td>
-                                            <td class="text-right">{{ detalle.precioUnitario is not null ? detalle.precioUnitario|money_format : '-' }}</td>
-                                            <td class="text-right font-weight-bold">{{ detalle.montoTotal|money_format }}</td>
+                                            <td class="text-right">{{ detalle.precioUnitario is not null ? detalle.precioUnitario|money_format(2, simboloMoneda) : '-' }}</td>
+                                            <td class="text-right font-weight-bold">{{ detalle.montoTotal|money_format(2, simboloMoneda) }}</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
                                 <tfoot>
                                     <tr class="table-active">
                                         <td colspan="5" class="text-right font-weight-bold">Total:</td>
-                                        <td class="text-right font-weight-bold">{{ factura.getTotal()|money_format }}</td>
+                                        <td class="text-right font-weight-bold">{{ factura.getTotal()|money_format(2, simboloMoneda) }}</td>
                                     </tr>
                                 </tfoot>
                             </table>
