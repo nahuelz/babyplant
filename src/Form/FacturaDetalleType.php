@@ -33,7 +33,7 @@ class FacturaDetalleType extends AbstractType
                         ->where('x.habilitado = 1')
                         ->orderBy('x.nombre', 'ASC');
                 },
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => ['class' => 'control-label required'],
                 'placeholder' => '-- Elija el concepto --',
             ])
             ->add('subConcepto', EntityType::class, [
@@ -56,6 +56,7 @@ class FacturaDetalleType extends AbstractType
             ->add('cantidad', IntegerType::class, [
                 'required' => true,
                 'label' => 'Cantidad',
+                'label_attr' => ['class' => 'required'],
                 'attr' => [
                     'class' => 'form-control detalle-cantidad',
                     'style' => 'font-size: 1.1rem; font-weight: bold;',
@@ -66,6 +67,7 @@ class FacturaDetalleType extends AbstractType
             ->add('precioUnitario', MoneyType::class, [
                 'required' => true,
                 'label' => 'Precio unitario',
+                'label_attr' => ['class' => 'required'],
                 'currency' => '',
                 'scale' => 2,
                 'grouping' => false,

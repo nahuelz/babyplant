@@ -113,7 +113,7 @@ function initFacturaDetalleHandler() {
                 <td class="hidden"><input type="hidden" name="factura[detalles][${index}][descripcion]" value="${descripcion}"></td>
                 
                 <td class="text-center v-middle">${conceptoSelect.find('option:selected').text()}</td>
-                <td class="text-center v-middle">${subConceptoSelect.find('option:selected').text()}</td>
+                <td class="text-center v-middle">${subConcepto ? subConceptoSelect.find('option:selected').text() : ''}</td>
                 <td class="text-center v-middle">${descripcion}</td>
                 <td class="text-center v-middle">${cantidad}</td>
                 <td class="text-center v-middle">$${precio.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
