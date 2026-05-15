@@ -75,23 +75,27 @@ function initFacturaDetalleHandler() {
 
         const conceptoSelect = $('#factura_detalle_concepto');
         const subConceptoSelect = $('#factura_detalle_subConcepto');
-        const montoInput = $('#factura_detalle_monto');
+        const cantidadInput = $('#factura_detalle_cantidad');
+        const precioInput = $('#factura_detalle_precioUnitario');
         const descripcionInput = $('#factura_detalle_descripcion');
 
         const concepto = conceptoSelect.val();
         const subConcepto = subConceptoSelect.val();
-        const monto = montoInput.val();
+        const cantidad = parseInt(cantidadInput.val(), 10) || 0;
+        const precioRaw = precioInput.val();
+        const precio = parseFloat((precioRaw || '').replace(/\./g, '').replace(',', '.')) || 0;
         const descripcion = descripcionInput.val();
 
         // Validación
-        if (!concepto || !monto || parseFloat(monto.replace(/\./g, '').replace(',', '.')) <= 0) {
+        if (!concepto || cantidad <= 0 || precio <= 0) {
             Swal.fire({
-                title: "Debe completar los datos requeridos del concepto.",
+                title: "Debe completar los datos requeridos del concepto (cantidad y precio unitario mayores a 0).",
                 icon: "warning"
             });
             return;
         }
 
+        const total = cantidad * precio;
         const index = $('.tbody-factura-detalle').data('index');
 
         const removeLink = `
@@ -101,16 +105,19 @@ function initFacturaDetalleHandler() {
             </a>`;
 
         const item = `
-            <tr class="tr-factura-detalle">
+            <tr class="tr-factura-detalle" data-total="${total}">
                 <td class="hidden"><input type="hidden" name="factura[detalles][${index}][concepto]" value="${concepto}"></td>
                 <td class="hidden"><input type="hidden" name="factura[detalles][${index}][subConcepto]" value="${subConcepto}"></td>
-                <td class="hidden"><input type="hidden" name="factura[detalles][${index}][monto]" value="${monto}"></td>
+                <td class="hidden"><input type="hidden" name="factura[detalles][${index}][cantidad]" value="${cantidad}"></td>
+                <td class="hidden"><input type="hidden" name="factura[detalles][${index}][precioUnitario]" value="${precioRaw}"></td>
                 <td class="hidden"><input type="hidden" name="factura[detalles][${index}][descripcion]" value="${descripcion}"></td>
                 
                 <td class="text-center v-middle">${conceptoSelect.find('option:selected').text()}</td>
                 <td class="text-center v-middle">${subConceptoSelect.find('option:selected').text()}</td>
                 <td class="text-center v-middle">${descripcion}</td>
-                <td class="text-center v-middle">$${parseFloat(monto.replace(/\./g, '').replace(',', '.')).toLocaleString('es-AR', {minimumFractionDigits: 2})}</td>
+                <td class="text-center v-middle">${cantidad}</td>
+                <td class="text-center v-middle">$${precio.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                <td class="text-center v-middle">$${total.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                 <td class="text-center v-middle">${removeLink}</td>
             </tr>`;
 
@@ -137,7 +144,8 @@ function initFacturaDetalleHandler() {
 function clearDetalleForm() {
     $('#factura_detalle_concepto').val('').select2();
     $('#factura_detalle_subConcepto').val('').select2();
-    $('#factura_detalle_monto').val('');
+    $('#factura_detalle_cantidad').val('');
+    $('#factura_detalle_precioUnitario').val('');
     $('#factura_detalle_descripcion').val('');
 }
 
@@ -178,16 +186,19 @@ function updateDeleteLinkFacturaDetalle(deleteLink, closestClassName) {
  */
 function calcularTotal() {
     let total = 0;
-    
+
     $('.tr-factura-detalle').each(function() {
-        const montoText = $(this).find('td').eq(3).text(); // Columna de monto
-        if (montoText && montoText !== '') {
-            const cleanValue = montoText.replace('$', '').replace(/\./g, '').replace(',', '.');
-            const monto = parseFloat(cleanValue) || 0;
-            total += monto;
+        const $tr = $(this);
+        let subtotal = parseFloat($tr.attr('data-total'));
+        if (isNaN(subtotal)) {
+            const cantidad = parseInt($tr.find('input[name*="[cantidad]"]').val(), 10) || 0;
+            const precioRaw = $tr.find('input[name*="[precioUnitario]"]').val() || '';
+            const precio = parseFloat(precioRaw.replace(/\./g, '').replace(',', '.')) || 0;
+            subtotal = cantidad * precio;
         }
+        total += subtotal;
     });
-    
+
     $('#total-factura').text('$' + total.toLocaleString('es-AR', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
@@ -198,7 +209,7 @@ function calcularTotal() {
  * Limpiar montos para envío del formulario
  */
 function limpiarMontosParaEnvio() {
-    $('input[name*="[monto]"]').each(function() {
+    $('input[name*="[precioUnitario]"]').each(function() {
         const value = $(this).val();
         if (value) {
             const cleanValue = value.replace(/\./g, '').replace(',', '.');
@@ -322,7 +333,7 @@ function initBaseSubmitButton() {
             if (status === "Valid") {
                 limpiarMontosParaEnvio();
                 $.post({
-                    url: __HOMEPAGE_PATH__ + "factura/insertar",
+                    url: window.__FACTURA_SUBMIT_URL__ || (__HOMEPAGE_PATH__ + "factura/insertar"),
                     type: 'post',
                     dataType: 'json',
                     data: $('form[name="factura"]').serialize()
@@ -338,11 +349,11 @@ function initBaseSubmitButton() {
                     } else {
                         Swal.fire({
                             width: '800px',
-                            title: '<strong>FACTURA AGREGADA!</strong>',
+                            title: window.__FACTURA_IS_EDIT__ ? '<strong>FACTURA ACTUALIZADA!</strong>' : '<strong>FACTURA AGREGADA!</strong>',
                             color: "#716add",
                             allowOutsideClick: false,
                             backdrop: false,
-                            confirmButtonText: 'Agregar Nueva Factura',
+                            confirmButtonText: window.__FACTURA_IS_EDIT__ ? 'Volver al listado' : 'Agregar Nueva Factura',
                             html: '<div class="d-flex flex-row justify-content-center align-items-center w-100">' +
                                 '<a href="/factura/imprimir-factura/'+result.message+'" class="swal2-confirm swal2-styled" title="Imprimir comprobante">\n' +
                                 '<i class="fas fa-file-pdf text-white"></i> Imprimir A4\n' +

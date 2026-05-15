@@ -13,9 +13,10 @@
 <div class="row-form-factura-detalle">
 <div class="row">
     {{ macro_form._new_field(form.detalle.concepto, 'col-md-3') }}
-    {{ macro_form._new_field(form.detalle.subConcepto, 'col-md-3') }}
+    {{ macro_form._new_field(form.detalle.subConcepto, 'col-md-2') }}
     {{ macro_form._new_field(form.detalle.descripcion, 'col-md-2') }}
-    {{ macro_form._new_field(form.detalle.monto, 'col-md-2') }}
+    {{ macro_form._new_field(form.detalle.cantidad, 'col-md-1') }}
+    {{ macro_form._new_field(form.detalle.precioUnitario, 'col-md-2') }}
     <div class="col-md-2">
         <div class="form-group">
             <button class="btn btn-success font-weight-bold margin-top-25 link-save-factura-detalle spinner-primary">
@@ -36,7 +37,9 @@
                 <th class="text-center">Concepto</th>
                 <th class="text-center">Subconcepto</th>
                 <th class="text-center">Descripción</th>
-                <th class="text-center">Monto</th>
+                <th class="text-center">Cantidad</th>
+                <th class="text-center">Precio unitario</th>
+                <th class="text-center">Total</th>
                 <th class="nowrap text-center"></th>
             </tr>
             </thead>
@@ -44,23 +47,33 @@
 
             {% for detalle in entity.detalles %}
                 <tr class="tr-factura-detalle">
+                    {% if detalle.id %}
                     <td class="hidden">
-                        <input type="hidden" name="factura[detalles][{{ loop.index0 }}][concepto]" value="{{ detalle.concepto }}">
+                        <input type="hidden" name="factura[detalles][{{ loop.index0 }}][id]" value="{{ detalle.id }}">
+                    </td>
+                    {% endif %}
+                    <td class="hidden">
+                        <input type="hidden" name="factura[detalles][{{ loop.index0 }}][concepto]" value="{{ detalle.concepto.id }}">
                     </td>
                     <td class="hidden">
-                        <input type="hidden" name="factura[detalles][{{ loop.index0 }}][subConcepto]" value="{{ detalle.subConcepto }}">
+                        <input type="hidden" name="factura[detalles][{{ loop.index0 }}][subConcepto]" value="{{ detalle.subConcepto ? detalle.subConcepto.id : '' }}">
                     </td>
                     <td class="hidden">
                         <input type="hidden" name="factura[detalles][{{ loop.index0 }}][descripcion]" value="{{ detalle.descripcion }}">
                     </td>
                     <td class="hidden">
-                        <input type="hidden" name="factura[detalles][{{ loop.index0 }}][monto]" value="{{ detalle.monto }}">
+                        <input type="hidden" name="factura[detalles][{{ loop.index0 }}][cantidad]" value="{{ detalle.cantidad }}">
+                    </td>
+                    <td class="hidden">
+                        <input type="hidden" name="factura[detalles][{{ loop.index0 }}][precioUnitario]" value="{{ detalle.precioUnitario|number_format(2, ',', '.') }}">
                     </td>
 
                     <td class="v-middle text-center">{{ detalle.concepto }}</td>
                     <td class="v-middle text-center">{{ detalle.subConcepto }}</td>
                     <td class="v-middle text-center">{{ detalle.descripcion }}</td>
-                    <td class="v-middle text-center">{{ detalle.monto }}</td>
+                    <td class="v-middle text-center">{{ detalle.cantidad }}</td>
+                    <td class="v-middle text-center">${{ detalle.precioUnitario|number_format(2, ',', '.') }}</td>
+                    <td class="v-middle text-center">${{ detalle.montoTotal|number_format(2, ',', '.') }}</td>
 
                     <td class="text-center v-middle">
                         <a href="#" class="btn btn-sm delete-link-inline link-delete-factura-detalle tooltips"

@@ -99,33 +99,80 @@ class FacturaController extends BaseController {
 
 
     /**
-     * @Route("/{id}/edit", name="factura_edit", methods={"GET|POST"})
+     * @Route("/{id}/edit", name="factura_edit", methods={"GET"})
+     * @Template("factura/new.html.twig")
+     * @IsGranted("ROLE_GASTO")
      */
-    public function edit(Request $request, Factura $factura, EntityManagerInterface $entityManager): Response
+    public function edit($id): array
     {
-        $form = $this->createForm(FacturaType::class, $factura);
-        $form->handleRequest($request);
+        return parent::baseEditAction($id);
+    }
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('factura_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('factura/edit.html.twig', [
-            'factura' => $factura,
-            'form' => $form,
-        ]);
+    /**
+     * @Route("/{id}/actualizar", name="factura_update", methods={"POST","PUT"})
+     * @IsGranted("ROLE_GASTO")
+     */
+    public function updateAction(Request $request, $id)
+    {
+        return parent::baseUpdateAction($request, $id, true);
     }
 
     function execPrePersistAction($entity, $request): bool
     {
         /** @var Factura $entity */
-        // Establecer la relación con los detalles de la factura
-        /** @var FacturaDetalle $detalle */
         foreach ($entity->getDetalles() as $detalle) {
             $detalle->setFactura($entity);
         }
+
+        return true;
+    }
+
+    function execPreUpdateAction($em, $entity, $request, $localVariablesArray): bool
+    {
+        /** @var Factura $entity */
+        $submittedData = $request->request->get('factura', []);
+        $submittedDetalles = $submittedData['detalles'] ?? [];
+
+        $detalleRepo = $em->getRepository(FacturaDetalle::class);
+        $conceptoRepo = $em->getRepository(\App\Entity\TipoConcepto::class);
+        $subConceptoRepo = $em->getRepository(\App\Entity\TipoSubConcepto::class);
+
+        $existingDetalles = $detalleRepo->findBy(['factura' => $entity->getId()]);
+        $existingById = [];
+        foreach ($existingDetalles as $d) {
+            $existingById[$d->getId()] = $d;
+        }
+
+        $submittedIds = [];
+        $newCollection = new \Doctrine\Common\Collections\ArrayCollection();
+
+        foreach ($submittedDetalles as $data) {
+            $id = !empty($data['id']) ? (int) $data['id'] : null;
+
+            if ($id && isset($existingById[$id])) {
+                $detalle = $existingById[$id];
+                $submittedIds[] = $id;
+            } else {
+                $detalle = new FacturaDetalle();
+            }
+
+            $detalle->setConcepto(!empty($data['concepto']) ? $conceptoRepo->find($data['concepto']) : null);
+            $detalle->setSubConcepto(!empty($data['subConcepto']) ? $subConceptoRepo->find($data['subConcepto']) : null);
+            $detalle->setCantidad($data['cantidad'] ?? null);
+            $detalle->setPrecioUnitario($data['precioUnitario'] ?? null);
+            $detalle->setDescripcion($data['descripcion'] ?? null);
+            $detalle->setFactura($entity);
+
+            $newCollection->add($detalle);
+        }
+
+        foreach ($existingById as $id => $detalle) {
+            if (!in_array($id, $submittedIds, true)) {
+                $em->remove($detalle);
+            }
+        }
+
+        $entity->setDetalles($newCollection);
 
         return true;
     }

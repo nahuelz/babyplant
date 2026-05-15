@@ -41,7 +41,9 @@
                                         <th>Concepto</th>
                                         <th>Subconcepto</th>
                                         <th>Descripción</th>
-                                        <th class="text-right">Monto</th>
+                                        <th class="text-center">Cantidad</th>
+                                        <th class="text-right">Precio Unitario</th>
+                                        <th class="text-right">Subtotal</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -50,13 +52,15 @@
                                             <td>{{ detalle.concepto }}</td>
                                             <td>{{ detalle.subConcepto ?: '-' }}</td>
                                             <td>{{ detalle.descripcion ?: '-' }}</td>
+                                            <td class="text-center">{{ detalle.cantidad ?: '-' }}</td>
+                                            <td class="text-right">{{ detalle.precioUnitario is not null ? detalle.precioUnitario|money_format : '-' }}</td>
                                             <td class="text-right font-weight-bold">{{ detalle.montoTotal|money_format }}</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
                                 <tfoot>
                                     <tr class="table-active">
-                                        <td colspan="3" class="text-right font-weight-bold">Total:</td>
+                                        <td colspan="5" class="text-right font-weight-bold">Total:</td>
                                         <td class="text-right font-weight-bold">{{ factura.getTotal()|money_format }}</td>
                                     </tr>
                                 </tfoot>

@@ -90,7 +90,18 @@ class FacturaDetalle
 
     public function getMontoTotal(): ?string
     {
-        return $this->cantidad * $this->precioUnitario;
+        return (string) ((float) $this->cantidad * (float) $this->precioUnitario);
+    }
+
+    public function getPrecioUnitario(): ?string
+    {
+        return $this->precioUnitario;
+    }
+
+    public function setPrecioUnitario($precioUnitario): self
+    {
+        $this->precioUnitario = $precioUnitario;
+        return $this;
     }
 
     public function getDescripcion(): ?string
@@ -110,7 +121,7 @@ class FacturaDetalle
         if ($this->subConcepto) {
             $nombre .= ' - ' . $this->subConcepto->getNombre();
         }
-        return $nombre . ' ($' . $this->monto . ')';
+        return $nombre . ' ($' . $this->getMontoTotal() . ')';
     }
 
     /**

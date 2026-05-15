@@ -47,6 +47,10 @@
 {% block javascripts %}
 
     {{ parent() }}
+    <script>
+        window.__FACTURA_IS_EDIT__ = {{ edit ? 'true' : 'false' }};
+        window.__FACTURA_SUBMIT_URL__ = {% if edit %}'{{ path('factura_update', {id: form.vars.value.id}) }}'{% else %}(__HOMEPAGE_PATH__ + 'factura/insertar'){% endif %};
+    </script>
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}"></script>
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/factura/new.js') }}"></script>
 
