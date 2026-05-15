@@ -36,6 +36,6 @@
 {% endif %}
 
 {# MENU ESTADISTICAS #}
-{% if is_granted("ROLE_ESTADISTICAS") %}
+{% if is_granted("ROLE_MENU_ADMINISTRACION") %}
     {% include 'menu/menu_administracion.html.twig' %}
 {% endif %}

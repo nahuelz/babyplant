@@ -6,31 +6,31 @@
         <ul class="menu-subnav">
             {% if is_granted("ROLE_GASTO") %}
                 {% include 'menu/menu_gasto.html.twig' %}
+                <hr class="m-0">
             {% endif %}
-            <hr class="m-0">
             {% if is_granted("ROLE_FACTURA") %}
                 {% include 'menu/menu_factura.html.twig' %}
+                <hr class="m-0">
+                <li class="menu-item " aria-haspopup="true">
+                    <a href="{{ path('tipoconcepto_index') }}" class="menu-link ">
+                        <span class="menu-text">Configurar Conceptos</span>
+                    </a>
+                </li>
+                <li class="menu-item " aria-haspopup="true">
+                    <a href="{{ path('tiposubconcepto_index') }}" class="menu-link ">
+                        <span class="menu-text">Configurar Sub Conceptos</span>
+                    </a>
+                </li>
+                <hr class="m-0">
             {% endif %}
-            <hr class="m-0">
-            <li class="menu-item " aria-haspopup="true">
-                <a href="{{ path('tipoconcepto_index') }}" class="menu-link ">
-                    <span class="menu-text">Configurar Conceptos</span>
-                </a>
-            </li>
-            <li class="menu-item " aria-haspopup="true">
-                <a href="{{ path('tiposubconcepto_index') }}" class="menu-link ">
-                    <span class="menu-text">Configurar Sub Conceptos</span>
-                </a>
-            </li>
-            <hr class="m-0">
             {% if is_granted("ROLE_ESTADISTICAS") %}
                 {% include 'menu/estadiscticas.html.twig' %}
+                <hr class="m-0">
             {% endif %}
-            <hr class="m-0">
-            {% if is_granted("ROLE_MENU_CONFIGURACION") %}
+            {% if is_granted("ROLE_USUARIO_ALL") %}
                 <li class="menu-item " aria-haspopup="true">
                     <a href="{{ path('usuario_index') }}" class="menu-link ">
-                        <span class="menu-text">Usuarios</span>
+                        <span class="menu-text">Clientes / Usuarios</span>
                     </a>
                 </li>
             {% endif %}
