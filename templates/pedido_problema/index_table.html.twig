@@ -43,7 +43,7 @@
         "{{ entity.diasEnInvernaculo|default('-') }}",
         "{{ entity.ordenSiembra|default('-') }}",
         "{{ entity.mesada|default('-') }}",
-        "{{ entity.codigoSobre|default('-') }}",
+        "{{ entity.codigoSobre|escape_json|raw|default('-') }}",
         "{{ entity.tieneProblema == 1 ? '1' : '0' }}", {# 17 #}
         "{{ entity.tieneSolucion == 1 ? entity.tieneProblema == 1 ? '1' : '0' }}", {# 18 #}
         {

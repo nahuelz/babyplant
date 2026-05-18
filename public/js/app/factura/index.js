@@ -64,7 +64,7 @@ function initDataTable() {
         pageLength: 50,
         destroy: true,
         columnDefs: datatablesGetColDef(),
-        order: [[1, 'desc']],
+        order: [[0, 'desc']],
         serverSide: false,
     });
 
@@ -85,8 +85,11 @@ function datatablesGetColDef() {
             name: 'id',
             width: '15px',
             className: 'dt-center',
-            orderable: false,
+            orderable: true,
             render: function (data, type, full, meta) {
+                if (type === 'sort' || type === 'type') {
+                    return parseInt(full.id, 10);
+                }
                 return '\
                     <label class="kt-checkbox kt-checkbox--single kt-checkbox--solid">\
                         <input type="checkbox" value="" class="kt-checkable">\
