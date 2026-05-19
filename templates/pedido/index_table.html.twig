@@ -2,6 +2,7 @@
 {% set EN_INVERNACULO = constant(EstadoPedidoProducto ~ '::EN_INVERNACULO') %}
 {% set PENDIENTE = constant(EstadoPedidoProducto ~ '::PENDIENTE') %}
 {% set PLANIFICADO = constant(EstadoPedidoProducto ~ '::PLANIFICADO') %}
+{% set EN_CAMARA = constant(EstadoPedidoProducto ~ '::EN_CAMARA') %}
 {% autoescape false %}
     {
     "data": [
@@ -46,7 +47,7 @@
         "historico_estado": "{{ path( "pedido_historico_estado", { 'id': entity.idProducto }) }}",
         "print" : "{{ path( "imprimir_pedido", { "id": entity.id }) }}",
         "situacion_cliente" : "{{ path( "situacioncliente_show", { "id": entity.idCliente }) }}"
-        {% if entity.idEstado ==  PENDIENTE or entity.idEstado ==  PLANIFICADO %}
+        {% if entity.idEstado ==  PENDIENTE or entity.idEstado ==  PLANIFICADO or entity.idEstado ==  EN_CAMARA %}
             ,"cancelar" : " {{ path( "pedido_producto_cancelar", { "id": entity.idProducto }) }}"
         {% endif %}
         {% if entity.celular != '' %}
