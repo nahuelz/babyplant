@@ -541,10 +541,10 @@ function datatablesGetColDef() {
 
                 if (visto === "1") {
                     // Ya fue chequeado - mostrar botón deshabilitado
-                    return '<button type="button" class="btn btn-sm btn-secondary" disabled title="Ya fue chequeado"><i class="la la-check" style="width: 2em;margin: auto;display: block"></i></button>';
+                    return '<button type="button" class="btn btn-sm btn-success" disabled title="Ya fue chequeado"><i class="la la-check" style="width: 2em;margin: auto;display: block"></i></button>';
                 } else {
                     // No fue chequeado - mostrar botón activo
-                    return '<button type="button" class="btn btn-sm btn-success btn-ok-checkeo" data-id="' + full[2].idProducto + '" title="Checkeo"><i class="la la-check" style="width: 2em;margin: auto;display: block"></i></button>';
+                    return '<button type="button" class="btn btn-sm btn-secondary btn-ok-checkeo" data-id="' + full[2].idProducto + '" title="Checkeo"><i class="la la-check" style="width: 2em;margin: auto;display: block"></i></button>';
                 }
             }
         },
@@ -1467,7 +1467,7 @@ function initOkCheckeoHandler() {
                     toastr.success('Checkeo realizado correctamente');
 
                     // Cambiar el botón a estado "chequeado"
-                    $button.removeClass('btn-success').addClass('btn-secondary')
+                    $button.removeClass('btn-secondary').addClass('btn-success')
                         .prop('disabled', true)
                         .html('<i class="la la-check" style="width: 2em;margin: auto;display: block"></i>')
                         .attr('title', 'Ya fue chequeado');
