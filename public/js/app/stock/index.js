@@ -218,6 +218,12 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
+            name: 'cantidadBandejas',
+            className: 'dt-center',
+            width: '50px',
+        },
+        {
+            targets: index++,
             name: 'cantidadBandejasDisponibles',
             className: 'dt-center',
             width: '50px',
