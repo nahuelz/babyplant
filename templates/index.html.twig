@@ -78,7 +78,7 @@
 
                     {# SITUACION CLIENTE #}
                     {% if is_granted("ROLE_SITUACION_CLIENTE") %}
-                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-users icon-3x text-dark', 'nombreModulo': 'SITUACION EMPRESA','action': path('situacionempresa_index'), 'descripcionModulo': 'Aqui podra ver la situacion de las empresas' } %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-users icon-3x text-dark', 'nombreModulo': 'SITUACION EMPRESA','action': path('razonsocial_index'), 'descripcionModulo': 'Aqui podra ver la situacion de las empresas' } %}
                     {% endif %}
 
                     {# CAJA #}
