@@ -55,6 +55,12 @@ class Factura
      */
     private $numeroFactura;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Proveedor::class)
+     * @ORM\JoinColumn(name="id_proveedor", referencedColumnName="id", nullable=false)
+     */
+    private $proveedor;
+
     public function __construct()
     {
         $this->detalles = new ArrayCollection();
@@ -169,9 +175,20 @@ class Factura
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getProveedor()
+    {
+        return $this->proveedor;
+    }
 
-
-
-
+    /**
+     * @param mixed $proveedor
+     */
+    public function setProveedor($proveedor): void
+    {
+        $this->proveedor = $proveedor;
+    }
 
 }

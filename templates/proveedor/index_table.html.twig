@@ -1,0 +1,24 @@
+{
+"data": [
+{% for entity in entities %}
+    [
+    "{{ entity.id }}",
+    "{{ entity.nombre|default('-') }}",
+    "{{ entity.cuit|default('-') }}",
+    "{{ entity.email|default('-') }}",
+    "{{ entity.telefono|default('-') }}",
+    "{{ entity.direccion|default('-') }}",
+    "{{ entity.habilitado|default('-') }}",
+    {
+    {% if is_granted('ROLE_PROVEEDOR_CRUD') %}
+        "show" : " {{ path( "proveedor_show", { "id": entity.id }) }}"
+        ,"edit" : " {{ path( "proveedor_edit", { "id": entity.id }) }}"
+    {% endif %}
+    }
+    ]{{ (loop.last ? '' : ',') }}
+{% endfor %}
+],
+"draw": {{ draw }},
+"recordsTotal": {{ totalRows }},
+"recordsFiltered": {{ totalFiltered }}
+}

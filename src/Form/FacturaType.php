@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Factura;
 use App\Entity\ModoPago;
+use App\Entity\Proveedor;
 use App\Form\FacturaDetalleType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -38,6 +39,23 @@ class FacturaType extends AbstractType
                     'tabindex' => '2'),
                 'data' => new \DateTime()
             ))
+            ->add('proveedor', EntityType::class, array(
+                'required' => true,
+                'label' => 'Proveedor',
+                'class' => Proveedor::class,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('p')
+                        ->where('p.habilitado = :habilitado')
+                        ->setParameter('habilitado', true)
+                        ->orderBy('p.nombre', 'ASC');
+                },
+                'choice_label' => 'nombre',
+                'placeholder' => 'Seleccione un proveedor',
+                'attr' => array(
+                    'class' => 'form-control',
+                    'tabindex' => '3'
+                )
+            ))
             ->add('detalle', FacturaDetalleType::class, [
                 'required' => false,
                 'mapped' => false,
@@ -61,7 +79,7 @@ class FacturaType extends AbstractType
                 ],
                 'attr' => array(
                     'class' => 'form-control',
-                    'tabindex' => '3'
+                    'tabindex' => '4'
                 )
             ])
             ->add('tipoCambio', MoneyType::class, array(
@@ -74,7 +92,7 @@ class FacturaType extends AbstractType
                     'class' => 'form-control monto-input',
                     'style' => 'font-size: 1.1rem; font-weight: bold;',
                     'placeholder' => '0,00',
-                    'tabindex' => '4'
+                    'tabindex' => '5'
                 )
             ))
         ;

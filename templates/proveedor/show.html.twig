@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% import 'app/_macro_show.html.twig' as macro_show %}
+
+{% block body %}
+
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+				<span class="card-icon">
+					<i class="flaticon-search text-primary"></i>
+				</span>
+                <h3 class="card-label">Detalles del proveedor
+                    {{ proveedor }}</h3>
+            </div>
+            <div class="card-toolbar">
+                <!--begin::Button-->
+                <a href="{{ path('proveedor_edit', {'id': proveedor.id}) }}" class="btn btn-primary font-weight-bolder">
+                    <i class="la la-pen"></i>
+                    Editar
+                </a>
+                <!--end::Button-->
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                {{ macro_show._show_detail('Nombre', proveedor.nombre, 'col-md-4') }}
+                {{ macro_show._show_detail('CUIT/CUIL', proveedor.cuit|default('-'), 'col-md-4') }}
+                {{ macro_show._show_detail('Email', proveedor.email|default('-'), 'col-md-4') }}
+                {{ macro_show._show_detail('Teléfono', proveedor.telefono|default('-'), 'col-md-4') }}
+                {{ macro_show._show_detail('Dirección', proveedor.direccion|default('-'), 'col-md-4') }}
+                {{ macro_show._show_detail('Condición IVA', proveedor.condicionIva|default('-'), 'col-md-4') }}
+            </div>
+            <div class="row">
+                {{ macro_show._show_detail('Observaciones', proveedor.observaciones|default('-'), 'col-md-12') }}
+            </div>
+
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('proveedor_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
+        </div>
+
+    </div>
+
+
+{% endblock %}

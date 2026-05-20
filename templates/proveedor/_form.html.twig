@@ -1,0 +1,10 @@
+{% import 'app/_macro_form.html.twig' as macro_form %}
+{{ macro_form._new_field(form.nombre, "col-md-6") }}
+{{ macro_form._new_field(form.cuit, 'col-md-6') }}
+{{ macro_form._new_field(form.email, "col-md-6") }}
+{{ macro_form._new_field(form.telefono, 'col-md-6') }}
+{{ macro_form._new_field(form.direccion, "col-md-6") }}
+{{ macro_form._new_field(form.condicionIva, 'col-md-6') }}
+{{ macro_form._new_field(form.observaciones, 'col-md-12') }}
+{{ form_widget(form._token) }}
+{{ form_end(form, {"render_rest": false}) }}

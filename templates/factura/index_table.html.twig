@@ -4,6 +4,7 @@
     {% for entity in entities %}
         [
         "{{ entity.id }}",
+        "{{ entity.proveedor }}",
         "{{ entity.numeroFactura }}",
         "{{ entity.fecha is not null ? entity.fecha|date('d/m/Y') : '-' }}",
         {

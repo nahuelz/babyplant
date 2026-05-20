@@ -49,6 +49,7 @@ class FacturaController extends BaseController {
         $rsm = new ResultSetMapping();
 
         $rsm->addScalarResult('id', 'id');
+        $rsm->addScalarResult('proveedor', 'proveedor');
         $rsm->addScalarResult('numeroFactura', 'numeroFactura');
         $rsm->addScalarResult('fecha', 'fecha');
         $rsm->addScalarResult('montoTotal', 'montoTotal');

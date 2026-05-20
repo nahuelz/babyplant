@@ -99,6 +99,12 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
+            name: 'proveedor',
+            className: 'dt-center',
+            type: 'string'
+        },
+        {
+            targets: index++,
             name: 'numeroFactura',
             className: 'dt-center',
             type: 'string'
