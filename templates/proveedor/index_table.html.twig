@@ -8,11 +8,16 @@
     "{{ entity.email|default('-') }}",
     "{{ entity.telefono|default('-') }}",
     "{{ entity.direccion|default('-') }}",
-    "{{ entity.habilitado|default('-') }}",
+    "{{ entity.habilitado|boolean_format('-') }}",
     {
     {% if is_granted('ROLE_PROVEEDOR_CRUD') %}
         "show" : " {{ path( "proveedor_show", { "id": entity.id }) }}"
         ,"edit" : " {{ path( "proveedor_edit", { "id": entity.id }) }}"
+    {% endif %}
+    {% if entity.habilitado %}
+        ,"deshabilitar": "{{ path('proveedor_habilitar_deshabilitar', { "id": entity.id }) }}"
+    {% else %}
+        ,"habilitar": "{{ path('proveedor_habilitar_deshabilitar', {"id": entity.id})}}"
     {% endif %}
     }
     ]{{ (loop.last ? '' : ',') }}

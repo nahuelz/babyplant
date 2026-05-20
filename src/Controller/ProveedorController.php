@@ -7,6 +7,7 @@ use App\Entity\Proveedor;
 use App\Form\ProveedorType;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -116,5 +117,19 @@ class ProveedorController extends BaseController
         }
 
         return $this->redirectToRoute('proveedor_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * @Route("/{id}/habilitar_deshabilitar", name="proveedor_habilitar_deshabilitar", methods={"GET"})
+     */
+    public function HabilitarDeshabilitar($id): RedirectResponse
+    {
+        $em = $this->doctrine->getManager();
+        $proveedor = $em->getRepository(Proveedor::class)->findOneBy(array('id' => $id));
+        $proveedor->setHabilitado(!$proveedor->getHabilitado());
+        $message = ($proveedor->getHabilitado()) ? 'habilitó' : 'deshabilitó';
+        $em->flush();
+        $this->get('session')->getFlashBag()->add('success', "Se " . $message . " correctamente al proveedor");
+        return $this->redirectToRoute('proveedor_index');
     }
 }

@@ -211,7 +211,7 @@ class Proveedor
         $this->observaciones = $observaciones;
     }
 
-    public function isHabilitado(): bool
+    public function getHabilitado(): bool
     {
         return $this->habilitado;
     }
