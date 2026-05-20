@@ -83,12 +83,19 @@ function datatablesGetColDef() {
  * @returns {String}
  */
 function dataTablesCustomActionFormatter(data, type, full, meta) {
+    let actions = '';
+    
     if(data.habilitar != undefined) {
-        return '<a class="dropdown-item accion-habilitar" titulo="'+ full[4]+'" habilitar="1" href="' + data.habilitar + '"><i class="la la-clipboard" style="margin-right: 5px;"></i> Habilitar</a>'
-    }else if(data.deshabilitar != undefined){
-        return '<a class="dropdown-item accion-habilitar" titulo="'+ full[4]+'" habilitar="0" href="' + data.deshabilitar + '"><i class="la la-edit" style="margin-right: 5px;"></i> Deshabilitar</a>'
+        actions += '<a class="dropdown-item accion-habilitar" titulo="'+ full[4]+'" habilitar="1" href="' + data.habilitar + '"><i class="la la-clipboard" style="margin-right: 5px;"></i> Habilitar</a>';
+    } else if(data.deshabilitar != undefined) {
+        actions += '<a class="dropdown-item accion-habilitar" titulo="'+ full[4]+'" habilitar="0" href="' + data.deshabilitar + '"><i class="la la-edit" style="margin-right: 5px;"></i> Deshabilitar</a>';
     }
-    return ''
+    
+    if(data.agregarFactura != undefined) {
+        actions += '<a class="dropdown-item" href="' + data.agregarFactura + '"><i class="la la-plus" style="margin-right: 5px;"></i> Agregar Factura</a>';
+    }
+    
+    return actions;
 }
 
 function initHabilitar() {

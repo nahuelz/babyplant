@@ -13,6 +13,7 @@
     {% if is_granted('ROLE_PROVEEDOR_CRUD') %}
         "show" : " {{ path( "proveedor_show", { "id": entity.id }) }}"
         ,"edit" : " {{ path( "proveedor_edit", { "id": entity.id }) }}"
+        ,"agregarFactura" : " {{ path( "factura_new", { "proveedor_id": entity.id }) }}"
     {% endif %}
     {% if entity.habilitado %}
         ,"deshabilitar": "{{ path('proveedor_habilitar_deshabilitar', { "id": entity.id }) }}"

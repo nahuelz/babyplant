@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Factura;
 use App\Entity\FacturaDetalle;
+use App\Entity\Proveedor;
+use App\Entity\Usuario;
 use App\Form\FacturaType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -68,8 +70,13 @@ class FacturaController extends BaseController {
      * @Template("factura/new.html.twig")
      * @IsGranted("ROLE_GASTO")
      */
-    public function new(): Array {
+    public function new(Request $request, EntityManagerInterface $em): Array {
         $entity = new Factura();
+        if ($request->query->has('proveedor_id')) {
+            $id = $request->query->get('proveedor_id');
+            $proveedor = $em->getRepository(Proveedor::class)->find($id);
+            $entity->setProveedor($proveedor);
+        }
         return parent::baseNewAction($entity);
     }
 
