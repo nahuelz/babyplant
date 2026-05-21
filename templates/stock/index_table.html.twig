@@ -22,7 +22,7 @@
         "nombreCliente": "{{ entity.cliente|default('-') }}",
         "path": "{{ path('situacioncliente_show', { "id": entity.idCliente }) }}"
         },
-        "{{ entity.cantidadBandejas|default('-') }}",
+        "{{ entity.stockTotal|default('-') }}",
         "{{ entity.cantidadBandejasDisponibles|default('-') }}",
         "{{ entity.fechaEntregaPedidoReal is not null ? entity.fechaEntregaPedidoReal|date('d/m/Y') : entity.fechaEntregaPedido|date('d/m/Y') }}",
         {

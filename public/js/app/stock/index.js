@@ -218,15 +218,17 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
-            name: 'cantidadBandejas',
+            name: 'stockTotal',
             className: 'dt-center',
             width: '50px',
+            type: 'num',
         },
         {
             targets: index++,
             name: 'cantidadBandejasDisponibles',
             className: 'dt-center',
             width: '50px',
+            type: 'num',
         },
         {
             targets: index++,

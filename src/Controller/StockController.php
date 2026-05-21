@@ -56,7 +56,7 @@ class StockController extends BaseController {
         $rsm->addScalarResult('nombreProductoCompleto', 'nombreProductoCompleto');
         $rsm->addScalarResult('cliente', 'cliente');
         $rsm->addScalarResult('idCliente', 'idCliente');
-        $rsm->addScalarResult('cantidadBandejas', 'cantidadBandejas');
+        $rsm->addScalarResult('stockTotal', 'stockTotal');
         $rsm->addScalarResult('cantidadBandejasDisponibles', 'cantidadBandejasDisponibles');
         $rsm->addScalarResult('tipoBandeja', 'tipoBandeja');
         $rsm->addScalarResult('fechaSiembraPedido', 'fechaSiembraPedido');
