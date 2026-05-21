@@ -20,8 +20,6 @@ class StockController extends BaseController {
     #[Route('/landing', name: 'stock_landing', methods: ['GET'])]
     public function landing(): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_STOCK');
-
         return $this->render('stock/landing.html.twig', array('productos' => $this->getProductos(),
             'page_title' => 'Stock'));
     }
@@ -29,8 +27,6 @@ class StockController extends BaseController {
     #[Route('/', name: 'stock_index', methods: ['GET'])]
     public function index(): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_STOCK');
-
         $clienteSelect = $this->getSelectService()->getClienteFilterStock();
         $estadoSelect = $this->getSelectService()->getEstadoSelect();
 
@@ -42,8 +38,6 @@ class StockController extends BaseController {
 
     #[Route('/index_table/', name: 'stock_table', methods: ['GET|POST'])]
     public function indexTableAction(Request $request): Response {
-
-        $this->denyAccessUnlessGranted('ROLE_STOCK');
 
         $em = $this->doctrine->getManager();
 
@@ -74,6 +68,7 @@ class StockController extends BaseController {
         $rsm->addScalarResult('colorProducto', 'colorProducto');
         $rsm->addScalarResult('ordenSiembra', 'ordenSiembra');
         $rsm->addScalarResult('mesada', 'mesada');
+        $rsm->addScalarResult('mesadaOrden', 'mesadaOrden');
         $rsm->addScalarResult('diasEnCamara', 'diasEnCamara');
         $rsm->addScalarResult('diasEnInvernaculo', 'diasEnInvernaculo');
         $rsm->addScalarResult('celular', 'celular');

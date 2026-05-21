@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Constants\ConstanteModoPago;
 use App\Entity\Constants\ConstanteTipoMovimiento;
 use App\Entity\Movimiento;
 use App\Entity\ModoPago;
@@ -45,6 +46,11 @@ class MovimientoService
         $movimiento->setToken($data['token']);
 
         $this->vincularContexto($movimiento, $data);
+
+        if ($movimiento->getTipoMovimiento() && (in_array($movimiento->getTipoMovimiento()->getCodigoInterno(), [ConstanteTipoMovimiento::AJUSTE_PEDIDO, ConstanteTipoMovimiento::AJUSTE_CC, ConstanteTipoMovimiento::AJUSTE_RESERVA]))){
+            $modoPago = $this->em->getRepository(ModoPago::class)->findOneByCodigoInterno(ConstanteModoPago::AJUSTE);
+            $movimiento->setModoPago($modoPago);
+        }
 
         $this->em->persist($movimiento);
         $this->em->flush();
