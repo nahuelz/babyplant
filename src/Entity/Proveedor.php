@@ -73,6 +73,15 @@ class Proveedor
      */
     protected $habilitado;
 
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="App\Entity\CuentaCorrienteProveedor",
+     *     mappedBy="proveedor",
+     *     cascade={"persist", "remove"}
+     * )
+     */
+    private ?CuentaCorrienteProveedor $cuentaCorrienteProveedor = null;
+
     public function __construct()
     {
         $this->habilitado = true;
@@ -219,5 +228,20 @@ class Proveedor
     public function setHabilitado(bool $habilitado): void
     {
         $this->habilitado = $habilitado;
+    }
+
+    public function getCuentaCorrienteProveedor(): ?CuentaCorrienteProveedor
+    {
+        return $this->cuentaCorrienteProveedor;
+    }
+
+    public function setCuentaCorrienteProveedor(?CuentaCorrienteProveedor $cuentaCorrienteProveedor): self {
+        $this->cuentaCorrienteProveedor = $cuentaCorrienteProveedor;
+
+        if ($cuentaCorrienteProveedor !== null && $cuentaCorrienteProveedor->getProveedor() !== $this) {
+            $cuentaCorrienteProveedor->setProveedor($this);
+        }
+
+        return $this;
     }
 }

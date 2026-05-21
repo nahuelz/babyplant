@@ -2,24 +2,41 @@
 
 {% import 'app/_macro_show.html.twig' as macro_show %}
 
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style type="text/css">
+        .card.card-detail .card-header {
+            padding: 15px;
+            background-color: #f5f5f5;
+        }
+
+        .card.card-detail {
+            margin-bottom: 20px;
+        }
+        .card.card-custom{
+            box-shadow: 0px 0px 20px 0px gray;
+        }
+    </style>
+{% endblock stylesheets %}
+
 {% block body %}
 
-    <div class="card card-custom">
+    <div class="card card-detail">
         <div class="card-header">
-            <div class="card-title">
-				<span class="card-icon">
-					<i class="flaticon-search text-primary"></i>
-				</span>
-                <h3 class="card-label">Detalles del proveedor
-                    {{ proveedor }}</h3>
-            </div>
-            <div class="card-toolbar">
-                <!--begin::Button-->
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <h4 class="card-title mb-0 mr-3">Detalles del proveedor {{ proveedor }}</h4>
+                    {% if proveedor.cuentaCorrienteProveedor %}
+                        <span class="label label-inline font-weight-bold {{ proveedor.cuentaCorrienteProveedor.saldo < 0 ? 'label-danger' : 'label-success' }}">
+                            Saldo: ${{ proveedor.cuentaCorrienteProveedor.saldo|number_format(2, ',', '.') }}
+                        </span>
+                    {% endif %}
+                </div>
                 <a href="{{ path('proveedor_edit', {'id': proveedor.id}) }}" class="btn btn-primary font-weight-bolder">
                     <i class="la la-pen"></i>
                     Editar
                 </a>
-                <!--end::Button-->
             </div>
         </div>
 
@@ -37,11 +54,120 @@
             </div>
 
         </div>
-        <div class="card-footer d-flex justify-content-between">
-            <a href="{{ path('proveedor_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
-        </div>
-
     </div>
 
+    {# Cuenta Corriente #}
+    {% if proveedor.cuentaCorrienteProveedor %}
+        <div class="card card-detail">
+            <div class="card-header">
+                <h4 class="card-title">Cuenta Corriente</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card shadow-sm {{ proveedor.cuentaCorrienteProveedor.saldo < 0 ? 'border-danger' : 'border-success' }}">
+                            <div class="card-body py-4">
+                                <small class="font-size-16 text-uppercase">Saldo Actual</small>
+                                <div class="display-4 font-weight-bold {{ proveedor.cuentaCorrienteProveedor.saldo < 0 ? 'text-danger' : 'text-success' }}">
+                                    ${{ proveedor.cuentaCorrienteProveedor.saldo|number_format(2, ',', '.') }}
+                                </div>
+                                <small class="text-muted">
+                                    {% if proveedor.cuentaCorrienteProveedor.saldo < 0 %}
+                                        Deuda con el proveedor
+                                    {% else %}
+                                        Saldo a favor
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {# Facturas #}
+    <div class="card card-detail">
+        <div class="card-header">
+            <h4 class="card-title">Facturas Generadas</h4>
+        </div>
+        <div class="card-body">
+            {% if facturas|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Número</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for factura in facturas %}
+                                <tr>
+                                    <td>{{ factura.numeroFactura }}</td>
+                                    <td>{{ factura.fecha ? factura.fecha|date('d/m/Y') : '-' }}</td>
+                                    <td>${{ factura.getTotal()|number_format(2, ',', '.') }}</td>
+                                    <td>
+                                        <a href="{{ path('factura_show', {'id': factura.id}) }}" class="btn btn-sm btn-light-primary" title="Ver detalle">
+                                            <i class="fas fa-search"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted">No hay facturas registradas para este proveedor.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Pagos #}
+    <div class="card card-detail">
+        <div class="card-header">
+            <h4 class="card-title">Pagos Realizados</h4>
+        </div>
+        <div class="card-body">
+            {% if pagos|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Importe</th>
+                                <th>Medio de Pago</th>
+                                <th>Comprobante</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pago in pagos %}
+                                <tr>
+                                    <td>{{ pago.fechaPago ? pago.fechaPago|date('d/m/Y') : '-' }}</td>
+                                    <td>${{ pago.importe|number_format(2, ',', '.') }}</td>
+                                    <td>{{ pago.medioPago|default('-') }}</td>
+                                    <td>{{ pago.numeroComprobante|default('-') }}</td>
+                                    <td>
+                                        <a href="{{ path('pagoproveedor_show', {'id': pago.id}) }}" class="btn btn-sm btn-light-primary" title="Ver detalle">
+                                            <i class="fas fa-search"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted">No hay pagos registrados para este proveedor.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card-footer d-flex justify-content-between">
+        <a href="{{ path('proveedor_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
+    </div>
 
 {% endblock %}

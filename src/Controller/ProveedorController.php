@@ -4,6 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Constants\ConstanteTipoConsulta;
 use App\Entity\Proveedor;
+use App\Entity\Factura;
+use App\Entity\PagoProveedor;
+use App\Entity\CuentaCorrienteProveedor;
 use App\Form\ProveedorType;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -14,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/proveedor")
- * @IsGranted("ROLE_PROVEEDOR_CRUD")
+ * @IsGranted("ROLE_PROVEEDOR")
  */
 class ProveedorController extends BaseController
 {
@@ -67,9 +70,15 @@ class ProveedorController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->doctrine->getManager();
-            $entityManager->persist($proveedor);
-            $entityManager->flush();
+            $em = $this->doctrine->getManager();
+            $em->persist($proveedor);
+
+            $cuentaCorriente = new CuentaCorrienteProveedor();
+            $cuentaCorriente->setProveedor($proveedor);
+            $cuentaCorriente->setSaldo(0.00);
+            $em->persist($cuentaCorriente);
+
+            $em->flush();
 
             return $this->redirectToRoute('proveedor_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -83,8 +92,20 @@ class ProveedorController extends BaseController
     #[Route('/{id}', name: 'proveedor_show', methods: ['GET'])]
     public function show(Proveedor $proveedor): Response
     {
+        $entityManager = $this->doctrine->getManager();
+        
+        // Obtener facturas del proveedor
+        $facturas = $entityManager->getRepository(Factura::class)
+            ->findBy(['proveedor' => $proveedor], ['fecha' => 'DESC']);
+        
+        // Obtener pagos al proveedor
+        $pagos = $entityManager->getRepository(PagoProveedor::class)
+            ->findBy(['proveedor' => $proveedor], ['fechaPago' => 'DESC']);
+        
         return $this->render('proveedor/show.html.twig', [
             'proveedor' => $proveedor,
+            'facturas' => $facturas,
+            'pagos' => $pagos,
         ]);
     }
 

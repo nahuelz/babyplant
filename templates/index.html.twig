@@ -100,6 +100,11 @@
                     {% if is_granted("ROLE_GASTO") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-dollar-sign icon-3x text-dark', 'nombreModulo': 'GASTO','action': path('gasto_index'), 'descripcionModulo': 'Aqui podra ver los gastos' } %}
                     {% endif %}
+
+                    {# PROVEEDORES #}
+                    {% if is_granted("ROLE_PROVEEDOR") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-users icon-3x text-dark', 'nombreModulo': 'PROVEEDORES','action': path('proveedor_index'), 'descripcionModulo': 'Aqui podra ver los proveedores' } %}
+                    {% endif %}
                 </div>
             </div>
         </div>
