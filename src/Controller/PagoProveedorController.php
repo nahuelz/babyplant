@@ -76,8 +76,8 @@ class PagoProveedorController extends BaseController
      */
     public function new(Request $request, EntityManagerInterface $em): Array {
         $entity = new PagoProveedor();
-        if ($request->query->has('proveedor_id')) {
-            $id = $request->query->get('proveedor_id');
+        if ($request->query->has('id')) {
+            $id = $request->query->get('id');
             $proveedor = $em->getRepository(Proveedor::class)->find($id);
             $entity->setProveedor($proveedor);
         }
