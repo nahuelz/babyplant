@@ -25,7 +25,7 @@
         },
         {
         "idPedido": "{{ entity.id }}",
-        "cantidadBandejasDisponibles": "{{ entity.cantidadBandejasDisponibles is same as (entity.cantidadBandejasDisponibles|round(0, 'floor')) ? entity.cantidadBandejasDisponibles|number_format(0, '', '') : entity.cantidadBandejasDisponibles }}",
+        "cantidadBandejasDisponibles": "{{ entity.cantidadBandejasDisponibles == (entity.cantidadBandejasDisponibles|round(0, 'floor')) ? entity.cantidadBandejasDisponibles|number_format(0, '', '') : entity.cantidadBandejasDisponibles }}",
         "nombreCliente": "{{ entity.cliente|default('-') }}",
         "path": "{{ path('situacioncliente_show', { "id": entity.idCliente }) }}"
         },
