@@ -280,7 +280,8 @@ function datatablesGetColDef() {
             name: 'mesadaOrden',
             visible: false,
             searchable: false,
-            type: 'num'
+            type: 'num',
+            orderable: false
         },
         {
             targets: -1,
