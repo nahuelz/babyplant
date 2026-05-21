@@ -1,0 +1,23 @@
+{% autoescape false %}
+    {
+    "data": [
+    {% for entity in entities %}
+        [
+        "{{ entity.id }}",
+        "{{ entity.proveedor }}",
+        "{{ entity.fechaPago is not null ? entity.fechaPago|date('d/m/Y') : '-' }}",
+        {
+        "monto": "{{ entity.monto }}",
+        "tipoMoneda": "{{ entity.tipoMoneda }}"
+        },
+        "{{ entity.modoPago }}",
+        {
+        "show" : " {{ path( "factura_show", { "id": entity.id }) }}",
+        "edit" : " {{ path( "factura_edit", { "id": entity.id }) }}",
+        "delete" : " {{ path( "factura_delete", { "id": entity.id }) }}"
+        }
+        ]{{ (loop.last ? '' : ',') }}
+    {% endfor %}
+    ]
+    }
+{% endautoescape %}

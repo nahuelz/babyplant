@@ -40,6 +40,11 @@ class MovimientoProveedor
     private TipoMovimiento $tipoMovimiento;
 
     /**
+     * @ORM\Column(name="tipo_moneda", type="string", length=3)
+     */
+    private string $tipoMoneda = 'ARS';
+
+    /**
      * Negativo = aumenta deuda (factura recibida)
      * Positivo = reduce deuda (pago realizado)
      *
@@ -173,4 +178,16 @@ class MovimientoProveedor
 
         return $this;
     }
+
+    public function getTipoMoneda(): string
+    {
+        return $this->tipoMoneda;
+    }
+
+    public function setTipoMoneda(string $tipoMoneda): void
+    {
+        $this->tipoMoneda = $tipoMoneda;
+    }
+
+
 }

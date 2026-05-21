@@ -160,6 +160,7 @@ class FacturaController extends BaseController {
     {
         /** @var Factura $entity */
         $proveedor = $entity->getProveedor();
+
         $cuentaCorriente = $proveedor->getCuentaCorrienteProveedor();
 
         if (!$cuentaCorriente) {
@@ -174,20 +175,42 @@ class FacturaController extends BaseController {
         }
 
         $total = $entity->getTotal();
-        $saldoAnterior = $cuentaCorriente->getSaldo();
-        $nuevoSaldo = $saldoAnterior - $total;
+
+        $tipoMoneda = $entity->getTipoMoneda();
+
+        // Factura = aumenta deuda
+        $montoMovimiento = -$total;
+
+        // Actualiza saldo según moneda
+        $cuentaCorriente->sumarSaldo(
+            $montoMovimiento,
+            $tipoMoneda
+        );
+
+        // Obtiene saldo actualizado
+        $saldoPosterior = $tipoMoneda === 'USD'
+            ? $cuentaCorriente->getSaldoUsd()
+            : $cuentaCorriente->getSaldoArs();
 
         $movimiento = new MovimientoProveedor();
+
         $movimiento->setCuentaCorrienteProveedor($cuentaCorriente);
         $movimiento->setTipoMovimiento($tipoMovimiento);
-        $movimiento->setMonto(-$total);
-        $movimiento->setSaldoPosterior($nuevoSaldo);
-        $movimiento->setDescripcion('Factura #' . $entity->getNumeroFactura());
+
+        $movimiento->setMonto($montoMovimiento);
+
+        $movimiento->setSaldoPosterior($saldoPosterior);
+
+        $movimiento->setTipoMoneda($tipoMoneda);
+
+        $movimiento->setDescripcion(
+            'Factura #' . $entity->getNumeroFactura()
+        );
+
         $movimiento->setFactura($entity);
 
-        $cuentaCorriente->setSaldo($nuevoSaldo);
-
         $em->persist($movimiento);
+
         $em->flush();
     }
 

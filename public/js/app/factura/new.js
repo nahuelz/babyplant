@@ -348,11 +348,14 @@ function initBaseSubmitButton() {
                         return false;
                     } else {
                         Swal.fire({
+                            showCloseButton: true,
+                            showCancelButton: true,
+                            cancelButtonText: 'Cerrar',
                             width: '800px',
                             title: window.__FACTURA_IS_EDIT__ ? '<strong>FACTURA ACTUALIZADA!</strong>' : '<strong>FACTURA AGREGADA!</strong>',
                             color: "#716add",
                             allowOutsideClick: false,
-                            backdrop: false,
+                            backdrop: true,
                             confirmButtonText: window.__FACTURA_IS_EDIT__ ? 'Volver al listado' : 'Agregar Nueva Factura',
                             html: '<div class="d-flex flex-row justify-content-center align-items-center w-100">' +
                                 '<a href="/factura/imprimir-factura/'+result.message+'" class="swal2-confirm swal2-styled" title="Imprimir comprobante">\n' +

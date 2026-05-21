@@ -33,11 +33,22 @@ class PagoProveedor
     private Proveedor $proveedor;
 
     /**
-     * Importe del pago.
+     * Monto del pago.
      *
      * @ORM\Column(type="decimal", precision=15, scale=2)
      */
-    private string $importe;
+    private string $monto;
+
+    /**
+     * @ORM\Column(name="tipo_moneda", type="string", length=3, nullable=false, options={"default"="ARS"})
+     */
+    private $tipoMoneda;
+
+    /**
+     * @ORM\Column(name="tipo_cambio", type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $tipoCambio;
+
 
     /**
      * Fecha efectiva del pago.
@@ -47,11 +58,10 @@ class PagoProveedor
     private \DateTimeImmutable $fechaPago;
 
     /**
-     * Transferencia, efectivo, cheque, etc.
-     *
-     * @ORM\Column(type="string", length=100, nullable=true)
+     * @ORM\ManyToOne(targetEntity=ModoPago::class)
+     * @ORM\JoinColumn(name="id_modo_pago", referencedColumnName="id")
      */
-    private ?string $medioPago = null;
+    private $modoPago;
 
     /**
      * Número de comprobante opcional.
@@ -88,14 +98,14 @@ class PagoProveedor
         return $this;
     }
 
-    public function getImporte(): float
+    public function getMonto(): float
     {
-        return (float) $this->importe;
+        return (float) $this->monto;
     }
 
-    public function setImporte(float $importe): self
+    public function setMonto(float $monto): self
     {
-        $this->importe = (string) $importe;
+        $this->monto = (string) $monto;
 
         return $this;
     }
@@ -113,15 +123,13 @@ class PagoProveedor
         return $this;
     }
 
-    public function getMedioPago(): ?string
+    public function getModoPago(): ?ModoPago
     {
-        return $this->medioPago;
+        return $this->modoPago;
     }
 
-    public function setMedioPago(
-        ?string $medioPago
-    ): self {
-        $this->medioPago = $medioPago;
+    public function setModoPago(?ModoPago $modoPago): self {
+        $this->modoPago = $modoPago;
 
         return $this;
     }
@@ -151,4 +159,36 @@ class PagoProveedor
 
         return $this;
     }
+
+    public function getTipoMoneda(): string
+    {
+        return $this->tipoMoneda;
+    }
+
+    public function setTipoMoneda(string $tipoMoneda): void
+    {
+        $this->tipoMoneda = $tipoMoneda;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTipoCambio()
+    {
+        return $this->tipoCambio;
+    }
+
+    /**
+     * @param mixed $tipoCambio
+     */
+    public function setTipoCambio($tipoCambio): void
+    {
+        $this->tipoCambio = $tipoCambio;
+    }
+
+
+
+
+
+
 }

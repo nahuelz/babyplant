@@ -27,16 +27,9 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
                     <h4 class="card-title mb-0 mr-3">Detalles del proveedor {{ proveedor }}</h4>
-                    {% if proveedor.cuentaCorrienteProveedor %}
-                        <span class="label label-inline font-weight-bold {{ proveedor.cuentaCorrienteProveedor.saldo < 0 ? 'label-danger' : 'label-success' }}">
-                            Saldo: ${{ proveedor.cuentaCorrienteProveedor.saldo|number_format(2, ',', '.') }}
-                        </span>
-                    {% endif %}
                 </div>
                 <div>
-                    <button type="button" class="btn btn-success font-weight-bolder mr-2" data-toggle="modal" data-target="#modalAgregarFactura">
-                        <i class="fas fa-plus"></i> Agregar Factura
-                    </button>
+
                     <a href="{{ path('proveedor_edit', {'id': proveedor.id}) }}" class="btn btn-primary font-weight-bolder">
                         <i class="la la-pen"></i>
                         Editar
@@ -70,14 +63,31 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="card shadow-sm {{ proveedor.cuentaCorrienteProveedor.saldo < 0 ? 'border-danger' : 'border-success' }}">
+                        <div class="card shadow-sm {{ proveedor.cuentaCorrienteProveedor.saldoArs < 0 ? 'border-danger' : 'border-success' }}">
                             <div class="card-body py-4">
-                                <small class="font-size-16 text-uppercase">Saldo Actual</small>
-                                <div class="display-4 font-weight-bold {{ proveedor.cuentaCorrienteProveedor.saldo < 0 ? 'text-danger' : 'text-success' }}">
-                                    ${{ proveedor.cuentaCorrienteProveedor.saldo|number_format(2, ',', '.') }}
+                                <small class="font-size-16 text-uppercase">Saldo en ARS</small>
+                                <div class="display-4 font-weight-bold {{ proveedor.cuentaCorrienteProveedor.saldoArs < 0 ? 'text-danger' : 'text-success' }}">
+                                    ${{ proveedor.cuentaCorrienteProveedor.saldoArs|number_format(2, ',', '.') }}
                                 </div>
                                 <small class="text-muted">
-                                    {% if proveedor.cuentaCorrienteProveedor.saldo < 0 %}
+                                    {% if proveedor.cuentaCorrienteProveedor.saldoArs < 0 %}
+                                        Deuda con el proveedor
+                                    {% else %}
+                                        Saldo a favor
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card shadow-sm {{ proveedor.cuentaCorrienteProveedor.saldoUsd < 0 ? 'border-danger' : 'border-success' }}">
+                            <div class="card-body py-4">
+                                <small class="font-size-16 text-uppercase">Saldo en USD</small>
+                                <div class="display-4 font-weight-bold {{ proveedor.cuentaCorrienteProveedor.saldoUsd < 0 ? 'text-danger' : 'text-success' }}">
+                                    US$ {{ proveedor.cuentaCorrienteProveedor.saldoUsd|number_format(2, ',', '.') }}
+                                </div>
+                                <small class="text-muted">
+                                    {% if proveedor.cuentaCorrienteProveedor.saldoUsd < 0 %}
                                         Deuda con el proveedor
                                     {% else %}
                                         Saldo a favor
@@ -91,125 +101,137 @@
         </div>
     {% endif %}
 
-    {# Facturas #}
-    <div class="card card-detail">
-        <div class="card-header d-flex justify-content-between align-items-center padding-10">
-            <div class="card-title mb-0">
-                <h4 class="card-label mb-0">Facturas Generadas</h4>
-            </div>
-            <div class="card-toolbar">
-                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalAgregarFactura">
-                    <i class="la la-plus"></i> Nueva Factura
-                </button>
-            </div>
-        </div>
-        <div class="card-body padding-20">
-            <div class="row">
-                <div class="col-md-12">
-                    {% if facturas|length > 0 %}
-                        <div class="table-scrollable" style="border: none; overflow-y: scroll; height: 400px;">
-                            <table class="table table-striped table-bordered table-advance table-hover" style="border: 1px solid #ddd;">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center nowrap">Número</th>
-                                        <th class="text-center nowrap">Fecha</th>
-                                        <th class="text-center nowrap">Moneda</th>
-                                        <th class="text-center nowrap">Total</th>
-                                        <th class="text-center nowrap"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for factura in facturas %}
-                                        <tr>
-                                            <td class="v-middle nowrap text-center">{{ factura.numeroFactura }}</td>
-                                            <td class="v-middle nowrap text-center">{{ factura.fecha ? factura.fecha|date('d/m/Y') : '-' }}</td>
-                                            <td class="v-middle nowrap text-center">
-                                                <span class="label label-inline font-weight-bold {{ factura.tipoMoneda == 'USD' ? 'label-warning' : 'label-primary' }}">
-                                                    {{ factura.tipoMoneda }}
-                                                </span>
-                                            </td>
-                                            <td class="v-middle nowrap text-center">${{ factura.getTotal()|number_format(2, ',', '.') }}</td>
-                                            <td class="text-center dt-acciones">
-                                                <div class="dropdown dropdown-inline">
-                                                    <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <i class="ki ki-bold-more-hor"></i>
-                                                    </button>
-                                                    <div class="dropdown-menu">
-                                                        <a href="{{ path('factura_show', {'id': factura.id}) }}" class="dropdown-item">
-                                                            <i class="la la-search" style="margin-right: 5px;"></i> Ver Factura
-                                                        </a>
-                                                        <a href="{{ path('factura_edit', {'id': factura.id}) }}" class="dropdown-item">
-                                                            <i class="la la-pen" style="margin-right: 5px;"></i> Editar
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+    <div class="row">
+        <div class="col-md-6">
+            {# Facturas #}
+            <div class="card card-detail">
+                <div class="card-header d-flex justify-content-between align-items-center padding-10">
+                    <div class="card-title mb-0">
+                        <h4 class="card-label mb-0">Facturas Generadas</h4>
+                    </div>
+                    <div class="card-toolbar">
+                        <button type="button" class="btn btn-primary btn-sm font-weight-bolder" data-toggle="modal" data-target="#modalAgregarFactura">
+                            <i class="la la-plus"></i> Nueva Factura
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body padding-20">
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% if facturas|length > 0 %}
+                                <div class="table-scrollable" style="border: none; overflow-y: scroll; height: 400px;">
+                                    <table class="table table-striped table-bordered table-advance table-hover" style="border: 1px solid #ddd;">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center nowrap">Número</th>
+                                                <th class="text-center nowrap">Fecha</th>
+                                                <th class="text-center nowrap">Moneda</th>
+                                                <th class="text-center nowrap">Total</th>
+                                                <th class="text-center nowrap"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for factura in facturas %}
+                                                <tr>
+                                                    <td class="v-middle nowrap text-center">{{ factura.numeroFactura }}</td>
+                                                    <td class="v-middle nowrap text-center">{{ factura.fecha ? factura.fecha|date('d/m/Y') : '-' }}</td>
+                                                    <td class="v-middle nowrap text-center">
+                                                        <span class="label label-inline font-weight-bold {{ factura.tipoMoneda == 'USD' ? 'label-warning' : 'label-primary' }}">
+                                                            {{ factura.tipoMoneda }}
+                                                        </span>
+                                                    </td>
+                                                    <td class="v-middle nowrap text-center">{{ factura.tipoMoneda == 'USD' ? 'US$' : '$' }} {{ factura.getTotal()|number_format(2, ',', '.') }}</td>
+                                                    <td class="text-center dt-acciones">
+                                                        <div class="dropdown dropdown-inline">
+                                                            <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <i class="ki ki-bold-more-hor"></i>
+                                                            </button>
+                                                            <div class="dropdown-menu">
+                                                                <a href="{{ path('factura_show', {'id': factura.id}) }}" class="dropdown-item">
+                                                                    <i class="la la-search" style="margin-right: 5px;"></i> Ver Factura
+                                                                </a>
+                                                                <a href="{{ path('factura_edit', {'id': factura.id}) }}" class="dropdown-item">
+                                                                    <i class="la la-pen" style="margin-right: 5px;"></i> Editar
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <div class="note bg-grey-cararra font-size-13">
+                                    No hay facturas registradas para este proveedor.
+                                </div>
+                            {% endif %}
                         </div>
-                    {% else %}
-                        <div class="note bg-grey-cararra font-size-13">
-                            No hay facturas registradas para este proveedor.
-                        </div>
-                    {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    {# Pagos #}
-    <div class="card card-detail">
-        <div class="card-header d-flex justify-content-between align-items-center padding-10">
-            <div class="card-title mb-0">
-                <h4 class="card-label mb-0">Pagos Realizados</h4>
-            </div>
-        </div>
-        <div class="card-body padding-20">
-            <div class="row">
-                <div class="col-md-12">
-                    {% if pagos|length > 0 %}
-                        <div class="table-scrollable" style="border: none; overflow-y: scroll; height: 400px;">
-                            <table class="table table-striped table-bordered table-advance table-hover" style="border: 1px solid #ddd;">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center nowrap">Fecha</th>
-                                        <th class="text-center nowrap">Importe</th>
-                                        <th class="text-center nowrap">Medio de Pago</th>
-                                        <th class="text-center nowrap">Comprobante</th>
-                                        <th class="text-center nowrap"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for pago in pagos %}
-                                        <tr>
-                                            <td class="v-middle nowrap text-center">{{ pago.fechaPago ? pago.fechaPago|date('d/m/Y') : '-' }}</td>
-                                            <td class="v-middle nowrap text-center">${{ pago.importe|number_format(2, ',', '.') }}</td>
-                                            <td class="v-middle nowrap text-center">{{ pago.medioPago|default('-') }}</td>
-                                            <td class="v-middle nowrap text-center">{{ pago.numeroComprobante|default('-') }}</td>
-                                            <td class="text-center dt-acciones">
-                                                <div class="dropdown dropdown-inline">
-                                                    <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <i class="ki ki-bold-more-hor"></i>
-                                                    </button>
-                                                    <div class="dropdown-menu">
-                                                        <a href="{{ path('pagoproveedor_show', {'id': pago.id}) }}" class="dropdown-item">
-                                                            <i class="la la-search" style="margin-right: 5px;"></i> Ver Pago
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+        {# Pagos #}
+        <div class="col-md-6">
+            <div class="card card-detail">
+                <div class="card-header d-flex justify-content-between align-items-center padding-10">
+                    <div class="card-title mb-0">
+                        <h4 class="card-label mb-0">Pagos Realizados</h4>
+                    </div>
+                </div>
+                <div class="card-body padding-20">
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% if pagos|length > 0 %}
+                                <div class="table-scrollable" style="border: none; overflow-y: scroll; height: 400px;">
+                                    <table class="table table-striped table-bordered table-advance table-hover" style="border: 1px solid #ddd;">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center nowrap">Comprobante</th>
+                                                <th class="text-center nowrap">Fecha</th>
+                                                <th class="text-center nowrap">Moneda</th>
+                                                <th class="text-center nowrap">Importe</th>
+                                                <th class="text-center nowrap">Medio de Pago</th>
+                                                <th class="text-center nowrap"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for pago in pagos %}
+                                                <tr>
+                                                    <td class="v-middle nowrap text-center">{{ pago.numeroComprobante|default('-') }}</td>
+                                                    <td class="v-middle nowrap text-center">{{ pago.fechaPago ? pago.fechaPago|date('d/m/Y') : '-' }}</td>
+                                                    <td class="v-middle nowrap text-center">
+                                                        <span class="label label-inline font-weight-bold {{ pago.tipoMoneda == 'USD' ? 'label-warning' : 'label-primary' }}">
+                                                            {{ pago.tipoMoneda }}
+                                                        </span>
+                                                    </td>
+                                                    <td class="v-middle nowrap text-center">{{ pago.tipoMoneda == 'USD' ? 'US$' : '$' }} {{ pago.getMonto()|number_format(2, ',', '.') }}</td>
+                                                    <td class="v-middle nowrap text-center">{{ pago.modoPago|default('-') }}</td>
+                                                    <td class="text-center dt-acciones">
+                                                        <div class="dropdown dropdown-inline">
+                                                            <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <i class="ki ki-bold-more-hor"></i>
+                                                            </button>
+                                                            <div class="dropdown-menu">
+                                                                <a href="{{ path('pago_proveedor_show', {'id': pago.id}) }}" class="dropdown-item">
+                                                                    <i class="la la-search" style="margin-right: 5px;"></i> Ver Pago
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <div class="note bg-grey-cararra font-size-13">
+                                    No hay pagos registrados para este proveedor.
+                                </div>
+                            {% endif %}
                         </div>
-                    {% else %}
-                        <div class="note bg-grey-cararra font-size-13">
-                            No hay pagos registrados para este proveedor.
-                        </div>
-                    {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -242,7 +264,6 @@
     {{ parent() }}
 
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}"></script>
-    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/factura/new.js') }}"></script>
 
     <script>
         $(document).ready(function() {
@@ -252,14 +273,24 @@
                     url: '{{ path('factura_new_modal', {'proveedor_id': proveedor.id}) }}',
                     type: 'GET',
                     success: function(response) {
+
                         $('#facturaFormContainer').html(response);
-                        initFormValidation();
-                        initFacturaDetalleHandler();
-                        initMontoFormat();
-                        $('.row-factura-detalle-empty').hide();
-                        initSelect2();
-                        calcularTotal();
-                        initBaseSubmitButton();
+
+                        $.getScript('{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/factura/new.js') }}')
+                            .done(function () {
+
+                                initFormValidation();
+                                initFacturaDetalleHandler();
+                                initMontoFormat();
+                                $('.row-factura-detalle-empty').hide();
+                                initSelect2();
+                                calcularTotal();
+                                initBaseSubmitButton();
+
+                            })
+                            .fail(function () {
+                                console.error('No se pudo cargar factura/new.js');
+                            });
                     },
                     error: function() {
                         $('#facturaFormContainer').html('<div class="alert alert-danger m-3">Error al cargar el formulario.</div>');

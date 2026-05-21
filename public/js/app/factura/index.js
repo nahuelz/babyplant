@@ -129,7 +129,7 @@ function datatablesGetColDef() {
                 });
 
                 const simbolo = data.tipoMoneda === 'USD'
-                    ? 'U$S'
+                    ? 'US$'
                     : '$';
 
                 return simbolo + ' ' + montoFormateado;

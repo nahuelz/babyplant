@@ -34,12 +34,14 @@ class CuentaCorrienteProveedor
     private Proveedor $proveedor;
 
     /**
-     * Negativo = deuda con proveedor
-     * Positivo = saldo a favor
-     *
      * @ORM\Column(type="decimal", precision=15, scale=2)
      */
-    private string $saldo = '0.00';
+    private string $saldoArs = '0.00';
+
+    /**
+     * @ORM\Column(type="decimal", precision=15, scale=2)
+     */
+    private string $saldoUsd = '0.00';
 
     /**
      * @ORM\OneToMany(
@@ -73,18 +75,6 @@ class CuentaCorrienteProveedor
         return $this;
     }
 
-    public function getSaldo(): float
-    {
-        return (float) $this->saldo;
-    }
-
-    public function setSaldo(float $saldo): self
-    {
-        $this->saldo = (string) $saldo;
-
-        return $this;
-    }
-
     public function getMovimientos(): Collection
     {
         return $this->movimientos;
@@ -114,5 +104,43 @@ class CuentaCorrienteProveedor
         }
 
         return $this;
+    }
+
+    public function getSaldoArs(): string
+    {
+        return $this->saldoArs;
+    }
+
+    public function setSaldoArs(string $saldoArs): void
+    {
+        $this->saldoArs = $saldoArs;
+    }
+
+    public function getSaldoUsd(): string
+    {
+        return $this->saldoUsd;
+    }
+
+    public function setSaldoUsd(string $saldoUsd): void
+    {
+        $this->saldoUsd = $saldoUsd;
+    }
+
+    public function sumarSaldo(
+        float $monto,
+        string $tipoMoneda
+    ): void
+    {
+        if ($tipoMoneda === 'USD') {
+            $this->saldoUsd = (string)(
+                (float)$this->saldoUsd + $monto
+            );
+
+            return;
+        }
+
+        $this->saldoArs = (string)(
+            (float)$this->saldoArs + $monto
+        );
     }
 }

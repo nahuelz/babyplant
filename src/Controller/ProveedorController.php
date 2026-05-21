@@ -96,11 +96,11 @@ class ProveedorController extends BaseController
         
         // Obtener facturas del proveedor
         $facturas = $entityManager->getRepository(Factura::class)
-            ->findBy(['proveedor' => $proveedor], ['fecha' => 'DESC']);
+            ->findBy(['proveedor' => $proveedor], ['fecha' => 'DESC', 'id' => 'DESC']);
         
         // Obtener pagos al proveedor
         $pagos = $entityManager->getRepository(PagoProveedor::class)
-            ->findBy(['proveedor' => $proveedor], ['fechaPago' => 'DESC']);
+            ->findBy(['proveedor' => $proveedor], ['fechaPago' => 'DESC', 'id' => 'DESC']);
         
         return $this->render('proveedor/show.html.twig', [
             'proveedor' => $proveedor,

@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% set edit = form.vars.value.id != null %}
+
+{% import 'app/_macro_form.html.twig' as macro_form %}
+
+{% block stylesheets %}
+
+    {{ parent() }}
+
+    <style type="text/css">
+
+        .select2-results__options .select2-results__option[aria-disabled=true] {
+            display: none;
+        }
+
+    </style>
+{% endblock stylesheets %}
+
+{% block body %}
+    {{ form_start(form, {'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
+    {% include ('app/_fields_errors.html.twig') %}
+
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+				<span class="card-icon">
+					<i class="flaticon-search text-primary"></i>
+				</span>
+                <h3 class="card-label">{% if edit %}Editar Factura{% else %}Nueva Factura{% endif %}</h3>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {{ macro_form._new_field(form.proveedor, 'col-md-4') }}
+                {{ macro_form._new_field(form.numeroComprobante, 'col-md-4') }}
+                {{ macro_form._new_field(form.fechaPago, 'col-md-4') }}
+            </div>
+            <div class="row">
+                {{ macro_form._new_field(form.modoPago, 'col-md-3') }}
+                {{ macro_form._new_field(form.monto, 'col-md-3') }}
+                {{ macro_form._new_field(form.tipoMoneda, 'col-md-3') }}
+                <div class="col-md-3" id="tipo-cambio-container" style="display: {% if form.tipoMoneda == 'USD' %}block{% else %}none{% endif %};">
+                    {{ macro_form._new_field(form.tipoCambio, 'col-md-12') }}
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('factura_index') }}" class="btn btn-light-dark font-weight-bold">Volver</a>
+            {{ form_widget(form.submit) }}
+        </div>
+    </div>
+    {{ form_widget(form._token) }}
+    {{ form_end(form, {"render_rest": false}) }}
+
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+    <script>
+        window.__FACTURA_IS_EDIT__ = {{ edit ? 'true' : 'false' }};
+        window.__FACTURA_SUBMIT_URL__ = {% if edit %}'{{ path('pago_proveedor_update', {id: form.vars.value.id}) }}'{% else %}(__HOMEPAGE_PATH__ + 'pago_proveedor/insertar'){% endif %};
+    </script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}"></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/pagoproveedor/new.js') }}"></script>
+
+{% endblock %}
