@@ -7,6 +7,7 @@ use App\Entity\FacturaDetalle;
 use App\Entity\MovimientoProveedor;
 use App\Entity\Proveedor;
 use App\Entity\TipoMovimiento;
+use App\Entity\TipoSubConcepto;
 use App\Entity\Usuario;
 use App\Entity\Constants\ConstanteTipoMovimiento;
 use App\Form\FacturaType;
@@ -307,5 +308,23 @@ class FacturaController extends BaseController {
         $nativeQuery = $em->createNativeQuery($sql, $rsm);
 
         return $nativeQuery->getSingleResult();
+    }
+
+    /**
+     * @Route("/lista/conceptos", name="lista_conceptos")
+     */
+    public function listaSubConceptosAction(Request $request) {
+        $id_concepto = $request->request->get('id_entity');
+
+        $repository = $this->getDoctrine()->getRepository(TipoSubConcepto::class);
+
+        $query = $repository->createQueryBuilder('l')
+            ->select("l.id, l.nombre AS denominacion")
+            ->where('l.tipoConcepto = :concepto')
+            ->andWhere('l.habilitado = 1')
+            ->setParameter('concepto', $id_concepto)
+            ->orderBy('l.nombre', 'ASC')
+            ->getQuery();
+        return new JsonResponse($query->getResult());
     }
 }

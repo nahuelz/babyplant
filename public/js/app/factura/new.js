@@ -8,8 +8,12 @@ jQuery(document).ready(function () {
     initSelect2();
     calcularTotal();
     initBaseSubmitButton();
+    initConceptos();
 });
 
+function initConceptos() {
+    initChainedSelect($('#factura_detalle_concepto'), $('#factura_detalle_subConcepto'), __HOMEPAGE_PATH__ + 'factura/lista/conceptos', true);
+}
 function initSelect2() {
     $('#factura_modoPago').select2();
     $('#factura_detalle_concepto').select2();
