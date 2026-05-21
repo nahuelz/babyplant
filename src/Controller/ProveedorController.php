@@ -75,7 +75,8 @@ class ProveedorController extends BaseController
 
             $cuentaCorriente = new CuentaCorrienteProveedor();
             $cuentaCorriente->setProveedor($proveedor);
-            $cuentaCorriente->setSaldo(0.00);
+            $cuentaCorriente->setSaldoArs(0.00);
+            $cuentaCorriente->setSaldoUsd(0.00);
             $em->persist($cuentaCorriente);
 
             $em->flush();
