@@ -266,14 +266,6 @@ function datatablesGetColDef() {
             searchable: true,
             width: '50px',
             orderData: [11],
-            render: function(data, type, full, meta) {
-
-                if (type === 'sort') {
-                    return Number(full[11]); // índice de mesadaOrden
-                }
-
-                return data;
-            }
         },
         {
             targets: index++,
