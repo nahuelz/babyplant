@@ -1,0 +1,37 @@
+{% set __PREFIX_JAVASCRIPT__ = constant('App\\Entity\\Constants\\ConstanteAPI::PREFIX_JAVASCRIPT') %}
+{% import 'app/_macro_form.html.twig' as macro_form %}
+
+{{ form_start(form, {'attr': {'class': 'horizontal-form', 'novalidate': 'novalidate', 'id': 'form-factura-modal'}}) }}
+{% include ('app/_fields_errors.html.twig') %}
+
+<div class="modal-body">
+    <div class="row">
+        {{ macro_form._new_field(form.proveedor, 'col-md-4') }}
+        {{ macro_form._new_field(form.numeroFactura, 'col-md-4') }}
+        {{ macro_form._new_field(form.fecha, 'col-md-4') }}
+    </div>
+    <div class="row">
+        {{ macro_form._new_field(form.tipoMoneda, 'col-md-6') }}
+        <div class="col-md-6" id="tipo-cambio-container" style="display: none;">
+            {{ macro_form._new_field(form.tipoCambio, 'col-md-12') }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {% include 'factura/new.detalle.html.twig' %}
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer d-flex justify-content-between">
+    <button type="button" class="btn btn-light-dark font-weight-bold" data-dismiss="modal">Cancelar</button>
+    <button type="button" id="factura_submit" class="btn btn-primary font-weight-bold">Guardar Factura</button>
+</div>
+
+{{ form_widget(form._token) }}
+{{ form_end(form, {"render_rest": false}) }}
+
+<script>
+    window.__FACTURA_IS_EDIT__ = false;
+    window.__FACTURA_SUBMIT_URL__ = (__HOMEPAGE_PATH__ + 'factura/insertar');
+</script>

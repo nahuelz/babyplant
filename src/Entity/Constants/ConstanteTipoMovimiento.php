@@ -43,4 +43,14 @@ class ConstanteTipoMovimiento
      * AJUSTE
      */
     const AJUSTE_RESERVA = 7;
+
+    /**
+     * FACTURA
+     */
+    const FACTURA = 8;
+
+    /**
+     * PAGO_FACTURA
+     */
+    const PAGO_FACTURA = 9;
 }

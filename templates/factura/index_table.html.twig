@@ -13,6 +13,7 @@
         },
         {
         "show" : " {{ path( "factura_show", { "id": entity.id }) }}",
+        "edit" : " {{ path( "factura_edit", { "id": entity.id }) }}",
         "delete" : " {{ path( "factura_delete", { "id": entity.id }) }}"
         }
         ]{{ (loop.last ? '' : ',') }}

@@ -4,8 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Factura;
 use App\Entity\FacturaDetalle;
+use App\Entity\MovimientoProveedor;
 use App\Entity\Proveedor;
+use App\Entity\TipoMovimiento;
 use App\Entity\Usuario;
+use App\Entity\Constants\ConstanteTipoMovimiento;
 use App\Form\FacturaType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -81,6 +84,24 @@ class FacturaController extends BaseController {
     }
 
     /**
+     * @Route("/new_modal", name="factura_new_modal", methods={"GET"})
+     * @IsGranted("ROLE_GASTO")
+     */
+    public function newModal(Request $request, EntityManagerInterface $em): Response {
+        $entity = new Factura();
+        if ($request->query->has('proveedor_id')) {
+            $id = $request->query->get('proveedor_id');
+            $proveedor = $em->getRepository(Proveedor::class)->find($id);
+            $entity->setProveedor($proveedor);
+        }
+        $form = $this->createForm(FacturaType::class, $entity);
+        return $this->render('factura/new_modal.html.twig', [
+            'form' => $form->createView(),
+            'entity' => $entity,
+        ]);
+    }
+
+    /**
      * @Route("/insertar", name="factura_create", methods={"GET","POST"})
      * @Template("factura/new.html.twig")
      * @IsGranted("ROLE_GASTO")
@@ -135,6 +156,41 @@ class FacturaController extends BaseController {
         return true;
     }
 
+    function execPostPersistAction($em, $entity, $request): void
+    {
+        /** @var Factura $entity */
+        $proveedor = $entity->getProveedor();
+        $cuentaCorriente = $proveedor->getCuentaCorrienteProveedor();
+
+        if (!$cuentaCorriente) {
+            return;
+        }
+
+        $tipoMovimiento = $em->getRepository(TipoMovimiento::class)
+            ->find(ConstanteTipoMovimiento::FACTURA);
+
+        if (!$tipoMovimiento) {
+            return;
+        }
+
+        $total = $entity->getTotal();
+        $saldoAnterior = $cuentaCorriente->getSaldo();
+        $nuevoSaldo = $saldoAnterior - $total;
+
+        $movimiento = new MovimientoProveedor();
+        $movimiento->setCuentaCorrienteProveedor($cuentaCorriente);
+        $movimiento->setTipoMovimiento($tipoMovimiento);
+        $movimiento->setMonto(-$total);
+        $movimiento->setSaldoPosterior($nuevoSaldo);
+        $movimiento->setDescripcion('Factura #' . $entity->getNumeroFactura());
+        $movimiento->setFactura($entity);
+
+        $cuentaCorriente->setSaldo($nuevoSaldo);
+
+        $em->persist($movimiento);
+        $em->flush();
+    }
+
     function execPreUpdateAction($em, $entity, $request, $localVariablesArray): bool
     {
         /** @var Factura $entity */
@@ -181,6 +237,23 @@ class FacturaController extends BaseController {
         }
 
         $entity->setDetalles($newCollection);
+
+        $movimiento = $em->getRepository(MovimientoProveedor::class)
+            ->findOneBy(['factura' => $entity]);
+
+        if ($movimiento) {
+            $cuentaCorriente = $entity->getProveedor()->getCuentaCorrienteProveedor();
+            $newTotal = $entity->getTotal();
+            $oldMonto = $movimiento->getMonto();
+
+            $nuevoSaldo = $cuentaCorriente->getSaldo() - $oldMonto - $newTotal;
+
+            $movimiento->setMonto(-$newTotal);
+            $movimiento->setSaldoPosterior($nuevoSaldo);
+            $movimiento->setDescripcion('Factura #' . $entity->getNumeroFactura());
+
+            $cuentaCorriente->setSaldo($nuevoSaldo);
+        }
 
         return true;
     }
