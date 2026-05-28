@@ -1487,12 +1487,32 @@ function initOkCheckeoHandler() {
 }
 
 function initEliminarBandejasHandler() {
+    // Cargar tipos de motivos de eliminación
+    $.ajax({
+        url: __HOMEPAGE_PATH__ + 'tipo/motivo/eliminacion/api/todos-habilitados',
+        method: 'GET',
+        success: function(response) {
+            window.tiposMotivoEliminacion = response.data || [];
+        },
+        error: function() {
+            console.error('Error al cargar tipos de motivo de eliminación');
+            window.tiposMotivoEliminacion = [];
+        }
+    });
+
     $(document).off('click', '.elimina-bandeja-btn').on('click', '.elimina-bandeja-btn', function (e) {
         e.preventDefault();
 
         const id = $(this).data('id');
         const bandejasReales = $(this).data('bandejas-reales');
         const bandejasDisponibles = $(this).data('bandejas-disponibles');
+
+        let opcionesMotivo = '<option value="">Seleccionar motivo de eliminación...</option>';
+        if (window.tiposMotivoEliminacion && window.tiposMotivoEliminacion.length > 0) {
+            window.tiposMotivoEliminacion.forEach(function(tipo) {
+                opcionesMotivo += `<option value="${tipo.id}">${tipo.nombre}</option>`;
+            });
+        }
 
         // Crear modal para eliminar bandejas
         const modalHtml = `
@@ -1504,9 +1524,14 @@ function initEliminarBandejasHandler() {
                                 <i class="la la-trash"></i>
                                 Eliminar Bandejas
                             </h5>
-                            <button type="button" class="close" data-dismiss="modal">
-                                <span>&​times;</span>
-                            </button>
+                            <div>
+                                <a href="${__HOMEPAGE_PATH__}tipo/motivo/eliminacion/new" target="_blank" class="btn btn-sm btn-primary mr-2">
+                                    <i class="la la-plus"></i> Agregar Motivo
+                                </a>
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span>&​times;</span>
+                                </button>
+                            </div>
                         </div>
                         <div class="modal-body">
                             <div class="alert alert-info">
@@ -1516,8 +1541,14 @@ function initEliminarBandejasHandler() {
                             </div>
                             <form id="formEliminarBandejas">
                                 <div class="form-group">
+                                    <label for="motivoEliminacion">Motivo de eliminación:</label>
+                                    <select class="form-control" id="motivoEliminacion" name="motivoEliminacion" required>
+                                        ${opcionesMotivo}
+                                    </select>
+                                </div>
+                                <div class="form-group">
                                     <label for="cantidadAEliminar">Cantidad de bandejas a eliminar:</label>
-                                    <input type="number" class="form-control" id="cantidadAEliminar" 
+                                    <input type="number" class="form-control" id="cantidadAEliminar"
                                            name="cantidadAEliminar" min="1" max="${bandejasDisponibles}" required>
                                     <small class="form-text text-muted">Máximo: ${bandejasDisponibles}</small>
                                 </div>
@@ -1546,6 +1577,16 @@ function initEliminarBandejasHandler() {
         // Manejar envío del formulario
         $('#eliminarBandejas').off('click').on('click', function() {
             const cantidadAEliminar = parseFloat($('#cantidadAEliminar').val());
+            const motivoEliminacion = $('#motivoEliminacion').val();
+
+            if (!motivoEliminacion) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Debe seleccionar un motivo de eliminación',
+                    icon: 'error'
+                });
+                return;
+            }
 
             if (!cantidadAEliminar || cantidadAEliminar <= 0) {
                 Swal.fire({
@@ -1574,7 +1615,8 @@ function initEliminarBandejasHandler() {
                     'X-Requested-With': 'XMLHttpRequest'
                 },
                 data: JSON.stringify({
-                    cantidadAEliminar: cantidadAEliminar
+                    cantidadAEliminar: cantidadAEliminar,
+                    motivoEliminacion: motivoEliminacion
                 }),
                 success: function(response) {
                     if (response.success) {

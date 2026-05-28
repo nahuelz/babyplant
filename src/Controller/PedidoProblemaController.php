@@ -5,8 +5,10 @@ namespace App\Controller;
 
 use App\Entity\GlobalConfig;
 use App\Entity\PedidoProducto;
+use App\Entity\TipoMotivoEliminacion;
 use App\Entity\TipoRevision;
 use App\Entity\TipoSolucion;
+use App\Service\BandejaService;
 use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -449,17 +451,26 @@ class PedidoProblemaController extends BaseController {
     public function eliminarBandejas(
         Request $request,
         PedidoProducto $pedidoProducto,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        BandejaService $bandejaService
     ): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
         $cantidadAEliminar = $data['cantidadAEliminar'] ?? null;
+        $motivoId = $data['motivoEliminacion'] ?? null;
 
         if (!$cantidadAEliminar || $cantidadAEliminar <= 0) {
             return $this->json([
                 'success' => false,
                 'message' => 'Debe ingresar una cantidad válida de bandejas a eliminar'
+            ], 400);
+        }
+
+        if (!$motivoId) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Debe seleccionar un motivo de eliminación'
             ], 400);
         }
 
@@ -471,12 +482,24 @@ class PedidoProblemaController extends BaseController {
             ], 400);
         }
 
-        // Restar las bandejas
-        $pedidoProducto->setCantidadBandejasEliminadas($cantidadAEliminar);
-        $pedidoProducto->setCantidadBandejasDisponibles();
-        $nuevaCantidad = $pedidoProducto->getCantidadBandejasDisponibles();
+        // Obtener el tipo de motivo
+        $tipoMotivo = $entityManager->getRepository(TipoMotivoEliminacion::class)->find($motivoId);
 
-        $entityManager->flush();
+        if (!$tipoMotivo) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Tipo de motivo no encontrado'
+            ], 404);
+        }
+
+        // Usar el servicio para eliminar bandejas y manejar el estado
+        $bandejaService->eliminarBandejas(
+            $pedidoProducto,
+            $cantidadAEliminar,
+            $tipoMotivo
+        );
+
+        $nuevaCantidad = $pedidoProducto->getCantidadBandejasDisponibles();
 
         return $this->json([
             'success' => true,

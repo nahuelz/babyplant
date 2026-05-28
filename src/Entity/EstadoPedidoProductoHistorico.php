@@ -62,6 +62,12 @@ class EstadoPedidoProductoHistorico {
      */
     private $reserva;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=TipoMotivoEliminacion::class)
+     * @ORM\JoinColumn(name="id_tipo_motivo_eliminacion", referencedColumnName="id", nullable=true)
+     */
+    private mixed $tipoMotivoEliminacion;
+
     public function getId(): ?int {
         return $this->id;
     }
@@ -139,7 +145,14 @@ class EstadoPedidoProductoHistorico {
         $this->reserva = $reserva;
     }
 
+    public function getTipoMotivoEliminacion(): mixed
+    {
+        return $this->tipoMotivoEliminacion;
+    }
 
-
+    public function setTipoMotivoEliminacion(mixed $tipoMotivoEliminacion): void
+    {
+        $this->tipoMotivoEliminacion = $tipoMotivoEliminacion;
+    }
 
 }

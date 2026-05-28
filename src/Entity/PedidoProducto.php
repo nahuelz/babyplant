@@ -1047,11 +1047,6 @@ class PedidoProducto {
 
     public function setCantidadBandejasEliminadas(mixed $cantidadBandejasEliminadas): void
     {
-        $this->cantidadBandejasEliminadas = $cantidadBandejasEliminadas;
+        $this->cantidadBandejasEliminadas += $cantidadBandejasEliminadas;
     }
-
-
-
-
-
 }

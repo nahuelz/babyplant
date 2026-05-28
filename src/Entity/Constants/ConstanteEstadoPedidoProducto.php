@@ -63,4 +63,9 @@ class ConstanteEstadoPedidoProducto {
      */
     const RESERVA_CANCELADA = 11;
 
+    /**
+     * BANDEJA ELIMINADA
+     */
+    const BANDEJA_ELIMINADA = 12;
+
 }
