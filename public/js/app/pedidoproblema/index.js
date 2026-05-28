@@ -38,7 +38,7 @@ $(document).ready(function () {
     initQuitarProblemaHandler();
     initEditarSolucionHandler();
     initOkCheckeoHandler();
-
+    initEliminarBandejasHandler();
 
 
     var table = $table.DataTable();
@@ -590,7 +590,8 @@ function dataTablesActionFormatter(data, type, full, meta) {
             (actionData.pedido_producto_editar_problema !== undefined ? '<a class="dropdown-item editar-problema-btn" href="#" data-id="' + full[2].idProducto + '" data-tiene-problema="true" data-observacion="' + (full[2].observacionProblema || '') + '" data-revision="' + (full[2].tipoRevision || '') + '"><i class="la la-edit" style="margin-right: 5px;"></i> Editar Problema</a>' : '') +
             (actionData.pedido_producto_marcar_solucion !== undefined ? '<a class="dropdown-item marcar-solucion-btn" href="#" data-id="' + full[2].idProducto + '" data-tiene-problema="true" data-observacion=""><i class="la la-check" style="margin-right: 5px;"></i> Marcar Solución</a>' : '') +
             (actionData.pedido_producto_quitar_solucion !== undefined ? '<a class="dropdown-item quitar-solucion-btn" href="#" data-id="' + full[2].idProducto + '" data-tiene-problema="true" data-observacion=""><i class="la la-times" style="margin-right: 5px;"></i> Quitar Solución</a>' : '') +
-            (actionData.pedido_producto_editar_solucion !== undefined ? '<a class="dropdown-item editar-solucion-btn" href="#" data-id="' + full[2].idProducto + '" data-solucion="' + (full[2].solucion || '') + '" data-observacion="' + (full[2].observacionSolucion || '') + '"><i class="la la-edit" style="margin-right: 5px;"></i> Editar Solución</a>' : '');
+            (actionData.pedido_producto_editar_solucion !== undefined ? '<a class="dropdown-item editar-solucion-btn" href="#" data-id="' + full[2].idProducto + '" data-solucion="' + (full[2].solucion || '') + '" data-observacion="' + (full[2].observacionSolucion || '') + '"><i class="la la-edit" style="margin-right: 5px;"></i> Editar Solución</a>' : '') +
+            (actionData.pedido_producto_elimina_bandeja !== undefined ? '<a class="dropdown-item elimina-bandeja-btn" href="#" data-id="' + full[2].idProducto + '" data-bandejas-reales="' + full[6] + '" data-bandejas-disponibles="' + full[5].cantidadBandejasDisponibles + '"><i class="la la-trash" style="margin-right: 5px;"></i> Eliminar Bandejas</a>' : '');
 
         actions = ' <div class="dropdown dropdown-inline">\
                         <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\
@@ -1481,6 +1482,123 @@ function initOkCheckeoHandler() {
                 toastr.error('Ocurrió un error al realizar el checkeo');
                 $button.prop('disabled', false).html('<i class="la la-check" style="width: 2em;margin: auto;display: block"></i>');
             }
+        });
+    });
+}
+
+function initEliminarBandejasHandler() {
+    $(document).off('click', '.elimina-bandeja-btn').on('click', '.elimina-bandeja-btn', function (e) {
+        e.preventDefault();
+
+        const id = $(this).data('id');
+        const bandejasReales = $(this).data('bandejas-reales');
+        const bandejasDisponibles = $(this).data('bandejas-disponibles');
+
+        // Crear modal para eliminar bandejas
+        const modalHtml = `
+            <div class="modal fade" id="modalEliminarBandejas" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="la la-trash"></i>
+                                Eliminar Bandejas
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span>&​times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-info">
+                                <strong>Información:</strong><br>
+                                Bandejas Reales: ${bandejasReales}<br>
+                                Bandejas Disponibles: ${bandejasDisponibles}
+                            </div>
+                            <form id="formEliminarBandejas">
+                                <div class="form-group">
+                                    <label for="cantidadAEliminar">Cantidad de bandejas a eliminar:</label>
+                                    <input type="number" class="form-control" id="cantidadAEliminar" 
+                                           name="cantidadAEliminar" min="1" max="${bandejasDisponibles}" required>
+                                    <small class="form-text text-muted">Máximo: ${bandejasDisponibles}</small>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-danger" id="eliminarBandejas">
+                                <i class="la la-trash"></i> Eliminar Bandejas
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Eliminar modal si ya existe
+        $('#modalEliminarBandejas').remove();
+
+        // Agregar nuevo modal
+        $('body').append(modalHtml);
+
+        // Mostrar modal
+        $('#modalEliminarBandejas').modal('show');
+
+        // Manejar envío del formulario
+        $('#eliminarBandejas').off('click').on('click', function() {
+            const cantidadAEliminar = parseFloat($('#cantidadAEliminar').val());
+
+            if (!cantidadAEliminar || cantidadAEliminar <= 0) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Debe ingresar una cantidad válida',
+                    icon: 'error'
+                });
+                return;
+            }
+
+            if (cantidadAEliminar > bandejasDisponibles) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'No puede eliminar más bandejas de las disponibles',
+                    icon: 'error'
+                });
+                return;
+            }
+
+            // Enviar datos via AJAX
+            $.ajax({
+                url: __HOMEPAGE_PATH__ + `pedidoproblema/${id}/eliminar-bandejas`,
+                method: 'POST',
+                contentType: 'application/json',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                data: JSON.stringify({
+                    cantidadAEliminar: cantidadAEliminar
+                }),
+                success: function(response) {
+                    if (response.success) {
+                        $('#modalEliminarBandejas').modal('hide');
+                        toastr.success(response.message || 'Bandejas eliminadas correctamente');
+                        // Recargar la tabla
+                        $('#table-pedido').DataTable().ajax.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: response.message || 'No se pudieron eliminar las bandejas',
+                            icon: 'error'
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Ocurrió un error al eliminar las bandejas',
+                        icon: 'error'
+                    });
+                }
+            });
         });
     });
 }

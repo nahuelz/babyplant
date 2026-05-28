@@ -444,4 +444,44 @@ class PedidoProblemaController extends BaseController {
             'visto' => true
         ]);
     }
+
+    #[Route('/{id}/eliminar-bandejas', name: 'pedido_producto_eliminar_bandejas', methods: ['POST'])]
+    public function eliminarBandejas(
+        Request $request,
+        PedidoProducto $pedidoProducto,
+        EntityManagerInterface $entityManager
+    ): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $cantidadAEliminar = $data['cantidadAEliminar'] ?? null;
+
+        if (!$cantidadAEliminar || $cantidadAEliminar <= 0) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Debe ingresar una cantidad válida de bandejas a eliminar'
+            ], 400);
+        }
+
+        // Validar que no supere las bandejas disponibles
+        if ($cantidadAEliminar > $pedidoProducto->getCantidadBandejasDisponibles()) {
+            return $this->json([
+                'success' => false,
+                'message' => 'No puede eliminar más bandejas de las disponibles'
+            ], 400);
+        }
+
+        // Restar las bandejas
+        $pedidoProducto->setCantidadBandejasEliminadas($cantidadAEliminar);
+        $pedidoProducto->setCantidadBandejasDisponibles();
+        $nuevaCantidad = $pedidoProducto->getCantidadBandejasDisponibles();
+
+        $entityManager->flush();
+
+        return $this->json([
+            'success' => true,
+            'message' => 'Bandejas eliminadas correctamente',
+            'cantidadBandejasDisponibles' => $nuevaCantidad
+        ]);
+    }
 }

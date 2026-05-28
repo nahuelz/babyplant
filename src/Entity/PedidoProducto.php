@@ -252,6 +252,18 @@ class PedidoProducto {
      */
     private bool $visto = false;
 
+    /**
+     * @ORM\Column(
+     *     name="cantidad_bandejas_eliminadas",
+     *     type="decimal",
+     *     precision=6,
+     *     scale=1,
+     *     nullable=true,
+     *     options={"default": 0}
+     * )
+     */
+    private ?string $cantidadBandejasEliminadas = '0';
+
 
     public function __construct()
     {
@@ -882,7 +894,7 @@ class PedidoProducto {
             return 0;
         }
         
-        $disponibles = $this->getCantidadBandejasReales() - ($this->getCantidadBandejasEntregadas() + $this->getCantidadBandejasReservadasSinEntregar());
+        $disponibles = $this->getCantidadBandejasReales() - ($this->getCantidadBandejasEntregadas() + $this->getCantidadBandejasReservadasSinEntregar() + $this->getCantidadBandejasEliminadas());
         
         // Si es un número entero (ej: 10.0), devolverlo como entero (10)
         // Si tiene decimales (ej: 10.5), mantenerlo como float
@@ -1027,6 +1039,18 @@ class PedidoProducto {
     {
         $this->visto = $visto;
     }
+
+    public function getCantidadBandejasEliminadas(): mixed
+    {
+        return $this->cantidadBandejasEliminadas;
+    }
+
+    public function setCantidadBandejasEliminadas(mixed $cantidadBandejasEliminadas): void
+    {
+        $this->cantidadBandejasEliminadas = $cantidadBandejasEliminadas;
+    }
+
+
 
 
 

@@ -26,7 +26,7 @@
         },
         {
         "idPedido": "{{ entity.id }}",
-        "cantidadBandejasDisponibles": "{{ entity.cantidadBandejasDisponibles is same as (entity.cantidadBandejasDisponibles|round(0, 'floor')) ? entity.cantidadBandejasDisponibles|number_format(0, '', '') : entity.cantidadBandejasDisponibles }}",
+        "cantidadBandejasDisponibles": "{{ entity.cantidadBandejasDisponibles == (entity.cantidadBandejasDisponibles|round(0, 'floor')) ? entity.cantidadBandejasDisponibles|number_format(0, '', '') : entity.cantidadBandejasDisponibles }}",
         "nombreCliente": "{{ entity.cliente|default('-') }}",
         "path": "{{ path('situacioncliente_show', { "id": entity.idCliente }) }}"
         },
@@ -56,10 +56,11 @@
         {% endif %}
         {% if entity.tieneSolucion == 1 %}
             "pedido_producto_quitar_solucion": "{{ path( "pedido_producto_quitar_solucion", { "id": entity.idProducto })}}",
-            "pedido_producto_editar_solucion": "{{ path( "pedido_producto_editar_solucion", { "id": entity.idProducto })}}"
+            "pedido_producto_editar_solucion": "{{ path( "pedido_producto_editar_solucion", { "id": entity.idProducto })}}",
         {% else %}
-            "pedido_producto_marcar_solucion": "{{ path( "pedido_producto_marcar_solucion", { "id": entity.idProducto })}}"
+            "pedido_producto_marcar_solucion": "{{ path( "pedido_producto_marcar_solucion", { "id": entity.idProducto })}}",
         {% endif %}
+        "pedido_producto_elimina_bandeja": "{{ path( "pedido_producto_eliminar_bandejas", { "id": entity.idProducto })}}"
         }]
         {{ (loop.last ? '' : ',') }}
     {% endfor %}
