@@ -220,8 +220,14 @@
                                                                 <i class="ki ki-bold-more-hor"></i>
                                                             </button>
                                                             <div class="dropdown-menu">
-                                                                <a href="{{ path('pago_proveedor_show', {'id': pago.id}) }}" class="dropdown-item">
+                                                                <a href="{{ path('pagoproveedor_show', {'id': pago.id}) }}" class="dropdown-item">
                                                                     <i class="la la-search" style="margin-right: 5px;"></i> Ver Pago
+                                                                </a>
+                                                                <a href="{{ path('pagoproveedor_edit', {'id': pago.id}) }}" class="dropdown-item">
+                                                                    <i class="la la-pen" style="margin-right: 5px;"></i> Editar
+                                                                </a>
+                                                                <a href="{{ path('pagoproveedor_delete', {'id': pago.id}) }}" class="dropdown-item">
+                                                                    <i class="la la-trash" style="margin-right: 5px;"></i> Eliminar
                                                                 </a>
                                                             </div>
                                                         </div>

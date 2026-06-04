@@ -189,7 +189,7 @@ function initBaseSubmitButton() {
             if (status === "Valid") {
                 limpiarMontosParaEnvio();
                 $.post({
-                    url: window.__FACTURA_SUBMIT_URL__ || (__HOMEPAGE_PATH__ + "pago_proveedor/insertar"),
+                    url: window.__PAGO_SUBMIT_URL__ || (__HOMEPAGE_PATH__ + "pagoproveedor/insertar"),
                     type: 'post',
                     dataType: 'json',
                     data: $('form[name="pago_proveedor"]').serialize()
@@ -205,11 +205,11 @@ function initBaseSubmitButton() {
                     } else {
                         Swal.fire({
                             width: '800px',
-                            title: window.__FACTURA_IS_EDIT__ ? '<strong>PAGO ACTUALIZADO!</strong>' : '<strong>PAGO AGREGADO!</strong>',
+                            title: window.__PAGO_IS_EDIT__ ? '<strong>PAGO ACTUALIZADO!</strong>' : '<strong>PAGO AGREGADO!</strong>',
                             color: "#716add",
                             allowOutsideClick: false,
                             backdrop: false,
-                            confirmButtonText: window.__FACTURA_IS_EDIT__ ? 'Volver al listado' : 'Agregar Nuevo Pago',
+                            confirmButtonText: window.__PAGO_IS_EDIT__ ? 'Volver al listado' : 'Agregar Nuevo Pago',
                             html: '<div class="d-flex flex-row justify-content-center align-items-center w-100">' +
                                 '<a href="/pago_proveedor/imprimir-pago_proveedor/'+result.message+'" class="swal2-confirm swal2-styled" title="Imprimir comprobante">\n' +
                                 '<i class="fas fa-file-pdf text-white"></i> Imprimir A4\n' +

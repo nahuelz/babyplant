@@ -40,7 +40,7 @@ class PagoProveedorController extends BaseController
 
     /**
      *
-     * @Route("/index_table/", name="pago_proveedor_table", methods={"GET|POST"})
+     * @Route("/index_table/", name="pagoproveedor_table", methods={"GET|POST"})
      *
      */
     public function indexTableAction(Request $request): Response {
@@ -93,7 +93,7 @@ class PagoProveedorController extends BaseController
     }
 
     /**
-     * @Route("/{id}", name="pago_proveedor_show", methods={"GET"})
+     * @Route("/{id}", name="pagoproveedor_show", methods={"GET"})
      */
     public function show(PagoProveedor $pagoProveedor): Response
     {
@@ -103,7 +103,7 @@ class PagoProveedorController extends BaseController
     }
 
     /**
-     * @Route("/{id}/edit", name="pago_proveedor_edit", methods={"GET"})
+     * @Route("/{id}/edit", name="pagoproveedor_edit", methods={"GET"})
      * @Template("pago_proveedor/new.html.twig")
      */
     public function edit($id): array
@@ -112,14 +112,14 @@ class PagoProveedorController extends BaseController
     }
 
     /**
-     * @Route("/{id}/actualizar", name="pago_proveedor_update", methods={"POST","PUT"})
+     * @Route("/{id}/actualizar", name="pagoproveedor_update", methods={"POST","PUT"})
      */
     public function updateAction(Request $request, $id) {
         return parent::baseUpdateAction($request, $id, true);
     }
 
     /**
-     * @Route("/{id}/borrar", name="pago_proveedor_delete", methods={"GET"})
+     * @Route("/{id}/borrar", name="pagoproveedor_delete", methods={"GET"})
      */
     public function delete($id): RedirectResponse|JsonResponse|Type {
         return parent::baseDeleteAction($id);

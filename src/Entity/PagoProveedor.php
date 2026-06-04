@@ -80,6 +80,11 @@ class PagoProveedor
         $this->fechaPago = new \DateTimeImmutable();
     }
 
+    public function __toString(): string
+    {
+        return (string) $this->id;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

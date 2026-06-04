@@ -12,9 +12,9 @@
         },
         "{{ entity.modoPago }}",
         {
-        "show" : " {{ path( "factura_show", { "id": entity.id }) }}",
-        "edit" : " {{ path( "factura_edit", { "id": entity.id }) }}",
-        "delete" : " {{ path( "factura_delete", { "id": entity.id }) }}"
+        "show" : " {{ path( "pagoproveedor_show", { "id": entity.id }) }}",
+        "edit" : " {{ path( "pagoproveedor_edit", { "id": entity.id }) }}",
+        "delete" : " {{ path( "pagoproveedor_delete", { "id": entity.id }) }}"
         }
         ]{{ (loop.last ? '' : ',') }}
     {% endfor %}

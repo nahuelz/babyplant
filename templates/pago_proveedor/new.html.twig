@@ -59,8 +59,8 @@
 
     {{ parent() }}
     <script>
-        window.__FACTURA_IS_EDIT__ = {{ edit ? 'true' : 'false' }};
-        window.__FACTURA_SUBMIT_URL__ = {% if edit %}'{{ path('pago_proveedor_update', {id: form.vars.value.id}) }}'{% else %}(__HOMEPAGE_PATH__ + 'pago_proveedor/insertar'){% endif %};
+        window.__PAGO_IS_EDIT__ = {{ edit ? 'true' : 'false' }};
+        window.__PAGO_SUBMIT_URL__ = {% if edit %}'{{ path('pagoproveedor_update', {id: form.vars.value.id}) }}'{% else %}(__HOMEPAGE_PATH__ + 'pago_proveedor/insertar'){% endif %};
     </script>
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}"></script>
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/pagoproveedor/new.js') }}"></script>

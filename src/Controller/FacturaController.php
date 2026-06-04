@@ -265,18 +265,28 @@ class FacturaController extends BaseController {
         $movimiento = $em->getRepository(MovimientoProveedor::class)
             ->findOneBy(['factura' => $entity]);
 
-        if ($movimiento) {
-            $cuentaCorriente = $entity->getProveedor()->getCuentaCorrienteProveedor();
-            $newTotal = $entity->getTotal();
-            $oldMonto = $movimiento->getMonto();
+        if ($movimiento && $cuentaCorriente = $entity->getProveedor()->getCuentaCorrienteProveedor()) {
+            $newTotal  = $entity->getTotal();
+            $oldMonto  = $movimiento->getMonto();
+            $oldMoneda = $movimiento->getTipoMoneda();
+            $newMoneda = $entity->getTipoMoneda();
 
-            $nuevoSaldo = $cuentaCorriente->getSaldo() - $oldMonto - $newTotal;
+            // 1) Revertir el movimiento viejo sobre la moneda vieja
+            $cuentaCorriente->sumarSaldo(-$oldMonto, $oldMoneda);
 
-            $movimiento->setMonto(-$newTotal);
+            // 2) Aplicar el nuevo total sobre la moneda nueva
+            $nuevoMonto = -$newTotal;
+            $cuentaCorriente->sumarSaldo($nuevoMonto, $newMoneda);
+
+            $nuevoSaldo = $newMoneda === 'USD'
+                ? $cuentaCorriente->getSaldoUsd()
+                : $cuentaCorriente->getSaldoArs();
+
+            // 3) Actualizar el movimiento con la nueva moneda y saldo
+            $movimiento->setMonto($nuevoMonto);
+            $movimiento->setTipoMoneda($newMoneda);
             $movimiento->setSaldoPosterior($nuevoSaldo);
             $movimiento->setDescripcion('Factura #' . $entity->getNumeroFactura());
-
-            $cuentaCorriente->setSaldo($nuevoSaldo);
         }
 
         return true;
