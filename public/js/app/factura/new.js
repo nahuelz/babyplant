@@ -39,6 +39,8 @@ function initSelect2() {
     const currentTipoMoneda = $('#factura_tipoMoneda').val();
     if (currentTipoMoneda !== 'USD') {
         $('#tipo-cambio-container').hide();
+    }else{
+        $('#tipo-cambio-container').show()
     }
 }
 
