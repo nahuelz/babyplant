@@ -150,7 +150,9 @@
                                                                 <a href="{{ path('factura_show', {'id': factura.id}) }}" class="dropdown-item">
                                                                     <i class="la la-search" style="margin-right: 5px;"></i> Ver Factura
                                                                 </a>
-                                                                <a href="{{ path('factura_edit', {'id': factura.id}) }}" class="dropdown-item">
+                                                                <a href="#" class="dropdown-item editar-factura-link"
+                                                                   data-toggle="modal" data-target="#modalAgregarFactura"
+                                                                   data-factura-id="{{ factura.id }}">
                                                                     <i class="la la-pen" style="margin-right: 5px;"></i> Editar
                                                                 </a>
                                                             </div>
@@ -279,10 +281,20 @@
 
     <script>
         $(document).ready(function() {
-            $('#modalAgregarFactura').on('show.bs.modal', function() {
+            $('#modalAgregarFactura').on('show.bs.modal', function(event) {
+                var trigger = $(event.relatedTarget);
+                var facturaId = trigger.data('factura-id');
+                var isEdit = !!facturaId;
+
+                var url = isEdit
+                    ? '{{ path('factura_edit_modal', {'id': 'FACTURA_ID'}) }}'.replace('FACTURA_ID', facturaId)
+                    : '{{ path('factura_new_modal', {'proveedor_id': proveedor.id}) }}';
+
+                $('#modalAgregarFacturaLabel').text(isEdit ? 'Editar Factura' : 'Nueva Factura');
+
                 $('#facturaFormContainer').html('<div class="text-center p-4"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>');
                 $.ajax({
-                    url: '{{ path('factura_new_modal', {'proveedor_id': proveedor.id}) }}',
+                    url: url,
                     type: 'GET',
                     success: function(response) {
 
@@ -294,7 +306,12 @@
                                 initFormValidation();
                                 initFacturaDetalleHandler();
                                 initMontoFormat();
-                                $('.row-factura-detalle-empty').hide();
+                                if ($('.tr-factura-detalle').length > 0) {
+                                    $('.row-factura-detalle-empty').hide();
+                                    $('.row-factura-detalle').show();
+                                } else {
+                                    $('.row-factura-detalle-empty').hide();
+                                }
                                 initSelect2();
                                 calcularTotal();
                                 initBaseSubmitButton();

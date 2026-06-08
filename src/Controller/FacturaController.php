@@ -103,6 +103,21 @@ class FacturaController extends BaseController {
     }
 
     /**
+     * @Route("/{id}/edit_modal", name="factura_edit_modal", methods={"GET"})
+     * @IsGranted("ROLE_GASTO")
+     */
+    public function editModal(Factura $factura): Response {
+        $form = $this->createForm(FacturaType::class, $factura, [
+            'action' => $this->generateUrl('factura_update', ['id' => $factura->getId()]),
+            'method' => 'PUT',
+        ]);
+        return $this->render('factura/new_modal.html.twig', [
+            'form' => $form->createView(),
+            'entity' => $factura,
+        ]);
+    }
+
+    /**
      * @Route("/insertar", name="factura_create", methods={"GET","POST"})
      * @Template("factura/new.html.twig")
      * @IsGranted("ROLE_GASTO")

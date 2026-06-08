@@ -364,11 +364,8 @@ function initBaseSubmitButton() {
                             backdrop: true,
                             confirmButtonText: window.__FACTURA_IS_EDIT__ ? 'Volver al listado' : 'Agregar Nueva Factura',
                             html: '<div class="d-flex flex-row justify-content-center align-items-center w-100">' +
-                                '<a href="/factura/imprimir-factura/'+result.message+'" class="swal2-confirm swal2-styled" title="Imprimir comprobante">\n' +
-                                '<i class="fas fa-file-pdf text-white"></i> Imprimir A4\n' +
-                                '</a>'+
-                                '<a href="/factura/imprimir-factura-ticket/'+result.message+'" class="swal2-confirm swal2-styled" title="Imprimir comprobante">\n' +
-                                '<i class="fas fa-receipt text-white"></i> Imprimir TICKET\n' +
+                                '<a href="/proveedor/" class="swal2-confirm swal2-styled" title="Ver Proveedores">\n' +
+                                '<i class="fas fa-search text-white"></i> Ver Proveedores\n' +
                                 '</a>'+
                                 '<a href="/factura/" class="swal2-confirm swal2-styled" title="Ver Facturas">\n' +
                                 '<i class="fas fa-search text-white"></i> Ver Facturas\n' +

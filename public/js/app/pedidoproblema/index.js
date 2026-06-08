@@ -1420,30 +1420,32 @@ function initEditarProblemaHandler() {
 
 // Función para resaltar filas con revision
 function resaltarFilasConProblemas() {
-    // Obtener todas las filas de la tabla
     $('#table-pedido tbody tr').each(function() {
         const $row = $(this);
-        
-        // Obtener los datos de la fila usando DataTables API
+
         const table = $('#table-pedido').DataTable();
         const data = table.row($row).data();
 
-        // El valor de tieneRevision está en el índice 17 del array
-        if (data && data[17] === "1") {
-            // Agregar clase CSS para resaltar en amarillo
+        $row.removeClass('fila-con-problema');
+        $row.removeClass('fila-con-problema-critico');
+        $row.removeClass('fila-con-solucion');
+
+
+
+        // Problema tipo 1 -> rojo
+        if (data && data[17] === "1" && data[2].tipoRevision === "1") {
+            $row.addClass('fila-con-problema-critico');
+        }
+        // Resto de problemas -> amarillo
+        else if (data && data[17] === "1") {
             $row.addClass('fila-con-problema');
-        } else {
-            // Remover clase si no tiene problema
-            $row.removeClass('fila-con-problema');
         }
 
+        // Solucionado -> verde
         if (data && data[18] === "1") {
-            // Agregar clase CSS para resaltar en amarillo
             $row.addClass('fila-con-solucion');
             $row.removeClass('fila-con-problema');
-        } else {
-            // Remover clase si no tiene problema
-            $row.removeClass('fila-con-solucion');
+            $row.removeClass('fila-con-problema-critico');
         }
     });
 }

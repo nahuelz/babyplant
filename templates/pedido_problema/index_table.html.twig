@@ -45,7 +45,7 @@
         "{{ entity.mesada|default('-') }}",
         "{{ entity.codigoSobre|escape_json|raw|default('-') }}",
         "{{ entity.tieneProblema == 1 ? '1' : '0' }}", {# 17 #}
-        "{{ entity.tieneSolucion == 1 ? entity.tieneProblema == 1 ? '1' : '0' }}", {# 18 #}
+        "{{ entity.tieneSolucion == 1 ? '1' : '0' }}", {# 18 #}
         {
         "show_pedido" : " {{ path( "pedido_show", { "id": entity.id }) }}",
         {% if entity.tieneProblema == 1 %}

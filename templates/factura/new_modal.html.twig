@@ -1,6 +1,8 @@
 {% set __PREFIX_JAVASCRIPT__ = constant('App\\Entity\\Constants\\ConstanteAPI::PREFIX_JAVASCRIPT') %}
 {% import 'app/_macro_form.html.twig' as macro_form %}
 
+{% set edit = entity.id is not null %}
+
 {{ form_start(form, {'attr': {'class': 'horizontal-form', 'novalidate': 'novalidate', 'id': 'form-factura-modal'}}) }}
 {% include ('app/_fields_errors.html.twig') %}
 
@@ -25,13 +27,15 @@
 
 <div class="modal-footer d-flex justify-content-between">
     <button type="button" class="btn btn-light-dark font-weight-bold" data-dismiss="modal">Cancelar</button>
-    <button type="button" id="factura_submit" class="btn btn-primary font-weight-bold">Guardar Factura</button>
+    <button type="button" id="factura_submit" class="btn btn-primary font-weight-bold">
+        {% if edit %}Actualizar Factura{% else %}Guardar Factura{% endif %}
+    </button>
 </div>
 
 {{ form_widget(form._token) }}
 {{ form_end(form, {"render_rest": false}) }}
 
 <script>
-    window.__FACTURA_IS_EDIT__ = false;
-    window.__FACTURA_SUBMIT_URL__ = (__HOMEPAGE_PATH__ + 'factura/insertar');
+    window.__FACTURA_IS_EDIT__ = {{ edit ? 'true' : 'false' }};
+    window.__FACTURA_SUBMIT_URL__ = {% if edit %}'{{ path('factura_update', {id: entity.id}) }}'{% else %}(__HOMEPAGE_PATH__ + 'factura/insertar'){% endif %};
 </script>

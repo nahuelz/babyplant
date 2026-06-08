@@ -107,7 +107,6 @@ class PedidoProblemaController extends BaseController {
         $rsm->addScalarResult('codigoSobre', 'codigoSobre');
         $rsm->addScalarResult('tieneProblema', 'tieneProblema');
         $rsm->addScalarResult('tieneSolucion', 'tieneSolucion');
-        $rsm->addScalarResult('tipoRevision', 'tipoRevision');
         $rsm->addScalarResult('solucion', 'solucion');
         $rsm->addScalarResult('visto', 'visto');
 

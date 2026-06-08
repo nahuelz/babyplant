@@ -25,7 +25,7 @@ function initSelect2() {
         const tipoMoneda = $(this).val();
         const tipoCambioContainer = $('#tipo-cambio-container');
 
-        if (tipoMoneda === 'USD') {
+        if (tipoMoneda === 'ARS') {
             tipoCambioContainer.show();
             // Obtener valor del dólar blue automáticamente
             obtenerValorDolarBlue();
@@ -38,8 +38,10 @@ function initSelect2() {
 
     // Inicializar el estado del campo tipoCambio según el valor actual
     const currentTipoMoneda = $('#pago_proveedor_tipoMoneda').val();
-    if (currentTipoMoneda !== 'USD') {
+    if (currentTipoMoneda !== 'ARS') {
         $('#tipo-cambio-container').hide();
+    }else{
+        $('#tipo-cambio-container').show();
     }
 }
 
@@ -211,11 +213,11 @@ function initBaseSubmitButton() {
                             backdrop: false,
                             confirmButtonText: window.__PAGO_IS_EDIT__ ? 'Volver al listado' : 'Agregar Nuevo Pago',
                             html: '<div class="d-flex flex-row justify-content-center align-items-center w-100">' +
-                                '<a href="/pago_proveedor/imprimir-pago_proveedor/'+result.message+'" class="swal2-confirm swal2-styled" title="Imprimir comprobante">\n' +
-                                '<i class="fas fa-file-pdf text-white"></i> Imprimir A4\n' +
+                                '<a href="/proveedor/" class="swal2-confirm swal2-styled" title="Ver Pagos">\n' +
+                                '<i class="fas fa-search text-white"></i> Ver Proveedores\n' +
                                 '</a>'+
-                                '<a href="/pago_proveedor/imprimir-pago_proveedor-ticket/'+result.message+'" class="swal2-confirm swal2-styled" title="Imprimir comprobante">\n' +
-                                '<i class="fas fa-receipt text-white"></i> Imprimir TICKET\n' +
+                                '<a href="/factura/" class="swal2-confirm swal2-styled" title="Ver Pagos">\n' +
+                                '<i class="fas fa-search text-white"></i> Ver Facturas\n' +
                                 '</a>'+
                                 '<a href="/pago_proveedor/" class="swal2-confirm swal2-styled" title="Ver Pagos">\n' +
                                 '<i class="fas fa-search text-white"></i> Ver Pagos\n' +
