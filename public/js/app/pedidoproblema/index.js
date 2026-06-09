@@ -417,6 +417,22 @@ function datatablesGetColDef() {
             orderable: false,
             className: 'dt-center p-0',
             width: '50px',
+            render: function (data, type, full, meta) {
+                if (type === 'display') {
+
+                    let badge = `
+                <span class="badge badge-success badge-sm ml-1 mb-1"
+                    title="DISPONIBLES"
+                    style="font-size: 12px;">
+                    ${full[5].cantidadBandejasDisponibles}
+                </span>
+            `;
+
+                    return data + ' ' + badge;
+                }
+
+                return data;
+            }
         },
         {
             targets: index++,
