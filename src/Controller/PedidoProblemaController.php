@@ -366,7 +366,7 @@ class PedidoProblemaController extends BaseController {
         $data = json_decode($request->getContent(), true);
 
         $solucionId = $data['solucion'] ?? null;
-        $observacion = $data['observacion'] ?? null;
+        $observacion = $data['observacionSolucion'] ?? null;
 
         if (!$solucionId) {
             return $this->json([
