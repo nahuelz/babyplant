@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormError;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * @Route("/change-password")
@@ -19,7 +20,7 @@ class ChangePasswordController extends AbstractController {
     /**
      * @Route("/", name="change_password")
      */
-    public function changePasswordAction(Request $request, UserPasswordEncoderInterface $passwordEncoder) {
+    public function changePasswordAction(Request $request, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $em) {
 
         $form = $this->createForm(ChangePasswordFormType::class);
         $form->handleRequest($request);
@@ -37,7 +38,7 @@ class ChangePasswordController extends AbstractController {
                 );
 
                 $user->setPassword($encodedPassword);
-                $this->doctrine->getManager()->flush();
+                $em->flush();
                 $this->get('session')->getFlashBag()->add('success', "Se modificó correctamente su contraseña");
                 return $this->redirectToRoute('app_login');
             } else {
