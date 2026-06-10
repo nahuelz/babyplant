@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/tipo/solucion")
- * @IsGranted("ROLE_PRODUCTO_CRUD")
+ * @IsGranted("ROLE_PROBLEMA")
  */
 class TipoSolucionController extends BaseController
 {
