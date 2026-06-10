@@ -36,7 +36,10 @@ class PedidoProblemaController extends BaseController {
         $origenSemillaSelect = $this->getSelectService()->getOrigenSemillaSelect();
 
         $em = $this->doctrine->getManager();
-        $columnasOcultas = $em->getRepository('App\Entity\GlobalConfig')->find($this->getUser()->getId());
+        $columnasOcultas = $em->getRepository(\App\Entity\GlobalConfig::class)
+            ->findOneBy([
+                'usuario' => $this->getUser(),
+            ]);
 
         if (!$columnasOcultas) {
             $columnasOcultas = new GlobalConfig();
