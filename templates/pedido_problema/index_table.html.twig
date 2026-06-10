@@ -13,6 +13,7 @@
         "idProducto": "{{ entity.idProducto }}",
         "path": "{{ path('pedido_show', { "id": entity.id }) }}",
         "tipoRevision": "{{ entity.tipoRevision|default('') }}",
+        "nombreRevision": "{{ entity.nombreRevision|default('') }}",
         "observacionProblema": "{{ entity.observacionProblema|escape_json|default('') }}",
         "solucion": "{{ entity.solucion|default('') }}",
         "observacionSolucion": "{{ entity.observacionSolucion|escape_json|default('') }}",

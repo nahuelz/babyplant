@@ -1449,7 +1449,7 @@ function resaltarFilasConProblemas() {
 
 
         // Problema tipo 1 -> rojo
-        if (data && data[17] === "1" && data[2].tipoRevision === "1") {
+        if (data && data[17] === "1" && data[2].nombreRevision === "FALLO") {
             $row.addClass('fila-con-problema-critico');
         }
         // Resto de problemas -> amarillo
