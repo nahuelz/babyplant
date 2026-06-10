@@ -24,14 +24,14 @@ class GlobalConfig{
     /**
      * @var string
      *
-     * @ORM\Column(name="columnas_ocultas", type="string", length=512, nullable=false)
+     * @ORM\Column(name="columnas_ocultas", type="string", length=512, nullable=true)
      */
     protected $columnasOcultas;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="columnas_ocultas_problemas", type="string", length=512, nullable=false)
+     * @ORM\Column(name="columnas_ocultas_problemas", type="string", length=512, nullable=true)
      */
     protected $columnasOcultasProblemas;
 

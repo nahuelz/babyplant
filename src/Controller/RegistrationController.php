@@ -125,18 +125,36 @@ class RegistrationController extends AbstractController {
 
     private function validarExisteUsuario($user,$entityManager){
         $entityManager = $this->getDoctrine()->getManager();
+        $filters = $entityManager->getFilters();
+        $softDeleteEnabled = $filters->isEnabled('softdeleteable');
+        if ($softDeleteEnabled) {
+            $filters->disable('softdeleteable');
+        }
+
         $msg = false;
         if ($user->getTipoUsuario()->getCodigoInterno() == ConstanteTipoUsuario::CLIENTE) {
             if  (($user->getCuit() != null) and ($user->getCuit() != '')) {
                 $existeCuit = $entityManager->getRepository(Usuario::class)->findBy(array('cuit' => $user->getCuit()));
                 if ($existeCuit) {
-                    $msg = 'Ya existe un usuario registrado con este cuit.';
+                    $msg = 'Ya existe un usuario registrado con este cuit (puede estar dado de baja).';
                 }
             }
         }
-        $existeMail = $entityManager->getRepository(Usuario::class)->findBy(array('email' => $user->getEmail()));
-        if ($existeMail) {
-            $msg = 'Ya existe un usuario registrado con este mail.';
+        if ($user->getEmail() != null && $user->getEmail() != '') {
+            $existeMail = $entityManager->getRepository(Usuario::class)->findBy(array('email' => $user->getEmail()));
+            if ($existeMail) {
+                $msg = 'Ya existe un usuario registrado con este mail (puede estar dado de baja).';
+            }
+        }
+        if ($user->getUsername() != null && $user->getUsername() != '') {
+            $existeUsername = $entityManager->getRepository(Usuario::class)->findBy(array('username' => $user->getUsername()));
+            if ($existeUsername) {
+                $msg = 'Ya existe un usuario registrado con este nombre de usuario (puede estar dado de baja).';
+            }
+        }
+
+        if ($softDeleteEnabled) {
+            $filters->enable('softdeleteable');
         }
         return ($msg);
     }
