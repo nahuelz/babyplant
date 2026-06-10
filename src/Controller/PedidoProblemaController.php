@@ -44,6 +44,7 @@ class PedidoProblemaController extends BaseController {
         if (!$columnasOcultas) {
             $columnasOcultas = new GlobalConfig();
             $columnasOcultas->setColumnasOcultasProblemas('1,6,10,11,13');
+            $columnasOcultas->setColumnasOcultas('1,6,10,11,13');
             $columnasOcultas->setUsuario($this->getUser());
             $em->persist($columnasOcultas);
             $em->flush();
