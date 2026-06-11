@@ -31,8 +31,8 @@ class FacturaDetalleType extends AbstractType
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('x')
                         ->where('x.habilitado = 1')
-                        ->andWhere('x.tipo = :tipo')
-                        ->setParameter('tipo', TipoConcepto::TIPO_FACTURA)
+                        ->andWhere('x.tipo IN (:tipos)')
+                        ->setParameter('tipos', [TipoConcepto::TIPO_FACTURA, TipoConcepto::TIPO_AMBOS])
                         ->orderBy('x.nombre', 'ASC');
                 },
                 'label_attr' => ['class' => 'control-label required'],
@@ -51,8 +51,8 @@ class FacturaDetalleType extends AbstractType
                     return $er->createQueryBuilder('x')
                         ->innerJoin('x.tipoConcepto', 'tc')
                         ->where('x.habilitado = 1')
-                        ->andWhere('tc.tipo = :tipo')
-                        ->setParameter('tipo', TipoConcepto::TIPO_FACTURA)
+                        ->andWhere('tc.tipo IN (:tipos)')
+                        ->setParameter('tipos', [TipoConcepto::TIPO_FACTURA, TipoConcepto::TIPO_AMBOS])
                         ->orderBy('x.nombre', 'ASC');
                 },
                 'label_attr' => ['class' => 'control-label'],

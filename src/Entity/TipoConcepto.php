@@ -14,6 +14,7 @@ class TipoConcepto extends EntidadBasica {
 
     public const TIPO_FACTURA = 'FACTURA';
     public const TIPO_GASTO   = 'GASTO';
+    public const TIPO_AMBOS   = 'AMBOS';
 
     /**
      * @ORM\Column(name="tipo", type="string", length=20, nullable=false)

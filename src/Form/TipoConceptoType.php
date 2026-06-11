@@ -27,6 +27,7 @@ class TipoConceptoType extends AbstractType
                     'choices' => [
                         'Factura' => TipoConcepto::TIPO_FACTURA,
                         'Gasto'   => TipoConcepto::TIPO_GASTO,
+                        'Ambos'   => TipoConcepto::TIPO_AMBOS,
                     ],
                     'placeholder' => '-- Elija el tipo --',
                     'attr' => array(
