@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\TipoConcepto;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -16,6 +17,18 @@ class TipoConceptoType extends AbstractType
             ->add('nombre', TextType::class, array(
                     'required' => true,
                     'label' => 'Nombre',
+                    'attr' => array(
+                        'class' => 'form-control',
+                        'tabindex' => '5'))
+            )
+            ->add('tipo', ChoiceType::class, array(
+                    'required' => true,
+                    'label' => 'Tipo',
+                    'choices' => [
+                        'Factura' => TipoConcepto::TIPO_FACTURA,
+                        'Gasto'   => TipoConcepto::TIPO_GASTO,
+                    ],
+                    'placeholder' => '-- Elija el tipo --',
                     'attr' => array(
                         'class' => 'form-control',
                         'tabindex' => '5'))

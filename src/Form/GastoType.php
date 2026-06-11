@@ -40,6 +40,8 @@ class GastoType extends AbstractType
                     'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('x')
                             ->where('x.habilitado = 1')
+                            ->andWhere('x.tipo = :tipo')
+                            ->setParameter('tipo', TipoConcepto::TIPO_GASTO)
                             ->orderBy('x.nombre', 'ASC');
                     },
                     'label_attr' => array('class' => 'control-label'),
@@ -58,7 +60,10 @@ class GastoType extends AbstractType
                     ),
                     'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('x')
+                            ->innerJoin('x.tipoConcepto', 'tc')
                             ->where('x.habilitado = 1')
+                            ->andWhere('tc.tipo = :tipo')
+                            ->setParameter('tipo', TipoConcepto::TIPO_GASTO)
                             ->orderBy('x.nombre', 'ASC');
                     },
                     'label_attr' => array('class' => 'control-label'),
