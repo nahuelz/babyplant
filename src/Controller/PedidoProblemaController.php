@@ -194,7 +194,10 @@ class PedidoProblemaController extends BaseController {
         $em = $this->doctrine->getManager();
 
         /* @var $columnas GlobalConfig */
-        $columnas = $em->getRepository('App\Entity\GlobalConfig')->find($this->getUser()->getId());
+        $columnasOcultas = $em->getRepository(\App\Entity\GlobalConfig::class)
+            ->findOneBy([
+                'usuario' => $this->getUser(),
+            ]);
 
         if (!$columnas) {
             throw $this->createNotFoundException('No se configuraron las columnas visibles en la base de datos.');
