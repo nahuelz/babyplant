@@ -223,6 +223,11 @@ class PedidoProducto {
     private ?TipoSolucion $solucion = null;
 
     /**
+     * @ORM\Column(name="fecha_solucion", type="datetime", nullable=true)
+     */
+    private mixed $fechaSolucion;
+
+    /**
      * @ORM\Column(name="observacion_solucion", type="string", length=255, nullable=true)
      */
     private mixed $observacionSolucion;
@@ -233,6 +238,11 @@ class PedidoProducto {
      * @ORM\Column(name="tiene_problema", type="boolean", options={"default": false})
      */
     private bool $tieneProblema = false;
+
+    /**
+     * @ORM\Column(name="fecha_problema", type="datetime", nullable=true)
+     */
+    private mixed $fechaProblema;
 
     /**
      * @ORM\ManyToOne(targetEntity=TipoRevision::class)
@@ -251,6 +261,11 @@ class PedidoProducto {
      * @ORM\Column(name="visto", type="boolean", options={"default": false})
      */
     private bool $visto = false;
+
+    /**
+     * @ORM\Column(name="fecha_visto", type="datetime", nullable=true)
+     */
+    private mixed $fechaVisto;
 
     /**
      * @ORM\Column(
@@ -1049,4 +1064,36 @@ class PedidoProducto {
     {
         $this->cantidadBandejasEliminadas += $cantidadBandejasEliminadas;
     }
+
+    public function getFechaSolucion(): mixed
+    {
+        return $this->fechaSolucion;
+    }
+
+    public function setFechaSolucion(mixed $fechaSolucion): void
+    {
+        $this->fechaSolucion = $fechaSolucion;
+    }
+
+    public function getFechaProblema(): mixed
+    {
+        return $this->fechaProblema;
+    }
+
+    public function setFechaProblema(mixed $fechaProblema): void
+    {
+        $this->fechaProblema = $fechaProblema;
+    }
+
+    public function getFechaVisto(): mixed
+    {
+        return $this->fechaVisto;
+    }
+
+    public function setFechaVisto(mixed $fechaVisto): void
+    {
+        $this->fechaVisto = $fechaVisto;
+    }
+
+
 }

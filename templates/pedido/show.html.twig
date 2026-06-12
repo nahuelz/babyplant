@@ -95,6 +95,11 @@
                                         <div class="col-md-4 mb-3">
                                             <div class="alert alert-danger portlet-nivel-1">
                                                 <small class="font-size-16">PROBLEMA</small><br>
+                                                {% if producto.fechaProblema %}
+                                                    <small class="position-absolute" style="top: 10px; right: 20px;">
+                                                        {{ producto.fechaProblema|date('d/m/Y H:i') }}
+                                                    </small>
+                                                {% endif %}
                                                 <strong class="font-size-20">
                                                     {{ producto.getRevision.nombre }}<br>
                                                 </strong>
@@ -111,6 +116,11 @@
                                         <div class="col-md-4 mb-3">
                                             <div class="alert alert-success portlet-nivel-1">
                                                 <small class="font-size-16">SOLUCIÓN</small><br>
+                                                {% if producto.fechaSolucion %}
+                                                    <small class="position-absolute" style="top: 10px; right: 20px;">
+                                                        {{ producto.fechaSolucion|date('d/m/Y H:i') }}
+                                                    </small>
+                                                {% endif %}
                                                 <strong class="font-size-20">
                                                     {{ producto.getSolucion.nombre }}<br>
                                                 </strong>
@@ -125,6 +135,11 @@
                                     {% if producto.visto %}
                                         <div class="col-md-4 mb-3">
                                             <div class="alert alert-primary portlet-nivel-1 d-flex align-items-center justify-content-center">
+                                                {% if producto.fechaVisto %}
+                                                    <small class="position-absolute" style="top: 10px; right: 20px;">
+                                                        {{ producto.fechaVisto|date('d/m/Y H:i') }}
+                                                    </small>
+                                                {% endif %}
                                                 <strong class="font-size-24 text-white">
                                                     VISTO <i class="la la-check text-white" style="font-size: 28px;"></i>
                                                 </strong>

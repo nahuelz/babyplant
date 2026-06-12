@@ -238,6 +238,7 @@ class PedidoProblemaController extends BaseController {
         $pedidoProducto->setTieneProblema(true);
         $pedidoProducto->setObservacionProblema($observacionProblema);
         $pedidoProducto->setRevision($tipoRevision);
+        $pedidoProducto->setFechaProblema(new \DateTime());
         $entityManager->flush();
 
         return $this->json([
@@ -302,6 +303,7 @@ class PedidoProblemaController extends BaseController {
         // Actualizar los datos de la solución
         $pedidoProducto->setObservacionSolucion($observacionSolucion);
         $pedidoProducto->setSolucion($tipoSolucion);
+        $pedidoProducto->setFechaSolucion(new \DateTime());
 
         $entityManager->flush();
 
@@ -439,6 +441,7 @@ class PedidoProblemaController extends BaseController {
     {
         // Marcar como visto
         $pedidoProducto->setVisto(true);
+        $pedidoProducto->setFechaVisto(new \DateTime());
         $entityManager->flush();
 
         $tipoMesadaId = $request->query->get('tipo_mesada_id');
