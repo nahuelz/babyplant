@@ -513,7 +513,7 @@ class PedidoController extends BaseController {
         $em = $this->doctrine->getManager();
 
         /* @var $columnas GlobalConfig */
-        $columnasOcultas = $em->getRepository(\App\Entity\GlobalConfig::class)
+        $columnas = $em->getRepository(\App\Entity\GlobalConfig::class)
             ->findOneBy([
                 'usuario' => $this->getUser(),
             ]);
