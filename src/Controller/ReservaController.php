@@ -88,11 +88,13 @@ class ReservaController extends BaseController {
         $rsm->addScalarResult('cantidadBandejas', 'cantidadBandejas');
         $rsm->addScalarResult('estado', 'estado');
         $rsm->addScalarResult('idEstado', 'idEstado');
+        $rsm->addScalarResult('idEstadoEntrega', 'idEstadoEntrega');
         $rsm->addScalarResult('colorEstado', 'colorEstado');
         $rsm->addScalarResult('colorProducto', 'colorProducto');
         $rsm->addScalarResult('estadoPedidoProducto', 'estadoPedidoProducto');
         $rsm->addScalarResult('idEstadoPedidoProducto', 'idEstadoPedidoProducto');
         $rsm->addScalarResult('colorEstadoPedidoProducto', 'colorEstadoPedidoProducto');
+
 
         $nativeQuery = $em->createNativeQuery('call sp_index_reserva(?,?,?)', $rsm);
 
