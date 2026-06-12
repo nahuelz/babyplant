@@ -40,8 +40,8 @@
         {% if entity.idEstado == SIN_ENTREGAR %}
             "entregar": "{{ path( "reserva_confirmar_entrega", { id: entity.idReserva }) }}",
             "idReserva": "{{ entity.idReserva }}",
-            "cancelar" : " {{ path( "reserva_cancelar", { "id": entity.idReserva }) }}",
         {% endif %}
+        "cancelar" : " {{ path( "reserva_cancelar", { "id": entity.idReserva }) }}",
         "historico_estados": "{{ path('reserva_historico_estado',{id: entity.idReserva}) }}",
         "print_pdf": "{{ path( "imprimir_reserva", { "id": entity.idReserva }) }}",
         "situacion_cliente": "{{ path( "situacioncliente_show", { "id": entity.idClienteReserva }) }}",
