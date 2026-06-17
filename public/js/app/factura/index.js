@@ -82,23 +82,6 @@ function datatablesGetColDef() {
     return [
         {
             targets: index++,
-            name: 'id',
-            width: '15px',
-            className: 'dt-center',
-            orderable: true,
-            render: function (data, type, full, meta) {
-                if (type === 'sort' || type === 'type') {
-                    return parseInt(full.id, 10);
-                }
-                return '\
-                    <label class="kt-checkbox kt-checkbox--single kt-checkbox--solid">\
-                        <input type="checkbox" value="" class="kt-checkable">\
-                        <span></span>\
-                    </label>';
-            },
-        },
-        {
-            targets: index++,
             name: 'proveedor',
             className: 'dt-center',
             type: 'string'
