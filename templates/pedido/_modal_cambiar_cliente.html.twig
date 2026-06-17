@@ -1,0 +1,49 @@
+<div class="modal fade" id="modalCambiarCliente" tabindex="-1" role="dialog" aria-labelledby="modalCambiarClienteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form id="formCambiarCliente" method="post" action="{{ path('pedido_cambiar_cliente', {'id': pedido.id}) }}">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCambiarClienteLabel">
+                        <i class="la la-exchange"></i> Cambiar cliente del pedido N° {{ pedido.id }}
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i aria-hidden="true" class="ki ki-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="control-label">Cliente actual</label>
+                        <input type="text" class="form-control" value="{{ pedido.cliente|default('-') }}" disabled>
+                    </div>
+                    {% if pedido.clienteOriginal and pedido.clienteOriginal.id != pedido.cliente.id %}
+                        <div class="form-group">
+                            <label class="control-label">Cliente original</label>
+                            <input type="text" class="form-control" value="{{ pedido.clienteOriginal }}" disabled>
+                        </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <label class="control-label" for="cambiar_cliente_select">Nuevo cliente <span class="text-danger">*</span></label>
+                        <select id="cambiar_cliente_select" name="idCliente" class="form-control" required>
+                            <option value="">Seleccionar...</option>
+                            {% for c in clientes %}
+                                {% if pedido.cliente is null or c.id != pedido.cliente.id %}
+                                    <option value="{{ c.id }}">{{ c.nombre }} {{ c.razon_social|default('') }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="alert alert-warning small mb-0">
+                        <i class="la la-info-circle"></i>
+                        Esta acción cambia el cliente del pedido. El cliente original quedará registrado para auditoría.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-dark font-weight-bold" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-warning font-weight-bold">
+                        <i class="la la-save"></i> Confirmar cambio
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

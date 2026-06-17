@@ -29,6 +29,8 @@ $(document).ready(function () {
 
 
     initCambiarMesadaHandler();
+    initCambiarClienteHandler();
+    initSubmitCambiarCliente();
 
 
     var table = $table.DataTable();
@@ -589,6 +591,7 @@ function dataTablesActionFormatter(data, type, full, meta) {
             (data.situacion_cliente !== undefined ? '<a class="dropdown-item" href="' + data.situacion_cliente + '"><i class="la la-user" style="margin-right: 5px;"></i> Situacion Cliente</a>' : '') +
             (data.remito !== undefined ? '<a class="dropdown-item" href="' + data.remito + '"><i class="la la-edit" style="margin-right: 5px;"></i> Remito</a>' : '') +
             (data.cancelar !== undefined ? '<a class="dropdown-item accion-cancelar" href="' + data.cancelar + '"><i class="la la-remove" style="margin-right: 5px;"></i> Cancelar</a>' : '') +
+            (data.cambiar_cliente_modal !== undefined ? '<a class="dropdown-item js-cambiar-cliente" href="#" data-href="' + data.cambiar_cliente_modal + '" data-id="' + data.cambiar_cliente_id + '"><i class="la la-exchange" style="margin-right: 5px;"></i> Cambiar cliente</a>' : '') +
             botonWhatsapp;
 
         actions = ' <div class="dropdown dropdown-inline">\
@@ -815,6 +818,75 @@ function removeMesadaHandler(){
         $('#cambiar_mesada_mesadaDos_cantidadBandejas').val('');
         $('.add-mesada').show();
     })
+}
+
+function initCambiarClienteHandler() {
+    $(document).off('click', '.js-cambiar-cliente').on('click', '.js-cambiar-cliente', function (e) {
+        e.preventDefault();
+        const url = $(this).data('href');
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (html) {
+                $('#modalCambiarCliente').remove();
+                $('body').append(html);
+                $('#cambiar_cliente_select').select2({
+                    dropdownParent: $('#modalCambiarCliente'),
+                    width: '100%'
+                });
+                $('#modalCambiarCliente').modal('show');
+            },
+            error: function () {
+                Swal.fire({ title: 'Error al cargar el formulario.', icon: 'error' });
+            }
+        });
+    });
+}
+
+function initSubmitCambiarCliente() {
+    $(document).off('submit', '#formCambiarCliente').on('submit', '#formCambiarCliente', function (e) {
+        e.preventDefault();
+        const $form = $(this);
+
+        if (!$('#cambiar_cliente_select').val()) {
+            Swal.fire({ title: 'Debe seleccionar un cliente.', icon: 'warning' });
+            return false;
+        }
+
+        $.ajax({
+            url: $form.attr('action'),
+            type: 'POST',
+            data: $form.serialize(),
+            dataType: 'json',
+            success: function (response) {
+                if (response.ok) {
+                    $('#modalCambiarCliente').modal('hide');
+                    Swal.fire({
+                        title: response.message,
+                        icon: 'success',
+                        timer: 1800,
+                        showConfirmButton: false
+                    }).then(function () {
+                        if ($('#table-pedido').length) {
+                            $('#table-pedido').DataTable().ajax.reload();
+                        } else {
+                            location.reload();
+                        }
+                    });
+                } else {
+                    Swal.fire({ title: response.message || 'No se pudo cambiar el cliente.', icon: 'error' });
+                }
+            },
+            error: function (xhr) {
+                let msg = 'Error al cambiar el cliente.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    msg = xhr.responseJSON.message;
+                }
+                Swal.fire({ title: msg, icon: 'error' });
+            }
+        });
+    });
 }
 
 function resaltarFilasConProblemas() {

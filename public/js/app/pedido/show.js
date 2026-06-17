@@ -1,8 +1,75 @@
 $(document).ready(function () {
     initVerHistoricoEstadoHandler();
     initActualizarBandejas();
+    initCambiarClienteHandler();
+    initSubmitCambiarCliente();
     setSameHeight('.portlet-nivel-1');
 });
+
+function initCambiarClienteHandler() {
+    $(document).off('click', '.js-cambiar-cliente').on('click', '.js-cambiar-cliente', function (e) {
+        e.preventDefault();
+        const url = $(this).data('href');
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (html) {
+                $('#modalCambiarCliente').remove();
+                $('body').append(html);
+                $('#cambiar_cliente_select').select2({
+                    dropdownParent: $('#modalCambiarCliente'),
+                    width: '100%'
+                });
+                $('#modalCambiarCliente').modal('show');
+            },
+            error: function () {
+                Swal.fire({ title: 'Error al cargar el formulario.', icon: 'error' });
+            }
+        });
+    });
+}
+
+function initSubmitCambiarCliente() {
+    $(document).off('submit', '#formCambiarCliente').on('submit', '#formCambiarCliente', function (e) {
+        e.preventDefault();
+        const $form = $(this);
+
+        if (!$('#cambiar_cliente_select').val()) {
+            Swal.fire({ title: 'Debe seleccionar un cliente.', icon: 'warning' });
+            return false;
+        }
+
+        $.ajax({
+            url: $form.attr('action'),
+            type: 'POST',
+            data: $form.serialize(),
+            dataType: 'json',
+            success: function (response) {
+                if (response.ok) {
+                    $('#modalCambiarCliente').modal('hide');
+                    Swal.fire({
+                        title: response.message,
+                        icon: 'success',
+                        timer: 1800,
+                        showConfirmButton: false
+                    }).then(function () {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({ title: response.message || 'No se pudo cambiar el cliente.', icon: 'error' });
+                }
+            },
+            error: function (xhr) {
+                let msg = 'Error al cambiar el cliente.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    msg = xhr.responseJSON.message;
+                }
+                Swal.fire({ title: msg, icon: 'error' });
+            }
+        });
+    });
+}
 
 /**
  *

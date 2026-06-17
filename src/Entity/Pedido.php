@@ -44,6 +44,12 @@ class Pedido {
     private $cliente;
 
     /**
+     * @ORM\ManyToOne(targetEntity=Usuario::class)
+     * @ORM\JoinColumn(name="id_cliente_original", referencedColumnName="id", nullable=true)
+     */
+    private $clienteOriginal;
+
+    /**
      * @ORM\Column(name="observacion", type="string", length=255, nullable=true)
      */
     private $observacion;
@@ -133,7 +139,27 @@ class Pedido {
      */
     public function setCliente($cliente): void
     {
+        // La primera vez que se asigna un cliente, se inicializa también el clienteOriginal
+        if ($this->clienteOriginal === null && $cliente !== null) {
+            $this->clienteOriginal = $cliente;
+        }
         $this->cliente = $cliente;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getClienteOriginal()
+    {
+        return $this->clienteOriginal;
+    }
+
+    /**
+     * @param mixed $clienteOriginal
+     */
+    public function setClienteOriginal($clienteOriginal): void
+    {
+        $this->clienteOriginal = $clienteOriginal;
     }
 
     /**

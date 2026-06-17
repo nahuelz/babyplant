@@ -3,6 +3,8 @@
 {% set PENDIENTE = constant(EstadoPedidoProducto ~ '::PENDIENTE') %}
 {% set PLANIFICADO = constant(EstadoPedidoProducto ~ '::PLANIFICADO') %}
 {% set EN_CAMARA = constant(EstadoPedidoProducto ~ '::EN_CAMARA') %}
+{% set ENTREGADO = constant(EstadoPedidoProducto ~ '::ENTREGADO') %}
+{% set ENTREGADO_PARCIAL = constant(EstadoPedidoProducto ~ '::ENTREGADO_PARCIAL') %}
 {% autoescape false %}
     {
     "data": [
@@ -49,6 +51,10 @@
         "situacion_cliente" : "{{ path( "situacioncliente_show", { "id": entity.idCliente }) }}"
         {% if entity.idEstado ==  PENDIENTE or entity.idEstado ==  PLANIFICADO or entity.idEstado ==  EN_CAMARA %}
             ,"cancelar" : " {{ path( "pedido_producto_cancelar", { "id": entity.idProducto }) }}"
+        {% endif %}
+        {% if is_granted('ROLE_ADMIN') and entity.idEstado != ENTREGADO and entity.idEstado != ENTREGADO_PARCIAL %}
+            ,"cambiar_cliente_modal" : "{{ path('pedido_modal_cambiar_cliente', {'id': entity.id}) }}"
+            ,"cambiar_cliente_id" : "{{ entity.id }}"
         {% endif %}
         {% if entity.celular != '' %}
             ,"celular" : " {{ entity.celular }}"

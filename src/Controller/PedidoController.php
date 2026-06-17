@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Constants\ConstanteEstadoMesada;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
+use App\Entity\Constants\ConstanteTipoUsuario;
 use App\Entity\CuentaCorrientePedido;
 use App\Entity\EstadoMesada;
 use App\Entity\EstadoPedidoProducto;
@@ -585,6 +586,132 @@ class PedidoController extends BaseController {
         return $this->render('pedido_producto/_modal_mesada.html.twig', [
             'form' => $form->createView(),
             'pedidoProducto' => $pedidoProducto,
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/modal-cambiar-cliente", name="pedido_modal_cambiar_cliente", methods={"GET"})
+     * @IsGranted("ROLE_ADMIN")
+     */
+    public function modalCambiarCliente(int $id): Response
+    {
+        $em = $this->doctrine->getManager();
+
+        /** @var Pedido|null $pedido */
+        $pedido = $em->getRepository(Pedido::class)->find($id);
+        if (!$pedido) {
+            throw $this->createNotFoundException("No se encontró el pedido $id.");
+        }
+
+        $clientes = $this->getSelectService()->getClienteFilter();
+
+        return $this->render('pedido/_modal_cambiar_cliente.html.twig', [
+            'pedido'   => $pedido,
+            'clientes' => $clientes,
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/cambiar-cliente", name="pedido_cambiar_cliente", methods={"POST"})
+     * @IsGranted("ROLE_ADMIN")
+     */
+    public function cambiarCliente(Request $request, int $id, EntityManagerInterface $em): JsonResponse
+    {
+        /** @var Pedido|null $pedido */
+        $pedido = $em->getRepository(Pedido::class)->find($id);
+        if (!$pedido) {
+            return new JsonResponse(['ok' => false, 'message' => 'Pedido no encontrado.'], 404);
+        }
+
+        $idClienteNuevo = $request->request->get('idCliente');
+        if (!$idClienteNuevo) {
+            return new JsonResponse(['ok' => false, 'message' => 'Debe seleccionar un cliente.'], 400);
+        }
+
+        /** @var Usuario|null $clienteNuevo */
+        $clienteNuevo = $em->getRepository(Usuario::class)->find($idClienteNuevo);
+
+        // 1) Validar cliente nuevo
+        if (!$clienteNuevo) {
+            return new JsonResponse(['ok' => false, 'message' => 'El cliente seleccionado no existe.'], 400);
+        }
+        if ($clienteNuevo->getTipoUsuario() === null
+            || $clienteNuevo->getTipoUsuario()->getCodigoInterno() != ConstanteTipoUsuario::CLIENTE) {
+            return new JsonResponse(['ok' => false, 'message' => 'El usuario seleccionado no es un cliente.'], 400);
+        }
+        if (!$clienteNuevo->getHabilitado()) {
+            return new JsonResponse(['ok' => false, 'message' => 'El cliente seleccionado no está habilitado.'], 400);
+        }
+        $clienteViejo = $pedido->getCliente();
+        if ($clienteViejo && $clienteViejo->getId() === $clienteNuevo->getId()) {
+            return new JsonResponse(['ok' => false, 'message' => 'El cliente nuevo es el mismo que el actual.'], 400);
+        }
+
+        // 2) Sin saldo en CC del pedido
+        $cc = $pedido->getCuentaCorrientePedido();
+        if ($cc && (float) $cc->getSaldo() != 0.0) {
+            return new JsonResponse([
+                'ok'      => false,
+                'message' => 'El pedido tiene saldo en adelantos (' . $cc->getSaldo() . '). No se puede cambiar el cliente.'
+            ], 400);
+        }
+
+        // 3) Ningún PedidoProducto en ENTREGADO / ENTREGADO_PARCIAL / RESERVADO
+        foreach ($pedido->getPedidosProductos() as $pp) {
+            $codigo = $pp->getEstado() ? $pp->getEstado()->getCodigoInterno() : null;
+            if ($codigo == ConstanteEstadoPedidoProducto::ENTREGADO
+                || $codigo == ConstanteEstadoPedidoProducto::ENTREGADO_PARCIAL) {
+                return new JsonResponse([
+                    'ok'      => false,
+                    'message' => 'El pedido tiene productos ENTREGADOS. No se puede cambiar el cliente.'
+                ], 400);
+            }
+            if ($codigo == ConstanteEstadoPedidoProducto::RESERVADO) {
+                return new JsonResponse([
+                    'ok'      => false,
+                    'message' => 'El pedido tiene productos RESERVADOS. No se puede cambiar el cliente.'
+                ], 400);
+            }
+        }
+
+        // 4) Cambio atómico
+        $em->beginTransaction();
+        try {
+            if ($clienteViejo) {
+                $clienteViejo->getPedidos()->removeElement($pedido);
+            }
+            $pedido->setCliente($clienteNuevo);
+            if (!$clienteNuevo->getPedidos()->contains($pedido)) {
+                $clienteNuevo->getPedidos()->add($pedido);
+            }
+
+            $logService = new LogAuditoriaService($this->getDoctrine());
+            $logService->generarLog(
+                $pedido,
+                sprintf(
+                    'Cambio de cliente del pedido %d: %s -> %s',
+                    $pedido->getId(),
+                    $clienteViejo ? (string) $clienteViejo : 'null',
+                    (string) $clienteNuevo
+                ),
+                'PEDIDO'
+            );
+
+            $em->flush();
+            $em->commit();
+        } catch (\Throwable $e) {
+            $em->rollback();
+            return new JsonResponse([
+                'ok'      => false,
+                'message' => 'Error al cambiar cliente: ' . $e->getMessage()
+            ], 500);
+        }
+
+        return new JsonResponse([
+            'ok'              => true,
+            'message'         => 'Cliente actualizado correctamente.',
+            'clienteNuevo'    => (string) $clienteNuevo,
+            'clienteOriginal' => $pedido->getClienteOriginal() ? (string) $pedido->getClienteOriginal() : null,
         ]);
     }
 
