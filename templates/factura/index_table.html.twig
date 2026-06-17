@@ -4,14 +4,14 @@
     {% for entity in entities %}
         [
         "{{ entity.id }}",
-        "{{ entity.proveedor }}",
+        "{{ entity.proveedor|upper }}",
         "{{ entity.numeroFactura }}",
         {
             "fechaFormateada": "{{ entity.fecha is not null ? entity.fecha|date('d/m/Y') : '-' }}",
             "fechaOrdenable": "{{ entity.fecha is not null ? entity.fecha|date('Y-m-d') : '' }}"
         },
-        "{{ entity.tipoGrupo|default('-') }}",
-        "{{ entity.concepto|default('-') }}",
+        "{{ entity.tipoGrupo|upper|default('-') }}",
+        "{{ entity.concepto|upper|default('-') }}",
         {
             "montoTotal": "{{ entity.montoTotal }}",
             "tipoMoneda": "{{ entity.tipoMoneda }}"
