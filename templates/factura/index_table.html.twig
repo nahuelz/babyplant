@@ -6,7 +6,10 @@
         "{{ entity.id }}",
         "{{ entity.proveedor }}",
         "{{ entity.numeroFactura }}",
-        "{{ entity.fecha is not null ? entity.fecha|date('d/m/Y') : '-' }}",
+        {
+            "fechaFormateada": "{{ entity.fecha is not null ? entity.fecha|date('d/m/Y') : '-' }}",
+            "fechaOrdenable": "{{ entity.fecha is not null ? entity.fecha|date('Y-m-d') : '' }}"
+        },
         {
             "montoTotal": "{{ entity.montoTotal }}",
             "tipoMoneda": "{{ entity.tipoMoneda }}"

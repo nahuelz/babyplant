@@ -113,7 +113,13 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'fecha',
             className: 'dt-center',
-            type: 'string'
+            type: 'date',
+            render: function (data, type, full, meta) {
+                if (type === 'sort' || type === 'type') {
+                    return data.fechaOrdenable;
+                }
+                return data.fechaFormateada;
+            }
         },
         {
             targets: index++,
