@@ -11,14 +11,14 @@
 </div>
 
 <div class="row-form-factura-detalle">
-<div class="row">
+<div class="row align-items-end">
     {{ macro_form._new_field(form.detalle.tipoGrupo, 'col-md-2') }}
     {{ macro_form._new_field(form.detalle.concepto, 'col-md-3') }}
     {{ macro_form._new_field(form.detalle.subConcepto, 'col-md-2') }}
     {{ macro_form._new_field(form.detalle.descripcion, 'col-md-2') }}
     {{ macro_form._new_field(form.detalle.cantidad, 'col-md-1') }}
     {{ macro_form._new_field(form.detalle.precioUnitario, 'col-md-2') }}
-    <div class="col-md-2">
+    <div class="col-md-2 ml-auto">
         <div class="form-group">
             <button class="btn btn-success font-weight-bold margin-top-25 link-save-factura-detalle spinner-primary">
                 AGREGAR CONCEPTO
