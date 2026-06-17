@@ -61,6 +61,12 @@ class Factura
      */
     private $proveedor;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=TipoGrupo::class)
+     * @ORM\JoinColumn(name="id_tipo_grupo", referencedColumnName="id", nullable=true)
+     */
+    private $tipoGrupo;
+
     public function __construct()
     {
         $this->detalles = new ArrayCollection();
@@ -189,6 +195,17 @@ class Factura
     public function setProveedor($proveedor): void
     {
         $this->proveedor = $proveedor;
+    }
+
+    public function getTipoGrupo(): ?TipoGrupo
+    {
+        return $this->tipoGrupo;
+    }
+
+    public function setTipoGrupo(?TipoGrupo $tipoGrupo): self
+    {
+        $this->tipoGrupo = $tipoGrupo;
+        return $this;
     }
 
 }

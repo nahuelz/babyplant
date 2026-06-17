@@ -4,14 +4,6 @@
     </a>
     <div class="menu-submenu menu-submenu-classic menu-submenu-left" data-hor-direction="menu-submenu-left">
         <ul class="menu-subnav">
-            {% if is_granted("ROLE_GASTO") %}
-                {% include 'menu/menu_gasto.html.twig' %}
-                <hr class="m-0">
-            {% endif %}
-            {% if is_granted("ROLE_FACTURA") %}
-                {% include 'menu/menu_factura.html.twig' %}
-                <hr class="m-0">
-            {% endif %}
             {% if is_granted("ROLE_ESTADISTICAS") %}
                 {% include 'menu/estadiscticas.html.twig' %}
                 <hr class="m-0">

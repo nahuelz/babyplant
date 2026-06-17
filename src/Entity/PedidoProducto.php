@@ -273,11 +273,10 @@ class PedidoProducto {
      *     type="decimal",
      *     precision=6,
      *     scale=1,
-     *     nullable=true,
-     *     options={"default": 0}
+     *     nullable=true
      * )
      */
-    private ?string $cantidadBandejasEliminadas = '0';
+    private ?string $cantidadBandejasEliminadas = '0.0';
 
 
     public function __construct()

@@ -36,6 +36,12 @@ class FacturaDetalle
     private $subConcepto;
 
     /**
+     * @ORM\ManyToOne(targetEntity=TipoGrupo::class)
+     * @ORM\JoinColumn(name="id_tipo_grupo", referencedColumnName="id", nullable=true)
+     */
+    private $tipoGrupo;
+
+    /**
      * @ORM\Column(name="cantidad", type="integer", nullable=true)
      */
     private $cantidad;
@@ -85,6 +91,17 @@ class FacturaDetalle
     public function setSubConcepto(?TipoSubConcepto $subConcepto): self
     {
         $this->subConcepto = $subConcepto;
+        return $this;
+    }
+
+    public function getTipoGrupo(): ?TipoGrupo
+    {
+        return $this->tipoGrupo;
+    }
+
+    public function setTipoGrupo(?TipoGrupo $tipoGrupo): self
+    {
+        $this->tipoGrupo = $tipoGrupo;
         return $this;
     }
 

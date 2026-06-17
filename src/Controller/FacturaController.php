@@ -6,6 +6,7 @@ use App\Entity\Factura;
 use App\Entity\FacturaDetalle;
 use App\Entity\MovimientoProveedor;
 use App\Entity\Proveedor;
+use App\Entity\TipoGrupo;
 use App\Entity\TipoMovimiento;
 use App\Entity\TipoSubConcepto;
 use App\Entity\Usuario;
@@ -239,6 +240,7 @@ class FacturaController extends BaseController {
         $detalleRepo = $em->getRepository(FacturaDetalle::class);
         $conceptoRepo = $em->getRepository(\App\Entity\TipoConcepto::class);
         $subConceptoRepo = $em->getRepository(\App\Entity\TipoSubConcepto::class);
+        $tipoGrupoRepo = $em->getRepository(TipoGrupo::class);
 
         $existingDetalles = $detalleRepo->findBy(['factura' => $entity->getId()]);
         $existingById = [];
@@ -259,6 +261,7 @@ class FacturaController extends BaseController {
                 $detalle = new FacturaDetalle();
             }
 
+            $detalle->setTipoGrupo(!empty($data['tipoGrupo']) ? $tipoGrupoRepo->find($data['tipoGrupo']) : null);
             $detalle->setConcepto(!empty($data['concepto']) ? $conceptoRepo->find($data['concepto']) : null);
             $detalle->setSubConcepto(!empty($data['subConcepto']) ? $subConceptoRepo->find($data['subConcepto']) : null);
             $detalle->setCantidad($data['cantidad'] ?? null);

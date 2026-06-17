@@ -16,6 +16,8 @@ function initConceptos() {
 }
 function initSelect2() {
     $('#factura_modoPago').select2();
+    $('#factura_tipoGrupo').select2();
+    $('#factura_detalle_tipoGrupo').select2();
     $('#factura_detalle_concepto').select2();
     $('#factura_detalle_subConcepto').select2();
     
@@ -79,14 +81,16 @@ function initFacturaDetalleHandler() {
     $(document).off('click', '.link-save-factura-detalle').on('click', '.link-save-factura-detalle', function (e) {
         e.preventDefault();
 
+        const tipoGrupoSelect = $('#factura_detalle_tipoGrupo');
         const conceptoSelect = $('#factura_detalle_concepto');
         const subConceptoSelect = $('#factura_detalle_subConcepto');
         const cantidadInput = $('#factura_detalle_cantidad');
         const precioInput = $('#factura_detalle_precioUnitario');
         const descripcionInput = $('#factura_detalle_descripcion');
 
-        const concepto = conceptoSelect.val();
-        const subConcepto = subConceptoSelect.val();
+        const tipoGrupo = tipoGrupoSelect.val() || '';
+        const concepto = conceptoSelect.val() || '';
+        const subConcepto = subConceptoSelect.val() || '';
         const cantidad = parseInt(cantidadInput.val(), 10) || 0;
         const precioRaw = precioInput.val();
         const precio = parseFloat((precioRaw || '').replace(/\./g, '').replace(',', '.')) || 0;
@@ -112,12 +116,14 @@ function initFacturaDetalleHandler() {
 
         const item = `
             <tr class="tr-factura-detalle" data-total="${total}">
+                <td class="hidden"><input type="hidden" name="factura[detalles][${index}][tipoGrupo]" value="${tipoGrupo}"></td>
                 <td class="hidden"><input type="hidden" name="factura[detalles][${index}][concepto]" value="${concepto}"></td>
                 <td class="hidden"><input type="hidden" name="factura[detalles][${index}][subConcepto]" value="${subConcepto}"></td>
                 <td class="hidden"><input type="hidden" name="factura[detalles][${index}][cantidad]" value="${cantidad}"></td>
                 <td class="hidden"><input type="hidden" name="factura[detalles][${index}][precioUnitario]" value="${precioRaw}"></td>
                 <td class="hidden"><input type="hidden" name="factura[detalles][${index}][descripcion]" value="${descripcion}"></td>
-                
+
+                <td class="text-center v-middle">${tipoGrupo ? tipoGrupoSelect.find('option:selected').text() : ''}</td>
                 <td class="text-center v-middle">${conceptoSelect.find('option:selected').text()}</td>
                 <td class="text-center v-middle">${subConcepto ? subConceptoSelect.find('option:selected').text() : ''}</td>
                 <td class="text-center v-middle">${descripcion}</td>
@@ -148,6 +154,7 @@ function initFacturaDetalleHandler() {
  * Limpiar formulario de detalle
  */
 function clearDetalleForm() {
+    $('#factura_detalle_tipoGrupo').val('').select2();
     $('#factura_detalle_concepto').val('').select2();
     $('#factura_detalle_subConcepto').val('').select2();
     $('#factura_detalle_cantidad').val('');

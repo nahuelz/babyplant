@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\FacturaDetalle;
 use App\Entity\TipoConcepto;
+use App\Entity\TipoGrupo;
 use App\Entity\TipoSubConcepto;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -19,6 +20,23 @@ class FacturaDetalleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('tipoGrupo', EntityType::class, [
+                'label' => 'Tipo Grupo',
+                'class' => TipoGrupo::class,
+                'required' => true,
+                'attr' => [
+                    'placeholder' => '-- Elija el tipo grupo --',
+                    'class' => 'form-control choice tipogrupo-select',
+                    'data-placeholder' => '-- Elija el tipo grupo --',
+                ],
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('tg')
+                        ->where('tg.habilitado = 1')
+                        ->orderBy('tg.nombre', 'ASC');
+                },
+                'label_attr' => ['class' => 'control-label required'],
+                'placeholder' => '-- Elija el tipo grupo --',
+            ])
             ->add('concepto', EntityType::class, [
                 'label' => 'Concepto',
                 'class' => TipoConcepto::class,

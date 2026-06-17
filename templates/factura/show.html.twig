@@ -45,6 +45,7 @@
                             <table class="table table-bordered table-striped">
                                 <thead class="thead-light">
                                     <tr>
+                                        <th>Grupo</th>
                                         <th>Concepto</th>
                                         <th>Subconcepto</th>
                                         <th>Descripción</th>
@@ -56,6 +57,7 @@
                                 <tbody>
                                     {% for detalle in factura.detalles %}
                                         <tr>
+                                            <td>{{ detalle.tipoGrupo ?: '-' }}</td>
                                             <td>{{ detalle.concepto }}</td>
                                             <td>{{ detalle.subConcepto ?: '-' }}</td>
                                             <td>{{ detalle.descripcion ?: '-' }}</td>
@@ -67,7 +69,7 @@
                                 </tbody>
                                 <tfoot>
                                     <tr class="table-active">
-                                        <td colspan="5" class="text-right font-weight-bold">Total:</td>
+                                        <td colspan="6" class="text-right font-weight-bold">Total:</td>
                                         <td class="text-right font-weight-bold">{{ factura.getTotal()|money_format(2, simboloMoneda) }}</td>
                                     </tr>
                                 </tfoot>

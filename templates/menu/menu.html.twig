@@ -35,7 +35,11 @@
     {% include 'menu/menu_configuracion.html.twig' %}
 {% endif %}
 
-{# MENU ESTADISTICAS #}
 {% if is_granted("ROLE_MENU_ADMINISTRACION") %}
     {% include 'menu/menu_administracion.html.twig' %}
+{% endif %}
+
+
+{% if is_granted("ROLE_MENU_CONTABLE") %}
+    {% include 'menu/menu_contable.html.twig' %}
 {% endif %}

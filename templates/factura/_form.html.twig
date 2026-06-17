@@ -1,10 +1,10 @@
 {% import 'app/_macro_form.html.twig' as macro_form %}
 {{ macro_form._new_field(form.numeroFactura, "col-md-6") }}
 {{ macro_form._new_field(form.fecha, "col-md-6") }}
-{{ macro_form._new_field(form.concepto, "col-md-3") }}
-{{ macro_form._new_field(form.subConcepto, "col-md-3") }}
-{{ macro_form._new_field(form.monto, "col-md-3") }}
-{{ macro_form._new_field(form.modoPago, "col-md-3") }}
-{{ macro_form._new_field(form.tipoCambio, "col-md-4") }}
+{{ macro_form._new_field(form.proveedor, "col-md-6") }}
+{{ macro_form._new_field(form.tipoGrupo, "col-md-6") }}
+{{ macro_form._new_field(form.tipoMoneda, "col-md-6") }}
+{{ macro_form._new_field(form.tipoCambio, "col-md-6") }}
+{{ macro_form._new_field(form.modoPago, "col-md-6") }}
 {{ form_widget(form._token) }}
 {{ form_end(form, {"render_rest": false}) }}

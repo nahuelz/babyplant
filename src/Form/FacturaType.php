@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Factura;
 use App\Entity\ModoPago;
 use App\Entity\Proveedor;
+use App\Entity\TipoGrupo;
 use App\Form\FacturaDetalleType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -54,6 +55,23 @@ class FacturaType extends AbstractType
                 'attr' => array(
                     'class' => 'form-control',
                     'tabindex' => '3'
+                )
+            ))
+            ->add('tipoGrupo', EntityType::class, array(
+                'required' => true,
+                'label' => 'Tipo de Grupo',
+                'class' => TipoGrupo::class,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('tg')
+                        ->where('tg.habilitado = :habilitado')
+                        ->setParameter('habilitado', true)
+                        ->orderBy('tg.nombre', 'ASC');
+                },
+                'choice_label' => 'nombre',
+                'placeholder' => 'Seleccione un tipo de grupo',
+                'attr' => array(
+                    'class' => 'form-control',
+                    'tabindex' => '4'
                 )
             ))
             ->add('detalle', FacturaDetalleType::class, [
