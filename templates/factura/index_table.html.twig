@@ -10,6 +10,8 @@
             "fechaFormateada": "{{ entity.fecha is not null ? entity.fecha|date('d/m/Y') : '-' }}",
             "fechaOrdenable": "{{ entity.fecha is not null ? entity.fecha|date('Y-m-d') : '' }}"
         },
+        "{{ entity.tipoGrupo|default('-') }}",
+        "{{ entity.concepto|default('-') }}",
         {
             "montoTotal": "{{ entity.montoTotal }}",
             "tipoMoneda": "{{ entity.tipoMoneda }}"

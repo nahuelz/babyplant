@@ -123,6 +123,18 @@ function datatablesGetColDef() {
         },
         {
             targets: index++,
+            name: 'tipoGrupo',
+            className: 'dt-center',
+            type: 'string'
+        },
+        {
+            targets: index++,
+            name: 'concepto',
+            className: 'dt-center',
+            type: 'string'
+        },
+        {
+            targets: index++,
             name: 'montoTotal',
             className: 'dt-center',
             render: function (data, type, full, meta) {
