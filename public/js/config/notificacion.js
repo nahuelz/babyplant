@@ -93,7 +93,12 @@ function initHandlerVerNotificacionButton() {
         }
 
         // Agregar el mensaje
-        contenido += '<div class="notificacion-contenido">' + mensaje + '</div>';
+        // Convertir URLs en links clickeables
+        var mensajeConLinks = mensaje.replace(
+            /(https?:\/\/[^\s]+)/g,
+            '<a href="$1" target="_blank" style="color: #007bff; text-decoration: underline;">$1</a>'
+        );
+        contenido += '<div class="notificacion-contenido" style="word-break: break-word; overflow-wrap: break-word;">' + mensajeConLinks + '</div>';
 
         dialog = showDialog({
             color: 'blue',
