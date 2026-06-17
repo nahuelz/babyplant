@@ -100,7 +100,9 @@ class NotificacionController extends BaseController {
         foreach ($userRoles as $role) {
             $rolesConditions[] = "JSON_CONTAINS(n.destinatarios, '\"$role\"')";
         }
-        $rolesCondition = !empty($rolesConditions) ? 'AND (' . implode(' OR ', $rolesConditions) . ')' : '';
+        // Temporal: comentar filtro de roles para debug
+        // $rolesCondition = !empty($rolesConditions) ? 'AND (' . implode(' OR ', $rolesConditions) . ')' : '';
+        $rolesCondition = '';
 
         if ($showAll) {
             $sql .= 'SELECT n.id,

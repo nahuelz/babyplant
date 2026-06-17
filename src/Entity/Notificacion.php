@@ -168,12 +168,31 @@ class Notificacion {
     /**
      * Set destinatarios
      *
-     * @param array $destinatarios
+     * @param array|string $destinatarios
      *
      * @return Notificacion
      */
     public function setDestinatarios($destinatarios) {
-        $this->destinatarios = $destinatarios;
+        if (is_string($destinatarios)) {
+            // Si viene como string, decodificarlo primero
+            $decoded = json_decode($destinatarios, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $this->destinatarios = $decoded;
+            } else {
+                // Si no es JSON válido, intentar limpiar comillas dobles duplicadas
+                $cleaned = str_replace('""', '"', $destinatarios);
+                $decoded = json_decode($cleaned, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                    $this->destinatarios = $decoded;
+                } else {
+                    $this->destinatarios = [];
+                }
+            }
+        } elseif (is_array($destinatarios)) {
+            $this->destinatarios = $destinatarios;
+        } else {
+            $this->destinatarios = [];
+        }
 
         return $this;
     }

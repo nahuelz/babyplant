@@ -55,35 +55,4 @@
 
 {% block javascripts %}
     {{ parent() }}
-
-    <!-- Agrega esto justo antes de cerrar el bloque javascripts -->
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-
-    <script>
-        // Esperamos a que jQuery esté completamente cargado
-        if (typeof $ !== 'undefined') {
-            $(document).ready(function() {
-                $('#kt_datatable_notificaciones').DataTable({
-                    responsive: true,
-                    language: {
-                        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
-                    },
-                    order: [[3, 'desc']],
-                    pageLength: 5,
-                    lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Todos"]],
-                    columnDefs: [
-                        { orderable: false, targets: [0] },
-                        { width: '10%', targets: 0 },
-                        { width: '20%', targets: 1 },
-                        { width: '50%', targets: 2 },
-                        { width: '20%', targets: 3 }
-                    ]
-                });
-            });
-        } else {
-            console.error('jQuery no está cargado correctamente');
-        }
-    </script>
 {% endblock %}
