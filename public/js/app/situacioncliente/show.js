@@ -559,6 +559,34 @@ function prepararModalMovimiento() {
 
     initFormValidation();
     initMontoFormat();
+    initModoPagoListener();
+}
+
+function initModoPagoListener() {
+    // Ocultar campos inicialmente
+    $(document).on('change', '#movimiento_modoPago', function() {
+        const modoPago = $(this).val();
+
+        if (modoPago === '3') { // CHEQUE
+            $('#movimiento_banco').closest('.col-md-6').show();
+            $('#movimiento_numeroCheque').closest('.col-md-6').show();
+            $('#movimiento_banco').prop('required', true);
+            $('#movimiento_numeroCheque').prop('required', true);
+        } else {
+            $('#movimiento_banco').closest('.col-md-6').hide();
+            $('#movimiento_numeroCheque').closest('.col-md-6').hide();
+            $('#movimiento_banco').prop('required', false);
+            $('#movimiento_numeroCheque').prop('required', false);
+            $('#movimiento_banco').val('');
+            $('#movimiento_numeroCheque').val('');
+        }
+    });
+
+    // Ocultar campos al cargar el modal
+    setTimeout(function() {
+        $('#movimiento_banco').closest('.col-md-6').hide();
+        $('#movimiento_numeroCheque').closest('.col-md-6').hide();
+    }, 100);
 }
 
 function mostrarComprobanteMovimiento(idMovimiento) {

@@ -12,6 +12,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -53,6 +54,24 @@ class MovimientoType extends AbstractType
                     'tabindex' => '6'
                 )
             ))
+            ->add('banco', TextType::class, [
+                'required' => false,
+                'label' => 'Banco',
+                'attr' => [
+                    'class' => 'form-control',
+                    'tabindex' => '8',
+                    'id' => 'movimiento_banco'
+                ]
+            ])
+            ->add('numeroCheque', TextType::class, [
+                'required' => false,
+                'label' => 'Número de Cheque',
+                'attr' => [
+                    'class' => 'form-control',
+                    'tabindex' => '9',
+                    'id' => 'movimiento_numero_cheque'
+                ]
+            ])
             ->add('descripcion', TextareaType::class, array(
                     'required' => false,
                     'label' => 'Descripcion',

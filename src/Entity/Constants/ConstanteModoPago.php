@@ -40,7 +40,17 @@ class ConstanteModoPago {
     const ADELANTO_RESERVA = 6;
 
     /**
-     * AJUSTE
+     * AJUSTE EFECTIVO
      */
     const AJUSTE = 7;
+
+    /**
+     * AJUSTE
+     */
+    const AJUSTE_TRANSFERENCIA = 8;
+
+    /**
+     * AJUSTE
+     */
+    const AJUSTE_CHEQUE = 9;
 }

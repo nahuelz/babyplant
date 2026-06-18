@@ -92,6 +92,16 @@ class Movimiento {
     private $modoPago;
 
     /**
+     * @ORM\Column(name="banco", type="string", length=255, nullable=true)
+     */
+    private $banco;
+
+    /**
+     * @ORM\Column(name="numero_cheque", type="string", length=255, nullable=true)
+     */
+    private $numeroCheque;
+
+    /**
      * @ORM\OneToOne(targetEntity=Pago::class)
      * @ORM\JoinColumn(name="id_pago", referencedColumnName="id")
      */
@@ -362,6 +372,28 @@ class Movimiento {
     public function setToken(string $token): void
     {
         $this->token = $token;
+    }
+
+    public function getBanco(): ?string
+    {
+        return $this->banco;
+    }
+
+    public function setBanco(?string $banco): self
+    {
+        $this->banco = $banco;
+        return $this;
+    }
+
+    public function getNumeroCheque(): ?string
+    {
+        return $this->numeroCheque;
+    }
+
+    public function setNumeroCheque(?string $numeroCheque): self
+    {
+        $this->numeroCheque = $numeroCheque;
+        return $this;
     }
 
 }

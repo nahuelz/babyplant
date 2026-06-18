@@ -21,6 +21,8 @@
                 {{ macro_form._new_field(form.modoPago, "col-md-6") }}
             {% endif %}
             {{ macro_form._new_field(form.monto, "col-md-6") }}
+            {{ macro_form._new_field(form.banco, "col-md-6") }}
+            {{ macro_form._new_field(form.numeroCheque, "col-md-6") }}
             {% if idCuentaCorrientePedido %}
                 {{ macro_form._new_field(form.pedido, "col-md-12") }}
             {% endif %}
