@@ -59,23 +59,20 @@
         {# Saldo a favor: proviene de los pagos realizados #}
         {% set saldoFavorArs = 0 %}
         {% set saldoFavorUsd = 0 %}
+
         {% for pago in pagos %}
-            {% if pago.tipoMoneda == 'USD' %}
-                {% set saldoFavorUsd = saldoFavorUsd + pago.getMonto() %}
-            {% else %}
-                {% set saldoFavorArs = saldoFavorArs + pago.getMonto() %}
-            {% endif %}
+
+            {% set saldoFavorArs = saldoFavorArs + pago.getSaldoNoImputadoARS() %}
+            {% set saldoFavorUsd = saldoFavorUsd + pago.getSaldoNoImputadoUSD() %}
+
         {% endfor %}
 
         {# Deuda: total de las facturas generadas #}
         {% set deudaArs = 0 %}
         {% set deudaUsd = 0 %}
         {% for factura in facturas %}
-            {% if factura.tipoMoneda == 'USD' %}
-                {% set deudaUsd = deudaUsd + factura.getTotal() %}
-            {% else %}
-                {% set deudaArs = deudaArs + factura.getTotal() %}
-            {% endif %}
+            {% set deudaUsd = deudaUsd + factura.getMontoUSD() %}
+            {% set deudaArs = deudaArs + factura.getMontoARS() %}
         {% endfor %}
 
         <div class="card card-detail">
@@ -84,21 +81,6 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    {# SALDO A FAVOR #}
-                    <div class="col-md-6">
-                        <div class="card shadow-sm border-success">
-                            <div class="card-body py-4">
-                                <small class="font-size-16 text-uppercase">Saldo a favor</small>
-                                <div class="display-4 font-weight-bold text-success">
-                                    ${{ saldoFavorArs|number_format(2, ',', '.') }}
-                                </div>
-                                <div class="h4 font-weight-bold text-success">
-                                    US$ {{ saldoFavorUsd|number_format(2, ',', '.') }}
-                                </div>
-                                <small class="text-muted">Total de pagos realizados</small>
-                            </div>
-                        </div>
-                    </div>
                     {# DEUDA #}
                     <div class="col-md-6">
                         <div class="card shadow-sm border-danger">
@@ -111,6 +93,21 @@
                                     US$ {{ deudaUsd|number_format(2, ',', '.') }}
                                 </div>
                                 <small class="text-muted">Total de facturas generadas</small>
+                            </div>
+                        </div>
+                    </div>
+                    {# SALDO A FAVOR #}
+                    <div class="col-md-6">
+                        <div class="card shadow-sm border-success">
+                            <div class="card-body py-4">
+                                <small class="font-size-16 text-uppercase">Saldo a favor</small>
+                                <div class="display-4 font-weight-bold text-success">
+                                    ${{ saldoFavorArs|number_format(2, ',', '.') }}
+                                </div>
+                                <div class="h4 font-weight-bold text-success">
+                                    US$ {{ saldoFavorUsd|number_format(2, ',', '.') }}
+                                </div>
+                                <small class="text-muted">Total de pagos realizados</small>
                             </div>
                         </div>
                     </div>
@@ -145,6 +142,7 @@
                                                 <th class="text-center nowrap">Fecha</th>
                                                 <th class="text-center nowrap">Moneda</th>
                                                 <th class="text-center nowrap">Total</th>
+                                                <th class="text-center nowrap">Estado</th>
                                                 <th class="text-center nowrap"></th>
                                             </tr>
                                         </thead>
@@ -159,6 +157,16 @@
                                                         </span>
                                                     </td>
                                                     <td class="v-middle nowrap text-center">{{ factura.tipoMoneda == 'USD' ? 'US$' : '$' }} {{ factura.getTotal()|number_format(2, ',', '.') }}</td>
+                                                    <td class="v-middle nowrap text-center">
+                                                        {% if factura.estadoFactura %}
+                                                            <span class="label label-inline font-weight-bold {{ factura.estadoFactura.color }}"
+                                                                  style="color: #000000;">
+                                                                {{ factura.estadoFactura.nombre }}
+                                                            </span>
+                                                        {% else %}
+                                                            -
+                                                        {% endif %}
+                                                    </td>
                                                     <td class="text-center dt-acciones">
                                                         <div class="dropdown dropdown-inline">
                                                             <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -333,6 +341,7 @@
                                 initSelect2();
                                 calcularTotal();
                                 initBaseSubmitButton();
+                                initTipoCambio();
 
                             })
                             .fail(function () {

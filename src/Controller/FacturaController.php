@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\EstadoFactura;
+use App\Entity\EstadoFacturaHistorico;
 use App\Entity\Factura;
 use App\Entity\FacturaDetalle;
 use App\Entity\MovimientoProveedor;
@@ -10,6 +12,7 @@ use App\Entity\TipoGrupo;
 use App\Entity\TipoMovimiento;
 use App\Entity\TipoSubConcepto;
 use App\Entity\Usuario;
+use App\Entity\Constants\ConstanteEstadoFactura;
 use App\Entity\Constants\ConstanteTipoMovimiento;
 use App\Form\FacturaType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -63,6 +66,8 @@ class FacturaController extends BaseController {
         $rsm->addScalarResult('fecha', 'fecha');
         $rsm->addScalarResult('montoTotal', 'montoTotal');
         $rsm->addScalarResult('tipoMoneda', 'tipoMoneda');
+        $rsm->addScalarResult('estado', 'estado');
+        $rsm->addScalarResult('colorEstado', 'colorEstado');
 
         $nativeQuery = $em->createNativeQuery('call sp_index_factura()', $rsm);
 
@@ -170,6 +175,19 @@ class FacturaController extends BaseController {
         /** @var Factura $entity */
         foreach ($entity->getDetalles() as $detalle) {
             $detalle->setFactura($entity);
+        }
+
+        if (!$entity->getEstadoFactura()) {
+            $em = $this->doctrine->getManager();
+            $estado = $em->getReference(EstadoFactura::class, ConstanteEstadoFactura::PENDIENTE);
+            $entity->setEstadoFactura($estado);
+
+            $historico = new EstadoFacturaHistorico();
+            $historico->setFactura($entity);
+            $historico->setEstado($estado);
+            $historico->setFecha(new \DateTime());
+            $historico->setMotivo('Factura creada');
+            $entity->addHistoricoEstado($historico);
         }
 
         return true;

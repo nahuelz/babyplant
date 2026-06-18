@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Traits\Auditoria;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -75,9 +77,15 @@ class PagoProveedor
      */
     private ?string $observaciones = null;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ImputacionPagoFactura::class, mappedBy="pagoProveedor", cascade={"persist", "remove"})
+     */
+    private Collection $imputaciones;
+
     public function __construct()
     {
         $this->fechaPago = new \DateTimeImmutable();
+        $this->imputaciones = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -101,6 +109,34 @@ class PagoProveedor
         $this->proveedor = $proveedor;
 
         return $this;
+    }
+
+    public function getMontoARS(): float
+    {
+        $total = $this->getMonto();
+        $tipoCambio = (float) $this->tipoCambio;
+
+        if ($this->tipoMoneda === 'USD') {
+            return $total * $tipoCambio;
+        }
+
+        return $total;
+    }
+
+    public function getMontoUSD(): float
+    {
+        $total = $this->getMonto();
+        $tipoCambio = (float) $this->tipoCambio;
+
+        if ($this->tipoMoneda === 'USD') {
+            return $total;
+        }
+
+        if ($tipoCambio > 0) {
+            return $total / $tipoCambio;
+        }
+
+        return 0.0;
     }
 
     public function getMonto(): float
@@ -191,9 +227,92 @@ class PagoProveedor
         $this->tipoCambio = $tipoCambio;
     }
 
+    public function getImputaciones(): Collection
+    {
+        return $this->imputaciones;
+    }
+
+    public function addImputacion(ImputacionPagoFactura $imputacion): self
+    {
+        if (!$this->imputaciones->contains($imputacion)) {
+            $this->imputaciones[] = $imputacion;
+            $imputacion->setPagoProveedor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImputacion(ImputacionPagoFactura $imputacion): self
+    {
+        if ($this->imputaciones->removeElement($imputacion)) {
+            if ($imputacion->getPagoProveedor() === $this) {
+                $imputacion->setPagoProveedor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getTotalImputado(): float
+    {
+        $total = 0;
+        foreach ($this->imputaciones as $imputacion) {
+            $total += $imputacion->getMonto();
+        }
+
+        return $total;
+    }
+
+    public function getSaldoNoImputado(): float
+    {
+        return (float)$this->getMonto() - (float)$this->getTotalImputado();
+    }
+
+    public function getSaldoNoImputadoARS(): float
+    {
+        return $this->getMontoARS() - $this->getTotalImputadoARS();
+    }
 
 
+    public function getSaldoNoImputadoUSD(): float
+    {
+        return $this->getMontoUSD() - $this->getTotalImputadoUSD();
+    }
+
+    public function getTotalImputadoARS(): float
+    {
+        $total = 0;
+
+        foreach ($this->imputaciones as $imputacion) {
+
+            $factura = $imputacion->getFactura();
+
+            if ($factura->getTipoMoneda() === 'USD') {
+                $total += $imputacion->getMonto() * $factura->getTipoCambio();
+            } else {
+                $total += $imputacion->getMonto();
+            }
+        }
+
+        return $total;
+    }
 
 
+    public function getTotalImputadoUSD(): float
+    {
+        $total = 0;
 
+        foreach ($this->imputaciones as $imputacion) {
+
+            $factura = $imputacion->getFactura();
+
+            if ($factura->getTipoMoneda() === 'ARS') {
+                $total += $imputacion->getMonto() / $factura->getTipoCambio();
+            } else {
+                $total += $imputacion->getMonto();
+            }
+        }
+
+        return $total;
+    }
 }

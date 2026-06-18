@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Traits\Auditoria;
+use App\Entity\Constants\ConstanteEstadoFactura;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -67,9 +68,28 @@ class Factura
      */
     private $tipoGrupo;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=EstadoFactura::class)
+     * @ORM\JoinColumn(name="id_estado_factura", referencedColumnName="id", nullable=true)
+     */
+    private $estadoFactura;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ImputacionPagoFactura::class, mappedBy="factura", cascade={"persist", "remove"})
+     */
+    private $imputaciones;
+
+    /**
+     * @ORM\OneToMany(targetEntity=EstadoFacturaHistorico::class, mappedBy="factura", cascade={"all"})
+     * @ORM\OrderBy({"fecha" = "DESC", "id" = "DESC"})
+     */
+    private $historicoEstados;
+
     public function __construct()
     {
         $this->detalles = new ArrayCollection();
+        $this->imputaciones = new ArrayCollection();
+        $this->historicoEstados = new ArrayCollection();
     }
 
     public function getDetalles(): Collection
@@ -233,6 +253,97 @@ class Factura
     public function setTipoGrupo(?TipoGrupo $tipoGrupo): self
     {
         $this->tipoGrupo = $tipoGrupo;
+        return $this;
+    }
+
+    public function getEstadoFactura(): ?EstadoFactura
+    {
+        return $this->estadoFactura;
+    }
+
+    public function setEstadoFactura(?EstadoFactura $estadoFactura): self
+    {
+        $this->estadoFactura = $estadoFactura;
+        return $this;
+    }
+
+    public function getImputaciones(): Collection
+    {
+        return $this->imputaciones;
+    }
+
+    public function addImputacion(ImputacionPagoFactura $imputacion): self
+    {
+        if (!$this->imputaciones->contains($imputacion)) {
+            $this->imputaciones[] = $imputacion;
+            $imputacion->setFactura($this);
+        }
+        return $this;
+    }
+
+    public function removeImputacion(ImputacionPagoFactura $imputacion): self
+    {
+        if ($this->imputaciones->removeElement($imputacion)) {
+            if ($imputacion->getFactura() === $this) {
+                $imputacion->setFactura(null);
+            }
+        }
+        return $this;
+    }
+
+    public function getTotalPagado(): float
+    {
+        $total = 0;
+        foreach ($this->imputaciones as $imputacion) {
+            $total += $imputacion->getMonto();
+        }
+        return $total;
+    }
+
+    public function calcularEstadoId(): int
+    {
+        $pagado = $this->getTotalPagado();
+
+        if ($pagado <= 0) {
+            return ConstanteEstadoFactura::PENDIENTE;
+        }
+
+        // Tolerancia de redondeo de centavos
+        if ($pagado >= ($this->getTotal() - 0.01)) {
+            return ConstanteEstadoFactura::PAGA;
+        }
+
+        return ConstanteEstadoFactura::PAGO_PARCIAL;
+    }
+
+    public function getHistoricoEstados()
+    {
+        return $this->historicoEstados;
+    }
+
+    public function setHistoricoEstados($historicoEstados): void
+    {
+        $this->historicoEstados = $historicoEstados;
+    }
+
+    public function addHistoricoEstado(EstadoFacturaHistorico $historicoEstado): self
+    {
+        if (!$this->historicoEstados->contains($historicoEstado)) {
+            $this->historicoEstados[] = $historicoEstado;
+            $historicoEstado->setFactura($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHistoricoEstado(EstadoFacturaHistorico $historicoEstado): self
+    {
+        if ($this->historicoEstados->removeElement($historicoEstado)) {
+            if ($historicoEstado->getFactura() === $this) {
+                $historicoEstado->setFactura(null);
+            }
+        }
+
         return $this;
     }
 

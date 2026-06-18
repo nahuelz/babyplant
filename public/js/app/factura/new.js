@@ -9,41 +9,26 @@ jQuery(document).ready(function () {
     calcularTotal();
     initBaseSubmitButton();
     initConceptos();
+    initTipoCambio();
 });
 
 function initConceptos() {
     initChainedSelect($('#factura_detalle_concepto'), $('#factura_detalle_subConcepto'), __HOMEPAGE_PATH__ + 'factura/lista/conceptos', true);
 }
+
+function initTipoCambio() {
+    const tipoCambioInput = $('#factura_tipoCambio');
+    if (tipoCambioInput.length > 0 && !tipoCambioInput.val()) {
+        obtenerValorDolarBlue();
+    }
+}
+
 function initSelect2() {
     $('#factura_modoPago').select2();
     $('#factura_tipoGrupo').select2();
     $('#factura_detalle_tipoGrupo').select2();
     $('#factura_detalle_concepto').select2();
     $('#factura_detalle_subConcepto').select2();
-    
-    // Manejar cambio de tipo de moneda
-    $('#factura_tipoMoneda').on('change', function() {
-        const tipoMoneda = $(this).val();
-        const tipoCambioContainer = $('#tipo-cambio-container');
-        
-        if (tipoMoneda === 'USD') {
-            tipoCambioContainer.show();
-            // Obtener valor del dólar blue automáticamente
-            obtenerValorDolarBlue();
-        } else {
-            tipoCambioContainer.hide();
-            // Limpiar el campo de tipo de cambio cuando no es USD
-            $('#factura_tipoCambio').val('');
-        }
-    });
-    
-    // Inicializar el estado del campo tipoCambio según el valor actual
-    const currentTipoMoneda = $('#factura_tipoMoneda').val();
-    if (currentTipoMoneda !== 'USD') {
-        $('#tipo-cambio-container').hide();
-    }else{
-        $('#tipo-cambio-container').show()
-    }
 }
 
 /**

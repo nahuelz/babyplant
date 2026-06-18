@@ -13,6 +13,12 @@
 					<i class="flaticon-search text-primary"></i>
 				</span>
                 <h3 class="card-label">Detalles factura</h3>
+                {% if factura.estadoFactura %}
+                    <span class="label label-inline font-weight-bold ml-3 {{ factura.estadoFactura.color }}"
+                          style="color: #000000;">
+                        {{ factura.estadoFactura.nombre }}
+                    </span>
+                {% endif %}
             </div>
                 <div class="card-toolbar">
                     <!--begin::Button-->
@@ -30,11 +36,8 @@
                 {{ macro_show._show_detail('Fecha', factura.fecha|date('d/m/Y'), 'col-md-2') }}
                 {{ macro_show._show_detail('Moneda', factura.tipoMoneda, 'col-md-2') }}
                 {{ macro_show._show_detail('Tipo de Cambio', factura.tipoCambio ? factura.tipoCambio|money_format : 'N/A', 'col-md-2') }}
-                {% if factura.tipoMoneda == 'USD' %}
-                    {{ macro_show._show_detail('Monto total (ARS)', (factura.getTotal() * factura.tipoCambio)|money_format, 'col-md-2') }}
-                {% else %}
-                    {{ macro_show._show_detail('Monto total (ARS)', factura.getTotal()|money_format, 'col-md-2') }}
-                {% endif %}
+                {{ macro_show._show_detail('Monto total (ARS)', factura.getMontoARS()|money_format, 'col-md-2') }}
+                {{ macro_show._show_detail('Monto total (USD)', factura.getMontoUSD()|money_format, 'col-md-2') }}
             </div>
             
             <div class="row mt-4">
@@ -86,7 +89,7 @@
 
         </div>
         <div class="card-footer d-flex justify-content-between">
-            <a href="{{ path('factura_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
+            <a href="javascript:void(0)" onclick="history.length > 1 ? history.back() : window.location.href='{{ path('factura_index') }}'" class="btn btn-light-dark font-weight-bold">Volver</a>
         </div>
 
     </div>

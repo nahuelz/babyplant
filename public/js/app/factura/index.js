@@ -137,6 +137,18 @@ function datatablesGetColDef() {
             }
         },
         {
+            targets: index++,
+            name: 'estado',
+            orderable: false,
+            className: 'nowrap text-center align-middle',
+            render: function (data, type, full, meta) {
+                if (type === 'display') {
+                    return '<span class="label label-inline ' + data.colorEstado + ' font-weight-bold p-4" style="width: 120px">' + data.estado + '</span>';
+                }
+                return data.estado;
+            }
+        },
+        {
             targets: -1,
             name: '',
             title: '',

@@ -5,6 +5,8 @@ jQuery(document).ready(function () {
     initMontoFormat();
     initSelect2();
     initBaseSubmitButton();
+    initImputacionFacturas();
+    initImputacionHandler();
 
     $("#pago_proveedor_modoPago option[value='4']").prop('disabled', true);
     $("#pago_proveedor_modoPago option[value='5']").prop('disabled', true);
@@ -43,6 +45,158 @@ function initSelect2() {
     }else{
         $('#tipo-cambio-container').show();
     }
+}
+
+/**
+ * Carga las facturas pendientes del proveedor seleccionado en el select de imputacion.
+ */
+function initImputacionFacturas() {
+    $('#pago_proveedor_proveedor').on('change', function () {
+        cargarFacturasProveedor($(this).val());
+    });
+    cargarFacturasProveedor($('#pago_proveedor_proveedor').val());
+}
+
+function cargarFacturasProveedor(idProveedor) {
+    const select = $('#pago_proveedor_imputacion_factura');
+    if (select.length === 0) {
+        return;
+    }
+
+    select.html('<option value="">Seleccione una factura</option>');
+
+    if (!idProveedor) {
+        return;
+    }
+
+    $.post(__HOMEPAGE_PATH__ + 'pago_proveedor/lista/facturas', { id_entity: idProveedor }, function (data) {
+        data.forEach(function (f) {
+            const opt = $('<option></option>')
+                .val(f.id)
+                .text(f.denominacion)
+                .attr('data-moneda', f.moneda)
+                .attr('data-saldo', f.saldo);
+            select.append(opt);
+        });
+    }, 'json');
+}
+
+/**
+ * Manejo de filas de imputacion (agregar / eliminar).
+ */
+function initImputacionHandler() {
+    $('.tbody-imputacion').data('index', $('.tr-imputacion').length);
+
+    $(document).off('click', '.link-save-imputacion').on('click', '.link-save-imputacion', function (e) {
+        console.log('asd');
+        e.preventDefault();
+
+        const facturaSelect = $('#pago_proveedor_imputacion_factura');
+        const montoInput = $('#pago_proveedor_imputacion_monto');
+
+        const facturaId = facturaSelect.val();
+        const facturaText = facturaSelect.find('option:selected').text();
+        const moneda = facturaSelect.find('option:selected').data('moneda') || '';
+        const saldo = parseFloat(facturaSelect.find('option:selected').data('saldo')) || 0;
+        const montoRaw = montoInput.val();
+        const monto = parseFloat((montoRaw || '').replace(/\./g, '').replace(',', '.')) || 0;
+
+        if (!facturaId || monto <= 0) {
+            Swal.fire({ title: 'Seleccione una factura e ingrese un monto mayor a 0.', icon: 'warning' });
+            return;
+        }
+
+        if (monto > saldo + 0.01) {
+            Swal.fire({ title: 'El monto imputado supera el saldo pendiente de la factura.', icon: 'warning' });
+            return;
+        }
+
+        let duplicada = false;
+        $('.tr-imputacion').each(function () {
+            if ($(this).find('input[name*="[factura]"]').val() == facturaId) {
+                duplicada = true;
+            }
+        });
+        if (duplicada) {
+            Swal.fire({ title: 'Esa factura ya fue imputada.', icon: 'warning' });
+            return;
+        }
+
+        const index = $('.tbody-imputacion').data('index');
+        const simbolo = moneda === 'USD' ? 'US$' : '$';
+        const montoFmt = monto.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        const row = `
+            <tr class="tr-imputacion" data-monto="${monto}" data-moneda="${moneda}">
+                <td class="hidden"><input type="hidden" name="pago_proveedor[imputaciones][${index}][factura]" value="${facturaId}"></td>
+                <td class="hidden"><input type="hidden" name="pago_proveedor[imputaciones][${index}][monto]" value="${montoRaw}"></td>
+                <td class="v-middle text-center">${facturaText}</td>
+                <td class="v-middle text-center">${moneda}</td>
+                <td class="v-middle text-center">${simbolo} ${montoFmt}</td>
+                <td class="text-center v-middle">
+                    <a href="#" class="btn btn-sm delete-link-inline link-delete-imputacion">
+                        <i class="fa fa-trash text-danger"></i>
+                    </a>
+                </td>
+            </tr>`;
+
+        $('.tbody-imputacion').append(row);
+        $('.tbody-imputacion').data('index', index + 1);
+        $('.row-imputacion').show();
+        $('.row-imputacion-empty').hide();
+
+        facturaSelect.val('');
+        montoInput.val('');
+        updateDeleteImputacion();
+    });
+
+    updateDeleteImputacion();
+}
+
+function updateDeleteImputacion() {
+    $('.link-delete-imputacion').off('click').on('click', function (e) {
+        e.preventDefault();
+        const row = $(this).closest('tr');
+        row.remove();
+        if ($('.tr-imputacion').length === 0) {
+            $('.row-imputacion').hide();
+        }
+    });
+}
+
+/**
+ * Valida que la suma de imputaciones (convertida a la moneda del pago) no supere el monto del pago.
+ */
+function validarImputaciones() {
+    if ($('.tr-imputacion').length === 0) {
+        return true;
+    }
+
+    const pagoMoneda = $('#pago_proveedor_tipoMoneda').val();
+    const tipoCambio = parseFloat(($('#pago_proveedor_tipoCambio').val() || '').replace(/\./g, '').replace(',', '.')) || 0;
+    const pagoMonto = parseFloat(($('#pago_proveedor_monto').val() || '').replace(/\./g, '').replace(',', '.')) || 0;
+
+    let totalEnMonedaPago = 0;
+
+    $('.tr-imputacion').each(function () {
+        const moneda = $(this).data('moneda');
+        const monto = parseFloat($(this).data('monto')) || 0;
+        let enPago = monto;
+
+        if (moneda !== pagoMoneda) {
+            if (tipoCambio <= 0) {
+                enPago = Infinity;
+            } else if (pagoMoneda === 'USD') {
+                enPago = monto / tipoCambio;
+            } else {
+                enPago = monto * tipoCambio;
+            }
+        }
+
+        totalEnMonedaPago += enPago;
+    });
+
+    return totalEnMonedaPago <= pagoMonto + 0.01;
 }
 
 /**
@@ -189,6 +343,13 @@ function initBaseSubmitButton() {
         fv.validate().then((status) => {
 
             if (status === "Valid") {
+                if (!validarImputaciones()) {
+                    Swal.fire({
+                        title: 'La suma de las imputaciones supera el monto del pago.',
+                        icon: 'warning'
+                    });
+                    return false;
+                }
                 limpiarMontosParaEnvio();
                 $.post({
                     url: window.__PAGO_SUBMIT_URL__ || (__HOMEPAGE_PATH__ + "pagoproveedor/insertar"),

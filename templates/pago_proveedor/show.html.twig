@@ -15,7 +15,7 @@
                 <h3 class="card-label">Detalles del pago</h3>
             </div>
             <div class="card-toolbar">
-                <a href="{{ path('pago_proveedor_edit', {'id': pagoProveedor.id}) }}" class="btn btn-primary font-weight-bolder">
+                <a href="{{ path('pagoproveedor_edit', {'id': pagoProveedor.id}) }}" class="btn btn-primary font-weight-bolder">
                     <i class="la la-pen"></i>
                     Editar
                 </a>
@@ -24,38 +24,172 @@
 
         <div class="card-body">
             <div class="row">
-                {{ macro_show._show_detail('Proveedor', pagoProveedor.proveedor, 'col-md-3') }}
+                {{ macro_show._show_detail('Proveedor', pagoProveedor.proveedor, 'col-md-2') }}
                 {{ macro_show._show_detail('Fecha de Pago', pagoProveedor.fechaPago|date('d/m/Y'), 'col-md-2') }}
                 {{ macro_show._show_detail('Modo de Pago', pagoProveedor.modoPago|default('-'), 'col-md-2') }}
-                {{ macro_show._show_detail('N° Comprobante', pagoProveedor.numeroComprobante|default('-'), 'col-md-2') }}
+                {{ macro_show._show_detail('N° Comprobante', pagoProveedor.numeroComprobante|default('-'), 'col-md-1') }}
                 {{ macro_show._show_detail('Moneda', pagoProveedor.tipoMoneda, 'col-md-1') }}
-                {% if pagoProveedor.tipoMoneda == 'USD' %}
-                    {{ macro_show._show_detail('Tipo de Cambio', pagoProveedor.tipoCambio ? pagoProveedor.tipoCambio|money_format : 'N/A', 'col-md-2') }}
-                {% endif %}
+                {{ macro_show._show_detail('Monto ARS', pagoProveedor.montoARS|money_format, 'col-md-1') }}
+                {{ macro_show._show_detail('Monto USD', pagoProveedor.montoUSD|money_format, 'col-md-1') }}
+                {{ macro_show._show_detail('Tipo de Cambio', pagoProveedor.tipoCambio ? pagoProveedor.tipoCambio|money_format : 'N/A', 'col-md-1') }}
             </div>
 
             <div class="row mt-4">
-                <div class="col-12">
-                    <div class="card shadow-sm {{ pagoProveedor.tipoMoneda == 'USD' ? 'border-warning' : 'border-success' }}" style="max-width: 300px;">
+
+                {# MONTO PAGADO #}
+                <div class="col-md-4 mb-4">
+
+                    <div class="card shadow-sm border-success h-100">
+
                         <div class="card-body py-4">
-                            <small class="font-size-16 text-uppercase">Monto Pagado</small>
-                            <div class="display-4 font-weight-bold text-success">
-                                {{ simboloMoneda }} {{ pagoProveedor.getMonto()|number_format(2, ',', '.') }}
+
+                            <div class="font-size-16 text-uppercase padding-bottom-4">
+                                Monto Pagado
                             </div>
-                            {% if pagoProveedor.tipoMoneda == 'USD' and pagoProveedor.tipoCambio %}
-                                <small class="text-muted">
-                                    Equivalente ARS: $ {{ (pagoProveedor.getMonto() * pagoProveedor.tipoCambio)|number_format(2, ',', '.') }}
-                                </small>
-                            {% endif %}
+
+                            <div class="h4 font-weight-bold text-success">
+                                $ {{ pagoProveedor.getMontoARS()|number_format(2, ',', '.') }}
+                            </div>
+
+                            <div class="h4 font-weight-bold text-success">
+                                US$ {{ pagoProveedor.getMontoUSD()|number_format(2, ',', '.') }}
+                            </div>
+
                         </div>
+
                     </div>
+
                 </div>
+
+
+                {# MONTO IMPUTADO #}
+                <div class="col-md-4 mb-4">
+
+                    <div class="card shadow-sm border-primary h-100">
+
+                        <div class="card-body py-4">
+
+                            <div class="font-size-16 text-uppercase padding-bottom-4">
+                                Monto Imputado
+                            </div>
+
+                            <div class="h4 font-weight-bold text-primary">
+                                $ {{ pagoProveedor.getTotalImputadoARS()|number_format(2, ',', '.') }}
+                            </div>
+
+                            <div class="h4 font-weight-bold text-primary">
+                                US$ {{ pagoProveedor.getTotalImputadoUSD()|number_format(2, ',', '.') }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                {# SALDO A FAVOR #}
+                <div class="col-md-4 mb-4">
+
+                    <div class="card shadow-sm border-warning h-100">
+
+                        <div class="card-body py-4">
+
+                            <div class="font-size-16 text-uppercase padding-bottom-4">
+                                Saldo a Favor
+                            </div>
+
+                            <div class="h4 font-weight-bold text-warning">
+                                $ {{ pagoProveedor.getSaldoNoImputadoARS()|number_format(2, ',', '.') }}
+                            </div>
+
+                            <div class="h4 font-weight-bold text-warning">
+                                US$ {{ pagoProveedor.getSaldoNoImputadoUSD()|number_format(2, ',', '.') }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
 
             {% if pagoProveedor.observaciones %}
                 <div class="row mt-4">
                     {{ macro_show._show_detail('Observaciones', pagoProveedor.observaciones, 'col-md-12') }}
                 </div>
+            {% endif %}
+
+            {% if pagoProveedor.imputaciones|length > 0 %}
+
+                <div class="row mt-5">
+                    <div class="col-12">
+
+                        <div class="card shadow-sm">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    Facturas imputadas
+                                </h5>
+                            </div>
+
+                            <div class="card-body">
+
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">N° Factura</th>
+                                        <th class="text-center">Fecha</th>
+                                        <th class="text-center">Moneda</th>
+                                        <th class="text-center">Total Factura</th>
+                                        <th class="text-center">Monto Aplicado</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                    {% for imputacion in pagoProveedor.imputaciones %}
+
+                                        {% set factura = imputacion.factura %}
+
+                                        <tr>
+                                            <td class="text-center">
+                                                {{ factura.numeroFactura }}
+                                            </td>
+
+                                            <td class="text-center">
+                                                {{ factura.fecha|date('d/m/Y') }}
+                                            </td>
+
+                                            <td class="text-center">
+                                                <span class="label label-inline font-weight-bold {{ factura.tipoMoneda == 'USD' ? 'label-warning' : 'label-primary' }}">
+                                                    {{ factura.tipoMoneda }}
+                                                </span>
+                                            </td>
+
+                                            <td class="text-center">
+                                                {{ factura.tipoMoneda == 'USD' ? 'US$' : '$' }}
+                                                {{ factura.getTotal()|number_format(2, ',', '.') }}
+                                            </td>
+
+                                            <td class="text-center">
+                                                {{ factura.tipoMoneda == 'USD' ? 'US$' : '$' }}
+                                                {{ imputacion.monto|number_format(2, ',', '.') }}
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
             {% endif %}
         </div>
 

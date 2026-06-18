@@ -101,7 +101,7 @@ class FacturaType extends AbstractType
                 )
             ])
             ->add('tipoCambio', MoneyType::class, array(
-                'required' => false,
+                'required' => true,
                 'label' => 'Tipo de Cambio',
                 'currency' => '',
                 'scale' => 2,

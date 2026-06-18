@@ -2,8 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Constants\ConstanteEstadoFactura;
 use App\Entity\Constants\ConstanteTipoConsulta;
 use App\Entity\Constants\ConstanteTipoMovimiento;
+use App\Entity\EstadoFactura;
+use App\Entity\EstadoFacturaHistorico;
+use App\Entity\Factura;
+use App\Entity\ImputacionPagoFactura;
 use App\Entity\MovimientoProveedor;
 use App\Entity\Pago;
 use App\Entity\PagoProveedor;
@@ -115,18 +120,119 @@ class PagoProveedorController extends BaseController
      * @Route("/{id}/actualizar", name="pagoproveedor_update", methods={"POST","PUT"})
      */
     public function updateAction(Request $request, $id) {
-        return parent::baseUpdateAction($request, $id, true);
+        $response = parent::baseUpdateAction($request, $id, true);
+
+        $em = $this->doctrine->getManager();
+        $pago = $em->getRepository(PagoProveedor::class)->find($id);
+
+        if ($pago) {
+            $this->actualizarEstadoFacturasDePago($em, $pago);
+            $em->flush();
+        }
+
+        return $response;
     }
 
     /**
      * @Route("/{id}/borrar", name="pagoproveedor_delete", methods={"GET"})
      */
     public function delete($id): RedirectResponse|JsonResponse|Type {
-        return parent::baseDeleteAction($id);
+        $em = $this->doctrine->getManager();
+        $pago = $em->getRepository(PagoProveedor::class)->find($id);
+
+        $facturas = [];
+        if ($pago) {
+            foreach ($pago->getImputaciones() as $imputacion) {
+                $factura = $imputacion->getFactura();
+                if ($factura) {
+                    $facturas[$factura->getId()] = $factura;
+                }
+            }
+        }
+
+        $response = parent::baseDeleteAction($id);
+
+        foreach ($facturas as $factura) {
+            $this->actualizarEstadoFactura($em, $factura);
+        }
+
+        if (!empty($facturas)) {
+            $em->flush();
+        }
+
+        return $response;
     }
 
     function execPrePersistAction($entity, $request): bool {
+        /** @var PagoProveedor $entity */
+        $em = $this->doctrine->getManager();
+        $this->procesarImputaciones($em, $entity, $request);
+
         return true;
+    }
+
+    /**
+     * Reconstruye las imputaciones del pago a partir del request.
+     * El monto se guarda en la moneda de la factura.
+     */
+    private function procesarImputaciones($em, PagoProveedor $entity, $request): void
+    {
+        $submittedData = $request->request->get('pago_proveedor', []);
+        $submitted = $submittedData['imputaciones'] ?? [];
+
+        $facturaRepo = $em->getRepository(Factura::class);
+        $imputacionRepo = $em->getRepository(ImputacionPagoFactura::class);
+
+        $existingById = [];
+        if ($entity->getId()) {
+            foreach ($imputacionRepo->findBy(['pagoProveedor' => $entity->getId()]) as $imp) {
+                $existingById[$imp->getId()] = $imp;
+            }
+        }
+
+        $submittedIds = [];
+
+        // Limpiar la coleccion en memoria para reconstruirla desde el request
+        foreach ($entity->getImputaciones()->toArray() as $imp) {
+            $entity->getImputaciones()->removeElement($imp);
+        }
+
+        foreach ($submitted as $data) {
+            $id = !empty($data['id']) ? (int) $data['id'] : null;
+
+            if ($id && isset($existingById[$id])) {
+                $imputacion = $existingById[$id];
+                $submittedIds[] = $id;
+            } else {
+                $imputacion = new ImputacionPagoFactura();
+            }
+
+            $factura = !empty($data['factura']) ? $facturaRepo->find($data['factura']) : null;
+
+            if (!$factura) {
+                continue;
+            }
+
+            $montoStr = (string) ($data['monto'] ?? '0');
+            if (strpos($montoStr, ',') !== false) {
+                $montoStr = str_replace('.', '', $montoStr);
+                $montoStr = str_replace(',', '.', $montoStr);
+            }
+
+            $imputacion->setFactura($factura);
+            $imputacion->setMonto((float) $montoStr);
+            $imputacion->setPagoProveedor($entity);
+
+            $entity->addImputacion($imputacion);
+            $em->persist($imputacion);
+        }
+
+        // Eliminar las imputaciones que ya no vienen en el request
+        foreach ($existingById as $id => $imp) {
+            if (!in_array($id, $submittedIds, true)) {
+                $em->remove($imp);
+            }
+        }
     }
 
     function execPostPersistAction($em, $entity, $request): void {
@@ -201,6 +307,87 @@ class PagoProveedorController extends BaseController
         $em->persist($movimiento);
 
         $em->flush();
+
+        $this->actualizarEstadoFacturasDePago($em, $entity);
+
+        $em->flush();
+    }
+
+    /**
+     * Recalcula el estado de todas las facturas imputadas por un pago.
+     */
+    private function actualizarEstadoFacturasDePago($em, PagoProveedor $pago): void
+    {
+        $facturas = [];
+        foreach ($pago->getImputaciones() as $imputacion) {
+            $factura = $imputacion->getFactura();
+            if ($factura) {
+                $facturas[$factura->getId()] = $factura;
+            }
+        }
+
+        foreach ($facturas as $factura) {
+            $this->actualizarEstadoFactura($em, $factura, $pago);
+        }
+    }
+
+    /**
+     * Recalcula y asigna el estado de una factura segun el total imputado.
+     * Registra un historico solo cuando el estado cambia.
+     */
+    private function actualizarEstadoFactura($em, Factura $factura, ?PagoProveedor $pago = null): void
+    {
+        $totalPagado = (float) $em->getRepository(ImputacionPagoFactura::class)
+            ->createQueryBuilder('i')
+            ->select('COALESCE(SUM(i.monto), 0)')
+            ->join('i.pagoProveedor', 'p')
+            ->where('i.factura = :factura')
+            ->andWhere('p.fechaBaja IS NULL')
+            ->setParameter('factura', $factura)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        if ($totalPagado <= 0) {
+            $estadoId = ConstanteEstadoFactura::PENDIENTE;
+        } elseif ($totalPagado >= ($factura->getTotal() - 0.01)) {
+            $estadoId = ConstanteEstadoFactura::PAGA;
+        } else {
+            $estadoId = ConstanteEstadoFactura::PAGO_PARCIAL;
+        }
+
+        $estadoActualId = $factura->getEstadoFactura()
+            ? $factura->getEstadoFactura()->getId()
+            : null;
+
+        if ($estadoActualId === $estadoId) {
+            return;
+        }
+
+        $estado = $em->getReference(EstadoFactura::class, $estadoId);
+        $factura->setEstadoFactura($estado);
+
+        $historico = new EstadoFacturaHistorico();
+        $historico->setFactura($factura);
+        $historico->setEstado($estado);
+        $historico->setFecha(new \DateTime());
+        $historico->setMotivo($this->getMotivoEstado($estadoId));
+        if ($pago) {
+            $historico->setPagoProveedor($pago);
+        }
+        $factura->addHistoricoEstado($historico);
+        $em->persist($historico);
+    }
+
+    private function getMotivoEstado(int $estadoId): string
+    {
+        switch ($estadoId) {
+            case ConstanteEstadoFactura::PAGA:
+                return 'Factura pagada';
+            case ConstanteEstadoFactura::PAGO_PARCIAL:
+                return 'Pago parcial';
+            default:
+                return 'Pendiente de pago';
+        }
     }
 
     function execPreUpdateAction(
@@ -211,6 +398,8 @@ class PagoProveedorController extends BaseController
     ): bool {
 
         /** @var PagoProveedor $entity */
+
+        $this->procesarImputaciones($em, $entity, $request);
 
         $movimiento = $em
             ->getRepository(MovimientoProveedor::class)
@@ -264,5 +453,56 @@ class PagoProveedorController extends BaseController
         }
 
         return true;
+    }
+
+    /**
+     * @Route("/lista/facturas", name="pagoproveedor_lista_facturas")
+     */
+    public function listaFacturasAction(Request $request): JsonResponse
+    {
+        $idProveedor = $request->request->get('id_entity');
+        $em = $this->doctrine->getManager();
+
+        $result = [];
+
+        if (!$idProveedor) {
+            return new JsonResponse($result);
+        }
+
+        $facturas = $em->getRepository(Factura::class)
+            ->findBy(['proveedor' => $idProveedor], ['fecha' => 'DESC', 'id' => 'DESC']);
+
+        foreach ($facturas as $factura) {
+            $total = $factura->getTotal();
+
+            $pagado = (float) $em->getRepository(ImputacionPagoFactura::class)
+                ->createQueryBuilder('i')
+                ->select('COALESCE(SUM(i.monto), 0)')
+                ->join('i.pagoProveedor', 'p')
+                ->where('i.factura = :factura')
+                ->andWhere('p.fechaBaja IS NULL')
+                ->setParameter('factura', $factura)
+                ->getQuery()
+                ->getSingleScalarResult();
+
+            $saldo = $total - $pagado;
+
+            if ($saldo <= 0.01) {
+                continue;
+            }
+
+            $simbolo = $factura->getTipoMoneda() === 'USD' ? 'US$' : '$';
+
+            $result[] = [
+                'id' => $factura->getId(),
+                'denominacion' => 'Factura #' . $factura->getNumeroFactura()
+                    . ' (' . $factura->getTipoMoneda() . ') - Saldo: '
+                    . $simbolo . ' ' . number_format($saldo, 2, ',', '.'),
+                'moneda' => $factura->getTipoMoneda(),
+                'saldo' => $saldo,
+            ];
+        }
+
+        return new JsonResponse($result);
     }
 }
