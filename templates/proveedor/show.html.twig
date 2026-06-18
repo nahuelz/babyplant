@@ -56,43 +56,61 @@
 
     {# Cuenta Corriente #}
     {% if proveedor.cuentaCorrienteProveedor %}
+        {# Saldo a favor: proviene de los pagos realizados #}
+        {% set saldoFavorArs = 0 %}
+        {% set saldoFavorUsd = 0 %}
+        {% for pago in pagos %}
+            {% if pago.tipoMoneda == 'USD' %}
+                {% set saldoFavorUsd = saldoFavorUsd + pago.getMonto() %}
+            {% else %}
+                {% set saldoFavorArs = saldoFavorArs + pago.getMonto() %}
+            {% endif %}
+        {% endfor %}
+
+        {# Deuda: total de las facturas generadas #}
+        {% set deudaArs = 0 %}
+        {% set deudaUsd = 0 %}
+        {% for factura in facturas %}
+            {% if factura.tipoMoneda == 'USD' %}
+                {% set deudaUsd = deudaUsd + factura.getTotal() %}
+            {% else %}
+                {% set deudaArs = deudaArs + factura.getTotal() %}
+            {% endif %}
+        {% endfor %}
+
         <div class="card card-detail">
             <div class="card-header">
                 <h4 class="card-title">Cuenta Corriente</h4>
             </div>
             <div class="card-body">
                 <div class="row">
+                    {# SALDO A FAVOR #}
                     <div class="col-md-6">
-                        <div class="card shadow-sm {{ proveedor.cuentaCorrienteProveedor.saldoArs < 0 ? 'border-danger' : 'border-success' }}">
+                        <div class="card shadow-sm border-success">
                             <div class="card-body py-4">
-                                <small class="font-size-16 text-uppercase">Saldo en ARS</small>
-                                <div class="display-4 font-weight-bold {{ proveedor.cuentaCorrienteProveedor.saldoArs < 0 ? 'text-danger' : 'text-success' }}">
-                                    ${{ proveedor.cuentaCorrienteProveedor.saldoArs|number_format(2, ',', '.') }}
+                                <small class="font-size-16 text-uppercase">Saldo a favor</small>
+                                <div class="display-4 font-weight-bold text-success">
+                                    ${{ saldoFavorArs|number_format(2, ',', '.') }}
                                 </div>
-                                <small class="text-muted">
-                                    {% if proveedor.cuentaCorrienteProveedor.saldoArs < 0 %}
-                                        Deuda con el proveedor
-                                    {% else %}
-                                        Saldo a favor
-                                    {% endif %}
-                                </small>
+                                <div class="h4 font-weight-bold text-success">
+                                    US$ {{ saldoFavorUsd|number_format(2, ',', '.') }}
+                                </div>
+                                <small class="text-muted">Total de pagos realizados</small>
                             </div>
                         </div>
                     </div>
+                    {# DEUDA #}
                     <div class="col-md-6">
-                        <div class="card shadow-sm {{ proveedor.cuentaCorrienteProveedor.saldoUsd < 0 ? 'border-danger' : 'border-success' }}">
+                        <div class="card shadow-sm border-danger">
                             <div class="card-body py-4">
-                                <small class="font-size-16 text-uppercase">Saldo en USD</small>
-                                <div class="display-4 font-weight-bold {{ proveedor.cuentaCorrienteProveedor.saldoUsd < 0 ? 'text-danger' : 'text-success' }}">
-                                    US$ {{ proveedor.cuentaCorrienteProveedor.saldoUsd|number_format(2, ',', '.') }}
+                                <small class="font-size-16 text-uppercase">Deuda</small>
+                                <div class="display-4 font-weight-bold text-danger">
+                                    ${{ deudaArs|number_format(2, ',', '.') }}
                                 </div>
-                                <small class="text-muted">
-                                    {% if proveedor.cuentaCorrienteProveedor.saldoUsd < 0 %}
-                                        Deuda con el proveedor
-                                    {% else %}
-                                        Saldo a favor
-                                    {% endif %}
-                                </small>
+                                <div class="h4 font-weight-bold text-danger">
+                                    US$ {{ deudaUsd|number_format(2, ',', '.') }}
+                                </div>
+                                <small class="text-muted">Total de facturas generadas</small>
                             </div>
                         </div>
                     </div>

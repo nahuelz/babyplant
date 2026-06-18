@@ -230,7 +230,7 @@ function datatablesGetColDef() {
             className: 'nowrap text-center margin-0 ',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    return '<span class="label label-inline margin-0 font-weight-bold p-6" style="width: 220px;color: #ffffff !important;background-color: ' + data.colorProducto + '">' + data.nombreProducto + '</span>';
+                    return '<span class="label label-inline margin-0 font-weight-bold p-6" style="width: 220px;color: #000000 !important;background-color: ' + data.colorProducto + '">' + data.nombreProducto + '</span>';
                 }
                 return data.nombreProducto;
             }

@@ -117,6 +117,34 @@ class Factura
         return $total;
     }
 
+    public function getMontoARS(): float
+    {
+        $total = $this->getTotal();
+        $tipoCambio = (float) $this->tipoCambio;
+
+        if ($this->tipoMoneda === 'USD') {
+            return $total * $tipoCambio;
+        }
+
+        return $total;
+    }
+
+    public function getMontoUSD(): float
+    {
+        $total = $this->getTotal();
+        $tipoCambio = (float) $this->tipoCambio;
+
+        if ($this->tipoMoneda === 'USD') {
+            return $total;
+        }
+
+        if ($tipoCambio > 0) {
+            return $total / $tipoCambio;
+        }
+
+        return 0.0;
+    }
+
     public function getNumeroFactura(): ?string
     {
         return $this->numeroFactura;
