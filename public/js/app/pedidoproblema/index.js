@@ -64,8 +64,9 @@ function initColumnasHandler(){
 }
 
 function initProblemasFilter() {
-    // Evento para el checkbox de filtro de problemas
-    $('#filtro_problema').on('change', function() {
+    const saved = localStorage.getItem('filtro_problema') === '1';
+    $('#filtro_problema').prop('checked', saved).on('change', function() {
+        localStorage.setItem('filtro_problema', $(this).is(':checked') ? '1' : '0');
         if (init) {
             $table.DataTable().ajax.reload();
         }
@@ -73,8 +74,9 @@ function initProblemasFilter() {
 }
 
 function initProblemasSinSolucionFilter() {
-    // Evento para el checkbox de filtro de problemas sin solución
-    $('#filtro_problema_sin_solucion').on('change', function() {
+    const saved = localStorage.getItem('filtro_problema_sin_solucion') === '1';
+    $('#filtro_problema_sin_solucion').prop('checked', saved).on('change', function() {
+        localStorage.setItem('filtro_problema_sin_solucion', $(this).is(':checked') ? '1' : '0');
         if (init) {
             $table.DataTable().ajax.reload();
         }
@@ -227,12 +229,6 @@ function initDataTable() {
             });
         },
         "drawCallback": function(settings) {
-            // Se ejecuta cada vez que la tabla se dibuja
-            if (!window.filtroProblemaMarcado) {
-                $('#filtro_problema').click();
-                window.filtroProblemaMarcado = true;
-            }
-
             // Resaltar filas con problemas
             resaltarFilasConProblemas();
         },
