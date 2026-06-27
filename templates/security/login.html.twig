@@ -126,7 +126,7 @@
                                 <div class="login-subtitle">Acceso para personal</div>
                             </div>
                             {% include 'app/_flash_messages.html.twig' %}
-                            <form class="form" id="kt_login_signin_form" method="post">
+                            <form class="form" id="kt_login_signin_form" method="post" action="{{ path('app_login') }}">>
                                 {% if error %}
                                     <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                                 {% endif %}
