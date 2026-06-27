@@ -57,6 +57,8 @@ class AuditoriaController extends BaseController {
         $entities = [];
         $draw = 1;
 
+        $searchParams = $request->get('columns', []);
+
         if (($request->get('fechaHasta') != null) && ($request->get('fechaDesde') != null )) {
 
             $fromDate = DateTime::createFromFormat('d/m/Y', $request->get('fechaDesde'));
@@ -101,6 +103,56 @@ class AuditoriaController extends BaseController {
             }
 
             $draw = $request->get('draw') + 1;
+        }
+
+        // Filtrar las entidades según los parámetros de búsqueda
+        if (!empty($searchParams)) {
+            foreach ($entities as $dayKey => $daysErrors) {
+                foreach ($daysErrors['data'] as $entityKey => $entity) {
+                    $keepEntity = true;
+
+                    // Filtrar por número (columna 2)
+                    if (!empty($searchParams[2]['search']['value'])) {
+                        if (stripos($entity['numero'] ?? '', $searchParams[2]['search']['value']) === false) {
+                            $keepEntity = false;
+                        }
+                    }
+
+                    // Filtrar por usuario (columna 4)
+                    if (!empty($searchParams[4]['search']['value'])) {
+                        if (stripos($entity['usuario'] ?? '', $searchParams[4]['search']['value']) === false) {
+                            $keepEntity = false;
+                        }
+                    }
+
+                    // Filtrar por mensaje (columna 5)
+                    if (!empty($searchParams[5]['search']['value'])) {
+                        if (stripos($entity['mensaje'] ?? '', $searchParams[5]['search']['value']) === false) {
+                            $keepEntity = false;
+                        }
+                    }
+
+                    // Filtrar por corregido (columna 6)
+                    if (!empty($searchParams[6]['search']['value'])) {
+                        $corregidoValue = ($entity['corregido'] ?? 0) == 1 ? 'Si' : 'No';
+                        if ($corregidoValue !== $searchParams[6]['search']['value']) {
+                            $keepEntity = false;
+                        }
+                    }
+
+                    if (!$keepEntity) {
+                        unset($entities[$dayKey]['data'][$entityKey]);
+                    }
+                }
+
+                // Eliminar días sin datos después del filtrado
+                if (empty($entities[$dayKey]['data'])) {
+                    unset($entities[$dayKey]);
+                }
+            }
+
+            // Reindexar el array
+            $entities = array_values($entities);
         }
 
         return $this->render('auditoria/index_table.html.twig', array(

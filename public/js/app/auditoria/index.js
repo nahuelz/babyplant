@@ -28,6 +28,8 @@ function initAuditoriaTable() {
         ajax: {
             url: __HOMEPAGE_PATH__ + 'auditoria_interna/index_table/',
             data: function (d) {
+                // DataTables envía los filtros en d.columns[i][search][value]
+                // Ya se extiende con d, así que los filtros se incluyen automáticamente
                 return $.extend({}, d, {
                     fechaDesde: $('#fechaDesde').val(),
                     fechaHasta: $('#fechaHasta').val(),
