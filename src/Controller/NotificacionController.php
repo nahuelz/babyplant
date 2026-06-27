@@ -16,6 +16,7 @@ use App\Entity\Notificacion;
  * NotificacionController.
  *
  * @Route("/notificacion")
+ * @IsGranted("ROLE_USER")
  */
 class NotificacionController extends BaseController {
 
