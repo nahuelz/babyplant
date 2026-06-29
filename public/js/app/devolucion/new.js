@@ -5,6 +5,7 @@ jQuery(document).ready(function () {
     initProductos();
     initClienteSelect2();
     initSubmitButton();
+    initCalculoValorTotal();
 });
 
 function initProductos() {
@@ -52,4 +53,19 @@ function initSubmitButton() {
 
         e.stopPropagation();
     });
+}
+
+function initCalculoValorTotal() {
+    function calcularValorTotal() {
+        var cantidad = parseFloat($('#devolucion_cantidadBandejas').val()) || 0;
+        var precio = parseFloat($('#devolucion_precioUnitario').val()) || 0;
+        var total = cantidad * precio;
+        $('#devolucion_valor_total').val('$ ' + total.toFixed(2).replace('.', ','));
+    }
+
+    $('#devolucion_cantidadBandejas').on('input', calcularValorTotal);
+    $('#devolucion_precioUnitario').on('input', calcularValorTotal);
+
+    // Calcular al cargar si hay valores preexistentes (edición)
+    calcularValorTotal();
 }

@@ -38,6 +38,11 @@ class Devolucion {
     private mixed $cantidadBandejas = null;
 
     /**
+     * @ORM\Column(name="precio_unitario", type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private mixed $precioUnitario = null;
+
+    /**
      * @ORM\Column(name="fecha_devolucion", type="datetime", nullable=true)
      */
     private mixed $fechaDevolucion = null;
@@ -82,6 +87,16 @@ class Devolucion {
         $this->cantidadBandejas = $cantidadBandejas;
     }
 
+    public function getPrecioUnitario(): mixed
+    {
+        return $this->precioUnitario;
+    }
+
+    public function setPrecioUnitario(mixed $precioUnitario): void
+    {
+        $this->precioUnitario = $precioUnitario;
+    }
+
     public function getFechaDevolucion(): mixed
     {
         return $this->fechaDevolucion;
@@ -110,5 +125,16 @@ class Devolucion {
     public function getPedido()
     {
         return $this->pedidoProducto->getPedido();
+    }
+
+    /**
+     * Calcula el valor total basado en precio unitario y cantidad
+     */
+    public function getValorTotal(): mixed
+    {
+        if ($this->precioUnitario && $this->cantidadBandejas) {
+            return $this->precioUnitario * $this->cantidadBandejas;
+        }
+        return null;
     }
 }

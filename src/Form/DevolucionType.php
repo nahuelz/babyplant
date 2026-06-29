@@ -61,6 +61,20 @@ class DevolucionType extends AbstractType {
                     'pattern' => '[0-9]+([,][0-9]+)?'
                 )
             ))
+            ->add('precioUnitario', NumberType::class, array(
+                'required' => true,
+                'label' => 'Precio Unitario',
+                'scale' => 2,
+                'html5' => true,
+                'attr' => array(
+                    'placeholder' => 'Escriba el precio por bandeja (ej: 150,00)',
+                    'min' => 0,
+                    'step' => 0.01,
+                    'class' => 'form-control',
+                    'inputmode' => 'decimal',
+                    'pattern' => '[0-9]+([,][0-9]+)?'
+                )
+            ))
             ->add('fechaDevolucion', DateType::class, array(
                 'widget' => 'single_text',
                 'html5' => false,
@@ -68,6 +82,7 @@ class DevolucionType extends AbstractType {
                 'model_timezone' => 'America/Argentina/Buenos_Aires',
                 'required' => true,
                 'label' => 'Fecha de Devolución',
+                'data' => new \DateTime(),
                 'attr' => array(
                     'placeholder' => 'Fecha de Devolución',
                     'class' => 'form-control datepicker',

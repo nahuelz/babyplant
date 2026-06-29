@@ -18,12 +18,21 @@
 
         <div class="card-body">
             <div class="row">
+                {{ macro_form._new_field(form.fechaDevolucion, 'col-md-6') }}
+            </div>
+            <div class="row">
                 {{ macro_form._new_field(form.cliente, 'col-md-6') }}
                 {{ macro_form._new_field(form.pedidoProducto, 'col-md-6') }}
             </div>
             <div class="row">
-                {{ macro_form._new_field(form.cantidadBandejas, 'col-md-6') }}
-                {{ macro_form._new_field(form.fechaDevolucion, 'col-md-6') }}
+                {{ macro_form._new_field(form.cantidadBandejas, 'col-md-4') }}
+                {{ macro_form._new_field(form.precioUnitario, 'col-md-4') }}
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Valor Total</label>
+                        <input type="text" id="devolucion_valor_total" class="form-control" readonly value="0,00">
+                    </div>
+                </div>
             </div>
             <div class="row">
                 {{ macro_form._new_field(form.observacion, 'col-md-12') }}

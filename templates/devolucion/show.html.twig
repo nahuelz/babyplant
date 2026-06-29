@@ -35,6 +35,10 @@
                         {{ macro_show._show_detail('Cantidad de Bandejas', entity.cantidadBandejas|default('-'), 'col-md-4') }}
                     </div>
                     <div class="row">
+                        {{ macro_show._show_detail('Precio Unitario', '$ ' ~ entity.precioUnitario|number_format(2, ',', '.')|default('-'), 'col-md-6') }}
+                        {{ macro_show._show_detail('Valor Total', '$ ' ~ entity.valorTotal|number_format(2, ',', '.')|default('-'), 'col-md-6') }}
+                    </div>
+                    <div class="row">
                         {{ macro_show._show_detail('Observación / Motivo', entity.observacion|default('-'), 'col-md-12') }}
                     </div>
                 </div>

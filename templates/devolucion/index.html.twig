@@ -29,6 +29,7 @@
                     <th class="text-center">PEDIDO</th>
                     <th class="text-center">PRODUCTO</th>
                     <th class="text-center">BANDEJAS</th>
+                    <th class="text-center">VALOR TOTAL</th>
                     <th class="text-center">FECHA DEVOLUCIÓN</th>
                     <th class="text-center">OBSERVACIÓN</th>
                     <th class="text-center"></th>
@@ -42,6 +43,7 @@
                         <td class="text-center">N° {{ devolucion.pedidoProducto.pedido.id }}</td>
                         <td class="text-center">{{ devolucion.pedidoProducto.getNombreCompleto|default('-') }}</td>
                         <td class="text-center">{{ devolucion.cantidadBandejas }}</td>
+                        <td class="text-center">$ {{ devolucion.valorTotal|number_format(2, ',', '.')|default('-') }}</td>
                         <td class="text-center">{{ devolucion.fechaDevolucion is not null ? devolucion.fechaDevolucion|date('d/m/Y') : '-' }}</td>
                         <td class="text-center">{{ devolucion.observacion|default('-') }}</td>
                         <td class="text-center">

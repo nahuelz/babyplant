@@ -24,6 +24,7 @@
                                             <th class="text-center nowrap">Devolución</th>
                                             <th class="text-center nowrap">Producto</th>
                                             <th class="text-center nowrap">Bandejas</th>
+                                            <th class="text-center nowrap">Valor Total</th>
                                             <th class="text-center nowrap">Fecha</th>
                                             <th class="text-center nowrap">Observación</th>
                                             <th class="text-center nowrap"></th>
@@ -40,6 +41,9 @@
                                                 </td>
                                                 <td class="v-middle nowrap text-center">
                                                     {{ devolucion.cantidadBandejas|default('-') }}
+                                                </td>
+                                                <td class="v-middle nowrap text-center">
+                                                    $ {{ devolucion.valorTotal|number_format(2, ',', '.')|default('-') }}
                                                 </td>
                                                 <td class="v-middle nowrap text-center">
                                                     {{ devolucion.fechaDevolucion is not null ? devolucion.fechaDevolucion|date('d/m/Y') : '-' }}
