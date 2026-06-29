@@ -221,4 +221,55 @@ class SituacionClienteService
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Obtiene los movimientos de adelantos de pedidos del cliente ordenados por fecha
+     */
+    public function obtenerMovimientosPedido(int $idCliente): array
+    {
+        return $this->em->createQueryBuilder()
+            ->select('m')
+            ->from(Movimiento::class, 'm')
+            ->join('m.cuentaCorrientePedido', 'ccp')
+            ->join('ccp.pedido', 'p')
+            ->where('IDENTITY(p.cliente) = :idCliente')
+            ->setParameter('idCliente', $idCliente)
+            ->orderBy('m.fechaCreacion', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Obtiene los movimientos de adelantos de reservas del cliente ordenados por fecha
+     */
+    public function obtenerMovimientosReserva(int $idCliente): array
+    {
+        return $this->em->createQueryBuilder()
+            ->select('m', 'ccr', 'r')
+            ->from(Movimiento::class, 'm')
+            ->join('m.cuentaCorrienteReserva', 'ccr')
+            ->join('ccr.reserva', 'r')
+            ->where('IDENTITY(r.cliente) = :idCliente')
+            ->setParameter('idCliente', $idCliente)
+            ->orderBy('m.fechaCreacion', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Obtiene los movimientos de cuenta corriente del usuario ordenados por fecha
+     */
+    public function obtenerMovimientosUsuario(int $idCliente): array
+    {
+        return $this->em->createQueryBuilder()
+            ->select('m')
+            ->from(Movimiento::class, 'm')
+            ->join('m.cuentaCorrienteUsuario', 'ccu')
+            ->join('ccu.cliente', 'c')
+            ->where('c.id = :idCliente')
+            ->setParameter('idCliente', $idCliente)
+            ->orderBy('m.fechaCreacion', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
