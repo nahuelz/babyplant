@@ -105,6 +105,11 @@
                     {% if is_granted("ROLE_PROVEEDOR") %}
                         {% include 'modulo.html.twig' with {'iconClass': 'fas fa-users icon-3x text-dark', 'nombreModulo': 'PROVEEDORES','action': path('proveedor_index'), 'descripcionModulo': 'Aqui podra ver los proveedores' } %}
                     {% endif %}
+
+                    {# DEVOLUCIONES #}
+                    {% if is_granted("ROLE_DEVOLUCION") %}
+                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-sync icon-3x text-dark', 'nombreModulo': 'DEVOLUCIONES','action': path('devolucion_index'), 'descripcionModulo': 'Aqui podra ver las devoluciones' } %}
+                    {% endif %}
                 </div>
             </div>
         </div>
