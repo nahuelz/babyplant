@@ -199,10 +199,7 @@ function initDataTable() {
         lengthMenu: [5, 10, 25, 50, 100, 500, 1000],
         pageLength: 50,
         scrollX: false,
-        //autoWidth: false,
-        //scrollCollapse: true,
         fixedHeader: false,
-        //processing: true,
         destroy: true,
         buttons: [
             {
@@ -211,7 +208,7 @@ function initDataTable() {
                 title: '',
                 className: 'print',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
                     rows: ':visible'
                 }
             },
@@ -221,7 +218,7 @@ function initDataTable() {
                 title: '',
                 className: 'pagina',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
                     rows: ':visible'
                 }
             },
@@ -231,7 +228,7 @@ function initDataTable() {
                 title: '',
                 className: 'filtrados',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
                     filter: 'applied',
                     page: 'all'
                 }
@@ -242,7 +239,7 @@ function initDataTable() {
                 title: '',
                 className: 'todos',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
                     page: 'all',
                     rows: {
                         search: 'none'
@@ -258,7 +255,7 @@ function initDataTable() {
                 orientation: 'landscape',
                 pageSize: 'LEGAL',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
                     page: 'all',
                     filter: 'applied',
                     rows: {
@@ -434,6 +431,19 @@ function datatablesGetColDef() {
             orderable: false,
             className: 'dt-center p-0',
             width: '50px',
+        },
+        {
+            targets: index++,
+            name: 'fechaSiembra',
+            orderable: false,
+            width: '50px',
+            className: 'dt-center p-0',
+            render: function (data, type, full, meta) {
+                if (type === 'sort') {
+                    return moment(data, 'DD/MM/YYYY').format('YYYYMMDD');
+                }
+                return data;
+            }
         },
         {
             targets: index++,

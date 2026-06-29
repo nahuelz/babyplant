@@ -35,6 +35,7 @@
         "{{ entity.origenSemilla|default('-') }}",
         "{{ entity.cantidadSemillas|default('-') }}",
         "{{ entity.fechaSiembraPedido is not null ? entity.fechaSiembraPedido|date('d/m/Y') : '-' }}",
+        "{{ entity.fechaSiembraReal is not null ? entity.fechaSiembraReal|date('d/m/Y') : '-' }}",
         "{{ entity.fechaEntregaPedido is not null ? entity.fechaEntregaPedido|date('d/m/Y') : '-' }}",
         {
         "estado" : "{{ entity.estado|default('Sin estado') }}",
