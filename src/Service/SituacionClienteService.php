@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\CuentaCorrientePedido;
 use App\Entity\CuentaCorrienteReserva;
 use App\Entity\CuentaCorrienteUsuario;
+use App\Entity\Devolucion;
 use App\Entity\Movimiento;
 use App\Entity\Pago;
 use App\Entity\Pedido;
@@ -269,6 +270,23 @@ class SituacionClienteService
             ->where('c.id = :idCliente')
             ->setParameter('idCliente', $idCliente)
             ->orderBy('m.fechaCreacion', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Obtiene las devoluciones del cliente ordenadas por fecha
+     */
+    public function obtenerDevoluciones(int $idCliente): array
+    {
+        return $this->em->createQueryBuilder()
+            ->select('d', 'pp', 'p')
+            ->from(Devolucion::class, 'd')
+            ->join('d.pedidoProducto', 'pp')
+            ->join('pp.pedido', 'p')
+            ->where('IDENTITY(p.cliente) = :idCliente')
+            ->setParameter('idCliente', $idCliente)
+            ->orderBy('d.fechaDevolucion', 'DESC')
             ->getQuery()
             ->getResult();
     }

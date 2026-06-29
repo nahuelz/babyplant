@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% set edit = form.vars.value.id != null %}
+
+{% import 'app/_macro_form.html.twig' as macro_form %}
+
+{% block body %}
+    {{ form_start(form, {'attr': {'name': 'devolucion', 'class' : 'horizontal-form', 'novalidate': 'novalidate'} }) }}
+    {% include ('app/_fields_errors.html.twig') %}
+
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon2-refresh-1 text-primary"></i></span>
+                <h3 class="card-label">{{ edit ? 'Editar' : 'Nueva' }} devolución</h3>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                {{ macro_form._new_field(form.cliente, 'col-md-6') }}
+                {{ macro_form._new_field(form.pedidoProducto, 'col-md-6') }}
+            </div>
+            <div class="row">
+                {{ macro_form._new_field(form.cantidadBandejas, 'col-md-6') }}
+                {{ macro_form._new_field(form.fechaDevolucion, 'col-md-6') }}
+            </div>
+            <div class="row">
+                {{ macro_form._new_field(form.observacion, 'col-md-12') }}
+            </div>
+        </div>
+
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('devolucion_index') }}" class="btn btn-light-dark font-weight-bold">Volver</a>
+            <button type="submit" id="devolucion_submit" class="btn btn-light-primary font-weight-bold submit-button">
+                {{ edit ? 'Guardar' : 'Agregar' }}
+            </button>
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}"></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/devolucion/new.js') }}"></script>
+
+    <script>
+        var preserve_values = {{ edit ? 'true' : 'false' }};
+    </script>
+{% endblock %}

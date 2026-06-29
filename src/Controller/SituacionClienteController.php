@@ -92,6 +92,8 @@ class SituacionClienteController extends BaseController {
 
         $movimientosUsuario = $situacionClienteService->obtenerMovimientosUsuario($id);
 
+        $devoluciones = $situacionClienteService->obtenerDevoluciones($id);
+
         $breadcrumbs = $this->getShowBaseBreadcrumbs($entity);
 
         $parametros = array(
@@ -100,6 +102,7 @@ class SituacionClienteController extends BaseController {
             'movimientosPedido' => $movimientosPedido,
             'movimientosReserva' => $movimientosReserva,
             'movimientosUsuario' => $movimientosUsuario,
+            'devoluciones' => $devoluciones,
             'breadcrumbs' => $breadcrumbs,
             'page_title' => 'Detalle ' . $this->getEntityRenderName()
         );

@@ -1,0 +1,124 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+{% block body %}
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon2-refresh-1 text-primary"></i></span>
+                <h3 class="card-label">Devoluciones</h3>
+            </div>
+            <div class="card-toolbar">
+                <a href="{{ path('devolucion_new') }}" class="btn btn-primary font-weight-bolder mr-2">
+                    <i class="la la-plus"></i>
+                    Nueva Devolución
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <table class="table table-bordered table-hover" id="table-devolucion">
+                <thead>
+                <tr>
+                    <th class="text-center">N°</th>
+                    <th class="text-center">CLIENTE</th>
+                    <th class="text-center">PEDIDO</th>
+                    <th class="text-center">PRODUCTO</th>
+                    <th class="text-center">BANDEJAS</th>
+                    <th class="text-center">FECHA DEVOLUCIÓN</th>
+                    <th class="text-center">OBSERVACIÓN</th>
+                    <th class="text-center"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for devolucion in devoluciones %}
+                    <tr>
+                        <td class="text-center">{{ devolucion.id }}</td>
+                        <td class="text-center">{{ devolucion.cliente|default('-') }}</td>
+                        <td class="text-center">N° {{ devolucion.pedidoProducto.pedido.id }}</td>
+                        <td class="text-center">{{ devolucion.pedidoProducto.getNombreCompleto|default('-') }}</td>
+                        <td class="text-center">{{ devolucion.cantidadBandejas }}</td>
+                        <td class="text-center">{{ devolucion.fechaDevolucion is not null ? devolucion.fechaDevolucion|date('d/m/Y') : '-' }}</td>
+                        <td class="text-center">{{ devolucion.observacion|default('-') }}</td>
+                        <td class="text-center">
+                            <div class="dropdown dropdown-inline">
+                                <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="ki ki-bold-more-hor"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a href="{{ path('devolucion_show', {'id': devolucion.id}) }}" class="dropdown-item">
+                                        <i class="la la-search" style="margin-right: 5px;"></i> Ver
+                                    </a>
+                                    <a href="{{ path('devolucion_edit', {'id': devolucion.id}) }}" class="dropdown-item">
+                                        <i class="la la-edit" style="margin-right: 5px;"></i> Editar
+                                    </a>
+                                    <a href="{{ path('devolucion_delete', {'id': devolucion.id}) }}" class="dropdown-item btn-eliminar-devolucion">
+                                        <i class="la la-trash" style="margin-right: 5px;"></i> Eliminar
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript" src="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.js') }}"></script>
+
+    <script>
+        jQuery(document).ready(function () {
+            $('#table-devolucion').DataTable({
+                order: [[0, 'desc']],
+                language: {
+                    emptyTable: 'No hay datos disponibles en la tabla',
+                    info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+                    infoEmpty: 'Mostrando 0 a 0 de 0 registros',
+                    infoFiltered: '(filtrado de _MAX_ registros totales)',
+                    lengthMenu: 'Mostrar _MENU_ registros',
+                    loadingRecords: 'Cargando...',
+                    processing: 'Procesando...',
+                    search: 'Buscar:',
+                    zeroRecords: 'No se encontraron resultados',
+                    paginate: {
+                        first: 'Primero',
+                        last: 'Último',
+                        next: 'Siguiente',
+                        previous: 'Anterior'
+                    },
+                    aria: {
+                        sortAscending: ': Activar para ordenar la columna de manera ascendente',
+                        sortDescending: ': Activar para ordenar la columna de manera descendente'
+                    }
+                }
+            });
+
+            $('.btn-eliminar-devolucion').on('click', function (e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+
+                Swal.fire({
+                    title: '¿Eliminar devolución?',
+                    text: 'Esta acción no se puede deshacer.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then(function (result) {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

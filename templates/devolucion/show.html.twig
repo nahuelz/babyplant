@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+{% import 'app/_macro_show.html.twig' as macro_show %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style type="text/css">
+        .card.card-detail .card-header {
+            padding: 15px;
+            background-color: #f5f5f5;
+        }
+
+        .card.card-detail {
+            margin-bottom: 20px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    {% set producto = entity.pedidoProducto %}
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon2-refresh-1 text-primary"></i></span>
+                <h3 class="card-label">Devolución N° {{ entity.id }}</h3>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <div class="card card-detail">
+                <div class="card-header"><h4>Devolución</h4></div>
+                <div class="card-body">
+                    <div class="row">
+                        {{ macro_show._show_detail('Cliente', entity.cliente|default('-'), 'col-md-4') }}
+                        {{ macro_show._show_detail('Fecha Devolución', entity.fechaDevolucion is not null ? entity.fechaDevolucion|date('d/m/Y') : '-', 'col-md-4') }}
+                        {{ macro_show._show_detail('Cantidad de Bandejas', entity.cantidadBandejas|default('-'), 'col-md-4') }}
+                    </div>
+                    <div class="row">
+                        {{ macro_show._show_detail('Observación / Motivo', entity.observacion|default('-'), 'col-md-12') }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-detail">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-6"><h4>Producto devuelto</h4></div>
+                        <div class="col-md-6 text-right">
+                            <a href="{{ path('pedido_show', {'id': producto.pedido.id}) }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-search"></i> VER PEDIDO
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {{ macro_show._show_detail('Pedido', 'N° ' ~ producto.pedido.id, 'col-md-3') }}
+                        {{ macro_show._show_detail('Producto', producto.getNombreCompleto|default('-'), 'col-md-3') }}
+                        {{ macro_show._show_detail('Número Orden', producto.getNumeroOrdenCompleto|default('-'), 'col-md-3') }}
+                        {{ macro_show._show_detail('Bandeja', producto.tipoBandeja|default('-'), 'col-md-3') }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer d-flex justify-content-between">
+                <a href="{{ path('devolucion_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
+                <a href="{{ path('devolucion_edit', {'id': entity.id}) }}" class="btn btn-primary font-weight-bold">Editar</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
