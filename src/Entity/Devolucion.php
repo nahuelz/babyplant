@@ -52,6 +52,16 @@ class Devolucion {
      */
     private mixed $observacion = null;
 
+    /**
+     * @ORM\Column(name="vendias", type="boolean", nullable=true)
+     */
+    private mixed $vendias = null;
+
+    /**
+     * @ORM\Column(name="pagas", type="boolean", nullable=true)
+     */
+    private mixed $pagas = null;
+
     public function __toString(): string
     {
         return 'Devolución N° ' . $this->getId();
@@ -115,6 +125,26 @@ class Devolucion {
     public function setObservacion(mixed $observacion): void
     {
         $this->observacion = $observacion;
+    }
+
+    public function getVendias(): mixed
+    {
+        return $this->vendias;
+    }
+
+    public function setVendias(mixed $vendias): void
+    {
+        $this->vendias = $vendias;
+    }
+
+    public function getPagas(): mixed
+    {
+        return $this->pagas;
+    }
+
+    public function setPagas(mixed $pagas): void
+    {
+        $this->pagas = $pagas;
     }
 
     public function getCliente()

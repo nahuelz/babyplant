@@ -76,7 +76,7 @@ function initFacturaDetalleHandler() {
         const tipoGrupo = tipoGrupoSelect.val() || '';
         const concepto = conceptoSelect.val() || '';
         const subConcepto = subConceptoSelect.val() || '';
-        const cantidad = parseInt(cantidadInput.val(), 10) || 0;
+        const cantidad = parseFloat(cantidadInput.val(), 10) || 0;
         const precioRaw = precioInput.val();
         const precio = parseFloat((precioRaw || '').replace(/\./g, '').replace(',', '.')) || 0;
         const descripcion = descripcionInput.val();

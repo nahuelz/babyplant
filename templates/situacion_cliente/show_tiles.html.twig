@@ -7,6 +7,12 @@
                 <a href="#" class="card-title font-weight-bolder text-dark-75 font-size-h5 mb-2 text-hover-primary">{{ entity.nombreCompleto }}</a>
                 <span class="font-weight-bold text-muted  font-size-lg">Celular: {{ entity.celular }}</span>
                 <span class="font-weight-bold text-muted  font-size-lg">Domicilio: {{ entity.domicilio }}</span>
+                {% if devoluciones is defined and devoluciones|length > 0 %}
+                    <span class="font-weight-bolder text-warning font-size-lg mt-2">
+                        <i class="fas fa-exclamation-triangle text-warning mr-1"></i>
+                        Este cliente tiene bandejas devueltas
+                    </span>
+                {% endif %}
             </div>
             <img src="{{ asset('images/user/perfil.png') }}" alt="" class="align-self-end h-100px">
         </div>

@@ -11,6 +11,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -76,15 +77,17 @@ class FacturaDetalleType extends AbstractType
                 'label_attr' => ['class' => 'control-label'],
                 'placeholder' => '-- Elija el sub concepto --',
             ])
-            ->add('cantidad', IntegerType::class, [
+            ->add('cantidad', NumberType::class, [
                 'required' => true,
                 'label' => 'Cantidad',
                 'label_attr' => ['class' => 'required'],
+                'scale' => 1,
                 'attr' => [
                     'class' => 'form-control detalle-cantidad',
                     'style' => 'font-size: 1.1rem; font-weight: bold;',
-                    'placeholder' => '0',
-                    'min' => 1,
+                    'placeholder' => '0,0',
+                    'min' => 0.1,
+                    'step' => 0.1,
                 ]
             ])
             ->add('precioUnitario', MoneyType::class, [

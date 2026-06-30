@@ -42,7 +42,7 @@ class FacturaDetalle
     private $tipoGrupo;
 
     /**
-     * @ORM\Column(name="cantidad", type="integer", nullable=true)
+     * @ORM\Column(name="cantidad", type="decimal", precision=10, scale=1, nullable=true)
      */
     private $cantidad;
 

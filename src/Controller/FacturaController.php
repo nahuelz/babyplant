@@ -66,7 +66,8 @@ class FacturaController extends BaseController {
         $rsm->addScalarResult('fecha', 'fecha');
         $rsm->addScalarResult('montoTotal', 'montoTotal');
         $rsm->addScalarResult('tipoMoneda', 'tipoMoneda');
-        $rsm->addScalarResult('estado', 'estado');
+        $rsm->addScalarResult('idEstado', 'idEstado');
+        $rsm->addScalarResult('nombreEstado', 'nombreEstado');
         $rsm->addScalarResult('colorEstado', 'colorEstado');
 
         $nativeQuery = $em->createNativeQuery('call sp_index_factura()', $rsm);

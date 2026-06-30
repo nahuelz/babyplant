@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -98,6 +99,24 @@ class DevolucionType extends AbstractType {
                     'rows' => 3,
                     'tabindex' => '5'
                 )
+            ))
+            ->add('vendias', CheckboxType::class, array(
+                'required' => false,
+                'label' => 'Vendidas',
+                'attr' => array(
+                    'class' => 'form-check-input',
+                    'tabindex' => '5'
+                ),
+                'label_attr' => array('class' => 'form-check-label')
+            ))
+            ->add('pagas', CheckboxType::class, array(
+                'required' => false,
+                'label' => 'Pagas',
+                'attr' => array(
+                    'class' => 'form-check-input',
+                    'tabindex' => '5'
+                ),
+                'label_attr' => array('class' => 'form-check-label')
             ))
         ;
 
