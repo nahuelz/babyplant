@@ -76,3 +76,4 @@ select `calculo_totales`.`id_remito`                                 AS `id_remi
                                                                             2), 2)
            else `calculo_totales`.`total_producto_con_descuento` end AS `monto_pendiente_producto`
 from `calculo_totales`;
+
