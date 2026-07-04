@@ -266,7 +266,9 @@ function initChainedSelect($sourceSelect, $targetSelect, ajaxURL, preserve_value
 
                 // Cargar opciones
                 for (var i = 0; i < rows.length; i++) {
-                    $targetSelect.append(new Option(rows[i].denominacion, rows[i].id));
+                    var option = new Option(rows[i].denominacion, rows[i].id);
+                    $(option).data('datos', rows[i]);
+                    $targetSelect.append(option);
                 }
 
                 // Habilitar y setear valor preservado si corresponde

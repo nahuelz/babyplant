@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Devolucion;
-use App\Entity\PedidoProducto;
+use App\Entity\EntregaProducto;
 use App\Entity\Usuario;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -50,7 +50,7 @@ class DevolucionType extends AbstractType {
             ))
             ->add('cantidadBandejas', NumberType::class, array(
                 'required' => true,
-                'label' => 'Cantidad de Bandejas',
+                'label' => 'Cantidad de Bandejas a Devolver',
                 'scale' => 1,
                 'html5' => true,
                 'attr' => array(
@@ -63,7 +63,7 @@ class DevolucionType extends AbstractType {
                 )
             ))
             ->add('precioUnitario', NumberType::class, array(
-                'required' => true,
+                'required' => false,
                 'label' => 'Precio Unitario',
                 'scale' => 2,
                 'html5' => true,
@@ -121,31 +121,31 @@ class DevolucionType extends AbstractType {
         ;
 
         // El select de productos se llena dinámicamente por AJAX según el cliente.
-        // No cargamos todos los PedidoProducto (evita el N+1 del __toString).
+        // No cargamos todos los EntregaProducto (evita el N+1 del __toString).
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $devolucion = $event->getData();
-            $pedidoProducto = $devolucion instanceof Devolucion ? $devolucion->getPedidoProducto() : null;
-            $this->addPedidoProductoField($event->getForm(), $pedidoProducto);
+            $entregaProducto = $devolucion instanceof Devolucion ? $devolucion->getEntregaProducto() : null;
+            $this->addEntregaProductoField($event->getForm(), $entregaProducto);
         });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
             $data = $event->getData();
-            $id = $data['pedidoProducto'] ?? null;
-            $pedidoProducto = $id
-                ? $this->entityManager->getRepository(PedidoProducto::class)->find($id)
+            $id = $data['entregaProducto'] ?? null;
+            $entregaProducto = $id
+                ? $this->entityManager->getRepository(EntregaProducto::class)->find($id)
                 : null;
-            $this->addPedidoProductoField($event->getForm(), $pedidoProducto);
+            $this->addEntregaProductoField($event->getForm(), $entregaProducto);
         });
     }
 
     /**
-     * Agrega el campo pedidoProducto limitando las choices a la opción seleccionada
+     * Agrega el campo entregaProducto limitando las choices a la opción seleccionada
      * (o ninguna en el alta). El resto de opciones las provee el JS por AJAX.
      */
-    private function addPedidoProductoField(FormInterface $form, ?PedidoProducto $pedidoProducto): void
+    private function addEntregaProductoField(FormInterface $form, ?EntregaProducto $entregaProducto): void
     {
-        $form->add('pedidoProducto', EntityType::class, array(
-            'class' => PedidoProducto::class,
+        $form->add('entregaProducto', EntityType::class, array(
+            'class' => EntregaProducto::class,
             'required' => true,
             'label' => 'Producto a devolver',
             'placeholder' => '-- Elija el producto --',
@@ -154,7 +154,7 @@ class DevolucionType extends AbstractType {
                 'data-placeholder' => '-- Elija el producto --',
                 'tabindex' => '5'
             ),
-            'choices' => $pedidoProducto ? [$pedidoProducto] : [],
+            'choices' => $entregaProducto ? [$entregaProducto] : [],
             'label_attr' => array('class' => 'control-label'),
             'auto_initialize' => false
         ));

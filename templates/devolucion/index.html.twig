@@ -40,8 +40,8 @@
                     <tr>
                         <td class="text-center">{{ devolucion.id }}</td>
                         <td class="text-center">{{ devolucion.cliente|default('-') }}</td>
-                        <td class="text-center">N° {{ devolucion.pedidoProducto.pedido.id }}</td>
-                        <td class="text-center">{{ devolucion.pedidoProducto.getNombreCompleto|default('-') }}</td>
+                        <td class="text-center">N° {{ devolucion.pedido.id|default('-') }}</td>
+                        <td class="text-center">{{ devolucion.entregaProducto.pedidoProducto.getNombreCompleto()|default('-') }}</td>
                         <td class="text-center">{{ devolucion.cantidadBandejas }}</td>
                         <td class="text-center">$ {{ devolucion.valorTotal|number_format(2, ',', '.')|default('-') }}</td>
                         <td class="text-center">{{ devolucion.fechaDevolucion is not null ? devolucion.fechaDevolucion|date('d/m/Y') : '-' }}</td>

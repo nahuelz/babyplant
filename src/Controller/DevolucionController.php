@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Constants\ConstanteEstadoDevolucion;
 use App\Entity\Devolucion;
-use App\Entity\PedidoProducto;
+use App\Entity\EntregaProducto;
+use App\Entity\EstadoDevolucion;
+use App\Entity\EstadoDevolucionHistorico;
 use App\Form\DevolucionType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Expr\Join;
@@ -53,6 +56,13 @@ class DevolucionController extends BaseController {
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($entity);
             $em->flush();
+
+            // Establecer estado PENDIENTE
+            $estadoPendiente = $em->getRepository(EstadoDevolucion::class)->find(ConstanteEstadoDevolucion::PENDIENTE);
+            if ($estadoPendiente) {
+                $this->cambiarEstadoDevolucion($em, $entity, $estadoPendiente, 'Creación de devolución');
+                $em->flush();
+            }
 
             $this->addFlash('success', 'La devolución fue registrada correctamente.');
 
@@ -117,7 +127,23 @@ class DevolucionController extends BaseController {
     }
 
     /**
-     * Devuelve los productos (PedidoProducto) de un cliente para filtrar en el formulario.
+     * Cambia el estado de una devolución y genera el registro histórico
+     */
+    private function cambiarEstadoDevolucion(EntityManagerInterface $em, Devolucion $devolucion, $estado, string $motivo): void
+    {
+        $devolucion->setEstado($estado);
+        
+        $historico = new EstadoDevolucionHistorico();
+        $historico->setDevolucion($devolucion);
+        $historico->setEstado($estado);
+        $historico->setFecha(new \DateTime());
+        $historico->setMotivo($motivo);
+        
+        $em->persist($historico);
+    }
+
+    /**
+     * Devuelve los productos (EntregaProducto) de un cliente para filtrar en el formulario.
      *
      * @Route("/lista/productos", name="devolucion_lista_productos", methods={"GET","POST"})
      */
@@ -125,27 +151,36 @@ class DevolucionController extends BaseController {
     {
         $idCliente = $request->request->get('id_entity');
 
-        $repository = $this->doctrine->getRepository(PedidoProducto::class);
+        $repository = $this->doctrine->getRepository(EntregaProducto::class);
 
-        $resultados = $repository->createQueryBuilder('pp')
-            ->select("pp.id, pp.fechaEntregaPedido, concat('PEDIDO N° ', p.id, ' ORDEN N° ', pp.numeroOrden, ' ', tp.nombre, ' ', v.nombre, ' (x', tb.nombre, ')') as descripcion")
+        $resultados = $repository->createQueryBuilder('ep')
+            ->select("ep.id, ep.cantidadBandejas, ep.precioUnitario, concat('ENTREGA N° ', e.id, ' - ', pp.numeroOrden, ' ', tp.nombre, ' ', v.nombre, ' (x', tb.nombre, ')') as descripcion, e.id as numeroEntrega, pp.numeroOrden, tm.nombre as mesada, p.id as numeroPedido")
+            ->leftJoin('ep.entrega', 'e')
+            ->leftJoin('ep.pedidoProducto', 'pp')
             ->leftJoin('pp.pedido', 'p')
             ->leftJoin('App:TipoVariedad', 'v', Join::WITH, 'pp.tipoVariedad = v')
             ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')
             ->leftJoin('App:TipoProducto', 'tp', Join::WITH, 'sb.tipoProducto = tp')
             ->leftJoin('App:TipoBandeja', 'tb', Join::WITH, 'pp.tipoBandeja = tb')
+            ->leftJoin('pp.mesadaUno', 'm1')
+            ->leftJoin('m1.tipoMesada', 'tm')
             ->where('p.cliente = :cliente')
             ->setParameter('cliente', $idCliente)
-            ->orderBy('pp.id', 'DESC')
-            ->groupBy('pp.id')
+            ->orderBy('ep.id', 'DESC')
+            ->groupBy('ep.id')
             ->getQuery()
             ->getResult();
 
         $datosFormateados = array_map(function ($row) {
-            $fechaEntrega = $row['fechaEntregaPedido'] ? ' FECHA ENTREGA: ' . $row['fechaEntregaPedido']->format('d-m-Y') : '';
             return [
                 'id' => $row['id'],
-                'denominacion' => $row['descripcion'] . $fechaEntrega,
+                'denominacion' => $row['descripcion'],
+                'numeroEntrega' => $row['numeroEntrega'],
+                'numeroOrden' => $row['numeroOrden'],
+                'bandejasEntregadas' => $row['cantidadBandejas'],
+                'mesada' => $row['mesada'],
+                'numeroPedido' => $row['numeroPedido'],
+                'precioUnitario' => $row['precioUnitario'],
             ];
         }, $resultados);
 

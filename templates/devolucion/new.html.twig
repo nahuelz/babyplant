@@ -24,12 +24,52 @@
             </div>
             <div class="row">
                 {{ macro_form._new_field(form.cliente, 'col-md-6') }}
-                {{ macro_form._new_field(form.pedidoProducto, 'col-md-6') }}
+                {{ macro_form._new_field(form.entregaProducto, 'col-md-6') }}
+            </div>
+            <div class="row" id="datos-producto" style="display: none;">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Producto</label>
+                        <input type="text" id="info_producto" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <label class="control-label">N° Orden</label>
+                        <input type="text" id="info_numero_orden" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="control-label">Bandejas Entregadas</label>
+                        <input type="text" id="info_bandejas" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <label class="control-label">Mesada</label>
+                        <input type="text" id="info_mesada" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="control-label">N° Pedido</label>
+                        <input type="text" id="info_pedido" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="control-label">Precio Unitario</label>
+                        <input type="text" id="info_precio" class="form-control" readonly>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 {{ macro_form._new_field(form.cantidadBandejas, 'col-md-4') }}
-                {{ macro_form._new_field(form.precioUnitario, 'col-md-4') }}
-                <div class="col-md-4">
+                <div class="col-md-4 d-none">
+                    {{ form_row(form.precioUnitario) }}
+                </div>
+                <div class="col-md-4 d-none">
                     <div class="form-group">
                         <label class="control-label">Valor Total</label>
                         <input type="text" id="devolucion_valor_total" class="form-control" readonly value="0,00">
