@@ -24,14 +24,14 @@
 
         <div class="card-body">
             <div class="row">
-                {{ macro_show._show_detail('Proveedor', pagoProveedor.proveedor, 'col-md-2') }}
-                {{ macro_show._show_detail('Fecha de Pago', pagoProveedor.fechaPago|date('d/m/Y'), 'col-md-2') }}
-                {{ macro_show._show_detail('Modo de Pago', pagoProveedor.modoPago|default('-'), 'col-md-2') }}
-                {{ macro_show._show_detail('N° Comprobante', pagoProveedor.numeroComprobante|default('-'), 'col-md-1') }}
-                {{ macro_show._show_detail('Moneda', pagoProveedor.tipoMoneda, 'col-md-1') }}
-                {{ macro_show._show_detail('Monto ARS', pagoProveedor.montoARS|money_format, 'col-md-1') }}
-                {{ macro_show._show_detail('Monto USD', pagoProveedor.montoUSD|money_format, 'col-md-1') }}
-                {{ macro_show._show_detail('Tipo de Cambio', pagoProveedor.tipoCambio ? pagoProveedor.tipoCambio|money_format : 'N/A', 'col-md-1') }}
+                {{ macro_show._show_detail('Proveedor', pagoProveedor.proveedor, 'col-md-4') }}
+                {{ macro_show._show_detail('Fecha de Pago', pagoProveedor.fechaPago|date('d/m/Y'), 'col-md-3') }}
+                {{ macro_show._show_detail('Modo de Pago', pagoProveedor.modoPago|default('-'), 'col-md-3') }}
+                {{ macro_show._show_detail('N° Comprobante', pagoProveedor.numeroComprobante|default('-'), 'col-md-2') }}
+                {{ macro_show._show_detail('Moneda', pagoProveedor.tipoMoneda, 'col-md-2') }}
+                {{ macro_show._show_detail('Monto ARS', pagoProveedor.montoARS|money_format, 'col-md-2') }}
+                {{ macro_show._show_detail('Monto USD', pagoProveedor.montoUSD|money_format, 'col-md-2') }}
+                {{ macro_show._show_detail('Tipo de Cambio', pagoProveedor.tipoCambio ? pagoProveedor.tipoCambio|money_format : 'N/A', 'col-md-2') }}
             </div>
 
             <div class="row mt-4">

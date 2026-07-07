@@ -8,7 +8,6 @@ jQuery(document).ready(function () {
     initImputacionFacturas();
     initImputacionHandler();
 
-    $("#pago_proveedor_modoPago option[value='4']").prop('disabled', true);
     $("#pago_proveedor_modoPago option[value='5']").prop('disabled', true);
     $("#pago_proveedor_modoPago option[value='6']").prop('disabled', true);
     $("#pago_proveedor_modoPago option[value='7']").prop('disabled', true);
@@ -34,6 +33,17 @@ function initSelect2() {
             obtenerValorDolarBlue();
         }
     });
+
+    // Manejar cambio de modo de pago para mostrar saldo a favor
+    $('#pago_proveedor_modoPago').on('change', function() {
+        const modoPago = $(this).val();
+        
+        if (modoPago === '4') { // CUENTA CORRIENTE
+            cargarSaldoFavorProveedor();
+        } else {
+            $('#saldo-favor-container').hide();
+        }
+    });
 }
 
 /**
@@ -42,6 +52,11 @@ function initSelect2() {
 function initImputacionFacturas() {
     $('#pago_proveedor_proveedor').on('change', function () {
         cargarFacturasProveedor($(this).val());
+        
+        // Si el modo de pago es CUENTA CORRIENTE, actualizar el saldo a favor
+        if ($('#pago_proveedor_modoPago').val() === '4') {
+            cargarSaldoFavorProveedor();
+        }
     });
     cargarFacturasProveedor($('#pago_proveedor_proveedor').val());
 
@@ -49,18 +64,127 @@ function initImputacionFacturas() {
     $('#pago_proveedor_imputacion_factura').on('change', function () {
         const selectedOption = $(this).find('option:selected');
         const saldo = selectedOption.data('saldo');
+        const facturaMoneda = selectedOption.data('moneda');
         
         if (saldo !== undefined && saldo !== null) {
-            // Formatear el saldo con separadores de miles
-            const saldoFormateado = parseFloat(saldo).toLocaleString('es-AR', {
+            // Obtener el monto del pago y su moneda
+            const pagoMontoRaw = $('#pago_proveedor_monto').val();
+            const pagoMonto = parseFloat((pagoMontoRaw || '').replace(/\./g, '').replace(',', '.')) || 0;
+            const pagoMoneda = $('#pago_proveedor_tipoMoneda').val();
+            const tipoCambio = parseFloat(($('#pago_proveedor_tipoCambio').val() || '').replace(/\./g, '').replace(',', '.')) || 0;
+            
+            // Convertir el monto del pago a la moneda de la factura
+            let pagoMontoEnMonedaFactura = pagoMonto;
+            if (pagoMoneda !== facturaMoneda) {
+                if (tipoCambio > 0) {
+                    if (facturaMoneda === 'USD') {
+                        // Pago en ARS, factura en USD: dividir por tipo de cambio
+                        pagoMontoEnMonedaFactura = pagoMonto / tipoCambio;
+                    } else {
+                        // Pago en USD, factura en ARS: multiplicar por tipo de cambio
+                        pagoMontoEnMonedaFactura = pagoMonto * tipoCambio;
+                    }
+                } else {
+                    pagoMontoEnMonedaFactura = 0;
+                }
+            }
+            
+            // Determinar el monto a usar: el menor entre el saldo y el monto del pago (en moneda de la factura)
+            // Redondear hacia arriba a 2 decimales para evitar errores de redondeo acumulados
+            const montoAUsar = Math.ceil(Math.min(parseFloat(saldo), pagoMontoEnMonedaFactura) * 100) / 100;
+            
+            // Formatear el monto con separadores de miles
+            const montoFormateado = montoAUsar.toLocaleString('es-AR', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             });
-            $('#pago_proveedor_imputacion_monto').val(saldoFormateado);
+            $('#pago_proveedor_imputacion_monto').val(montoFormateado);
         } else {
             $('#pago_proveedor_imputacion_monto').val('');
         }
+        actualizarEquivalenteImputacion();
     });
+
+    // Actualizar equivalencia al modificar el monto a imputar
+    $('#pago_proveedor_imputacion_monto').on('input', function () {
+        actualizarEquivalenteImputacion();
+    });
+
+    // Actualizar info del monto del pago al modificar monto, moneda o tipo de cambio
+    $('#pago_proveedor_monto, #pago_proveedor_tipoCambio').on('input', function () {
+        actualizarMontoPagoInfo();
+    });
+    $('#pago_proveedor_tipoMoneda').on('change', function () {
+        actualizarMontoPagoInfo();
+    });
+    actualizarMontoPagoInfo();
+}
+
+/**
+ * Muestra el equivalente del monto a imputar en la otra moneda.
+ */
+function actualizarEquivalenteImputacion() {
+    const label = $('#imputacion-monto-equivalente');
+    const selectedOption = $('#pago_proveedor_imputacion_factura').find('option:selected');
+    const facturaMoneda = selectedOption.data('moneda');
+    const montoRaw = $('#pago_proveedor_imputacion_monto').val();
+    const monto = parseFloat((montoRaw || '').replace(/\./g, '').replace(',', '.')) || 0;
+    const tipoCambio = parseFloat(($('#pago_proveedor_tipoCambio').val() || '').replace(/\./g, '').replace(',', '.')) || 0;
+
+    if (!facturaMoneda || monto <= 0 || tipoCambio <= 0) {
+        label.text('');
+        return;
+    }
+
+    let equivalente;
+    let textoEquivalente;
+    if (facturaMoneda === 'USD') {
+        equivalente = monto * tipoCambio;
+        textoEquivalente = 'Equivale a $ ' + equivalente.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' (ARS)';
+    } else {
+        equivalente = monto / tipoCambio;
+        textoEquivalente = 'Equivale a US$ ' + equivalente.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' (USD)';
+    }
+
+    label.text(textoEquivalente);
+}
+
+/**
+ * Muestra el monto del pago en ARS y USD.
+ */
+function actualizarMontoPagoInfo() {
+    const pagoMontoRaw = $('#pago_proveedor_monto').val();
+    const pagoMonto = parseFloat((pagoMontoRaw || '').replace(/\./g, '').replace(',', '.')) || 0;
+    const pagoMoneda = $('#pago_proveedor_tipoMoneda').val();
+    const tipoCambio = parseFloat(($('#pago_proveedor_tipoCambio').val() || '').replace(/\./g, '').replace(',', '.')) || 0;
+
+    if (pagoMonto <= 0) {
+        $('#monto-pago-container').hide();
+        return;
+    }
+
+    let montoArs = 0;
+    let montoUsd = 0;
+
+    if (pagoMoneda === 'USD') {
+        montoUsd = pagoMonto;
+        montoArs = tipoCambio > 0 ? pagoMonto * tipoCambio : 0;
+    } else {
+        montoArs = pagoMonto;
+        montoUsd = tipoCambio > 0 ? pagoMonto / tipoCambio : 0;
+    }
+
+    $('#monto-pago-ars').text('$ ' + montoArs.toLocaleString('es-AR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }));
+
+    $('#monto-pago-usd').text('US$ ' + montoUsd.toLocaleString('es-AR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }));
+
+    $('#monto-pago-container').show();
 }
 
 function cargarFacturasProveedor(idProveedor) {
@@ -81,9 +205,37 @@ function cargarFacturasProveedor(idProveedor) {
                 .val(f.id)
                 .text(f.denominacion)
                 .attr('data-moneda', f.moneda)
-                .attr('data-saldo', f.saldo);
+                .attr('data-saldo', f.saldo)
+                .attr('data-saldo-ars', f.saldoArs)
+                .attr('data-saldo-usd', f.saldoUsd);
             select.append(opt);
         });
+    }, 'json');
+}
+
+function cargarSaldoFavorProveedor() {
+    const idProveedor = $('#pago_proveedor_proveedor').val();
+    
+    if (!idProveedor) {
+        $('#saldo-favor-container').hide();
+        return;
+    }
+
+    $.post(__HOMEPAGE_PATH__ + 'pago_proveedor/saldo/favor', { id_entity: idProveedor }, function (data) {
+        const saldoArs = data.saldoArs || 0;
+        const saldoUsd = data.saldoUsd || 0;
+        
+        $('#saldo-favor-ars').text('$' + saldoArs.toLocaleString('es-AR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }));
+        
+        $('#saldo-favor-usd').text('US$' + saldoUsd.toLocaleString('es-AR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }));
+        
+        $('#saldo-favor-container').show();
     }, 'json');
 }
 
@@ -349,6 +501,62 @@ function initBaseSubmitButton() {
         fv.validate().then((status) => {
 
             if (status === "Valid") {
+                // Validar que si hay monto a imputar escrito, se haya imputado a una factura
+                const montoImputacionRaw = $('#pago_proveedor_imputacion_monto').val();
+                if (montoImputacionRaw && montoImputacionRaw.trim() !== '') {
+                    Swal.fire({
+                        title: 'Falta imputar el pago',
+                        text: 'Ha ingresado un monto a imputar pero no ha hecho clic en el botón "IMPUTAR A FACTURA". Por favor, haga clic en el botón para agregar la imputación.',
+                        icon: 'warning'
+                    });
+                    return false;
+                }
+
+                // Validar que si es CUENTA CORRIENTE, el monto no supere el saldo a favor
+                if ($('#pago_proveedor_modoPago').val() === '4') {
+                    const idProveedor = $('#pago_proveedor_proveedor').val();
+                    if (idProveedor) {
+                        // Obtener el saldo a favor del proveedor de forma síncrona
+                        let validacionPasada = true;
+                        let saldoFavor = 0;
+                        const pagoMoneda = $('#pago_proveedor_tipoMoneda').val();
+                        const pagoMonto = parseFloat(($('#pago_proveedor_monto').val() || '').replace(/\./g, '').replace(',', '.')) || 0;
+                        
+                        $.ajax({
+                            url: __HOMEPAGE_PATH__ + 'pago_proveedor/saldo/favor',
+                            method: 'POST',
+                            data: { id_entity: idProveedor },
+                            async: false,
+                            success: function(data) {
+                                const saldoArs = data.saldoArs || 0;
+                                const saldoUsd = data.saldoUsd || 0;
+                                saldoFavor = pagoMoneda === 'USD' ? saldoUsd : saldoArs;
+                                
+                                if (pagoMonto > saldoFavor + 0.01) {
+                                    validacionPasada = false;
+                                    Swal.fire({
+                                        title: 'El monto del pago supera el saldo a favor del proveedor',
+                                        text: `Saldo a favor disponible: ${pagoMoneda === 'USD' ? 'US$' : '$'} ${saldoFavor.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
+                                        icon: 'warning'
+                                    });
+                                }
+                            },
+                            error: function() {
+                                validacionPasada = false;
+                                Swal.fire({
+                                    title: 'Error al verificar saldo a favor',
+                                    text: 'No se pudo verificar el saldo a favor del proveedor',
+                                    icon: 'error'
+                                });
+                            }
+                        });
+                        
+                        if (!validacionPasada) {
+                            return false;
+                        }
+                    }
+                }
+                
                 if (!validarImputaciones()) {
                     Swal.fire({
                         title: 'La suma de las imputaciones supera el monto del pago.',

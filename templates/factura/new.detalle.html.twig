@@ -78,8 +78,8 @@
                     <td class="v-middle text-center">{{ detalle.subConcepto }}</td>
                     <td class="v-middle text-center">{{ detalle.descripcion }}</td>
                     <td class="v-middle text-center">{{ detalle.cantidad }}</td>
-                    <td class="v-middle text-center">${{ detalle.precioUnitario|number_format(2, ',', '.') }}</td>
-                    <td class="v-middle text-center">${{ detalle.montoTotal|number_format(2, ',', '.') }}</td>
+                    <td class="v-middle text-center">{{ entity.tipoMoneda == 'USD' ? 'US$' : '$' }} {{ detalle.precioUnitario|number_format(2, ',', '.') }}</td>
+                    <td class="v-middle text-center">{{ entity.tipoMoneda == 'USD' ? 'US$' : '$' }} {{ detalle.montoTotal|number_format(2, ',', '.') }}</td>
 
                     <td class="text-center v-middle">
                         <a href="#" class="btn btn-sm delete-link-inline link-delete-factura-detalle tooltips"

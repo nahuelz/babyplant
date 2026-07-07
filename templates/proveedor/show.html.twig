@@ -56,24 +56,38 @@
 
     {# Cuenta Corriente #}
     {% if proveedor.cuentaCorrienteProveedor %}
-        {# Saldo a favor: proviene de los pagos realizados #}
+        {# Saldo a favor: proviene de los pagos realizados (excluyendo CUENTA CORRIENTE) #}
         {% set saldoFavorArs = 0 %}
         {% set saldoFavorUsd = 0 %}
 
         {% for pago in pagos %}
-
-            {% set saldoFavorArs = saldoFavorArs + pago.getSaldoNoImputadoARS() %}
-            {% set saldoFavorUsd = saldoFavorUsd + pago.getSaldoNoImputadoUSD() %}
+            {% if pago.modoPago and pago.modoPago.id == '4' %}
+                {# Los pagos con CUENTA CORRIENTE consumen el saldo a favor: se restan #}
+                {% set saldoFavorArs = saldoFavorArs - pago.getMontoARS() %}
+                {% set saldoFavorUsd = saldoFavorUsd - pago.getMontoUSD() %}
+            {% else %}
+                {# Los demás pagos aportan saldo a favor por el monto no imputado #}
+                {% set saldoFavorArs = saldoFavorArs + pago.getSaldoNoImputadoARS() %}
+                {% set saldoFavorUsd = saldoFavorUsd + pago.getSaldoNoImputadoUSD() %}
+            {% endif %}
 
         {% endfor %}
 
-        {# Deuda: total de las facturas generadas #}
+        {# Deuda: total de las facturas pendientes de pago #}
         {% set deudaArs = 0 %}
         {% set deudaUsd = 0 %}
         {% for factura in facturas %}
-            {% set deudaUsd = deudaUsd + factura.getMontoUSD() %}
-            {% set deudaArs = deudaArs + factura.getMontoARS() %}
+            {% set deudaUsd = deudaUsd + factura.getSaldoPendienteUSD() %}
+            {% set deudaArs = deudaArs + factura.getSaldoPendienteARS() %}
         {% endfor %}
+
+        {# Si el total de la deuda es menor a 0,01, considerarlo como 0 para evitar errores de redondeo #}
+        {% if deudaArs < 0.01 %}
+            {% set deudaArs = 0 %}
+        {% endif %}
+        {% if deudaUsd < 0.01 %}
+            {% set deudaUsd = 0 %}
+        {% endif %}
 
         <div class="card card-detail">
             <div class="card-header">
@@ -92,7 +106,7 @@
                                 <div class="h4 font-weight-bold text-danger">
                                     US$ {{ deudaUsd|number_format(2, ',', '.') }}
                                 </div>
-                                <small class="text-muted">Total de facturas generadas</small>
+                                <small class="text-muted">Total pendiente de pago</small>
                             </div>
                         </div>
                     </div>
@@ -142,6 +156,7 @@
                                                 <th class="text-center nowrap">Fecha</th>
                                                 <th class="text-center nowrap">Moneda</th>
                                                 <th class="text-center nowrap">Total</th>
+                                                <th class="text-center nowrap">Pendiente</th>
                                                 <th class="text-center nowrap">Estado</th>
                                                 <th class="text-center nowrap"></th>
                                             </tr>
@@ -157,6 +172,7 @@
                                                         </span>
                                                     </td>
                                                     <td class="v-middle nowrap text-center">{{ factura.tipoMoneda == 'USD' ? 'US$' : '$' }} {{ factura.getTotal()|number_format(2, ',', '.') }}</td>
+                                                    <td class="v-middle nowrap text-center">{{ factura.tipoMoneda == 'USD' ? 'US$' : '$' }} {{ (factura.tipoMoneda == 'USD' ? factura.getSaldoPendienteUSD() : factura.getSaldoPendienteARS())|number_format(2, ',', '.') }}</td>
                                                     <td class="v-middle nowrap text-center">
                                                         {% if factura.estadoFactura %}
                                                             <span class="label label-inline font-weight-bold {{ factura.estadoFactura.color }}"

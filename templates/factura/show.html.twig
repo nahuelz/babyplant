@@ -87,6 +87,57 @@
                 </div>
             </div>
 
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h5 class="mb-3">Pagos Realizados</h5>
+                    {% if imputaciones|length > 0 %}
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Fecha de Pago</th>
+                                        <th>Modo de Pago</th>
+                                        <th>Moneda</th>
+                                        <th class="text-right">Monto Imputado</th>
+                                        <th class="text-right">Monto Total del Pago</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for imputacion in imputaciones %}
+                                        {% set pago = imputacion.pagoProveedor %}
+                                        {% set simboloPago = pago.tipoMoneda == 'USD' ? 'US$' : '$' %}
+                                        <tr>
+                                            <td>{{ pago.fechaPago|date('d/m/Y') }}</td>
+                                            <td>{{ pago.modoPago.nombre|default('-') }}</td>
+                                            <td>{{ pago.tipoMoneda }}</td>
+                                            <td class="text-right">{{ imputacion.monto|money_format(2, simboloPago) }}</td>
+                                            <td class="text-right">{{ pago.monto|money_format(2, simboloPago) }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr class="table-active">
+                                        <td colspan="3" class="text-right font-weight-bold">Total Pagado:</td>
+                                        <td class="text-right font-weight-bold">{{ factura.getTotalPagado()|money_format(2, simboloMoneda) }}</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr class="table-info">
+                                        <td colspan="3" class="text-right font-weight-bold">Saldo Pendiente:</td>
+                                        <td class="text-right font-weight-bold">{{ factura.getSaldoPendienteARS() > 0.01 or factura.getSaldoPendienteUSD() > 0.01 ? (factura.tipoMoneda == 'USD' ? factura.getSaldoPendienteUSD() : factura.getSaldoPendienteARS())|money_format(2, simboloMoneda) : '0,00' }}</td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="la la-info-circle"></i>
+                            Esta factura no tiene pagos registrados.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
         </div>
         <div class="card-footer d-flex justify-content-between">
             <a href="javascript:void(0)" onclick="history.length > 1 ? history.back() : window.location.href='{{ path('factura_index') }}'" class="btn btn-light-dark font-weight-bold">Volver</a>

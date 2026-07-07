@@ -21,6 +21,34 @@ function initTipoCambio() {
     if (tipoCambioInput.length > 0 && !tipoCambioInput.val()) {
         obtenerValorDolarBlue();
     }
+
+    // Validación: no permitir cambiar tipo de moneda si ya hay conceptos agregados
+    $('#factura_tipoMoneda').on('change', function() {
+        if ($('.tr-factura-detalle').length > 0) {
+            const valorAnterior = $(this).data('valor-anterior') || 'ARS';
+            $(this).val(valorAnterior);
+            
+            Swal.fire({
+                title: 'No se puede cambiar el tipo de moneda',
+                text: 'Ya hay conceptos agregados. Para cambiar el tipo de moneda, debe eliminar todos los conceptos primero o crear una nueva factura.',
+                icon: 'warning',
+                confirmButtonColor: '#3085d6'
+            });
+            
+            return false;
+        }
+        
+        // Guardar el valor actual para poder revertir si es necesario
+        $(this).data('valor-anterior', $(this).val());
+        
+        // Si es USD, obtener el valor del dólar blue
+        if ($(this).val() === 'USD') {
+            obtenerValorDolarBlue();
+        }
+    });
+    
+    // Guardar el valor inicial
+    $('#factura_tipoMoneda').data('valor-anterior', $('#factura_tipoMoneda').val());
 }
 
 function initSelect2() {
@@ -81,6 +109,10 @@ function initFacturaDetalleHandler() {
         const precio = parseFloat((precioRaw || '').replace(/\./g, '').replace(',', '.')) || 0;
         const descripcion = descripcionInput.val();
 
+        // Obtener tipo de moneda y símbolo
+        const tipoMoneda = $('#factura_tipoMoneda').val() || 'ARS';
+        const simboloMoneda = tipoMoneda === 'USD' ? 'US$' : '$';
+
         // Validación
         if (!concepto || cantidad <= 0 || precio <= 0) {
             Swal.fire({
@@ -113,8 +145,8 @@ function initFacturaDetalleHandler() {
                 <td class="text-center v-middle">${subConcepto ? subConceptoSelect.find('option:selected').text() : ''}</td>
                 <td class="text-center v-middle">${descripcion}</td>
                 <td class="text-center v-middle">${cantidad}</td>
-                <td class="text-center v-middle">$${precio.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                <td class="text-center v-middle">$${total.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                <td class="text-center v-middle">${simboloMoneda} ${precio.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                <td class="text-center v-middle">${simboloMoneda} ${total.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                 <td class="text-center v-middle">${removeLink}</td>
             </tr>`;
 
@@ -168,6 +200,8 @@ function updateDeleteLinkFacturaDetalle(deleteLink, closestClassName) {
                         if ($('.tr-factura-detalle').length === 0) {
                             $('.row-factura-detalle-empty').show('slow');
                             $('.row-factura-detalle').hide('slow');
+                            // Actualizar el valor anterior del tipo de moneda al valor actual
+                            $('#factura_tipoMoneda').data('valor-anterior', $('#factura_tipoMoneda').val());
                         }
                         calcularTotal();
                     });

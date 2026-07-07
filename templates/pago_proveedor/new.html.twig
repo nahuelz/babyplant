@@ -27,7 +27,7 @@
 				<span class="card-icon">
 					<i class="flaticon-search text-primary"></i>
 				</span>
-                <h3 class="card-label">{% if edit %}Editar Factura{% else %}Nueva Factura{% endif %}</h3>
+                <h3 class="card-label">{% if edit %}Editar Pago{% else %}Nuevo Pago{% endif %}</h3>
             </div>
         </div>
         <div class="card-body">
@@ -45,6 +45,32 @@
                 </div>
             </div>
             <hr>
+            <div id="monto-pago-container" style="display: none;">
+                <div class="alert alert-secondary">
+                    <h5 class="alert-heading">Monto del pago</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Monto en ARS:</strong> <span id="monto-pago-ars">$0,00</span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Monto en USD:</strong> <span id="monto-pago-usd">US$0,00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="saldo-favor-container" style="display: none;">
+                <div class="alert alert-info">
+                    <h5 class="alert-heading">Saldo a favor del proveedor</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>ARS:</strong> <span id="saldo-favor-ars">$0,00</span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>USD:</strong> <span id="saldo-favor-usd">US$0,00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <h5 class="mb-3">Imputación a facturas</h5>
             {% include 'pago_proveedor/new.imputacion.html.twig' %}
         </div>

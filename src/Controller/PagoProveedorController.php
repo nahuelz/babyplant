@@ -239,6 +239,14 @@ class PagoProveedorController extends BaseController
 
         /** @var PagoProveedor $entity */
 
+        // Si el modo de pago es CUENTA CORRIENTE, no crear movimiento en cuenta corriente
+        // porque el pago usa el saldo a favor existente
+        if ($entity->getModoPago() == '4') {
+            $this->actualizarEstadoFacturasDePago($em, $entity);
+            $em->flush();
+            return;
+        }
+
         $proveedor = $entity->getProveedor();
 
         $cuentaCorriente = $proveedor
@@ -401,6 +409,11 @@ class PagoProveedorController extends BaseController
 
         $this->procesarImputaciones($em, $entity, $request);
 
+        // Si el modo de pago es CUENTA CORRIENTE, no modificar el movimiento en cuenta corriente
+        if ($entity->getModoPago() == '4') {
+            return true;
+        }
+
         $movimiento = $em
             ->getRepository(MovimientoProveedor::class)
             ->findOneBy([
@@ -493,16 +506,69 @@ class PagoProveedorController extends BaseController
 
             $simbolo = $factura->getTipoMoneda() === 'USD' ? 'US$' : '$';
 
+            // Calcular el saldo en ambas monedas usando el tipo de cambio de la factura
+            $tipoCambioFactura = (float) $factura->getTipoCambio();
+            if ($factura->getTipoMoneda() === 'USD') {
+                $saldoUsd = $saldo;
+                $saldoArs = $tipoCambioFactura > 0 ? $saldo * $tipoCambioFactura : 0;
+            } else {
+                $saldoArs = $saldo;
+                $saldoUsd = $tipoCambioFactura > 0 ? $saldo / $tipoCambioFactura : 0;
+            }
+
             $result[] = [
                 'id' => $factura->getId(),
                 'denominacion' => 'Factura #' . $factura->getNumeroFactura()
                     . ' (' . $factura->getTipoMoneda() . ') - Saldo: '
-                    . $simbolo . ' ' . number_format($saldo, 2, ',', '.'),
+                    . '$ ' . number_format($saldoArs, 2, ',', '.')
+                    . ' / US$ ' . number_format($saldoUsd, 2, ',', '.'),
                 'moneda' => $factura->getTipoMoneda(),
                 'saldo' => $saldo,
+                'saldoArs' => $saldoArs,
+                'saldoUsd' => $saldoUsd,
+                'tipoCambio' => $tipoCambioFactura,
             ];
         }
 
         return new JsonResponse($result);
+    }
+
+    /**
+     * @Route("/saldo/favor", name="pagoproveedor_saldo_favor")
+     */
+    public function saldoFavorAction(Request $request): JsonResponse
+    {
+        $idProveedor = $request->request->get('id_entity');
+        $em = $this->doctrine->getManager();
+
+        if (!$idProveedor) {
+            return new JsonResponse([
+                'saldoArs' => 0,
+                'saldoUsd' => 0
+            ]);
+        }
+
+        $pagos = $em->getRepository(PagoProveedor::class)
+            ->findBy(['proveedor' => $idProveedor]);
+
+        $saldoFavorArs = 0;
+        $saldoFavorUsd = 0;
+
+        foreach ($pagos as $pago) {
+            if ($pago->getModoPago() && $pago->getModoPago()->getId() == '4') {
+                // Los pagos con CUENTA CORRIENTE consumen el saldo a favor: se restan
+                $saldoFavorArs -= $pago->getMontoARS();
+                $saldoFavorUsd -= $pago->getMontoUSD();
+            } else {
+                // Los demás pagos aportan saldo a favor por el monto no imputado
+                $saldoFavorArs += $pago->getSaldoNoImputadoARS();
+                $saldoFavorUsd += $pago->getSaldoNoImputadoUSD();
+            }
+        }
+
+        return new JsonResponse([
+            'saldoArs' => $saldoFavorArs,
+            'saldoUsd' => $saldoFavorUsd
+        ]);
     }
 }

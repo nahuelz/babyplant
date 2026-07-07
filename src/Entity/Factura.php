@@ -165,6 +165,60 @@ class Factura
         return 0.0;
     }
 
+    public function getSaldoPendienteARS(): float
+    {
+        $montoTotal = $this->getMontoARS();
+        $totalPagado = $this->getTotalPagado();
+        
+        // Si la factura está en USD, el totalPagado está en USD, necesito convertirlo
+        if ($this->tipoMoneda === 'USD') {
+            $tipoCambio = (float) $this->tipoCambio;
+            if ($tipoCambio > 0) {
+                $totalPagadoARS = $totalPagado * $tipoCambio;
+            } else {
+                $totalPagadoARS = 0;
+            }
+        } else {
+            $totalPagadoARS = $totalPagado;
+        }
+        
+        $saldo = max(0, $montoTotal - $totalPagadoARS);
+        
+        // Si el saldo es menor a 0,01, considerarlo como 0 para evitar errores de redondeo
+        if ($saldo < 0.01) {
+            return 0;
+        }
+        
+        return $saldo;
+    }
+
+    public function getSaldoPendienteUSD(): float
+    {
+        $montoTotal = $this->getMontoUSD();
+        $totalPagado = $this->getTotalPagado();
+        
+        // Si la factura está en ARS, el totalPagado está en ARS, necesito convertirlo
+        if ($this->tipoMoneda === 'ARS') {
+            $tipoCambio = (float) $this->tipoCambio;
+            if ($tipoCambio > 0) {
+                $totalPagadoUSD = $totalPagado / $tipoCambio;
+            } else {
+                $totalPagadoUSD = 0;
+            }
+        } else {
+            $totalPagadoUSD = $totalPagado;
+        }
+        
+        $saldo = max(0, $montoTotal - $totalPagadoUSD);
+        
+        // Si el saldo es menor a 0,01, considerarlo como 0 para evitar errores de redondeo
+        if ($saldo < 0.01) {
+            return 0;
+        }
+        
+        return $saldo;
+    }
+
     public function getNumeroFactura(): ?string
     {
         return $this->numeroFactura;

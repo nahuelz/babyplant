@@ -6,6 +6,7 @@ use App\Entity\EstadoFactura;
 use App\Entity\EstadoFacturaHistorico;
 use App\Entity\Factura;
 use App\Entity\FacturaDetalle;
+use App\Entity\ImputacionPagoFactura;
 use App\Entity\MovimientoProveedor;
 use App\Entity\Proveedor;
 use App\Entity\TipoGrupo;
@@ -138,8 +139,20 @@ class FacturaController extends BaseController {
     #[Route('/{id}', name: 'factura_show', methods: ['GET'])]
     public function show(Factura $factura): Response
     {
+        $em = $this->doctrine->getManager();
+        $imputaciones = $em->getRepository(ImputacionPagoFactura::class)
+            ->createQueryBuilder('i')
+            ->join('i.pagoProveedor', 'p')
+            ->where('i.factura = :factura')
+            ->andWhere('p.fechaBaja IS NULL')
+            ->orderBy('p.fechaPago', 'DESC')
+            ->setParameter('factura', $factura)
+            ->getQuery()
+            ->getResult();
+
         return $this->render('factura/show.html.twig', [
             'factura' => $factura,
+            'imputaciones' => $imputaciones,
         ]);
     }
 
