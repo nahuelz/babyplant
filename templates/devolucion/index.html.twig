@@ -29,7 +29,11 @@
                     <th class="text-center">PEDIDO</th>
                     <th class="text-center">PRODUCTO</th>
                     <th class="text-center">BANDEJAS</th>
+                    <th class="text-center">REVENDIDAS</th>
+                    <th class="text-center">DESCARTADAS</th>
+                    <th class="text-center">DISPONIBLES</th>
                     <th class="text-center">VALOR TOTAL</th>
+                    <th class="text-center">ESTADO</th>
                     <th class="text-center">FECHA DEVOLUCIÓN</th>
                     <th class="text-center">OBSERVACIÓN</th>
                     <th class="text-center"></th>
@@ -43,7 +47,17 @@
                         <td class="text-center">N° {{ devolucion.pedido.id|default('-') }}</td>
                         <td class="text-center">{{ devolucion.entregaProducto.pedidoProducto.getNombreCompleto()|default('-') }}</td>
                         <td class="text-center">{{ devolucion.cantidadBandejas }}</td>
+                        <td class="text-center">{{ devolucion.cantidadRevendida }}</td>
+                        <td class="text-center">{{ devolucion.cantidadDescartada }}</td>
+                        <td class="text-center">{{ devolucion.cantidadDisponible }}</td>
                         <td class="text-center">$ {{ devolucion.valorTotal|number_format(2, ',', '.')|default('-') }}</td>
+                        <td class="text-center">
+                            {% if devolucion.estado %}
+                                <span class="label label-inline {{ devolucion.estado.className|default('badge-secondary') }} font-weight-bold p-4" style="width: 120px">{{ devolucion.estado.nombre }}</span>
+                            {% else %}
+                                <span class="badge badge-secondary">-</span>
+                            {% endif %}
+                        </td>
                         <td class="text-center">{{ devolucion.fechaDevolucion is not null ? devolucion.fechaDevolucion|date('d/m/Y') : '-' }}</td>
                         <td class="text-center">{{ devolucion.observacion|default('-') }}</td>
                         <td class="text-center">
@@ -58,6 +72,17 @@
                                     <a href="{{ path('devolucion_edit', {'id': devolucion.id}) }}" class="dropdown-item">
                                         <i class="la la-edit" style="margin-right: 5px;"></i> Editar
                                     </a>
+                                    <a href="#" class="dropdown-item link-ver-historico-devolucion" data-href="{{ path('devolucion_historico_estado', {'id': devolucion.id}) }}">
+                                        <i class="la la-file-alt" style="margin-right: 5px;"></i> Histórico de estados
+                                    </a>
+                                    {% if devolucion.cantidadDisponible > 0 %}
+                                        <a href="{{ path('reventa_new', {'devolucion': devolucion.id}) }}" class="dropdown-item">
+                                            <i class="la la-dollar-sign" style="margin-right: 5px;"></i> Revender
+                                        </a>
+                                        <a href="{{ path('devolucion_descartar', {'id': devolucion.id}) }}" class="dropdown-item btn-descartar-devolucion">
+                                            <i class="la la-trash-alt" style="margin-right: 5px;"></i> Descartar
+                                        </a>
+                                    {% endif %}
                                     <a href="{{ path('devolucion_delete', {'id': devolucion.id}) }}" class="dropdown-item btn-eliminar-devolucion">
                                         <i class="la la-trash" style="margin-right: 5px;"></i> Eliminar
                                     </a>
@@ -76,6 +101,7 @@
     {{ parent() }}
 
     <script type="text/javascript" src="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/app/devolucion/index.js') }}"></script>
 
     <script>
         jQuery(document).ready(function () {

@@ -2,8 +2,11 @@
 
 namespace App\Service;
 
+use App\Entity\Devolucion;
 use App\Entity\Entrega;
 use App\Entity\EntregaProducto;
+use App\Entity\EstadoDevolucion;
+use App\Entity\EstadoDevolucionHistorico;
 use App\Entity\EstadoEntrega;
 use App\Entity\EstadoEntregaHistorico;
 use App\Entity\EstadoEntregaProducto;
@@ -13,9 +16,12 @@ use App\Entity\EstadoMesadaHistorico;
 use App\Entity\EstadoRemito;
 use App\Entity\EstadoRemitoHistorico;
 use App\Entity\EstadoReservaHistorico;
+use App\Entity\EstadoReventa;
+use App\Entity\EstadoReventaHistorico;
 use App\Entity\Mesada;
 use App\Entity\Remito;
 use App\Entity\Reserva;
+use App\Entity\Reventa;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\PedidoProducto;
 use App\Entity\EstadoPedidoProducto;
@@ -102,5 +108,27 @@ class EstadoService
         $estadoReservaHistorico = new EstadoReservaHistorico();
         $estadoReservaHistorico->setReserva($reserva);
         $this->crearHistorico($estadoReservaHistorico, $reserva, $estadoReserva, $motivo);
+    }
+
+    /**
+     * Cambiar estado de Reventa
+     */
+    public function cambiarEstadoReventa(Reventa $reventa, EstadoReventa $estadoReventa, string $motivo): void
+    {
+        $reventa->setEstado($estadoReventa);
+        $historico = new EstadoReventaHistorico();
+        $historico->setReventa($reventa);
+        $this->crearHistorico($historico, $reventa, $estadoReventa, $motivo);
+    }
+
+    /**
+     * Cambiar estado de Devolucion
+     */
+    public function cambiarEstadoDevolucion(Devolucion $devolucion, EstadoDevolucion $estadoDevolucion, string $motivo): void
+    {
+        $devolucion->setEstado($estadoDevolucion);
+        $historico = new EstadoDevolucionHistorico();
+        $historico->setDevolucion($devolucion);
+        $this->crearHistorico($historico, $devolucion, $estadoDevolucion, $motivo);
     }
 }

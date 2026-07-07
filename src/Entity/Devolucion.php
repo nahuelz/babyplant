@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Entity\Constants\ConstanteEstadoDevolucion;
+use App\Entity\Constants\ConstanteEstadoReventa;
 use App\Entity\Traits\Auditoria;
 use App\Repository\DevolucionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -28,7 +30,7 @@ class Devolucion {
     private ?int $id = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=EntregaProducto::class)
+     * @ORM\ManyToOne(targetEntity=EntregaProducto::class, inversedBy="devoluciones")
      * @ORM\JoinColumn(name="id_entrega_producto", referencedColumnName="id", nullable=false)
      */
     private mixed $entregaProducto = null;
@@ -75,9 +77,16 @@ class Devolucion {
      */
     private mixed $estado;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Reventa::class, mappedBy="devolucion")
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $reventas;
+
     public function __construct()
     {
         $this->historicoEstados = new ArrayCollection();
+        $this->reventas = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -223,5 +232,78 @@ class Devolucion {
             return $this->precioUnitario * $this->cantidadBandejas;
         }
         return null;
+    }
+
+    public function getReventas()
+    {
+        return $this->reventas;
+    }
+
+    public function addReventa(Reventa $reventa): self {
+        if (!$this->reventas->contains($reventa)) {
+            $this->reventas[] = $reventa;
+            $reventa->setDevolucion($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReventa(Reventa $reventa): self {
+        if ($this->reventas->removeElement($reventa)) {
+            if ($reventa->getDevolucion() === $this) {
+                $reventa->setDevolucion(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Cantidad de bandejas revendidas (reventas no canceladas).
+     * Valor siempre calculado, nunca almacenado.
+     */
+    public function getCantidadRevendida(): float|int
+    {
+        $cantidad = 0;
+        foreach ($this->getReventas() as $reventa) {
+            if ($reventa->getEstado() != null && $reventa->getEstado()->getCodigoInterno() == ConstanteEstadoReventa::CANCELADA) {
+                continue;
+            }
+            $cantidad += $reventa->getCantidadBandejas();
+        }
+        return $cantidad == (int)$cantidad ? (int)$cantidad : (float)$cantidad;
+    }
+
+    /**
+     * Cantidad de bandejas descartadas.
+     * Solo aplica si la devolución fue descartada: lo que no se revendió se descarta.
+     */
+    public function getCantidadDescartada(): float|int
+    {
+        if ($this->getEstado() != null && $this->getEstado()->getCodigoInterno() == ConstanteEstadoDevolucion::DESCARTADA) {
+            $cantidad = $this->cantidadBandejas - $this->getCantidadRevendida();
+            return $cantidad == (int)$cantidad ? (int)$cantidad : (float)$cantidad;
+        }
+        return 0;
+    }
+
+    /**
+     * Cantidad de bandejas disponibles para reventa.
+     */
+    public function getCantidadDisponible(): float|int
+    {
+        if ($this->getEstado() != null && $this->getEstado()->getCodigoInterno() == ConstanteEstadoDevolucion::DESCARTADA) {
+            return 0;
+        }
+        $cantidad = $this->cantidadBandejas - $this->getCantidadRevendida();
+        return $cantidad == (int)$cantidad ? (int)$cantidad : (float)$cantidad;
+    }
+
+    /**
+     * Cantidad de bandejas pendientes de resolución (ni revendidas ni descartadas).
+     */
+    public function getCantidadPendiente(): float|int
+    {
+        return $this->getCantidadDisponible();
     }
 }

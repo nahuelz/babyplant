@@ -815,6 +815,10 @@ class PedidoProducto {
     {
         $cantidadBandejas = 0;
         foreach ($this->getEntregasProductos() as $entregaProducto){
+            // LAS ENTREGAS DE REVENTA NO DESCUENTAN BANDEJAS DE PRODUCCION
+            if ($entregaProducto->isEsReventa()) {
+                continue;
+            }
             if ($entregaProducto->getEntrega()->getEstado() != null){
                 if ($entregaProducto->getEntrega()->getEstado()->getCodigoInterno() != ConstanteEstadoEntrega::CANCELADA) {
                     $cantidadBandejas += $entregaProducto->getCantidadBandejas();
@@ -828,6 +832,58 @@ class PedidoProducto {
 
     public function getCantidadBandejasSinEntregar(){
         return ($this->getCantidadBandejasReales() - $this->getCantidadBandejasEntregadas());
+    }
+
+    /**
+     * Bandejas entregadas del circuito de producción original (excluye reventas).
+     */
+    public function getCantidadBandejasEntregadasOriginales()
+    {
+        return $this->getCantidadBandejasEntregadas();
+    }
+
+    /**
+     * Bandejas devueltas de este producto (todas las devoluciones de sus entregas).
+     * Valor siempre calculado, nunca almacenado.
+     */
+    public function getCantidadBandejasDevueltas(): float|int
+    {
+        $cantidadBandejas = 0;
+        foreach ($this->getEntregasProductos() as $entregaProducto) {
+            foreach ($entregaProducto->getDevoluciones() as $devolucion) {
+                $cantidadBandejas += $devolucion->getCantidadBandejas();
+            }
+        }
+        return $cantidadBandejas == (int)$cantidadBandejas ? (int)$cantidadBandejas : (float)$cantidadBandejas;
+    }
+
+    /**
+     * Bandejas devueltas de este producto que ya fueron revendidas.
+     */
+    public function getCantidadBandejasRevendidas(): float|int
+    {
+        $cantidadBandejas = 0;
+        foreach ($this->getEntregasProductos() as $entregaProducto) {
+            foreach ($entregaProducto->getDevoluciones() as $devolucion) {
+                $cantidadBandejas += $devolucion->getCantidadRevendida();
+            }
+        }
+        return $cantidadBandejas == (int)$cantidadBandejas ? (int)$cantidadBandejas : (float)$cantidadBandejas;
+    }
+
+    /**
+     * Stock de reventa: bandejas devueltas disponibles para revender
+     * (excluye revendidas y devoluciones descartadas).
+     */
+    public function getCantidadDisponibleParaReventa(): float|int
+    {
+        $cantidadBandejas = 0;
+        foreach ($this->getEntregasProductos() as $entregaProducto) {
+            foreach ($entregaProducto->getDevoluciones() as $devolucion) {
+                $cantidadBandejas += $devolucion->getCantidadDisponible();
+            }
+        }
+        return $cantidadBandejas == (int)$cantidadBandejas ? (int)$cantidadBandejas : (float)$cantidadBandejas;
     }
 
     public function getEntregasProductos()

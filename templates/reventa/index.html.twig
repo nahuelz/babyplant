@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+{% block body %}
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon2-reload text-primary"></i></span>
+                <h3 class="card-label">Reventas</h3>
+            </div>
+            <div class="card-toolbar">
+                <a href="{{ path('reventa_new') }}" class="btn btn-primary font-weight-bolder mr-2">
+                    <i class="la la-plus"></i>
+                    Nueva Reventa
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <table class="table table-bordered table-hover" id="table-reventa">
+                <thead>
+                <tr>
+                    <th class="text-center">N°</th>
+                    <th class="text-center">DEVOLUCIÓN</th>
+                    <th class="text-center">CLIENTE ORIGINAL</th>
+                    <th class="text-center">CLIENTE COMPRADOR</th>
+                    <th class="text-center">PRODUCTO</th>
+                    <th class="text-center">BANDEJAS</th>
+                    <th class="text-center">PRECIO UNIT.</th>
+                    <th class="text-center">VALOR TOTAL</th>
+                    <th class="text-center">ENTREGA</th>
+                    <th class="text-center">ESTADO</th>
+                    <th class="text-center">FECHA</th>
+                    <th class="text-center"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for reventa in reventas %}
+                    <tr>
+                        <td class="text-center">{{ reventa.id }}</td>
+                        <td class="text-center">
+                            <a href="{{ path('devolucion_show', {'id': reventa.devolucion.id}) }}">
+                                N° {{ reventa.devolucion.id }}
+                            </a>
+                        </td>
+                        <td class="text-center">{{ reventa.clienteOriginal|default('-') }}</td>
+                        <td class="text-center">{{ reventa.cliente|default('-') }}</td>
+                        <td class="text-center">{{ reventa.pedidoProducto.getNombreCompleto()|default('-') }}</td>
+                        <td class="text-center">{{ reventa.cantidadBandejas }}</td>
+                        <td class="text-center">$ {{ reventa.precioUnitario|number_format(2, ',', '.')|default('-') }}</td>
+                        <td class="text-center">$ {{ reventa.valorTotal|number_format(2, ',', '.')|default('-') }}</td>
+                        <td class="text-center">
+                            {% if reventa.entrega %}
+                                <a href="{{ path('entrega_show', {'id': reventa.entrega.id}) }}">
+                                    N° {{ reventa.entrega.id }}
+                                </a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if reventa.estado %}
+                                <span class="label label-inline {{ reventa.estado.className|default('badge-secondary') }} font-weight-bold p-4" style="width: 140px">{{ reventa.estado.nombre }}</span>
+                            {% else %}
+                                <span class="badge badge-secondary">-</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">{{ reventa.fechaReventa is not null ? reventa.fechaReventa|date('d/m/Y') : '-' }}</td>
+                        <td class="text-center">
+                            <div class="dropdown dropdown-inline">
+                                <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="ki ki-bold-more-hor"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-left">
+                                    <a href="{{ path('reventa_show', {'id': reventa.id}) }}" class="dropdown-item">
+                                        <i class="la la-search" style="margin-right: 5px;"></i> Ver
+                                    </a>
+                                    {% if reventa.estado and reventa.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoReventa::PENDIENTE_ENTREGA') %}
+                                        <a href="{{ path('reventa_entregar', {'id': reventa.id}) }}" class="dropdown-item btn-entregar-reventa">
+                                            <i class="la la-truck" style="margin-right: 5px;"></i> Entregar
+                                        </a>
+                                    {% endif %}
+                                    {% if reventa.estado and reventa.estado.codigoInterno != constant('App\\Entity\\Constants\\ConstanteEstadoReventa::CANCELADA') %}
+                                        <a href="{{ path('reventa_cancelar', {'id': reventa.id}) }}" class="dropdown-item btn-cancelar-reventa">
+                                            <i class="la la-ban" style="margin-right: 5px;"></i> Cancelar
+                                        </a>
+                                    {% endif %}
+                                    <a href="#" class="dropdown-item link-ver-historico-reventa" data-href="{{ path('reventa_historico_estado', {'id': reventa.id}) }}">
+                                        <i class="la la-file-alt" style="margin-right: 5px;"></i> Histórico de estados
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript" src="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/app/reventa/index.js') }}"></script>
+{% endblock %}

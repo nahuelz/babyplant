@@ -6,8 +6,8 @@ use App\Entity\Constants\ConstanteEstadoDevolucion;
 use App\Entity\Devolucion;
 use App\Entity\EntregaProducto;
 use App\Entity\EstadoDevolucion;
-use App\Entity\EstadoDevolucionHistorico;
 use App\Form\DevolucionType;
+use App\Service\ReventaService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Expr\Join;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -54,15 +54,14 @@ class DevolucionController extends BaseController {
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($entity);
-            $em->flush();
-
-            // Establecer estado PENDIENTE
+            // Establecer estado PENDIENTE antes de persistir
             $estadoPendiente = $em->getRepository(EstadoDevolucion::class)->find(ConstanteEstadoDevolucion::PENDIENTE);
             if ($estadoPendiente) {
-                $this->cambiarEstadoDevolucion($em, $entity, $estadoPendiente, 'Creación de devolución');
-                $em->flush();
+                $this->estadoService->cambiarEstadoDevolucion($entity, $estadoPendiente, 'Creación de devolución');
             }
+
+            $em->persist($entity);
+            $em->flush();
 
             $this->addFlash('success', 'La devolución fue registrada correctamente.');
 
@@ -118,6 +117,11 @@ class DevolucionController extends BaseController {
      */
     public function delete(Devolucion $devolucion, EntityManagerInterface $em): RedirectResponse
     {
+        if ($devolucion->getCantidadRevendida() > 0) {
+            $this->addFlash('error', 'La devolución tiene reventas asociadas, no se puede eliminar.');
+            return $this->redirectToRoute('devolucion_index');
+        }
+
         $em->remove($devolucion);
         $em->flush();
 
@@ -127,19 +131,36 @@ class DevolucionController extends BaseController {
     }
 
     /**
-     * Cambia el estado de una devolución y genera el registro histórico
+     * Descarta las bandejas disponibles de la devolución.
+     *
+     * @Route("/{id}/descartar", name="devolucion_descartar", methods={"GET","POST"}, requirements={"id"="\d+"})
      */
-    private function cambiarEstadoDevolucion(EntityManagerInterface $em, Devolucion $devolucion, $estado, string $motivo): void
+    public function descartar(Devolucion $devolucion, ReventaService $reventaService): RedirectResponse
     {
-        $devolucion->setEstado($estado);
-        
-        $historico = new EstadoDevolucionHistorico();
-        $historico->setDevolucion($devolucion);
-        $historico->setEstado($estado);
-        $historico->setFecha(new \DateTime());
-        $historico->setMotivo($motivo);
-        
-        $em->persist($historico);
+        try {
+            $reventaService->descartarDevolucion($devolucion);
+            $this->addFlash('success', 'La devolución fue descartada correctamente.');
+        } catch (\DomainException $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
+        return $this->redirectToRoute('devolucion_index');
+    }
+
+    /**
+     * @Route("/{id}/historico_estados", name="devolucion_historico_estado", methods={"POST"})
+     * @Template("devolucion/historico_estados.html.twig")
+     */
+    public function showHistoricoEstadoAction($id): array
+    {
+        $em = $this->doctrine->getManager();
+        $devolucion = $em->getRepository(Devolucion::class)->find($id);
+
+        return array(
+            'entity' => $devolucion,
+            'historicoEstados' => $devolucion->getHistoricoEstados(),
+            'page_title' => 'Histórico de estados'
+        );
     }
 
     /**
@@ -164,7 +185,7 @@ class DevolucionController extends BaseController {
             ->leftJoin('App:TipoBandeja', 'tb', Join::WITH, 'pp.tipoBandeja = tb')
             ->leftJoin('pp.mesadaUno', 'm1')
             ->leftJoin('m1.tipoMesada', 'tm')
-            ->where('p.cliente = :cliente')
+            ->where('p.cliente = :cliente OR e.cliente = :cliente')
             ->setParameter('cliente', $idCliente)
             ->orderBy('ep.id', 'DESC')
             ->groupBy('ep.id')

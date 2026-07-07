@@ -72,11 +72,28 @@ class EntregaProducto {
     private mixed $estado;
 
     /**
+     * Indica si esta entrega es la materialización logística de una Reventa.
+     * Las entregas de reventa no descuentan bandejas de producción ni de mesadas.
+     *
+     * @var boolean
+     *
+     * @ORM\Column(name="es_reventa", type="boolean", nullable=false, options={"default": false})
+     */
+    private bool $esReventa = false;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Devolucion::class, mappedBy="entregaProducto")
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $devoluciones;
+
+    /**
      * @param $historicoEstados
      */
     public function __construct()
     {
         $this->historicoEstados = new ArrayCollection();
+        $this->devoluciones = new ArrayCollection();
     }
 
 
@@ -275,5 +292,46 @@ class EntregaProducto {
         return $this->getEntrega()->getAdelantoReserva();
     }
 
+    public function isEsReventa(): bool
+    {
+        return $this->esReventa;
+    }
+
+    public function setEsReventa(bool $esReventa): void
+    {
+        $this->esReventa = $esReventa;
+    }
+
+    public function getDevoluciones()
+    {
+        return $this->devoluciones;
+    }
+
+    public function addDevolucion(Devolucion $devolucion): self {
+        if (!$this->devoluciones->contains($devolucion)) {
+            $this->devoluciones[] = $devolucion;
+            $devolucion->setEntregaProducto($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDevolucion(Devolucion $devolucion): self {
+        if ($this->devoluciones->removeElement($devolucion)) {
+            if ($devolucion->getEntregaProducto() === $this) {
+                $devolucion->setEntregaProducto(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        if ($this->pedidoProducto && $this->entrega) {
+            return 'ENTREGA N° ' . $this->entrega->getId() . ' - ' . $this->pedidoProducto->getNombreCompleto();
+        }
+        return 'Entrega Producto N° ' . $this->getId();
+    }
 
 }

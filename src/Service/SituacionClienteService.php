@@ -280,9 +280,10 @@ class SituacionClienteService
     public function obtenerDevoluciones(int $idCliente): array
     {
         return $this->em->createQueryBuilder()
-            ->select('d', 'pp', 'p')
+            ->select('d', 'ep', 'pp', 'p')
             ->from(Devolucion::class, 'd')
-            ->join('d.pedidoProducto', 'pp')
+            ->join('d.entregaProducto', 'ep')
+            ->join('ep.pedidoProducto', 'pp')
             ->join('pp.pedido', 'p')
             ->where('IDENTITY(p.cliente) = :idCliente')
             ->setParameter('idCliente', $idCliente)

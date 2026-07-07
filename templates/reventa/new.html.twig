@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% set edit = form.vars.value.id != null %}
+
+{% import 'app/_macro_form.html.twig' as macro_form %}
+
+{% block body %}
+    {{ form_start(form, {'attr': {'name': 'reventa', 'class' : 'horizontal-form', 'novalidate': 'novalidate'} }) }}
+    {% include ('app/_fields_errors.html.twig') %}
+
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon2-reload text-primary"></i></span>
+                <h3 class="card-label">{{ edit ? 'Editar' : 'Nueva' }} reventa</h3>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                {{ macro_form._new_field(form.devolucion, 'col-md-6') }}
+                {{ macro_form._new_field(form.cliente, 'col-md-6') }}
+            </div>
+            <div class="row" id="datos-devolucion" style="display: none;">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Cliente Original</label>
+                        <input type="text" id="info_cliente_original" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Producto</label>
+                        <input type="text" id="info_producto" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="control-label">Disponibles</label>
+                        <input type="text" id="info_disponibles" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="control-label">Precio Original</label>
+                        <input type="text" id="info_precio_original" class="form-control" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                {{ macro_form._new_field(form.cantidadBandejas, 'col-md-4') }}
+                {{ macro_form._new_field(form.precioUnitario, 'col-md-4') }}
+                {{ macro_form._new_field(form.fechaReventa, 'col-md-4') }}
+            </div>
+            <div class="row">
+                {{ macro_form._new_field(form.observacion, 'col-md-12') }}
+            </div>
+        </div>
+
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('reventa_index') }}" class="btn btn-light-dark font-weight-bold">Volver</a>
+            <button type="submit" id="reventa_submit" class="btn btn-light-primary font-weight-bold submit-button">
+                {{ edit ? 'Guardar' : 'Agregar' }}
+            </button>
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}"></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/reventa/new.js') }}"></script>
+{% endblock %}

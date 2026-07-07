@@ -31,12 +31,18 @@
                 <div class="card-body">
                     <div class="row">
                         {{ macro_show._show_detail('Cliente', entity.cliente|default('-'), 'col-md-4') }}
+                        {{ macro_show._show_detail('Estado', entity.estado.nombre|default('-'), 'col-md-4') }}
                         {{ macro_show._show_detail('Fecha Devolución', entity.fechaDevolucion is not null ? entity.fechaDevolucion|date('d/m/Y') : '-', 'col-md-4') }}
-                        {{ macro_show._show_detail('Cantidad de Bandejas', entity.cantidadBandejas|default('-'), 'col-md-4') }}
                     </div>
                     <div class="row">
-                        {{ macro_show._show_detail('Precio Unitario', '$ ' ~ entity.precioUnitario|number_format(2, ',', '.')|default('-'), 'col-md-6') }}
-                        {{ macro_show._show_detail('Valor Total', '$ ' ~ entity.valorTotal|number_format(2, ',', '.')|default('-'), 'col-md-6') }}
+                        {{ macro_show._show_detail('Cantidad de Bandejas', entity.cantidadBandejas|default('-'), 'col-md-3') }}
+                        {{ macro_show._show_detail('Revendidas', entity.cantidadRevendida|default('-'), 'col-md-3') }}
+                        {{ macro_show._show_detail('Descartadas', entity.cantidadDescartada|default('-'), 'col-md-3') }}
+                        {{ macro_show._show_detail('Disponibles', entity.cantidadDisponible|default('-'), 'col-md-3') }}
+                    </div>
+                    <div class="row">
+                        {{ macro_show._show_detail('Precio Unitario', '$ ' ~ entity.precioUnitario|number_format(2, ',', '.')|default('-'), 'col-md-4') }}
+                        {{ macro_show._show_detail('Valor Total', '$ ' ~ entity.valorTotal|number_format(2, ',', '.')|default('-'), 'col-md-4') }}
                     </div>
                     <div class="row">
                         {{ macro_show._show_detail('Observación / Motivo', entity.observacion|default('-'), 'col-md-12') }}
@@ -67,7 +73,17 @@
 
             <div class="card-footer d-flex justify-content-between">
                 <a href="{{ path('devolucion_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
-                <a href="{{ path('devolucion_edit', {'id': entity.id}) }}" class="btn btn-primary font-weight-bold">Editar</a>
+                <div>
+                    {% if entity.cantidadDisponible > 0 %}
+                        <a href="{{ path('reventa_new', {'devolucion': entity.id}) }}" class="btn btn-success font-weight-bold mr-2">
+                            <i class="la la-dollar-sign"></i> Revender
+                        </a>
+                        <a href="{{ path('devolucion_descartar', {'id': entity.id}) }}" class="btn btn-danger font-weight-bold btn-descartar-devolucion">
+                            <i class="la la-trash-alt"></i> Descartar
+                        </a>
+                    {% endif %}
+                    <a href="{{ path('devolucion_edit', {'id': entity.id}) }}" class="btn btn-primary font-weight-bold">Editar</a>
+                </div>
             </div>
         </div>
     </div>
