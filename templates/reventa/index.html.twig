@@ -49,7 +49,13 @@
                         </td>
                         <td class="text-center">{{ reventa.clienteOriginal|default('-') }}</td>
                         <td class="text-center">{{ reventa.cliente|default('-') }}</td>
-                        <td class="text-center">{{ reventa.pedidoProducto.getNombreCompleto()|default('-') }}</td>
+                        <td class="nowrap text-center margin-0 padding-0 p-0">
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                <span class="label label-inline margin-0 font-weight-bold p-6" style="font-size: 11px; font-weight: bold !important; width: 220px; color: black !important; background-color: {{ reventa.pedidoProducto.tipoVariedad.tipoSubProducto.tipoProducto.color|default('#fd3f3f') }}">
+                                    {{ reventa.pedidoProducto.getNombreCompleto()|default('-') }}
+                                </span>
+                            </div>
+                        </td>
                         <td class="text-center">{{ reventa.cantidadBandejas }}</td>
                         <td class="text-center">$ {{ reventa.precioUnitario|number_format(2, ',', '.')|default('-') }}</td>
                         <td class="text-center">$ {{ reventa.valorTotal|number_format(2, ',', '.')|default('-') }}</td>
@@ -108,4 +114,33 @@
 
     <script type="text/javascript" src="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/app/reventa/index.js') }}"></script>
+
+    <script>
+        jQuery(document).ready(function () {
+            $('#table-reventa').DataTable({
+                order: [[0, 'desc']],
+                language: {
+                    emptyTable: 'No hay datos disponibles en la tabla',
+                    info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+                    infoEmpty: 'Mostrando 0 a 0 de 0 registros',
+                    infoFiltered: '(filtrado de _MAX_ registros totales)',
+                    lengthMenu: 'Mostrar _MENU_ registros',
+                    loadingRecords: 'Cargando...',
+                    processing: 'Procesando...',
+                    search: 'Buscar:',
+                    zeroRecords: 'No se encontraron resultados',
+                    paginate: {
+                        first: 'Primero',
+                        last: 'Último',
+                        next: 'Siguiente',
+                        previous: 'Anterior'
+                    },
+                    aria: {
+                        sortAscending: ': Activar para ordenar la columna de manera ascendente',
+                        sortDescending: ': Activar para ordenar la columna de manera descendente'
+                    }
+                }
+            });
+        });
+    </script>
 {% endblock %}
