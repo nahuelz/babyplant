@@ -22,29 +22,18 @@ jQuery(document).ready(function () {
 function initSelect2() {
     $('#pago_proveedor_modoPago').select2();
 
+    // Obtener valor del dólar blue automáticamente al cargar el formulario
+    obtenerValorDolarBlue();
+
     // Manejar cambio de tipo de moneda
     $('#pago_proveedor_tipoMoneda').on('change', function() {
         const tipoMoneda = $(this).val();
-        const tipoCambioContainer = $('#tipo-cambio-container');
-
-        if (tipoMoneda === 'ARS') {
-            tipoCambioContainer.show();
-            // Obtener valor del dólar blue automáticamente
+        
+        // Obtener valor del dólar blue automáticamente cuando es USD
+        if (tipoMoneda === 'USD') {
             obtenerValorDolarBlue();
-        } else {
-            tipoCambioContainer.hide();
-            // Limpiar el campo de tipo de cambio cuando no es USD
-            $('#pago_proveedor_tipoCambio').val('');
         }
     });
-
-    // Inicializar el estado del campo tipoCambio según el valor actual
-    const currentTipoMoneda = $('#pago_proveedor_tipoMoneda').val();
-    if (currentTipoMoneda !== 'ARS') {
-        $('#tipo-cambio-container').hide();
-    }else{
-        $('#tipo-cambio-container').show();
-    }
 }
 
 /**
@@ -55,6 +44,23 @@ function initImputacionFacturas() {
         cargarFacturasProveedor($(this).val());
     });
     cargarFacturasProveedor($('#pago_proveedor_proveedor').val());
+
+    // Autocompletar monto al seleccionar una factura
+    $('#pago_proveedor_imputacion_factura').on('change', function () {
+        const selectedOption = $(this).find('option:selected');
+        const saldo = selectedOption.data('saldo');
+        
+        if (saldo !== undefined && saldo !== null) {
+            // Formatear el saldo con separadores de miles
+            const saldoFormateado = parseFloat(saldo).toLocaleString('es-AR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            $('#pago_proveedor_imputacion_monto').val(saldoFormateado);
+        } else {
+            $('#pago_proveedor_imputacion_monto').val('');
+        }
+    });
 }
 
 function cargarFacturasProveedor(idProveedor) {

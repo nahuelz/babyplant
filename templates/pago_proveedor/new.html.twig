@@ -40,7 +40,7 @@
                 {{ macro_form._new_field(form.modoPago, 'col-md-3') }}
                 {{ macro_form._new_field(form.monto, 'col-md-3') }}
                 {{ macro_form._new_field(form.tipoMoneda, 'col-md-3') }}
-                <div class="col-md-3" id="tipo-cambio-container" style="display: {% if form.tipoMoneda == 'USD' %}block{% else %}none{% endif %};">
+                <div class="col-md-3" id="tipo-cambio-container">
                     {{ macro_form._new_field(form.tipoCambio, 'col-md-12') }}
                 </div>
             </div>

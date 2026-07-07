@@ -282,13 +282,14 @@ class PagoProveedor
     public function getTotalImputadoARS(): float
     {
         $total = 0;
+        $tipoCambioPago = (float) $this->tipoCambio;
 
         foreach ($this->imputaciones as $imputacion) {
 
             $factura = $imputacion->getFactura();
 
             if ($factura->getTipoMoneda() === 'USD') {
-                $total += $imputacion->getMonto() * $factura->getTipoCambio();
+                $total += $imputacion->getMonto() * $tipoCambioPago;
             } else {
                 $total += $imputacion->getMonto();
             }
@@ -301,13 +302,14 @@ class PagoProveedor
     public function getTotalImputadoUSD(): float
     {
         $total = 0;
+        $tipoCambioPago = (float) $this->tipoCambio;
 
         foreach ($this->imputaciones as $imputacion) {
 
             $factura = $imputacion->getFactura();
 
             if ($factura->getTipoMoneda() === 'ARS') {
-                $total += $imputacion->getMonto() / $factura->getTipoCambio();
+                $total += $imputacion->getMonto() / $tipoCambioPago;
             } else {
                 $total += $imputacion->getMonto();
             }
