@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Gasto;
 use App\Form\GastoType;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -45,6 +46,8 @@ class GastoController extends BaseController {
 
         $em = $this->doctrine->getManager();
 
+        $fechaDesde = $request->get('fechaDesde') ? DateTime::createFromFormat('d/m/Y H:i:s', $request->get('fechaDesde') . ' 00:00:00') : (new DateTime())->sub(new DateInterval('P7D'));
+        $fechaHasta = $request->get('fechaHasta') ? DateTime::createFromFormat('d/m/Y H:i:s', $request->get('fechaHasta') . ' 23:59:59') : new DateTime();
         $gasto = $request->get('idConcepto') ?: NULL;
 
         $rsm = new ResultSetMapping();
@@ -55,9 +58,11 @@ class GastoController extends BaseController {
         $rsm->addScalarResult('monto', 'monto');
         $rsm->addScalarResult('modoPago', 'modoPago');
 
-        $nativeQuery = $em->createNativeQuery('call sp_index_gasto(?)', $rsm);
+        $nativeQuery = $em->createNativeQuery('call sp_index_gasto(?,?,?)', $rsm);
 
-        $nativeQuery->setParameter(1, $gasto);
+        $nativeQuery->setParameter(1, $fechaDesde, 'datetime');
+        $nativeQuery->setParameter(2, $fechaHasta, 'datetime');
+        $nativeQuery->setParameter(3, $gasto);
 
         $entities = $nativeQuery->getResult();
 

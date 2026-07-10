@@ -1,6 +1,19 @@
 <div class="portlet light bordered portlet-nivel-1"
      style="padding: 5px 10px; margin-left: 30px; border-radius: 5px; background-color: #E1F0FF">
 
+    <div class="col-md-12 padding-0">
+        <label>Fecha</label>
+        <div class="input-daterange input-group" id="kt_datepicker">
+            <input type="text" class="form-control datepicker" id="reporte_filtro_fechaDesde" name="reporte_filtro[fechaDesde]"  placeholder="Desde" value="{{ "now"|date_modify("-90 day")|date('d/m/Y') }}" />
+            <div class="input-group-append">
+                <span class="input-group-text">
+                    <i class="la la-ellipsis-h"></i>
+                </span>
+            </div>
+            <input type="text" class="form-control datepicker" id="reporte_filtro_fechaHasta" name="reporte_filtro[fechaHasta]" placeholder="Hasta" value="{{ "now"|date('d/m/Y') }}">
+        </div>
+    </div>
+
     <div class="row">
 
         {# BUSCAR CONCEPTO #}
