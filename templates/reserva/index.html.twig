@@ -14,6 +14,15 @@
             padding-top: 0 !important;
             padding-bottom: 0.4rem !important;
         }
+
+        .fila-con-problema-critico {
+            background-color: #f8d7da !important;
+            border-left: 4px solid #dc3545 !important;
+        }
+
+        .fila-con-problema-critico:hover {
+            background-color: #f5c6cb !important;
+        }
     </style>
 
 {% endblock %}
@@ -96,6 +105,7 @@
                     <th data-type="string" class="text-center">PRODUCTO</th>
                     <th data-type="string" class="text-center">ESTADO RESERVA</th>
                     <th data-type="string" class="text-center">ESTADO PRODUCTO</th>
+                    <th data-type="string" class="text-center">POR FALLA</th>
                     <th data-type="string" class="text-center">BANDEJAS</th>
                     <th data-type="search" style="width: 10px"></th>
                 </tr>

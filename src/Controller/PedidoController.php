@@ -120,6 +120,9 @@ class PedidoController extends BaseController {
         $rsm->addScalarResult('tieneProblema', 'tieneProblema');
         $rsm->addScalarResult('tieneSolucion', 'tieneSolucion');
         $rsm->addScalarResult('visto', 'visto');
+        $rsm->addScalarResult('tieneReservaPorFalla', 'tieneReservaPorFalla');
+        $rsm->addScalarResult('cantidadBandejasReservadasPorFalla', 'cantidadBandejasReservadasPorFalla');
+
 
         $nativeQuery = $em->createNativeQuery('call sp_index_pedido(?,?,?)', $rsm);
 

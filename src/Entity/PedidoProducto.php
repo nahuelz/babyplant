@@ -240,6 +240,13 @@ class PedidoProducto {
     private bool $tieneProblema = false;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(name="tiene_reserva_por_falla", type="boolean", options={"default": false})
+     */
+    private bool $tieneReservaPorFalla = false;
+
+    /**
      * @ORM\Column(name="fecha_problema", type="datetime", nullable=true)
      */
     private mixed $fechaProblema;
@@ -1150,5 +1157,13 @@ class PedidoProducto {
         $this->fechaVisto = $fechaVisto;
     }
 
+    public function isTieneReservaPorFalla(): bool
+    {
+        return $this->tieneReservaPorFalla;
+    }
 
+    public function setTieneReservaPorFalla(bool $tieneReservaPorFalla): void
+    {
+        $this->tieneReservaPorFalla = $tieneReservaPorFalla;
+    }
 }

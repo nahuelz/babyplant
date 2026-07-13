@@ -94,6 +94,7 @@ class ReservaController extends BaseController {
         $rsm->addScalarResult('estadoPedidoProducto', 'estadoPedidoProducto');
         $rsm->addScalarResult('idEstadoPedidoProducto', 'idEstadoPedidoProducto');
         $rsm->addScalarResult('colorEstadoPedidoProducto', 'colorEstadoPedidoProducto');
+        $rsm->addScalarResult('porFalla', 'porFalla');
 
 
         $nativeQuery = $em->createNativeQuery('call sp_index_reserva(?,?,?)', $rsm);
@@ -218,6 +219,42 @@ class ReservaController extends BaseController {
             ->andWhere('pp.cantidadBandejasDisponibles > 0')
             ->setParameter('cliente', $idCliente)
             ->setParameter('estados', [ConstanteEstadoPedidoProducto::CANCELADO,ConstanteEstadoPedidoProducto::PENDIENTE, ConstanteEstadoPedidoProducto::ENTREGADO])
+            ->orderBy('pp.id', 'ASC')
+            ->groupBy('pp.id')
+            ->getQuery();
+
+        $resultados = $query->getResult();
+
+        $datosFormateados = array_map(function ($row) {
+            return [
+                'id' => $row['id'],
+                'denominacion' => $row['descripcion'] . ' FECHA ENTREGA: ' . $row['fechaEntregaPedido']->format('d-m-Y'),
+            ];
+        }, $resultados);
+
+        return new JsonResponse($datosFormateados);
+    }
+
+    /**
+     * @Route("/lista/pedidos-con-falla", name="reserva_lista_pedidos_con_falla")
+     */
+    public function listaPedidosConFallaAction(Request $request): JsonResponse
+    {
+        $idCliente = $request->request->get('id_entity');
+
+        $repository = $this->doctrine->getRepository(PedidoProducto::class);
+
+        $query = $repository->createQueryBuilder('pp')
+            ->select("pp.id, pp.fechaEntregaPedido, concat ('PEDIDO N° ',p.id, ' ORDEN N° ',pp.numeroOrden,' ', tp.nombre, ' ', v.nombre,' ESTADO: ',e.nombre) as descripcion")
+            ->leftJoin('pp.pedido', 'p' )
+            ->leftJoin('App:TipoVariedad', 'v', Join::WITH, 'pp.tipoVariedad = v')
+            ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')
+            ->leftJoin('App:TipoProducto', 'tp', Join::WITH, 'sb.tipoProducto = tp')
+            ->leftJoin('App:EstadoPedidoProducto', 'e', Join::WITH, 'pp.estado = e')
+            ->where('p.cliente = :cliente')
+            ->andWhere('pp.estado NOT IN (:estados)')
+            ->setParameter('cliente', $idCliente)
+            ->setParameter('estados', [ConstanteEstadoPedidoProducto::CANCELADO])
             ->orderBy('pp.id', 'ASC')
             ->groupBy('pp.id')
             ->getQuery();

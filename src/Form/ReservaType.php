@@ -10,9 +10,11 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -98,6 +100,24 @@ class ReservaType extends AbstractType {
                         'tabindex' => '5'
                     ))
             )
+            ->add('porFalla', CheckboxType::class, array(
+                'required' => false,
+                'label' => 'Reserva por falla',
+                'attr' => array(
+                    'class' => 'form-check-input',
+                    'tabindex' => '5'
+                )
+            ))
+            ->add('observacion', TextareaType::class, array(
+                'required' => false,
+                'label' => 'Observación',
+                'attr' => array(
+                    'placeholder' => 'Escriba una observación',
+                    'class' => 'form-control',
+                    'rows' => 3,
+                    'tabindex' => '5'
+                )
+            ))
         ;
 
         // El select de productos se llena dinámicamente por AJAX según el cliente.
@@ -105,7 +125,9 @@ class ReservaType extends AbstractType {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $reserva = $event->getData();
             $pedidoProducto = $reserva instanceof Reserva ? $reserva->getPedidoProducto() : null;
+            $pedidoConFalla = $reserva instanceof Reserva ? $reserva->getPedidoConFalla() : null;
             $this->addPedidoProductoField($event->getForm(), $pedidoProducto);
+            $this->addPedidoConFallaField($event->getForm(), $pedidoConFalla);
         });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
@@ -114,7 +136,12 @@ class ReservaType extends AbstractType {
             $pedidoProducto = $id
                 ? $this->entityManager->getRepository(PedidoProducto::class)->find($id)
                 : null;
+            $idFalla = $data['pedidoConFalla'] ?? null;
+            $pedidoConFalla = $idFalla
+                ? $this->entityManager->getRepository(PedidoProducto::class)->find($idFalla)
+                : null;
             $this->addPedidoProductoField($event->getForm(), $pedidoProducto);
+            $this->addPedidoConFallaField($event->getForm(), $pedidoConFalla);
         });
     }
 
@@ -137,6 +164,29 @@ class ReservaType extends AbstractType {
             'choices' => $pedidoProducto ? [$pedidoProducto] : [],
             'label_attr' => array('class' => 'control-label'),
             'placeholder' => '-- Elija el pedido producto --',
+            'auto_initialize' => false
+        ));
+    }
+
+    /**
+     * Agrega el campo pedidoConFalla limitando las choices a la opción seleccionada
+     * (o ninguna en el alta). El resto de opciones las provee el JS por AJAX.
+     */
+    private function addPedidoConFallaField(FormInterface $form, ?PedidoProducto $pedidoConFalla): void
+    {
+        $form->add('pedidoConFalla', EntityType::class, array(
+            'label' => 'Producto con falla',
+            'class' => PedidoProducto::class,
+            'required' => false,
+            'attr' => array(
+                'placeholder' => '-- Elija el pedido con falla --',
+                'class' => 'form-control choice',
+                'data-placeholder' => '-- Elija el pedido con falla --',
+                'tabindex' => '5'
+            ),
+            'choices' => $pedidoConFalla ? [$pedidoConFalla] : [],
+            'label_attr' => array('class' => 'control-label'),
+            'placeholder' => '-- Elija el pedido con falla --',
             'auto_initialize' => false
         ));
     }

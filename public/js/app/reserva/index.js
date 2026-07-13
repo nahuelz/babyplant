@@ -89,6 +89,9 @@ function initDataTable() {
             dataSrc: 1
         },
         serverSide: false,
+        "drawCallback": function(settings) {
+            resaltarFilasPorFalla();
+        },
     });
 
     init = true;
@@ -109,6 +112,7 @@ function datatablesGetColDef() {
             width: '15px',
             className: 'dt-center',
             orderable: false,
+            visible: false,
             render: function (data, type, full, meta) {
                 return '\
                     <label class="kt-checkbox kt-checkbox--single kt-checkbox--solid">\
@@ -209,6 +213,15 @@ function datatablesGetColDef() {
                     return '<span class="label label-inline ' + data.colorEstadoPedidoProducto + ' font-weight-bold p-4" style="width: 120px">' + data.estadoPedidoProducto + '</span>';
                 }
                 return data.estadoPedidoProducto;
+            }
+        },
+        {
+            targets: index++,
+            name: 'porFalla',
+            className: 'dt-center',
+            visible: false,
+            render: function (data, type, full, meta) {
+                return data;
             }
         },
         {
@@ -361,5 +374,19 @@ function initReservaEntregar(){
         });
 
         e.stopPropagation();
+    });
+}
+
+function resaltarFilasPorFalla() {
+    $('#table-reserva tbody tr').each(function() {
+        const $row = $(this);
+        const table = $('#table-reserva').DataTable();
+        const data = table.row($row).data();
+
+        $row.removeClass('fila-con-problema-critico');
+
+        if (data && data[11] === "1") {
+            $row.addClass('fila-con-problema-critico');
+        }
     });
 }

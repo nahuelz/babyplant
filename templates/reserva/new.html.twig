@@ -32,14 +32,23 @@
 
         <div class="card-body">
             <div class="row">
+                {{ macro_form._new_field(form.porFalla, 'col-md-3') }}
+            </div>
+            <div class="row">
                 {{ macro_form._new_field(form.origen_cliente, 'col-md-6') }}
                 {{ macro_form._new_field(form.cliente, 'col-md-6') }}
             </div>
             <div class="row">
-                {{ macro_form._new_field(form.pedidoProducto, 'col-md-12') }}
+                {{ macro_form._new_field(form.pedidoProducto, 'col-md-6') }}
+                {{ macro_form._new_field(form.pedidoConFalla, 'col-md-6 pedido-con-falla-container') }}
+            </div>
+            <div class="row">
                 {{ macro_form._new_field(form.fechaEntregaEstimada, 'col-md-6') }}
 
                 {{ macro_form._new_field(form.cantidadBandejas, 'col-md-6') }}
+            </div>
+            <div class="row">
+                {{ macro_form._new_field(form.observacion, 'col-md-12') }}
             </div>
         </div>
 

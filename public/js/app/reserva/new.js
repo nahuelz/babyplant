@@ -9,6 +9,7 @@ jQuery(document).ready(function () {
     $('#reserva_cliente').select2();
     $('#reserva_submit').html('Reservar');
     initClienteSelect2();
+    initPedidoConFalla();
 
 });
 
@@ -55,6 +56,20 @@ function initFormValidation() {
 
 function initProductos() {
     initChainedSelect($('#reserva_origen_cliente'), $('#reserva_pedidoProducto'), __HOMEPAGE_PATH__ + 'reserva/lista/productos', preserve_values);
+}
+
+function initPedidoConFalla() {
+    $('.pedido-con-falla-container').hide();
+    initChainedSelect($('#reserva_cliente'), $('#reserva_pedidoConFalla'), __HOMEPAGE_PATH__ + 'reserva/lista/productos', preserve_values);
+
+    $('#reserva_porFalla').on('change switchChange.bootstrapSwitch', function () {
+        if ($(this).is(':checked')) {
+            $('.pedido-con-falla-container').show();
+        } else {
+            $('.pedido-con-falla-container').hide();
+            $('#reserva_pedidoConFalla').val(null).trigger('change');
+        }
+    }).trigger('change');
 }
 
 /**

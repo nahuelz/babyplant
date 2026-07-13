@@ -200,6 +200,18 @@ function updateDeleteLinkEntregaProducto(deleteLink, closestClassName) {
 
 function initProductos() {
     initChainedSelect($('#entrega_cliente'), $('#entrega_entregaProducto_pedidoProducto'), __HOMEPAGE_PATH__ + 'entrega/lista/productos', preserve_values);
+    
+    $('#entrega_entregaProducto_pedidoProducto').on('change', function() {
+        var selectedOption = $(this).find('option:selected');
+        var datos = selectedOption.data('datos');
+        var tieneReservaPorFalla = datos ? datos.tieneReservaPorFalla : false;
+        
+        if (tieneReservaPorFalla === true || tieneReservaPorFalla === '1' || tieneReservaPorFalla === 1) {
+            $('#alert-reserva-por-falla').show();
+        } else {
+            $('#alert-reserva-por-falla').hide();
+        }
+    });
 }
 
 /**

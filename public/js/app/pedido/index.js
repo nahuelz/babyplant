@@ -357,7 +357,11 @@ function datatablesGetColDef() {
                     }
 
                     if (data.visto === '1') {
-                        badges += '<span class="badge badge-primary badge-sm ml-1" title="SOLUCIÓN">VISTO</span>';
+                        badges += '<span class="badge badge-primary badge-sm ml-1 mb-1" title="SOLUCIÓN">VISTO</span>';
+                    }
+
+                    if (data.tieneReservaPorFalla === '1') {
+                        badges += '<span class="badge badge-warning badge-sm ml-1" title="SOLUCIÓN">RSRVA</span>';
                     }
 
                     return `
@@ -405,14 +409,25 @@ function datatablesGetColDef() {
                 if (type === 'display') {
 
                     let badge = `
-                <span class="badge badge-success badge-sm ml-1 mb-1"
-                    title="DISPONIBLES"
-                    style="font-size: 12px;">
-                    ${full[5].cantidadBandejasDisponibles}
-                </span>
-            `;
+                        <span class="badge badge-success badge-sm ml-1 mb-1"
+                            title="DISPONIBLES"
+                            style="font-size: 12px;">
+                            ${full[5].cantidadBandejasDisponibles}
+                        </span>
+                    `;
 
-                    return data + ' ' + badge;
+                    let badgeReserva = '';
+                    if (full[5].cantidadBandejasReservadasPorFalla >= 1) {
+                        badgeReserva = `
+                            <span class="badge badge-warning badge-sm ml-1 mb-1"
+                                title="RESERVADAS POR FALLA"
+                                style="font-size: 12px;">
+                                ${full[5].cantidadBandejasReservadasPorFalla}
+                            </span>
+                        `;
+                    }
+
+                    return data + ' ' + badge + badgeReserva;
                 }
 
                 return data;

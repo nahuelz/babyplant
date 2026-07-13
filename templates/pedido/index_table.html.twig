@@ -23,11 +23,13 @@
         "colorProducto": "{{ entity.colorProducto|default('default') }}",
         "tieneProblema": "{{ entity.tieneProblema == 1 ? '1' : '0' }}",
         "visto": "{{ entity.visto == 1 ? '1' : '0' }}",
-        "tieneSolucion": "{{ entity.tieneSolucion == 1 ? entity.tieneProblema == 1 ? '1' : '0' }}"
+        "tieneSolucion": "{{ entity.tieneSolucion == 1 ? entity.tieneProblema == 1 ? '1' : '0' }}",
+        "tieneReservaPorFalla": "{{ entity.tieneReservaPorFalla == 1 ? '1' : '0' }}"
         },
         {
         "idPedido": "{{ entity.id }}",
         "cantidadBandejasDisponibles": "{{ entity.cantidadBandejasDisponibles == (entity.cantidadBandejasDisponibles|round(0, 'floor')) ? entity.cantidadBandejasDisponibles|number_format(0, '', '') : entity.cantidadBandejasDisponibles }}",
+        "cantidadBandejasReservadasPorFalla": "{{ entity.cantidadBandejasReservadasPorFalla == (entity.cantidadBandejasReservadasPorFalla|round(0, 'floor')) ? entity.cantidadBandejasReservadasPorFalla|number_format(0, '', '') : entity.cantidadBandejasReservadasPorFalla }}",
         "nombreCliente": "{{ entity.cliente|default('-') }}",
         "path": "{{ path('situacioncliente_show', { "id": entity.idCliente }) }}"
         },

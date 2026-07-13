@@ -84,7 +84,7 @@
                             </div>
                         </div>
                     </div>
-                    {% if producto.tieneProblema or producto.tieneSolucion or producto.visto %}
+                    {% if producto.tieneProblema or producto.tieneSolucion or producto.visto or producto.tieneReservaPorFalla %}
                     <div class="row">
                         <div class="card mb-5 col-md-12">
                             <div class="card-body">
@@ -92,7 +92,7 @@
                                 <div class="row text-center">
 
                                     {% if producto.tieneProblema %}
-                                        <div class="col-md-4 mb-3">
+                                        <div class="col-md-3 mb-3">
                                             <div class="alert alert-danger portlet-nivel-1">
                                                 <small class="font-size-16">PROBLEMA</small><br>
                                                 {% if producto.fechaProblema %}
@@ -113,7 +113,7 @@
                                     {% endif %}
 
                                     {% if producto.tieneSolucion %}
-                                        <div class="col-md-4 mb-3">
+                                        <div class="col-md-3 mb-3">
                                             <div class="alert alert-success portlet-nivel-1">
                                                 <small class="font-size-16">SOLUCIÓN</small><br>
                                                 {% if producto.fechaSolucion %}
@@ -132,8 +132,9 @@
                                             </div>
                                         </div>
                                     {% endif %}
+
                                     {% if producto.visto %}
-                                        <div class="col-md-4 mb-3">
+                                        <div class="col-md-3 mb-3">
                                             <div class="alert alert-primary portlet-nivel-1 d-flex align-items-center justify-content-center">
                                                 {% if producto.fechaVisto %}
                                                     <small class="position-absolute" style="top: 10px; right: 20px;">
@@ -146,6 +147,18 @@
                                             </div>
                                         </div>
                                     {% endif %}
+
+                                    {% if producto.tieneReservaPorFalla %}
+                                        <div class="col-md-3 mb-3">
+                                            <div class="alert alert-warning portlet-nivel-1">
+                                                <small class="font-size-16">RESERVA</small><br>
+                                                <small class="font-size-12">
+                                                    [Este producto tiene una reserva por falla]
+                                                </small>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
                                 </div>
                             </div>
                         </div>

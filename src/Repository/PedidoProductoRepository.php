@@ -26,24 +26,38 @@ class PedidoProductoRepository extends ServiceEntityRepository {
      */
     public function getSiguienteNumeroOrden($tipoProducto) {
 
+        // Busca el numeroOrden del ÚLTIMO producto planificado de este tipo
+        // (según el histórico más reciente), no el MAX. Esto permite que al
+        // llegar a 1000 el contador se reinicie en 1 sin generar duplicados.
         $query = $this->createQueryBuilder('p')
             ->select('p.numeroOrden')
+            ->join('p.historicoEstados', 'h')
+            ->join('h.estado', 'e')
             ->leftJoin('App:TipoVariedad', 'v', Join::WITH, 'p.tipoVariedad = v')
             ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')
             ->leftJoin('App:TipoProducto', 'tp', Join::WITH, 'sb.tipoProducto = tp')
             ->andWhere('tp.id = :tipoProducto')
+            ->andWhere('e.codigoInterno = :planificado')
+            ->andWhere('p.numeroOrden IS NOT NULL')
             ->setParameter('tipoProducto', $tipoProducto)
-            ->orderBy('p.numeroOrden', 'DESC')
+            ->setParameter('planificado', ConstanteEstadoPedidoProducto::PLANIFICADO)
+            ->orderBy('h.fecha', 'DESC')
+            ->addOrderBy('h.id', 'DESC')
             ->setMaxResults(1)
             ->getQuery();
 
         try {
-            $siguienteNumero = $query->getSingleScalarResult();
+            $ultimoNumero = $query->getSingleScalarResult();
         } catch (NoResultException $e) {
-            $siguienteNumero = 0;
+            $ultimoNumero = 0;
         }
 
-        return $siguienteNumero + 1;
+        // Al llegar a 1000 se reinicia el contador en 1
+        if ($ultimoNumero >= 1000) {
+            return 1;
+        }
+
+        return $ultimoNumero + 1;
     }
 
     public function getProductosMasVendidos(\DateTimeInterface $fechaInicio, \DateTimeInterface $fechaFin, int $limite = 10): array

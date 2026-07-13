@@ -78,6 +78,22 @@ class Reserva {
      */
     private $cuentaCorrienteReserva;
 
+    /**
+     * @ORM\Column(name="por_falla", type="boolean", nullable=false, options={"default": false})
+     */
+    private $porFalla = false;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=PedidoProducto::class)
+     * @ORM\JoinColumn(name="id_pedido_con_falla", referencedColumnName="id", nullable=true)
+     */
+    private $pedidoConFalla;
+
+    /**
+     * @ORM\Column(name="observacion", type="text", nullable=true)
+     */
+    private $observacion;
+
     public function __construct()
     {
         $this->historicoEstados = new ArrayCollection();
@@ -276,5 +292,47 @@ class Reserva {
 
     public function puedeAjustarse($monto){
         return $this->getAdelanto() >= (float) $monto;
+    }
+
+    public function isPorFalla(): bool
+    {
+        return (bool) $this->porFalla;
+    }
+
+    public function setPorFalla(bool $porFalla): void
+    {
+        $this->porFalla = $porFalla;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPedidoConFalla()
+    {
+        return $this->pedidoConFalla;
+    }
+
+    /**
+     * @param mixed $pedidoConFalla
+     */
+    public function setPedidoConFalla($pedidoConFalla): void
+    {
+        $this->pedidoConFalla = $pedidoConFalla;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getObservacion()
+    {
+        return $this->observacion;
+    }
+
+    /**
+     * @param mixed $observacion
+     */
+    public function setObservacion($observacion): void
+    {
+        $this->observacion = $observacion;
     }
 }

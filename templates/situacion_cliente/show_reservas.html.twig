@@ -11,6 +11,16 @@
         </div>
     </div>
     <div class="card-body padding-1">
+        <style>
+            .fila-con-problema-critico {
+                background-color: #f8d7da !important;
+                border-left: 4px solid #dc3545 !important;
+            }
+
+            .fila-con-problema-critico:hover {
+                background-color: #f5c6cb !important;
+            }
+        </style>
         <div class="tab-content">
             <div class="tab-pane active" id="portlet_reserva_listado">
                 <div class="portlet-body padding-0">
@@ -32,7 +42,7 @@
                                         </thead>
                                         <tbody>
                                         {% for reserva in entity.reservas %}
-                                            <tr>
+                                            <tr{% if reserva.porFalla %} class="fila-con-problema-critico"{% endif %}>
                                                 <td class="v-middle nowrap text-center">
                                                     Reserva N° {{ reserva.id }} {{ reserva.pedidoProducto|default('-') }}
                                                 </td>
