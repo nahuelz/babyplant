@@ -9,15 +9,8 @@ jQuery(document).ready(function () {
     $('#reserva_cliente').select2();
     $('#reserva_submit').html('Reservar');
     initClienteSelect2();
-    initClienteReservaHandler();
 
 });
-
-function initClienteReservaHandler() {
-    $('#reserva_origen_cliente').on('change', function(){
-        $('#reserva_cliente').val($(this).val()).select2();
-    })
-}
 
 function customAfterChainedSelect(){
     $('#reserva_pedidoProducto').select2({
