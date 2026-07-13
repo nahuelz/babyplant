@@ -809,8 +809,10 @@ function initCambiarMesadaHandler(){
     $('.row-mesada-empty').hide();
     if ($('#cambiar_mesada_mesadaDos_cantidadBandejas').val() == '' || $('#cambiar_mesada_mesadaDos_cantidadBandejas').val() == '0') {
         $('.mesada-dos').hide();
+        $('.mesada-dos-info').hide();
     }else{
         $('.add-mesada').hide();
+        $('.mesada-dos-info').show();
     }
     removeMesadaHandler();
     $(document).on('click', '.add-mesada', function (e) {
@@ -824,6 +826,7 @@ function initCambiarMesadaHandler(){
         });
         $('.add-mesada').hide();
         $('.mesada-dos').show();
+        $('.mesada-dos-info').show();
         $("#cambiar_mesada_mesadaDos_tipoMesada>option[value="+$('#cambiar_mesada_mesadaUno_tipoMesada').val()+"]").attr('disabled','disabled');
     });
 }
@@ -839,6 +842,7 @@ function disableMesadaDosOptionHandler(){
 function removeMesadaHandler(){
     $('.remove-mesada').on('click', function(){
         $('.mesada-dos').hide();
+        $('.mesada-dos-info').hide();
         $('#cambiar_mesada_mesadaDos_tipoMesada').val('').select2();
         $('#cambiar_mesada_mesadaDos_cantidadBandejas').val('');
         $('.add-mesada').show();

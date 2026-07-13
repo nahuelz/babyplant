@@ -18,7 +18,7 @@ class MesadaType extends AbstractType {
 
         $builder
             ->add('tipoMesada', EntityType::class, array(
-                    'label' => 'Mesada',
+                    'label' => $options['label'] ?? 'Mesada',
                     'mapped' => true,
                     'class' => TipoMesada::class,
                     'required' => false,
