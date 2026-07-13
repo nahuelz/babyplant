@@ -22,7 +22,7 @@ class RazonSocialController extends BaseController
     /**
      * @Route("/", name="razonsocial_index", methods={"GET"})
      * @Template("razonsocial/index.html.twig")
-     * @IsGranted("ROLE_TIPO_USUARIO")
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
      */
     public function index(): array
     {
@@ -35,10 +35,9 @@ class RazonSocialController extends BaseController
     }
 
     /**
-     * Tabla para app_pago.
      *
      * @Route("/index_table/", name="razonsocial_table", methods={"GET|POST"})
-     * @IsGranted("ROLE_RESERVA")
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
      */
     public function indexTableAction(Request $request): Response {
 
