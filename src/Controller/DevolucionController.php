@@ -185,7 +185,7 @@ class DevolucionController extends BaseController {
             ->leftJoin('App:TipoBandeja', 'tb', Join::WITH, 'pp.tipoBandeja = tb')
             ->leftJoin('pp.mesadaUno', 'm1')
             ->leftJoin('m1.tipoMesada', 'tm')
-            ->where('p.cliente = :cliente OR e.cliente = :cliente')
+            ->where('e.clienteEntrega = :cliente')
             ->setParameter('cliente', $idCliente)
             ->orderBy('ep.id', 'DESC')
             ->groupBy('ep.id')
