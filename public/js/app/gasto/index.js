@@ -252,7 +252,7 @@ function abrirModalCambiarEstado(url) {
 
 function actualizarIndicadores() {
     $.ajax({
-        url: __HOMEPAGE_PATH__ + 'gasto/indicadores/',
+        url: __HOMEPAGE_PATH__ + 'gasto/tiles/data/',
         type: 'POST',
         data: {
             'fechaDesde': $('#reporte_filtro_fechaDesde').val(),

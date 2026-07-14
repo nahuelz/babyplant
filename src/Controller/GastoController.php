@@ -196,13 +196,14 @@ class GastoController extends BaseController {
     }
 
     /**
-     * @Route("/indicadores", name="gasto_indicadores", methods={"POST"})
+     * @Route("/tiles/data/", name="gasto_tiles_data", methods={"POST"})
+     * @IsGranted("ROLE_GASTO")
      */
     public function indicadoresAction(Request $request): JsonResponse
     {
-        $fechaDesde = $request->get('fechaDesde') ? DateTime::createFromFormat('d/m/Y H:i:s', $request->get('fechaDesde') . ' 00:00:00') : (new DateTime())->sub(new DateInterval('P7D'));
-        $fechaHasta = $request->get('fechaHasta') ? DateTime::createFromFormat('d/m/Y H:i:s', $request->get('fechaHasta') . ' 23:59:59') : new DateTime();
-        $idConcepto = $request->get('idConcepto') ?: NULL;
+        $fechaDesde = $request->request->get('fechaDesde') ? DateTime::createFromFormat('d/m/Y H:i:s', $request->request->get('fechaDesde') . ' 00:00:00') : (new DateTime())->sub(new DateInterval('P7D'));
+        $fechaHasta = $request->request->get('fechaHasta') ? DateTime::createFromFormat('d/m/Y H:i:s', $request->request->get('fechaHasta') . ' 23:59:59') : new DateTime();
+        $idConcepto = $request->request->get('idConcepto') ?: NULL;
 
         $em = $this->doctrine->getManager();
 
