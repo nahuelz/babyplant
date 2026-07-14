@@ -39,6 +39,11 @@ class RemitoEntregaType extends AbstractType {
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
             $data = $event->getData();
             $id = $data['entrega'] ?? null;
+            if (is_array($id)) {
+                // El JS envía remito[entregas][N][entrega][entregasProductos][...],
+                // por lo que 'entrega' llega como array y no como id escalar.
+                $id = null;
+            }
             $entrega = $id
                 ? $this->entityManager->getRepository(Entrega::class)->find($id)
                 : null;
