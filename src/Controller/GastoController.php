@@ -280,13 +280,15 @@ class GastoController extends BaseController {
         $rsm->addScalarResult('fecha', 'fecha');
         $rsm->addScalarResult('id', 'id');
         $rsm->addScalarResult('colorClass', 'colorClass');
+        $rsm->addScalarResult('monto', 'monto');
 
         $sql = '
             SELECT
                 g.id AS id,
                 CONCAT_WS(" ", "El gasto nº", LPAD(g.id, 5, 0), "cambió su estado a", eg.nombre) AS actividad,
                 h.fecha AS fecha,
-                COALESCE(eg.color_icono, "default") AS colorClass
+                COALESCE(eg.color_icono, "default") AS colorClass,
+                g.monto AS monto
             FROM estado_gasto_historico AS h
                      INNER JOIN gasto AS g ON g.id = h.id_gasto
                      INNER JOIN estado_gasto AS eg ON h.id_estado_gasto = eg.id

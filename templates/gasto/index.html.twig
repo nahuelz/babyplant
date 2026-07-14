@@ -70,14 +70,20 @@
             </div>
         </div>
 
-        <div class="row padding-top-15">
-            <div class="col-md-12" id="filtros">
-                {% include 'gasto/tiles.html.twig' %}
-            </div>
+        <div class="row padding-top-15 d-flex align-items-stretch">
             <div class="col-md-6">
-                {% include 'gasto/filtros.html.twig' %}
+                <div class="row">
+                    <div class="col-md-12" id="filtros">
+                        {% include 'gasto/tiles.html.twig' %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        {% include 'gasto/filtros.html.twig' %}
+                    </div>
+                </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 d-flex flex-column">
                 {% include 'gasto/index_actividad_reciente.html.twig' %}
             </div>
         </div>
