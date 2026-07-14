@@ -75,15 +75,16 @@ class Factura
     private $estadoFactura;
 
     /**
-     * @ORM\OneToMany(targetEntity=ImputacionPagoFactura::class, mappedBy="factura", cascade={"persist", "remove"})
-     */
-    private $imputaciones;
-
-    /**
      * @ORM\OneToMany(targetEntity=EstadoFacturaHistorico::class, mappedBy="factura", cascade={"all"})
      * @ORM\OrderBy({"fecha" = "DESC", "id" = "DESC"})
      */
     private $historicoEstados;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ImputacionPagoFactura::class, mappedBy="factura", cascade={"persist", "remove"})
+     */
+    private $imputaciones;
+
 
     public function __construct()
     {

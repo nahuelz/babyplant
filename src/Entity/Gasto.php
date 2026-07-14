@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Traits\Auditoria;
+use App\Entity\Constants\ConstanteEstadoGasto;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -49,6 +50,18 @@ class Gasto
      * @ORM\Column(name="fecha", type="datetime", nullable=false)
      */
     protected $fecha;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=EstadoGasto::class)
+     * @ORM\JoinColumn(name="id_estado_gasto", referencedColumnName="id", nullable=true)
+     */
+    private $estadoGasto;
+
+    /**
+     * @ORM\OneToMany(targetEntity=EstadoGastoHistorico::class, mappedBy="gasto", cascade={"all"})
+     * @ORM\OrderBy({"fecha" = "DESC", "id" = "DESC"})
+     */
+    private $historicoEstados;
 
 
     public function __toString(): string
@@ -132,8 +145,45 @@ class Gasto
         $this->subConcepto = $subConcepto;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getEstadoGasto()
+    {
+        return $this->estadoGasto;
+    }
 
+    /**
+     * @param mixed $estadoGasto
+     */
+    public function setEstadoGasto($estadoGasto): void
+    {
+        $this->estadoGasto = $estadoGasto;
+    }
 
+    /**
+     * @return mixed
+     */
+    public function getHistoricoEstados()
+    {
+        return $this->historicoEstados;
+    }
 
+    /**
+     * @param mixed $historicoEstados
+     */
+    public function setHistoricoEstados($historicoEstados): void
+    {
+        $this->historicoEstados = $historicoEstados;
+    }
 
+    public function addHistoricoEstado(EstadoGastoHistorico $historicoEstado): self
+    {
+        if (!$this->historicoEstados->contains($historicoEstado)) {
+            $this->historicoEstados[] = $historicoEstado;
+            $historicoEstado->setGasto($this);
+        }
+
+        return $this;
+    }
 }

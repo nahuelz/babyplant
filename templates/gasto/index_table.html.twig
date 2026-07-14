@@ -9,12 +9,19 @@
         "{{ entity.monto|escape_json|money_format|default('')|raw }}",
         "{{ entity.modoPago|escape_json|default('')|raw }}",
         {
+        "idEstado" : "{{ entity.idEstado|default('Sin estado') }}",
+        "nombreEstado" : "{{ entity.nombreEstado|default('Sin estado') }}",
+        "colorEstado" : "{{ entity.colorEstado|default('default') }}"
+        },
+        {
             "show" : " {{ path( "gasto_show", { "id": entity.id }) }}",
             "edit" : " {{ path( "gasto_edit", { "id": entity.id }) }}",
-            "delete" : " {{ path( "gasto_delete", { "id": entity.id }) }}"
+            "delete" : " {{ path( "gasto_delete", { "id": entity.id }) }}",
+            "cambiar_estado" : " {{ path( "gasto_modal_cambiar_estado", { "id": entity.id }) }}"
         }
         ]{{ (loop.last ? '' : ',') }}
     {% endfor %}
     ]
     }
 {% endautoescape %}
+

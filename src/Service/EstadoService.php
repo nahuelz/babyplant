@@ -11,6 +11,8 @@ use App\Entity\EstadoEntrega;
 use App\Entity\EstadoEntregaHistorico;
 use App\Entity\EstadoEntregaProducto;
 use App\Entity\EstadoEntregaProductoHistorico;
+use App\Entity\EstadoGasto;
+use App\Entity\EstadoGastoHistorico;
 use App\Entity\EstadoMesada;
 use App\Entity\EstadoMesadaHistorico;
 use App\Entity\EstadoRemito;
@@ -18,6 +20,7 @@ use App\Entity\EstadoRemitoHistorico;
 use App\Entity\EstadoReservaHistorico;
 use App\Entity\EstadoReventa;
 use App\Entity\EstadoReventaHistorico;
+use App\Entity\Gasto;
 use App\Entity\Mesada;
 use App\Entity\Remito;
 use App\Entity\Reserva;
@@ -131,4 +134,16 @@ class EstadoService
         $historico->setDevolucion($devolucion);
         $this->crearHistorico($historico, $devolucion, $estadoDevolucion, $motivo);
     }
+
+    /**
+     * Cambiar estado de Gasto
+     */
+    public function cambiarEstadoGasto(Gasto $gasto, EstadoGasto $estadoGasto, string $motivo): void
+    {
+        $gasto->setEstadoGasto($estadoGasto);
+        $historico = new EstadoGastoHistorico();
+        $historico->setGasto($gasto);
+        $this->crearHistorico($historico, $gasto, $estadoGasto, $motivo);
+    }
+
 }

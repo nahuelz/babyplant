@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Constants\ConstanteEstadoGasto;
+use App\Entity\EstadoGasto;
+use App\Entity\EstadoGastoHistorico;
 use App\Entity\Gasto;
 use App\Form\GastoType;
 use DateTime;
@@ -57,6 +60,9 @@ class GastoController extends BaseController {
         $rsm->addScalarResult('concepto', 'concepto');
         $rsm->addScalarResult('monto', 'monto');
         $rsm->addScalarResult('modoPago', 'modoPago');
+        $rsm->addScalarResult('idEstado', 'idEstado');
+        $rsm->addScalarResult('nombreEstado', 'nombreEstado');
+        $rsm->addScalarResult('colorEstado', 'colorEstado');
 
         $nativeQuery = $em->createNativeQuery('call sp_index_gasto(?,?,?)', $rsm);
 
@@ -83,6 +89,17 @@ class GastoController extends BaseController {
             $this->validarMonto($form->getData());
             $monto = $this->normalizarMonto($form->getData());
             $gasto->setMonto($monto);
+
+            $estado = $entityManager->getReference(EstadoGasto::class, ConstanteEstadoGasto::PENDIENTE);
+            $gasto->setEstadoGasto($estado);
+
+            $historico = new EstadoGastoHistorico();
+            $historico->setGasto($gasto);
+            $historico->setEstado($estado);
+            $historico->setFecha(new \DateTime());
+            $historico->setMotivo('Gasto creado');
+            $entityManager->persist($historico);
+
             $entityManager->persist($gasto);
             $entityManager->flush();
 
@@ -144,6 +161,41 @@ class GastoController extends BaseController {
     }
 
     /**
+     * @Route("/{id}/modal_cambiar_estado", name="gasto_modal_cambiar_estado", methods={"GET"})
+     */
+    public function modalCambiarEstado(Gasto $gasto): Response
+    {
+        $em = $this->doctrine->getManager();
+        $estados = $em->getRepository(EstadoGasto::class)->findAll();
+        
+        return $this->render('gasto/modal_cambiar_estado.html.twig', [
+            'gasto' => $gasto,
+            'estados' => $estados,
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/cambiar_estado", name="gasto_cambiar_estado", methods={"POST"})
+     */
+    public function cambiarEstado(Request $request, Gasto $gasto): JsonResponse
+    {
+        $idEstado = $request->request->get('id_estado');
+        $motivo = $request->request->get('motivo', 'Cambio manual de estado');
+        
+        $em = $this->doctrine->getManager();
+        $estado = $em->getRepository(EstadoGasto::class)->find($idEstado);
+        
+        if (!$estado) {
+            return new JsonResponse(['success' => false, 'message' => 'Estado no encontrado'], 404);
+        }
+        
+        $this->estadoService->cambiarEstadoGasto($gasto, $estado, $motivo);
+        $em->flush();
+        
+        return new JsonResponse(['success' => true]);
+    }
+
+    /**
      *
      * @return type
      */
@@ -173,5 +225,4 @@ class GastoController extends BaseController {
 
         return $nativeQuery->getSingleResult();
     }
-
 }

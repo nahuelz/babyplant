@@ -7,6 +7,7 @@ var $table = $('#table-gasto');
 
 $(document).ready(function () {
     initTable();
+    initModalCambiarEstado();
 });
 
 /**
@@ -119,6 +120,18 @@ function datatablesGetColDef() {
             type: 'string'
         },
         {
+            targets: index++,
+            name: 'nombreEstado',
+            orderable: false,
+            className: 'nowrap text-center align-middle',
+            render: function (data, type, full, meta) {
+                if (type === 'display') {
+                    return '<span class="label label-inline ' + data.colorEstado + ' font-weight-bold p-4" style="width: 120px">' + data.nombreEstado + '</span>';
+                }
+                return data.nombreEstado;
+            }
+        },
+        {
             targets: -1,
             name: '',
             title: '',
@@ -153,6 +166,8 @@ function datatablesGetColDef() {
                 +
                 (data.edit !== undefined ? '<a class="dropdown-item" href="' + data.edit + '"><i class="la la-edit" style="margin-right: 5px;"></i> Editar</a>' : '')
                 +
+                (data.cambiar_estado !== undefined ? '<a class="dropdown-item" href="#" onclick="abrirModalCambiarEstado(\'' + data.cambiar_estado + '\'); return false;"><i class="la la-exchange-alt" style="margin-right: 5px;"></i> Cambiar Estado</a>' : '')
+                +
                 (data.situacion_concepto !== undefined ? '<a class="dropdown-item" href="' + data.situacion_concepto + '"><i class="la la-edit" style="margin-right: 5px;"></i> Situacion Empresa</a>' : '')
                 +
                 (data.delete !== undefined ? '<a class="dropdown-item accion-borrar" href="' + data.delete + '"><i class="la la-remove" style="margin-right: 5px;"></i> Borrar</a>' : '')
@@ -173,6 +188,61 @@ function datatablesGetColDef() {
 
 
         return actions;
-
     }
+}
+
+function initModalCambiarEstado() {
+    $(document).off('submit', '#formCambiarEstado').on('submit', '#formCambiarEstado', function (e) {
+        e.preventDefault();
+        const $form = $(this);
+
+        if (!$('#cambiar_estado_select').val()) {
+            Swal.fire({ title: 'Debe seleccionar un estado.', icon: 'warning' });
+            return false;
+        }
+
+        $.ajax({
+            url: $form.attr('action'),
+            type: 'POST',
+            data: $form.serialize(),
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    $('#modalCambiarEstado').modal('hide');
+                    Swal.fire({
+                        title: 'Estado cambiado correctamente',
+                        icon: 'success',
+                        timer: 1800,
+                        showConfirmButton: false
+                    }).then(function () {
+                        if ($('#table-gasto').length) {
+                            $('#table-gasto').DataTable().ajax.reload();
+                        } else {
+                            location.reload();
+                        }
+                    });
+                } else {
+                    Swal.fire({ title: response.message || 'No se pudo cambiar el estado.', icon: 'error' });
+                }
+            },
+            error: function () {
+                Swal.fire({ title: 'Error al cambiar el estado.', icon: 'error' });
+            }
+        });
+    });
+}
+
+function abrirModalCambiarEstado(url) {
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function (html) {
+            $('#modalCambiarEstado').remove();
+            $('body').append(html);
+            $('#modalCambiarEstado').modal('show');
+        },
+        error: function () {
+            Swal.fire({ title: 'Error al cargar el formulario.', icon: 'error' });
+        }
+    });
 }
