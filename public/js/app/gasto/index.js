@@ -8,6 +8,7 @@ var $table = $('#table-gasto');
 $(document).ready(function () {
     initTable();
     initModalCambiarEstado();
+    actualizarIndicadores();
 });
 
 /**
@@ -21,6 +22,7 @@ function initTable() {
     $('#kt_search').on('click', function () {
         if (init) {
             $table.DataTable().ajax.reload();
+            setTimeout(actualizarIndicadores, 100);
         }
     });
 
@@ -34,6 +36,7 @@ function initTable() {
         });
         if (init) {
             $table.DataTable().ajax.reload();
+            setTimeout(actualizarIndicadores, 100);
         }
     });
 }
@@ -243,6 +246,34 @@ function abrirModalCambiarEstado(url) {
         },
         error: function () {
             Swal.fire({ title: 'Error al cargar el formulario.', icon: 'error' });
+        }
+    });
+}
+
+function actualizarIndicadores() {
+    $.ajax({
+        url: __HOMEPAGE_PATH__ + 'gasto/indicadores/',
+        type: 'POST',
+        data: {
+            'fechaDesde': $('#reporte_filtro_fechaDesde').val(),
+            'fechaHasta': $('#reporte_filtro_fechaHasta').val(),
+            'idConcepto': $('#reporte_filtro_concepto').val()
+        },
+        dataType: 'json',
+        success: function (response) {
+            const montoTotal = parseFloat(response.montoTotal || 0);
+            const cantidad = parseInt(response.cantidad || 0);
+
+            const montoFormateado = montoTotal.toLocaleString('es-AR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            $('#tile-monto-total').text('$' + montoFormateado);
+            $('#tile-cantidad').text(cantidad);
+        },
+        error: function () {
+            console.error('Error al actualizar indicadores');
         }
     });
 }

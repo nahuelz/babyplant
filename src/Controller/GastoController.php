@@ -196,6 +196,44 @@ class GastoController extends BaseController {
     }
 
     /**
+     * @Route("/indicadores", name="gasto_indicadores", methods={"POST"})
+     */
+    public function indicadoresAction(Request $request): JsonResponse
+    {
+        $fechaDesde = $request->get('fechaDesde') ? DateTime::createFromFormat('d/m/Y H:i:s', $request->get('fechaDesde') . ' 00:00:00') : (new DateTime())->sub(new DateInterval('P7D'));
+        $fechaHasta = $request->get('fechaHasta') ? DateTime::createFromFormat('d/m/Y H:i:s', $request->get('fechaHasta') . ' 23:59:59') : new DateTime();
+        $idConcepto = $request->get('idConcepto') ?: NULL;
+
+        $em = $this->doctrine->getManager();
+
+        $rsm = new ResultSetMapping();
+
+        $rsm->addScalarResult('montoTotal', 'montoTotal');
+        $rsm->addScalarResult('cantidad', 'cantidad');
+
+        $sql = '
+        SELECT
+            SUM(g.monto) AS montoTotal,
+            COUNT(g.id) AS cantidad
+        FROM gasto AS g
+        LEFT JOIN tipo_concepto tc ON g.id_tipo_concepto = tc.id
+        WHERE g.fecha_baja IS NULL
+        AND (g.fecha >= ? AND g.fecha <= ?)
+        AND (? IS NULL OR (? IS NOT NULL AND tc.id = ?))';
+
+        $nativeQuery = $em->createNativeQuery($sql, $rsm);
+        $nativeQuery->setParameter(1, $fechaDesde, 'datetime');
+        $nativeQuery->setParameter(2, $fechaHasta, 'datetime');
+        $nativeQuery->setParameter(3, $idConcepto);
+        $nativeQuery->setParameter(4, $idConcepto);
+        $nativeQuery->setParameter(5, $idConcepto);
+
+        $result = $nativeQuery->getSingleResult();
+
+        return new JsonResponse($result);
+    }
+
+    /**
      *
      * @return type
      */
