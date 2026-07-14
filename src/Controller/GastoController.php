@@ -38,6 +38,7 @@ class GastoController extends BaseController {
         return array(
             'conceptoSelect' => $conceptoSelect,
             'indicadorGastoData' => $this->getIndicadorGastoData(),
+            'actividadReciente' => $this->getActividadRecienteData(),
             'page_title' => 'Gastos'
         );
     }
@@ -263,5 +264,39 @@ class GastoController extends BaseController {
         $nativeQuery = $em->createNativeQuery($sql, $rsm);
 
         return $nativeQuery->getSingleResult();
+    }
+
+    /**
+     *
+     * @return type
+     */
+    private function getActividadRecienteData()
+    {
+        $em = $this->doctrine->getManager();
+
+        $rsm = new ResultSetMapping();
+
+        $rsm->addScalarResult('actividad', 'actividad');
+        $rsm->addScalarResult('fecha', 'fecha');
+        $rsm->addScalarResult('id', 'id');
+        $rsm->addScalarResult('colorClass', 'colorClass');
+
+        $sql = '
+            SELECT
+                g.id AS id,
+                CONCAT_WS(" ", "El gasto nº", LPAD(g.id, 5, 0), "cambió su estado a", eg.nombre) AS actividad,
+                h.fecha AS fecha,
+                COALESCE(eg.color_icono, "default") AS colorClass
+            FROM estado_gasto_historico AS h
+                     INNER JOIN gasto AS g ON g.id = h.id_gasto
+                     INNER JOIN estado_gasto AS eg ON h.id_estado_gasto = eg.id
+            WHERE g.fecha_baja IS NULL
+              AND h.fecha_baja IS NULL
+            ORDER BY h.id DESC
+            LIMIT 0, 20';
+
+        $nativeQuery = $em->createNativeQuery($sql, $rsm);
+
+        return $nativeQuery->getResult();
     }
 }
