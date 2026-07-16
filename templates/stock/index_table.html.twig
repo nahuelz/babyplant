@@ -35,8 +35,12 @@
         "{{ entity.mesadaOrden|default('-') }}",
         {
         "show_pedido": " {{ path( "pedido_show", { "id": entity.id }) }}",
-        "nueva_entrega": "{{ path('entrega_new', {'id': entity.idCliente}) }}",
-        "nueva_reserva": "{{ path('reserva_new', {'id': entity.idCliente}) }}",
+
+        {% if entity.tipo == 'STOCK' %}
+            "nueva_entrega": "{{ path('entrega_new', {'id': entity.idCliente}) }}",
+            "nueva_reserva": "{{ path('reserva_new', {'id': entity.idCliente}) }}",
+        {% endif %}
+
         "historico_estado": "{{ path( "pedido_historico_estado", { 'id': entity.idProducto }) }}"
         }]{{ (loop.last ? '' : ',') }}
     {% endfor %}
