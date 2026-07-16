@@ -2,6 +2,7 @@ create
 definer = root@`%` procedure sp_index_stock(IN _fechaDesde datetime, IN _fechaHasta datetime, IN _idCliente int)
     reads sql data
 BEGIN
+    -- Stock desde pedidos (clientes STOCK)
 SELECT DISTINCT
     p.id                                                        AS id,
     pp.id                                                       AS idProducto,
@@ -25,6 +26,7 @@ SELECT DISTINCT
     tp.color                                                    AS colorProducto,
     epp.id                                                      AS idEstado,
     u.celular                                                   AS celular,
+    'STOCK'                                                     AS tipo,
     if(pp.fecha_salida_camara_real is null, (to_days(curdate()) - to_days(cast(`pp`.`fecha_entrada_camara` as date))),
        (to_days(pp.fecha_salida_camara_real) - to_days(pp.fecha_entrada_camara))) AS `diasEnCamara`,
     if(epp.id in (5,6,7,8), (
@@ -51,7 +53,62 @@ WHERE p.fecha_baja IS NULL
   AND (p.fecha_creacion >= _fechaDesde AND p.fecha_creacion <= _fechaHasta)
   AND (_idCliente IS NULL OR (_idCliente IS NOT NULL AND p.id_cliente = _idCliente))
   AND u.apellido LIKE '%STOCK%'
-ORDER BY p.id DESC
-;
+
+UNION
+
+-- Stock desde devoluciones (cualquier cliente)
+SELECT DISTINCT
+    pp.id AS id,
+    pp.id AS idProducto,
+    d.fecha_creacion AS fechaCreacion,
+    tv.nombre AS nombreVariedad,
+    tp.nombre AS nombreProducto,
+    tsp.nombre AS nombreSubProducto,
+    CONCAT(tp.nombre,' ',tsp.nombre,' ',tv.nombre,' (x',tb.nombre,')') AS nombreProductoCompleto,
+    CONCAT(u.nombre,', ',u.apellido) AS cliente,
+    u.id AS idCliente,
+    (d.cantidad_bandejas - COALESCE(rev.cantidad_revendida, 0)) AS cantidadBandejas,
+    (d.cantidad_bandejas - COALESCE(rev.cantidad_revendida, 0)) AS cantidadBandejasDisponibles,
+    (d.cantidad_bandejas - COALESCE(rev.cantidad_revendida, 0)) AS stockTotal,
+    tb.nombre AS tipoBandeja,
+    NULL AS fechaSiembraPedido,
+    NULL AS fechaEntregaPedido,
+    NULL AS fechaEntregaPedidoReal,
+    ed.nombre AS estado,
+    ed.color AS colorEstado,
+    tp.color AS colorProducto,
+    ed.id AS idEstado,
+    u.celular AS celular,
+    'DEVOLUCION' AS tipo,
+    NULL AS diasEnCamara,
+    NULL AS diasEnInvernaculo,
+    CONCAT(pp.numero_orden,' ',substr(`tp`.`nombre`, 1, 3))  AS ordenSiembra,
+    NULL AS mesada,
+    NULL AS mesadaOrden
+FROM devolucion d
+         INNER JOIN entrega_producto ep ON ep.id = d.id_entrega_producto
+         INNER JOIN pedido_producto pp ON pp.id = ep.id_pedido_producto
+         INNER JOIN tipo_variedad tv on tv.id = pp.id_tipo_variedad
+         INNER JOIN tipo_sub_producto tsp on tsp.id = tv.id_tipo_sub_producto
+         INNER JOIN tipo_producto tp on tp.id = tsp.id_tipo_producto
+         INNER JOIN tipo_bandeja tb on tb.id = pp.id_tipo_bandeja
+         INNER JOIN pedido p ON p.id = pp.id_pedido
+         INNER JOIN usuario u ON u.id = p.id_cliente
+         INNER JOIN estado_devolucion ed ON ed.id = d.id_estado_devolucion
+         LEFT JOIN (
+    SELECT
+        r.id_devolucion,
+        SUM(r.cantidad_bandejas) AS cantidad_revendida
+    FROM reventa r
+             INNER JOIN estado_reventa er ON er.id = r.id_estado_reventa
+    WHERE er.codigo_interno != 3
+    GROUP BY r.id_devolucion
+) rev ON rev.id_devolucion = d.id
+WHERE d.fecha_baja IS NULL
+  AND (d.fecha_creacion >= _fechaDesde AND d.fecha_creacion <= _fechaHasta)
+  AND (_idCliente IS NULL OR (_idCliente IS NOT NULL AND u.id = _idCliente))
+  AND ed.codigo_interno IN (1, 2)
+  AND (d.cantidad_bandejas - COALESCE(rev.cantidad_revendida, 0)) > 0
+ORDER BY id DESC;
 END;
 
