@@ -12,6 +12,7 @@
         "idProducto": "{{ entity.idProducto }}",
         "path": "{{ path('pedido_producto_show', { "id": entity.idProducto }) }}"
         },
+        "{{ entity.tipo }}",
         {
         "nombreProductoCompleto": "{{ entity.nombreProductoCompleto|default('default') }}",
         "nombreProducto": "{{ entity.nombreProducto|default('default') }}",

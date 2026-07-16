@@ -72,6 +72,7 @@ class StockController extends BaseController {
         $rsm->addScalarResult('diasEnCamara', 'diasEnCamara');
         $rsm->addScalarResult('diasEnInvernaculo', 'diasEnInvernaculo');
         $rsm->addScalarResult('celular', 'celular');
+        $rsm->addScalarResult('tipo', 'tipo');
 
         $nativeQuery = $em->createNativeQuery('call sp_index_stock(?,?,?)', $rsm);
 

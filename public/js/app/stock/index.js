@@ -173,6 +173,7 @@ function datatablesGetColDef() {
             name: 'id',
             width: '15px',
             className: 'dt-center',
+            visible: false,
             render: function (data, type, full, meta) {
                 if (type === 'display') {
                     return '<a href="' + full[2].path + '">' + data + '</a>';
@@ -191,6 +192,13 @@ function datatablesGetColDef() {
                 }
                 return data.idProducto;
             }
+        },
+        {
+            targets: index++,
+            name: 'Tipo',
+            className: 'dt-center',
+            width: '50px',
+            type: 'num',
         },
         {
             targets: index++,
