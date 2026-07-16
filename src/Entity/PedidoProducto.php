@@ -887,6 +887,10 @@ class PedidoProducto {
         $cantidadBandejas = 0;
         foreach ($this->getEntregasProductos() as $entregaProducto) {
             foreach ($entregaProducto->getDevoluciones() as $devolucion) {
+                // Excluir devoluciones canceladas
+                if ($devolucion->getEstado() != null && $devolucion->getEstado()->getCodigoInterno() == \App\Entity\Constants\ConstanteEstadoDevolucion::CANCELADA) {
+                    continue;
+                }
                 $cantidadBandejas += $devolucion->getCantidadDisponible();
             }
         }

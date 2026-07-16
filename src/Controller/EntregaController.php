@@ -92,6 +92,7 @@ class EntregaController extends BaseController {
         $rsm->addScalarResult('colorEstado', 'colorEstado');
         $rsm->addScalarResult('colorProducto', 'colorProducto');
         $rsm->addScalarResult('cantidadPlantas', 'cantidadPlantas');
+        $rsm->addScalarResult('esReventa', 'esReventa');
 
         $nativeQuery = $em->createNativeQuery('call sp_index_entrega(?,?,?)', $rsm);
 
@@ -154,6 +155,14 @@ class EntregaController extends BaseController {
         if (!$entrega) {
             $this->addFlash('error', 'No se encontró la entrega especificada.');
             return $this->redirectToRoute('entrega_index');
+        }
+
+        // Verificar si la entrega corresponde a una reventa
+        foreach ($entrega->getEntregasProductos() as $entregaProducto) {
+            if ($entregaProducto->isEsReventa()) {
+                $this->addFlash('error', 'Las entregas de reventa deben cancelarse desde el módulo de reventas.');
+                return $this->redirectToRoute('entrega_index');
+            }
         }
 
         try {

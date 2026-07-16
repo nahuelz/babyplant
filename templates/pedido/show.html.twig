@@ -381,6 +381,25 @@
                                 {{ macro_show._show_detail('Motivo', historicoEstados.motivo|default('-'), 'col-md-3') }}
                             </div>
                         {% endif %}
+                        {% if historicoEstados.estado.id == 13 %}
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <span class="label label-inline {{ historicoEstados.estado.color }} font-weight-bold margin-top-25 p-6" style="float: right"> <span class="fas fa-undo padding-right-5"></span> {{ historicoEstados.estado.nombre }} </span>
+                                </div>
+                                {{ macro_show._show_detail('N° Devolución', historicoEstados.devolucion is not null ? historicoEstados.devolucion.id : '-', 'col-md-1 text-center') }}
+                                {{ macro_show._show_detail('Fecha', historicoEstados.fecha is not null ? historicoEstados.fecha|date("d/m/Y H:i") : '-', 'col-md-2') }}
+                                {{ macro_show._show_detail('Bandejas Devueltas', historicoEstados.devolucion is not null ? historicoEstados.devolucion.cantidadBandejas : '-', 'col-md-2') }}
+                                {% if historicoEstados.devolucion is not null %}
+                                    <div class="col-md-1 d-flex align-items-center justify-content-between">
+                                        <a href="{{ path('devolucion_show', {'id': historicoEstados.devolucion.id}) }}"
+                                           class="btn btn-sm btn-light-info"
+                                           title="Ver detalle de la devolución">
+                                            <i class="fas fa-search"></i>
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
                         {% if historicoEstados.estado.id == 11 %}
                             <div class="row">
                                 <div class="col-md-2">

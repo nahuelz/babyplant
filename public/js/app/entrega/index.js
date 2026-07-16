@@ -283,7 +283,7 @@ function dataTablesActionFormatter(data, type, full, meta) {
             +
             (data.delete !== undefined ? '<a class="dropdown-item accion-borrar" href="' + data.delete + '"><i class="la la-remove" style="margin-right: 5px;"></i> Borrar</a>' : '')
             +
-            (data.cancelar !== undefined ? '<a class="dropdown-item accion-cancelar" href="' + data.cancelar + '"><i class="la la-remove" style="margin-right: 5px;"></i> Cancelar </a>' : '')
+            (data.cancelar !== undefined ? '<a class="dropdown-item accion-cancelar" href="' + data.cancelar + '" data-es-reventa="' + (data.es_reventa || false) + '"><i class="la la-remove" style="margin-right: 5px;"></i> Cancelar </a>' : '')
         ;
 
         actions = ' <div class="dropdown dropdown-inline">\
@@ -343,14 +343,29 @@ function initCancelarButton() {
     $(document).on('click', '.accion-cancelar', function (e) {
         e.preventDefault();
         var a_href = $(this).attr('href');
-        show_confirm({
-            title: 'Confirmar',
-            type: 'warning',
-            msg: '¿Desea cancelar esta entrega?',
-            callbackOK: function () {
-                location.href = a_href;
-            }
-        });
+        var esReventa = $(this).data('es-reventa');
+        
+        if (esReventa) {
+            show_confirm({
+                title: 'Advertencia',
+                type: 'warning',
+                msg: 'Las entregas de reventa deben cancelarse desde el módulo de reventas.',
+                labelOK: 'Ir a Reventas',
+                labelCancel: 'Cancelar',
+                callbackOK: function () {
+                    window.location.href = '/reventa';
+                }
+            });
+        } else {
+            show_confirm({
+                title: 'Confirmar',
+                type: 'warning',
+                msg: '¿Desea cancelar esta entrega?',
+                callbackOK: function () {
+                    location.href = a_href;
+                }
+            });
+        }
         e.stopPropagation();
     });
 }

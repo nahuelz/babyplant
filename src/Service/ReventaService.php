@@ -6,6 +6,7 @@ use App\Entity\Constants\ConstanteEstadoDevolucion;
 use App\Entity\Constants\ConstanteEstadoEntrega;
 use App\Entity\Constants\ConstanteEstadoEntregaProducto;
 use App\Entity\Constants\ConstanteEstadoReventa;
+use App\Entity\Constants\ConstanteEstadoRemito;
 use App\Entity\Devolucion;
 use App\Entity\Entrega;
 use App\Entity\EntregaProducto;
@@ -115,7 +116,7 @@ class ReventaService
 
     /**
      * Cancela una reventa. Si ya fue entregada y la entrega no tiene remito,
-     * también cancela la entrega. Si tiene remito, no se puede cancelar.
+     * también cancela la entrega. Si tiene remito, solo se puede cancelar si el remito está CANCELADO.
      */
     public function cancelar(Reventa $reventa): void
     {
@@ -126,7 +127,10 @@ class ReventaService
         if ($reventa->getEstado() != null && $reventa->getEstado()->getCodigoInterno() == ConstanteEstadoReventa::ENTREGADA) {
             $entrega = $reventa->getEntrega();
             if ($entrega != null && $entrega->getRemito() != null) {
-                throw new \DomainException('La entrega de la reventa ya tiene remito, no se puede cancelar.');
+                // Verificar si el remito está cancelado
+                if ($entrega->getRemito()->getEstado() != null && $entrega->getRemito()->getEstado()->getCodigoInterno() != ConstanteEstadoRemito::CANCELADO) {
+                    throw new \DomainException('La entrega de la reventa tiene un remito activo, no se puede cancelar.');
+                }
             }
             if ($entrega != null) {
                 $estadoEntrega = $this->em->getRepository(EstadoEntrega::class)->findOneBy(['codigoInterno' => ConstanteEstadoEntrega::CANCELADA]);
@@ -136,6 +140,9 @@ class ReventaService
 
         $estadoReventa = $this->em->getRepository(EstadoReventa::class)->findOneBy(['codigoInterno' => ConstanteEstadoReventa::CANCELADA]);
         $this->estadoService->cambiarEstadoReventa($reventa, $estadoReventa, 'Cancela reventa.');
+        
+        // Flush para que el cambio de estado de la reventa se guarde antes de recalcular la devolución
+        $this->em->flush();
 
         $this->actualizarEstadoDevolucion($reventa->getDevolucion(), 'Cancelación de ' . $reventa . '.');
 

@@ -63,6 +63,12 @@ class EstadoPedidoProductoHistorico {
     private $reserva;
 
     /**
+     * @ORM\ManyToOne(targetEntity=Devolucion::class)
+     * @ORM\JoinColumn(name="id_devolucion", referencedColumnName="id", nullable=true)
+     */
+    private $devolucion;
+
+    /**
      * @ORM\ManyToOne(targetEntity=TipoMotivoEliminacion::class)
      * @ORM\JoinColumn(name="id_tipo_motivo_eliminacion", referencedColumnName="id", nullable=true)
      */
@@ -143,6 +149,22 @@ class EstadoPedidoProductoHistorico {
     public function setReserva($reserva): void
     {
         $this->reserva = $reserva;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDevolucion()
+    {
+        return $this->devolucion;
+    }
+
+    /**
+     * @param mixed $devolucion
+     */
+    public function setDevolucion($devolucion): void
+    {
+        $this->devolucion = $devolucion;
     }
 
     public function getTipoMotivoEliminacion(): mixed

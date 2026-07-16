@@ -68,4 +68,9 @@ class ConstanteEstadoPedidoProducto {
      */
     const BANDEJA_ELIMINADA = 12;
 
+    /**
+     * DEVOLUCION
+     */
+    const DEVOLUCION = 13;
+
 }

@@ -3,11 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Constants\ConstanteEstadoDevolucion;
+use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Devolucion;
 use App\Entity\EntregaProducto;
 use App\Entity\EstadoDevolucion;
+use App\Entity\EstadoPedidoProducto;
+use App\Entity\EstadoPedidoProductoHistorico;
 use App\Form\DevolucionType;
 use App\Service\ReventaService;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Expr\Join;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -61,6 +65,19 @@ class DevolucionController extends BaseController {
             }
 
             $em->persist($entity);
+            $em->flush();
+
+            // Generar histórico de estado en el pedidoProducto sin cambiar el estado
+            $pedidoProducto = $entity->getEntregaProducto()->getPedidoProducto();
+            $estadoDevolucion = $em->getRepository(EstadoPedidoProducto::class)->find(ConstanteEstadoPedidoProducto::DEVOLUCION);
+            $historico = new EstadoPedidoProductoHistorico();
+            $historico->setPedidoProducto($pedidoProducto);
+            $historico->setFecha(new DateTime());
+            $historico->setEstado($estadoDevolucion);
+            $historico->setMotivo('Devolución.');
+            $historico->setDevolucion($entity);
+            $pedidoProducto->addHistoricoEstado($historico);
+            $em->persist($historico);
             $em->flush();
 
             $this->addFlash('success', 'La devolución fue registrada correctamente.');
@@ -131,6 +148,32 @@ class DevolucionController extends BaseController {
     }
 
     /**
+     * @Route("/{id}/cancelar", name="devolucion_cancelar", methods={"GET"}, requirements={"id"="\d+"})
+     */
+    public function cancelar(Devolucion $devolucion, EntityManagerInterface $em): RedirectResponse
+    {
+        if ($devolucion->getEstado() != null && $devolucion->getEstado()->getCodigoInterno() != ConstanteEstadoDevolucion::PENDIENTE) {
+            $this->addFlash('error', 'Solo se pueden cancelar devoluciones en estado PENDIENTE.');
+            return $this->redirectToRoute('devolucion_index');
+        }
+
+        $estadoCancelada = $em->getRepository(EstadoDevolucion::class)->find(ConstanteEstadoDevolucion::CANCELADA);
+        if ($estadoCancelada) {
+            $this->estadoService->cambiarEstadoDevolucion($devolucion, $estadoCancelada, 'Cancelación de devolución');
+            
+            // Actualizar bandejas disponibles del pedidoProducto
+            $pedidoProducto = $devolucion->getEntregaProducto()->getPedidoProducto();
+            $pedidoProducto->setCantidadBandejasDisponibles();
+            
+            $em->flush();
+        }
+
+        $this->addFlash('success', 'La devolución fue cancelada correctamente.');
+
+        return $this->redirectToRoute('devolucion_index');
+    }
+
+    /**
      * Descarta las bandejas disponibles de la devolución.
      *
      * @Route("/{id}/descartar", name="devolucion_descartar", methods={"GET","POST"}, requirements={"id"="\d+"})
@@ -192,13 +235,15 @@ class DevolucionController extends BaseController {
             ->getQuery()
             ->getResult();
 
-        $datosFormateados = array_map(function ($row) {
+        $datosFormateados = array_map(function ($row) use ($em) {
+            $entregaProducto = $em->getRepository(EntregaProducto::class)->find($row['id']);
             return [
                 'id' => $row['id'],
                 'denominacion' => $row['descripcion'],
                 'numeroEntrega' => $row['numeroEntrega'],
                 'numeroOrden' => $row['numeroOrden'],
                 'bandejasEntregadas' => $row['cantidadBandejas'],
+                'bandejasDisponibles' => $entregaProducto ? $entregaProducto->getCantidadDisponibleParaDevolucion() : $row['cantidadBandejas'],
                 'mesada' => $row['mesada'],
                 'numeroPedido' => $row['numeroPedido'],
                 'precioUnitario' => $row['precioUnitario'],

@@ -326,6 +326,33 @@ class EntregaProducto {
         return $this;
     }
 
+    /**
+     * Cantidad de bandejas ya devueltas (devoluciones no canceladas).
+     */
+    public function getCantidadDevuelta(): float|int
+    {
+        $cantidad = 0;
+        foreach ($this->getDevoluciones() as $devolucion) {
+            // Solo contar devoluciones que no estén canceladas
+            if ($devolucion->getEstado() != null && $devolucion->getEstado()->getCodigoInterno() == \App\Entity\Constants\ConstanteEstadoDevolucion::CANCELADA) {
+                continue;
+            }
+            $cantidad += $devolucion->getCantidadBandejas();
+        }
+        return $cantidad == (int)$cantidad ? (int)$cantidad : (float)$cantidad;
+    }
+
+    /**
+     * Cantidad de bandejas disponibles para devolución.
+     */
+    public function getCantidadDisponibleParaDevolucion(): float|int
+    {
+        $entregadas = $this->getCantidadBandejas() ?? 0;
+        $devueltas = $this->getCantidadDevuelta();
+        $disponible = $entregadas - $devueltas;
+        return $disponible == (int)$disponible ? (int)$disponible : (float)$disponible;
+    }
+
     public function __toString(): string
     {
         if ($this->pedidoProducto && $this->entrega) {

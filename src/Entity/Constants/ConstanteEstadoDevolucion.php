@@ -28,4 +28,9 @@ class ConstanteEstadoDevolucion {
      */
     const DESCARTADA = 4;
 
+    /**
+     * CANCELADA
+     */
+    const CANCELADA = 5;
+
 }

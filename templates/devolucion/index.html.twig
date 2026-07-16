@@ -81,6 +81,11 @@
                                     <a href="#" class="dropdown-item link-ver-historico-devolucion" data-href="{{ path('devolucion_historico_estado', {'id': devolucion.id}) }}">
                                         <i class="la la-file-alt" style="margin-right: 5px;"></i> Histórico de estados
                                     </a>
+                                    {% if devolucion.estado and devolucion.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoDevolucion::PENDIENTE') %}
+                                        <a href="{{ path('devolucion_cancelar', {'id': devolucion.id}) }}" class="dropdown-item btn-cancelar-devolucion">
+                                            <i class="la la-ban" style="margin-right: 5px;"></i> Cancelar
+                                        </a>
+                                    {% endif %}
                                     {% if devolucion.cantidadDisponible > 0 %}
                                         <a href="{{ path('reventa_new', {'devolucion': devolucion.id}) }}" class="dropdown-item">
                                             <i class="la la-dollar-sign" style="margin-right: 5px;"></i> Revender
@@ -89,9 +94,6 @@
                                             <i class="la la-trash-alt" style="margin-right: 5px;"></i> Descartar
                                         </a>
                                     {% endif %}
-                                    <a href="{{ path('devolucion_delete', {'id': devolucion.id}) }}" class="dropdown-item btn-eliminar-devolucion">
-                                        <i class="la la-trash" style="margin-right: 5px;"></i> Eliminar
-                                    </a>
                                 </div>
                             </div>
                         </td>
@@ -136,16 +138,16 @@
                 }
             });
 
-            $('.btn-eliminar-devolucion').on('click', function (e) {
+            $('.btn-cancelar-devolucion').on('click', function (e) {
                 e.preventDefault();
                 var url = $(this).attr('href');
 
                 Swal.fire({
-                    title: '¿Eliminar devolución?',
+                    title: '¿Cancelar devolución?',
                     text: 'Esta acción no se puede deshacer.',
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonText: 'Sí, eliminar',
+                    confirmButtonText: 'Sí, cancelar',
                     cancelButtonText: 'Cancelar'
                 }).then(function (result) {
                     if (result.isConfirmed) {

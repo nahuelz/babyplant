@@ -22,6 +22,7 @@ function initProductos() {
             $('#info_producto').val(datos.denominacion);
             $('#info_numero_orden').val(datos.numeroOrden);
             $('#info_bandejas').val(datos.bandejasEntregadas);
+            $('#info_bandejas_disponibles').val(datos.bandejasDisponibles);
             $('#info_mesada').val(datos.mesada);
             $('#info_pedido').val(datos.numeroPedido);
             $('#info_precio').val('$ ' + parseFloat(datos.precioUnitario).toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
@@ -59,12 +60,12 @@ function initSubmitButton() {
         e.preventDefault();
 
         var cantidadDevolver = parseFloat($('#devolucion_cantidadBandejas').val()) || 0;
-        var bandejasEntregadas = parseFloat($('#info_bandejas').val()) || 0;
-        
-        if (bandejasEntregadas > 0 && cantidadDevolver > bandejasEntregadas) {
+        var bandejasDisponibles = parseFloat($('#info_bandejas_disponibles').val()) || 0;
+
+        if (bandejasDisponibles > 0 && cantidadDevolver > bandejasDisponibles) {
             Swal.fire({
                 title: 'Error',
-                text: "La cantidad a devolver no puede superar las bandejas entregadas (" + bandejasEntregadas + ").",
+                text: "La cantidad a devolver no puede superar las bandejas disponibles (" + bandejasDisponibles + ").",
                 icon: "warning"
             });
             return false;
@@ -107,15 +108,15 @@ function initCalculoValorTotal() {
 function initValidacionCantidadBandejas() {
     $('#devolucion_cantidadBandejas').on('input', function() {
         var cantidadDevolver = parseFloat($(this).val()) || 0;
-        var bandejasEntregadas = parseFloat($('#info_bandejas').val()) || 0;
-        
-        if (bandejasEntregadas > 0 && cantidadDevolver > bandejasEntregadas) {
+        var bandejasDisponibles = parseFloat($('#info_bandejas_disponibles').val()) || 0;
+
+        if (bandejasDisponibles > 0 && cantidadDevolver > bandejasDisponibles) {
             $(this).addClass('is-invalid');
             // Mostrar mensaje de error si no existe
             if (!$(this).siblings('.invalid-feedback').length) {
-                $(this).after('<div class="invalid-feedback">La cantidad a devolver no puede superar las bandejas entregadas (' + bandejasEntregadas + ')</div>');
+                $(this).after('<div class="invalid-feedback">La cantidad a devolver no puede superar las bandejas disponibles (' + bandejasDisponibles + ')</div>');
             } else {
-                $(this).siblings('.invalid-feedback').text('La cantidad a devolver no puede superar las bandejas entregadas (' + bandejasEntregadas + ')');
+                $(this).siblings('.invalid-feedback').text('La cantidad a devolver no puede superar las bandejas disponibles (' + bandejasDisponibles + ')');
             }
         } else {
             $(this).removeClass('is-invalid');
