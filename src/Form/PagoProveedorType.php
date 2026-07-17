@@ -85,7 +85,7 @@ class PagoProveedorType extends AbstractType
                 'attr' => array(
                     'class' => 'form-control',
                     'tabindex' => '2'),
-                'data' => new \DateTimeImmutable()
+                'data' => $options['is_edit'] ? null : new \DateTimeImmutable()
             ))
             ->add(
                 'modoPago',
@@ -149,6 +149,7 @@ class PagoProveedorType extends AbstractType
         $resolver->setDefaults([
             'data_class' => PagoProveedor::class,
             'allow_extra_fields' => true,
+            'is_edit' => false,
         ]);
     }
 }
