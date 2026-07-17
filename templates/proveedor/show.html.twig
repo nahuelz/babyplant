@@ -145,6 +145,18 @@
                     </div>
                 </div>
                 <div class="card-body padding-20">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="la la-search"></i>
+                                    </span>
+                                </div>
+                                <input type="text" id="busqueda-facturas" class="form-control" placeholder="Buscar facturas..." autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-12">
                             {% if facturas|length > 0 %}
@@ -368,6 +380,19 @@
                         $('#facturaFormContainer').html('<div class="alert alert-danger m-3">Error al cargar el formulario.</div>');
                     }
                 });
+            });
+        });
+
+        // Búsqueda en tabla de facturas
+        $('#busqueda-facturas').on('keyup', function() {
+            var valor = $(this).val().toLowerCase();
+            $('#busqueda-facturas').closest('.card-body').find('tbody tr').each(function() {
+                var textoFila = $(this).text().toLowerCase();
+                if (textoFila.indexOf(valor) > -1) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
             });
         });
     </script>
