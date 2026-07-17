@@ -85,8 +85,8 @@ class PagoProveedorType extends AbstractType
                 'attr' => array(
                     'class' => 'form-control',
                     'tabindex' => '2'),
-                'data' => $options['is_edit'] ? null : new \DateTimeImmutable()
-            ))
+                )
+            )
             ->add(
                 'modoPago',
                 EntityType::class,
