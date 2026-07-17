@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\Auditoria;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -15,6 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ImputacionPagoFactura
 {
+    use Auditoria;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

@@ -142,12 +142,16 @@ class PagoProveedorController extends BaseController
 
         $facturas = [];
         if ($pago) {
+            // Establecer fechaBaja en las imputaciones antes de eliminar el pago
             foreach ($pago->getImputaciones() as $imputacion) {
                 $factura = $imputacion->getFactura();
                 if ($factura) {
                     $facturas[$factura->getId()] = $factura;
                 }
+                $imputacion->setFechaBaja(new \DateTime());
+                $em->persist($imputacion);
             }
+            $em->flush();
         }
 
         $response = parent::baseDeleteAction($id);
@@ -350,6 +354,7 @@ class PagoProveedorController extends BaseController
             ->select('COALESCE(SUM(i.monto), 0)')
             ->join('i.pagoProveedor', 'p')
             ->where('i.factura = :factura')
+            ->andWhere('i.fechaBaja IS NULL')
             ->andWhere('p.fechaBaja IS NULL')
             ->setParameter('factura', $factura)
             ->getQuery()
