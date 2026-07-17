@@ -16,6 +16,7 @@ jQuery(document).ready(function () {
     $("#pago_proveedor_modoPago option[value='10']").prop('disabled', true);
 
     $('#pago_proveedor_modoPago').select2();
+    $('#pago_proveedor_imputacion_factura').select2();
 });
 
 function initSelect2() {
@@ -90,8 +91,8 @@ function initImputacionFacturas() {
             }
             
             // Determinar el monto a usar: el menor entre el saldo y el monto del pago (en moneda de la factura)
-            // Redondear hacia arriba a 2 decimales para evitar errores de redondeo acumulados
-            const montoAUsar = Math.ceil(Math.min(parseFloat(saldo), pagoMontoEnMonedaFactura) * 100) / 100;
+            // Redondear hacia abajo a 2 decimales para evitar errores de redondeo acumulados
+            const montoAUsar = Math.floor(Math.min(parseFloat(saldo), pagoMontoEnMonedaFactura) * 100) / 100;
             
             // Formatear el monto con separadores de miles
             const montoFormateado = montoAUsar.toLocaleString('es-AR', {
@@ -280,6 +281,91 @@ function initImputacionHandler() {
             return;
         }
 
+        // Validar que el monto a imputar no supere el monto del pago (convertido a la moneda de la factura)
+        const pagoMontoRaw = $('#pago_proveedor_monto').val();
+        const pagoMonto = parseFloat((pagoMontoRaw || '').replace(/\./g, '').replace(',', '.')) || 0;
+        const pagoMoneda = $('#pago_proveedor_tipoMoneda').val();
+        const tipoCambio = parseFloat(($('#pago_proveedor_tipoCambio').val() || '').replace(/\./g, '').replace(',', '.')) || 0;
+
+        let pagoMontoEnMonedaFactura = pagoMonto;
+        if (pagoMoneda !== moneda) {
+            if (tipoCambio > 0) {
+                if (moneda === 'USD') {
+                    pagoMontoEnMonedaFactura = pagoMonto / tipoCambio;
+                } else {
+                    pagoMontoEnMonedaFactura = pagoMonto * tipoCambio;
+                }
+            } else {
+                pagoMontoEnMonedaFactura = 0;
+            }
+        }
+
+        if (monto > pagoMontoEnMonedaFactura + 0.01) {
+            const simboloPago = pagoMoneda === 'USD' ? 'US$' : '$';
+            Swal.fire({
+                title: 'El monto a imputar supera el monto del pago.',
+                text: `Monto del pago: ${simboloPago} ${pagoMonto.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
+                icon: 'warning'
+            });
+            return;
+        }
+
+        // Validar que la suma de imputaciones existentes + el nuevo monto no supere el monto del pago
+        let totalImputadoEnMonedaPago = 0;
+        $('.tr-imputacion').each(function () {
+            const imputacionMoneda = $(this).data('moneda');
+            const imputacionMonto = parseFloat($(this).data('monto')) || 0;
+            let enPago = imputacionMonto;
+
+            if (imputacionMoneda !== pagoMoneda) {
+                if (tipoCambio <= 0) {
+                    enPago = Infinity;
+                } else if (pagoMoneda === 'USD') {
+                    enPago = imputacionMonto / tipoCambio;
+                } else {
+                    enPago = imputacionMonto * tipoCambio;
+                }
+            }
+
+            totalImputadoEnMonedaPago += enPago;
+        });
+
+        // Convertir el nuevo monto a la moneda del pago
+        let nuevoMontoEnPago = monto;
+        if (moneda !== pagoMoneda) {
+            if (tipoCambio <= 0) {
+                nuevoMontoEnPago = Infinity;
+            } else if (pagoMoneda === 'USD') {
+                nuevoMontoEnPago = monto / tipoCambio;
+            } else {
+                nuevoMontoEnPago = monto * tipoCambio;
+            }
+        }
+
+        if (totalImputadoEnMonedaPago + nuevoMontoEnPago > pagoMonto + 0.05) {
+            const simboloPago = pagoMoneda === 'USD' ? 'US$' : '$';
+            const totalDisponible = pagoMonto - totalImputadoEnMonedaPago;
+            
+            // Calcular el monto disponible en ambas monedas
+            let disponibleArs = 0;
+            let disponibleUsd = 0;
+            
+            if (pagoMoneda === 'USD') {
+                disponibleUsd = totalDisponible;
+                disponibleArs = tipoCambio > 0 ? totalDisponible * tipoCambio : 0;
+            } else {
+                disponibleArs = totalDisponible;
+                disponibleUsd = tipoCambio > 0 ? totalDisponible / tipoCambio : 0;
+            }
+            
+            Swal.fire({
+                title: 'La suma de las imputaciones superaría el monto del pago.',
+                text: `Monto disponible para imputar: $ ${disponibleArs.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2})} (ARS) / US$ ${disponibleUsd.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2})} (USD)`,
+                icon: 'warning'
+            });
+            return;
+        }
+
         const index = $('.tbody-imputacion').data('index');
         const simbolo = moneda === 'USD' ? 'US$' : '$';
         const montoFmt = monto.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -305,6 +391,7 @@ function initImputacionHandler() {
 
         facturaSelect.val('');
         montoInput.val('');
+        actualizarTotalImputado();
         updateDeleteImputacion();
     });
 
@@ -319,7 +406,41 @@ function updateDeleteImputacion() {
         if ($('.tr-imputacion').length === 0) {
             $('.row-imputacion').hide();
         }
+        actualizarTotalImputado();
     });
+}
+
+/**
+ * Actualiza el total imputado en USD
+ */
+function actualizarTotalImputado() {
+    const pagoMoneda = $('#pago_proveedor_tipoMoneda').val();
+    const tipoCambio = parseFloat(($('#pago_proveedor_tipoCambio').val() || '').replace(/\./g, '').replace(',', '.')) || 0;
+    
+    let totalUsd = 0;
+    
+    $('.tr-imputacion').each(function () {
+        const moneda = $(this).data('moneda');
+        const monto = parseFloat($(this).data('monto')) || 0;
+        
+        if (moneda === 'USD') {
+            totalUsd += monto;
+        } else {
+            totalUsd += tipoCambio > 0 ? monto / tipoCambio : 0;
+        }
+    });
+    
+    $('#total-imputado-usd').text('US$ ' + totalUsd.toLocaleString('es-AR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }));
+    
+    // Mostrar/ocultar el tfoot según haya imputaciones
+    if ($('.tr-imputacion').length > 0) {
+        $('.tfoot-imputacion').show();
+    } else {
+        $('.tfoot-imputacion').hide();
+    }
 }
 
 /**
@@ -354,7 +475,7 @@ function validarImputaciones() {
         totalEnMonedaPago += enPago;
     });
 
-    return totalEnMonedaPago <= pagoMonto + 0.01;
+    return totalEnMonedaPago <= pagoMonto + 0.05;
 }
 
 /**
@@ -463,6 +584,22 @@ function obtenerValorDolarBlue() {
  * Formatear campos de monto
  */
 function initMontoFormat() {
+    // Formatear el valor inicial de los campos de monto al cargar el formulario
+    $('.monto-input').each(function() {
+        const value = $(this).val();
+        if (value && value !== '') {
+            // Convertir el valor a número y luego formatearlo
+            const numericValue = parseFloat(value.replace(/\./g, '').replace(',', '.'));
+            if (!isNaN(numericValue)) {
+                const formattedValue = numericValue.toLocaleString('es-AR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                $(this).val(formattedValue);
+            }
+        }
+    });
+
     $('.monto-input').on('input', function(e) {
         if (e.target.value === '') return;
 

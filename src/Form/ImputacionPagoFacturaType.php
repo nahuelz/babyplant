@@ -41,6 +41,7 @@ class ImputacionPagoFacturaType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ImputacionPagoFactura::class,
+            'allow_extra_fields' => true,
         ]);
     }
 }

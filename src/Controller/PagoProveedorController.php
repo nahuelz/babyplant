@@ -241,7 +241,7 @@ class PagoProveedorController extends BaseController
 
         // Si el modo de pago es CUENTA CORRIENTE, no crear movimiento en cuenta corriente
         // porque el pago usa el saldo a favor existente
-        if ($entity->getModoPago() == '4') {
+        if ($entity->getModoPago() && $entity->getModoPago()->getId() == '4') {
             $this->actualizarEstadoFacturasDePago($em, $entity);
             $em->flush();
             return;
@@ -410,7 +410,7 @@ class PagoProveedorController extends BaseController
         $this->procesarImputaciones($em, $entity, $request);
 
         // Si el modo de pago es CUENTA CORRIENTE, no modificar el movimiento en cuenta corriente
-        if ($entity->getModoPago() == '4') {
+        if ($entity->getModoPago() && $entity->getModoPago()->getId() == '4') {
             return true;
         }
 
@@ -570,5 +570,61 @@ class PagoProveedorController extends BaseController
             'saldoArs' => $saldoFavorArs,
             'saldoUsd' => $saldoFavorUsd
         ]);
+    }
+
+    /**
+     * @Route("/{id}/aplicar-redondeo", name="pagoproveedor_aplicar_redondeo", methods={"GET"})
+     */
+    public function aplicarRedondeoAction(PagoProveedor $pagoProveedor, EntityManagerInterface $em): RedirectResponse
+    {
+        $saldoNoImputadoUSD = $pagoProveedor->getSaldoNoImputadoUSD();
+        
+        // Solo aplicar si el saldo en USD es menor a 0.05 (centavos de redondeo)
+        if ($saldoNoImputadoUSD < 0.05 && $saldoNoImputadoUSD > 0) {
+            // Ajustar el monto del pago para que coincida con el total imputado
+            $totalImputadoUSD = $pagoProveedor->getTotalImputadoUSD();
+            
+            // Calcular el nuevo monto en la moneda original del pago
+            if ($pagoProveedor->getTipoMoneda() === 'USD') {
+                $nuevoMonto = $totalImputadoUSD;
+            } else {
+                $nuevoMonto = $pagoProveedor->getTotalImputadoARS();
+            }
+            
+            $pagoProveedor->setMonto($nuevoMonto);
+            
+            // Si el modo de pago no es CUENTA CORRIENTE, actualizar el movimiento en cuenta corriente
+            if ($pagoProveedor->getModoPago() && $pagoProveedor->getModoPago()->getId() != '4') {
+                $movimiento = $em->getRepository(MovimientoProveedor::class)
+                    ->findOneBy(['pagoProveedor' => $pagoProveedor]);
+                
+                if ($movimiento) {
+                    $cuentaCorriente = $pagoProveedor->getProveedor()->getCuentaCorrienteProveedor();
+                    $tipoMoneda = $pagoProveedor->getTipoMoneda();
+                    
+                    // Revertir monto anterior
+                    $montoAnterior = $movimiento->getMonto();
+                    $cuentaCorriente->sumarSaldo(-$montoAnterior, $tipoMoneda);
+                    
+                    // Aplicar nuevo monto
+                    $cuentaCorriente->sumarSaldo($nuevoMonto, $tipoMoneda);
+                    
+                    $saldoPosterior = $tipoMoneda === 'USD' 
+                        ? $cuentaCorriente->getSaldoUsd() 
+                        : $cuentaCorriente->getSaldoArs();
+                    
+                    $movimiento->setMonto($nuevoMonto);
+                    $movimiento->setSaldoPosterior($saldoPosterior);
+                }
+            }
+            
+            $em->flush();
+            
+            $this->addFlash('success', 'Redondeo aplicado correctamente. El saldo a favor ha sido eliminado.');
+        } else {
+            $this->addFlash('warning', 'No se puede aplicar redondeo. El saldo a favor es mayor a 0,05 USD.');
+        }
+        
+        return $this->redirectToRoute('pagoproveedor_show', ['id' => $pagoProveedor->getId()]);
     }
 }

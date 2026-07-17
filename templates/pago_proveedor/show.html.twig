@@ -95,8 +95,18 @@
 
                         <div class="card-body py-4">
 
-                            <div class="font-size-16 text-uppercase padding-bottom-4">
-                                Saldo a Favor
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="font-size-16 text-uppercase padding-bottom-4">
+                                    Saldo a Favor
+                                </div>
+
+                                {% if pagoProveedor.getSaldoNoImputadoUSD() < 0.05 and pagoProveedor.getSaldoNoImputadoUSD() > 0 %}
+                                    <a href="{{ path('pagoproveedor_aplicar_redondeo', {'id': pagoProveedor.id}) }}" 
+                                       class="btn btn-sm btn-warning" 
+                                       onclick="return confirm('¿Aplicar redondeo para eliminar el saldo a favor de centavos?')">
+                                        <i class="fa fa-calculator"></i> Aplicar Redondeo
+                                    </a>
+                                {% endif %}
                             </div>
 
                             <div class="h4 font-weight-bold text-warning">
@@ -194,7 +204,7 @@
         </div>
 
         <div class="card-footer d-flex justify-content-between">
-            <a href="{{ path('pagoproveedor_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
+            <a href="javascript:history.back()" class="btn btn-light-dark font-weight-bold">Volver</a>
         </div>
     </div>
 

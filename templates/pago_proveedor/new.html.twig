@@ -75,7 +75,7 @@
             {% include 'pago_proveedor/new.imputacion.html.twig' %}
         </div>
         <div class="card-footer d-flex justify-content-between">
-            <a href="{{ path('factura_index') }}" class="btn btn-light-dark font-weight-bold">Volver</a>
+            <a href="javascript:history.back()" class="btn btn-light-dark font-weight-bold">Volver</a>
             {{ form_widget(form.submit) }}
         </div>
     </div>
