@@ -527,6 +527,12 @@ function limpiarMontosParaEnvio() {
 function obtenerValorDolarBlue() {
     // Mostrar indicador de carga
     const tipoCambioInput = $('#pago_proveedor_tipoCambio');
+    
+    // Si estamos en modo edición y el campo ya tiene un valor, no actualizar
+    if (window.__PAGO_IS_EDIT__ && tipoCambioInput.val() && tipoCambioInput.val() !== '') {
+        return;
+    }
+    
     tipoCambioInput.attr('placeholder', 'Cargando...');
 
     $.ajax({
