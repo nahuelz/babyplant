@@ -164,6 +164,58 @@ class FacturaController extends BaseController {
         return parent::baseDeleteAction($id);
     }
 
+    /**
+     * @Route("/{id}/cancelar", name="factura_cancelar", methods={"GET"})
+     */
+    public function cancelar($id, EntityManagerInterface $em): RedirectResponse
+    {
+        $factura = $em->getRepository(Factura::class)->find($id);
+        
+        if (!$factura) {
+            throw $this->createNotFoundException('No se puede encontrar la factura.');
+        }
+        
+        // Cambiar estado a CANCELADA
+        $estadoCancelada = $em->getReference(EstadoFactura::class, ConstanteEstadoFactura::CANCELADA);
+        $factura->setEstadoFactura($estadoCancelada);
+        
+        // Agregar registro en el histórico
+        $historico = new EstadoFacturaHistorico();
+        $historico->setFactura($factura);
+        $historico->setEstado($estadoCancelada);
+        $historico->setFecha(new \DateTime());
+        $historico->setMotivo('Factura cancelada');
+        $factura->addHistoricoEstado($historico);
+        
+        // Revertir movimiento en cuenta corriente si existe
+        $proveedor = $factura->getProveedor();
+        $cuentaCorriente = $proveedor->getCuentaCorrienteProveedor();
+        
+        if ($cuentaCorriente) {
+            $tipoMovimiento = $em->getRepository(TipoMovimiento::class)
+                ->find(ConstanteTipoMovimiento::FACTURA);
+            
+            if ($tipoMovimiento) {
+                $movimiento = $em->getRepository(MovimientoProveedor::class)
+                    ->findOneBy([
+                        'factura' => $factura,
+                        'tipoMovimiento' => $tipoMovimiento
+                    ]);
+                
+                if ($movimiento) {
+                    // Revertir el monto en la cuenta corriente
+                    $cuentaCorriente->sumarSaldo($factura->getTotal(), $factura->getTipoMoneda());
+                    $em->remove($movimiento);
+                }
+            }
+        }
+        
+        $em->flush();
+        
+        $this->addFlash('success', 'Factura cancelada correctamente.');
+        
+        return $this->redirectToRoute('proveedor_show', ['id' => $proveedor->getId()]);
+    }
 
     /**
      * @Route("/{id}/edit", name="factura_edit", methods={"GET"})

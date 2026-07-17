@@ -9,4 +9,6 @@ class ConstanteEstadoFactura
     const PAGO_PARCIAL = 2;
 
     const PAGA = 3;
+
+    const CANCELADA = 4;
 }

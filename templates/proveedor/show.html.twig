@@ -209,6 +209,9 @@
                                                                    data-factura-id="{{ factura.id }}">
                                                                     <i class="la la-pen" style="margin-right: 5px;"></i> Editar
                                                                 </a>
+                                                                <a href="{{ path('factura_cancelar', {'id': factura.id}) }}" class="dropdown-item" onclick="return confirm('¿Está seguro de cancelar esta factura?')">
+                                                                    <i class="la la-times" style="margin-right: 5px;"></i> Cancelar
+                                                                </a>
                                                             </div>
                                                         </div>
                                                     </td>
