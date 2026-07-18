@@ -161,8 +161,11 @@ class PagoProveedorController extends BaseController
         $em = $this->doctrine->getManager();
         $pago = $em->getRepository(PagoProveedor::class)->find($id);
 
+        $proveedorId = null;
         $facturas = [];
         if ($pago) {
+            $proveedorId = $pago->getProveedor() ? $pago->getProveedor()->getId() : null;
+            
             // Establecer fechaBaja en las imputaciones antes de eliminar el pago
             foreach ($pago->getImputaciones() as $imputacion) {
                 $factura = $imputacion->getFactura();
@@ -183,6 +186,11 @@ class PagoProveedorController extends BaseController
 
         if (!empty($facturas)) {
             $em->flush();
+        }
+
+        // Redirigir al show del proveedor si existe
+        if ($proveedorId) {
+            return $this->redirectToRoute('proveedor_show', ['id' => $proveedorId]);
         }
 
         return $response;

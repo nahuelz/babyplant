@@ -212,6 +212,10 @@
                                                                 <a href="{{ path('factura_cancelar', {'id': factura.id}) }}" class="dropdown-item" onclick="return confirm('¿Está seguro de cancelar esta factura?')">
                                                                     <i class="la la-times" style="margin-right: 5px;"></i> Cancelar
                                                                 </a>
+                                                                <a href="#" class="dropdown-item link-ver-historico-factura" 
+                                                                   data-href="{{ path('factura_historico_estados_modal', {'id': factura.id}) }}">
+                                                                    <i class="la la-history" style="margin-right: 5px;"></i> Histórico Estados
+                                                                </a>
                                                             </div>
                                                         </div>
                                                     </td>
@@ -423,6 +427,39 @@
                 }
             });
         });
+
+        function initVerHistoricoFacturaHandler() {
+            $(document).off('click', '.link-ver-historico-factura').on('click', '.link-ver-historico-factura', function (e) {
+                e.preventDefault();
+                
+                var actionUrl = $(this).data('href');
+                
+                $.ajax({
+                    type: 'POST',
+                    url: actionUrl
+                }).done(function (form) {
+                    showDialog({
+                        titulo: '<i class="fa fa-list-ul margin-right-10"></i> Hist&oacute;rico de estados',
+                        contenido: form,
+                        color: 'yellow',
+                        labelCancel: 'Cerrar',
+                        labelSuccess: 'Cerrar',
+                        closeButton: true,
+                        callbackCancel: function () {
+                            return;
+                        },
+                        callbackSuccess: function () {
+                            return;
+                        }
+                    });
+                    $('.bs-popover-top').hide();
+                    $('.btn-submit').hide();
+                });
+            });
+        }
+
+        // Llamar a la función
+        initVerHistoricoFacturaHandler();
     </script>
 
 {% endblock %}

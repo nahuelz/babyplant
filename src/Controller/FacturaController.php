@@ -425,6 +425,33 @@ class FacturaController extends BaseController {
     }
 
     /**
+     * @Route("/{id}/historico_estados_modal", name="factura_historico_estados_modal", methods={"POST"})
+     */
+    public function historicoEstadosModal(Factura $factura): Response
+    {
+        $em = $this->doctrine->getManager();
+        
+        // Usar DQL con LEFT JOIN para cargar solo pagos no eliminados
+        $historico = $em->createQuery('
+            SELECT h, e, f, p
+            FROM App\Entity\EstadoFacturaHistorico h
+            JOIN h.estado e
+            JOIN h.factura f
+            LEFT JOIN h.pagoProveedor p
+            WHERE h.factura = :factura
+            AND (p.fechaBaja IS NULL OR p IS NULL)
+            ORDER BY h.fecha DESC
+        ')
+        ->setParameter('factura', $factura)
+        ->getResult();
+
+        return $this->render('factura/historico_estados_modal.html.twig', [
+            'entity' => $factura,
+            'historicoEstados' => $historico,
+        ]);
+    }
+
+    /**
      * @Route("/lista/conceptos", name="lista_conceptos")
      */
     public function listaSubConceptosAction(Request $request) {

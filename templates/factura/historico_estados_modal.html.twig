@@ -1,0 +1,43 @@
+{% if entity is defined %}
+<div class="timeline timeline-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="note note-info text-center">
+                <p class="font-size-14">Hist&oacute;rico de estados de la <span class="bold">Factura N&deg; {{ entity.numeroFactura }}</span>.</p>
+            </div>
+        </div>
+    </div>
+
+    {% if historicoEstados is defined and historicoEstados|length > 0 %}
+        <div class="timeline-items">
+            {% for estadoHistorico in historicoEstados %}
+                <!--begin::Item-->
+                <div class="timeline-item">
+                    <!--begin::Icon-->
+                    <div class="timeline-media bg-light-{{ estadoHistorico.estado.colorIcono|default('primary') }}">
+                        <span class="{{ estadoHistorico.estado.icono|default('la la-flag') }}"></span>
+                    </div>
+                    <!--end::Icon-->
+
+                    <!--begin::Info-->
+                    <div class="timeline-desc timeline-desc-light-{{ estadoHistorico.estado.colorIcono|default('primary') }}">
+                        <span class="font-weight-bolder text-{{ estadoHistorico.estado.colorIcono|default('primary') }}">{{ estadoHistorico.fecha|date('d/m/y H:i') }}</span>
+                        <p class="font-weight-normal text-dark-50 pb-2">
+                            {{ estadoHistorico.motivo|default('-') }} <br>
+                            {% if estadoHistorico.pagoProveedor %}
+                                Pago: {{ estadoHistorico.pagoProveedor.tipoMoneda == 'USD' ? 'US$' : '$' }} {{ estadoHistorico.pagoProveedor.monto|number_format(2, ',', '.') }}
+                            {% endif %}
+                        </p>
+                    </div>
+                    <!--end::Info-->
+                </div>
+                <!--end::Item-->
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="note bg-grey-cararra font-size-13 text-center">
+            No hay registros de histórico para esta factura.
+        </div>
+    {% endif %}
+</div>
+{% endif %}
