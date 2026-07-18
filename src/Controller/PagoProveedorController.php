@@ -252,14 +252,14 @@ class PagoProveedorController extends BaseController
                 $montoStr = str_replace(',', '.', $montoStr);
             }
 
-            // El monto viene en ARS, convertir a la moneda de la factura
+            // El monto viene en ARS, convertir a la moneda de la factura usando el tipo de cambio del pago
             $montoArs = (float) $montoStr;
             $montoEnMonedaFactura = $montoArs;
 
             if ($factura->getTipoMoneda() === 'USD') {
-                $tipoCambioFactura = (float) $factura->getTipoCambio();
-                if ($tipoCambioFactura > 0) {
-                    $montoEnMonedaFactura = $montoArs / $tipoCambioFactura;
+                $tipoCambioPago = (float) $entity->getTipoCambio();
+                if ($tipoCambioPago > 0) {
+                    $montoEnMonedaFactura = $montoArs / $tipoCambioPago;
                 }
             }
 

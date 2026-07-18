@@ -287,12 +287,13 @@ class PagoProveedor
         $tipoCambioPago = (float) $this->tipoCambio;
 
         foreach ($this->imputaciones as $imputacion) {
-
             $factura = $imputacion->getFactura();
 
             if ($factura->getTipoMoneda() === 'USD') {
+                // La imputación está en USD, convertir a ARS usando el tipo de cambio del pago
                 $total += $imputacion->getMonto() * $tipoCambioPago;
             } else {
+                // La imputación ya está en ARS
                 $total += $imputacion->getMonto();
             }
         }
@@ -307,12 +308,13 @@ class PagoProveedor
         $tipoCambioPago = (float) $this->tipoCambio;
 
         foreach ($this->imputaciones as $imputacion) {
-
             $factura = $imputacion->getFactura();
 
             if ($factura->getTipoMoneda() === 'ARS') {
+                // La imputación está en ARS, convertir a USD usando el tipo de cambio del pago
                 $total += $imputacion->getMonto() / $tipoCambioPago;
             } else {
+                // La imputación ya está en USD
                 $total += $imputacion->getMonto();
             }
         }

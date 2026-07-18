@@ -44,7 +44,7 @@
                 </thead>
                 <tbody class="tbody-imputacion">
                     {% for imputacion in entity.imputaciones %}
-                        {% set montoArs = imputacion.factura.tipoMoneda == 'USD' ? (imputacion.monto * imputacion.factura.tipoCambio) : imputacion.monto %}
+                        {% set montoArs = imputacion.factura.tipoMoneda == 'USD' ? (imputacion.monto * entity.tipoCambio) : imputacion.monto %}
                         <tr class="tr-imputacion" data-monto="{{ montoArs }}" data-moneda="ARS">
                             {% if imputacion.id %}
                             <td class="hidden">
