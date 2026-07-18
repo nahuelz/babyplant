@@ -338,11 +338,14 @@ class Factura
 
     public function removeImputacion(ImputacionPagoFactura $imputacion): self
     {
-        if ($this->imputaciones->removeElement($imputacion)) {
-            if ($imputacion->getFactura() === $this) {
-                $imputacion->setFactura(null);
-            }
-        }
+        $this->imputaciones->removeElement($imputacion);
+
+        // Comentado para evitar el error 1048 (NotNullConstraintViolationException)
+        // durante el SoftDelete de Doctrine.
+        // if ($imputacion->getFactura() === $this) {
+        //     $imputacion->setFactura(null);
+        // }
+
         return $this;
     }
 

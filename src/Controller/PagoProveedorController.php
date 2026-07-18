@@ -120,13 +120,34 @@ class PagoProveedorController extends BaseController
      * @Route("/{id}/actualizar", name="pagoproveedor_update", methods={"POST","PUT"})
      */
     public function updateAction(Request $request, $id) {
-        $response = parent::baseUpdateAction($request, $id, true);
-
         $em = $this->doctrine->getManager();
         $pago = $em->getRepository(PagoProveedor::class)->find($id);
 
+        // 1. Guardamos las facturas ANTES de cualquier cambio
+        $facturasAfectadas = [];
         if ($pago) {
-            $this->actualizarEstadoFacturasDePago($em, $pago);
+            foreach ($pago->getImputaciones() as $imp) {
+                if ($imp->getFactura()) {
+                    $facturasAfectadas[$imp->getFactura()->getId()] = $imp->getFactura();
+                }
+            }
+        }
+
+        // 2. Ejecutamos la lógica base que procesa las imputaciones y hace el flush
+        $response = parent::baseUpdateAction($request, $id, true);
+
+        // 3. Recalculamos el estado de las facturas afectadas
+        if ($pago) {
+            // Volvemos a agregar las facturas actuales por si se agregaron nuevas en el proceso
+            foreach ($pago->getImputaciones() as $imp) {
+                if ($imp->getFactura()) {
+                    $facturasAfectadas[$imp->getFactura()->getId()] = $imp->getFactura();
+                }
+            }
+
+            foreach ($facturasAfectadas as $factura) {
+                $this->actualizarEstadoFactura($em, $factura, $pago);
+            }
             $em->flush();
         }
 
@@ -234,6 +255,8 @@ class PagoProveedorController extends BaseController
         // Eliminar las imputaciones que ya no vienen en el request
         foreach ($existingById as $id => $imp) {
             if (!in_array($id, $submittedIds, true)) {
+                // Solo removemos del EntityManager para que haga el SoftDelete.
+                // Ya no llamamos a $entity->removeImputacion($imp);
                 $em->remove($imp);
             }
         }

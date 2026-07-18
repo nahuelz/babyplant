@@ -244,11 +244,13 @@ class PagoProveedor
 
     public function removeImputacion(ImputacionPagoFactura $imputacion): self
     {
-        if ($this->imputaciones->removeElement($imputacion)) {
-            if ($imputacion->getPagoProveedor() === $this) {
-                $imputacion->setPagoProveedor(null);
-            }
-        }
+        $this->imputaciones->removeElement($imputacion);
+
+        // Comentado para evitar el error 1048 (NotNullConstraintViolationException)
+        // durante el SoftDelete de Doctrine.
+        // if ($imputacion->getPagoProveedor() === $this) {
+        //     $imputacion->setPagoProveedor(null);
+        // }
 
         return $this;
     }
