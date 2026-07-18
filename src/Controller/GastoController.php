@@ -91,7 +91,7 @@ class GastoController extends BaseController {
             $monto = $this->normalizarMonto($form->getData());
             $gasto->setMonto($monto);
 
-            $estado = $entityManager->getReference(EstadoGasto::class, ConstanteEstadoGasto::PENDIENTE);
+            $estado = $entityManager->getReference(EstadoGasto::class, ConstanteEstadoGasto::PAGO);
             $gasto->setEstadoGasto($estado);
 
             $historico = new EstadoGastoHistorico();
