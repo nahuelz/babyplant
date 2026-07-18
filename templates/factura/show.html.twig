@@ -27,6 +27,14 @@
                         Editar
                     </a>
                     <!--end::Button-->
+                    {% if factura.getSaldoPendienteUSD() < 0.1 and factura.getSaldoPendienteUSD() > -0.1 and factura.getSaldoPendienteUSD() != 0 %}
+                    <!--begin::Button-->
+                    <a href="{{ path('factura_aplicar_redondeo', {'id': factura.id}) }}" class="btn btn-warning font-weight-bolder ml-2">
+                        <i class="la la-magic"></i>
+                        Aplicar Redondeo
+                    </a>
+                    <!--end::Button-->
+                    {% endif %}
                 </div>
         </div>
 

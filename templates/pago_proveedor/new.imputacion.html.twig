@@ -44,7 +44,8 @@
                 </thead>
                 <tbody class="tbody-imputacion">
                     {% for imputacion in entity.imputaciones %}
-                        <tr class="tr-imputacion" data-monto="{{ imputacion.monto }}" data-moneda="{{ imputacion.factura.tipoMoneda }}">
+                        {% set montoArs = imputacion.factura.tipoMoneda == 'USD' ? (imputacion.monto * imputacion.factura.tipoCambio) : imputacion.monto %}
+                        <tr class="tr-imputacion" data-monto="{{ montoArs }}" data-moneda="ARS">
                             {% if imputacion.id %}
                             <td class="hidden">
                                 <input type="hidden" name="pago_proveedor[imputaciones][{{ loop.index0 }}][id]" value="{{ imputacion.id }}">
@@ -54,12 +55,12 @@
                                 <input type="hidden" name="pago_proveedor[imputaciones][{{ loop.index0 }}][factura]" value="{{ imputacion.factura.id }}">
                             </td>
                             <td class="hidden">
-                                <input type="hidden" name="pago_proveedor[imputaciones][{{ loop.index0 }}][monto]" value="{{ imputacion.monto|number_format(2, ',', '.') }}">
+                                <input type="hidden" name="pago_proveedor[imputaciones][{{ loop.index0 }}][monto]" value="{{ montoArs|number_format(2, ',', '.') }}">
                             </td>
 
                             <td class="v-middle text-center">{{ imputacion.factura.numeroFactura }}</td>
-                            <td class="v-middle text-center">{{ imputacion.factura.tipoMoneda }}</td>
-                            <td class="v-middle text-center">{{ imputacion.factura.tipoMoneda == 'USD' ? 'US$' : '$' }} {{ imputacion.monto|number_format(2, ',', '.') }}</td>
+                            <td class="v-middle text-center">ARS</td>
+                            <td class="v-middle text-center">$ {{ montoArs|number_format(2, ',', '.') }}</td>
 
                             <td class="text-center v-middle">
                                 <a href="#" class="btn btn-sm delete-link-inline link-delete-imputacion tooltips"

@@ -52,6 +52,16 @@ class Factura
     private $tipoMoneda;
 
     /**
+     * @ORM\Column(name="redondeo_usd", type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $redondeoUSD;
+
+    /**
+     * @ORM\Column(name="redondeo_ars", type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $redondeoARS;
+
+    /**
      * @ORM\Column(name="numero_factura", type="string", length=50)
      */
     private $numeroFactura;
@@ -135,6 +145,14 @@ class Factura
         foreach ($this->detalles as $detalle) {
             $total += (float) $detalle->getMontoTotal();
         }
+        
+        // Sumar el redondeo según la moneda de la factura
+        if ($this->tipoMoneda === 'USD') {
+            $total += $this->getRedondeoUSD();
+        } else {
+            $total += $this->getRedondeoARS();
+        }
+        
         return $total;
     }
 
@@ -281,6 +299,28 @@ class Factura
     public function setTipoMoneda(string $tipoMoneda): self
     {
         $this->tipoMoneda = $tipoMoneda;
+        return $this;
+    }
+
+    public function getRedondeoUSD(): ?float
+    {
+        return $this->redondeoUSD ? (float) $this->redondeoUSD : 0;
+    }
+
+    public function setRedondeoUSD(?float $redondeoUSD): self
+    {
+        $this->redondeoUSD = $redondeoUSD;
+        return $this;
+    }
+
+    public function getRedondeoARS(): ?float
+    {
+        return $this->redondeoARS ? (float) $this->redondeoARS : 0;
+    }
+
+    public function setRedondeoARS(?float $redondeoARS): self
+    {
+        $this->redondeoARS = $redondeoARS;
         return $this;
     }
 

@@ -27,7 +27,7 @@ class ImputacionPagoFacturaType extends AbstractType
             ])
             ->add('monto', MoneyType::class, [
                 'required' => false,
-                'label' => 'Monto a imputar',
+                'label' => 'Monto a imputar (ARS)',
                 'currency' => false,
                 'scale' => 2,
                 'attr' => [

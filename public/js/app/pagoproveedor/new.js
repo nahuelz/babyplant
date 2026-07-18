@@ -61,38 +61,28 @@ function initImputacionFacturas() {
     });
     cargarFacturasProveedor($('#pago_proveedor_proveedor').val());
 
-    // Autocompletar monto al seleccionar una factura
+    // Autocompletar monto al seleccionar una factura (siempre en ARS)
     $('#pago_proveedor_imputacion_factura').on('change', function () {
         const selectedOption = $(this).find('option:selected');
-        const saldo = selectedOption.data('saldo');
+        const saldoArs = selectedOption.data('saldo-ars');
         const facturaMoneda = selectedOption.data('moneda');
         
-        if (saldo !== undefined && saldo !== null) {
+        if (saldoArs !== undefined && saldoArs !== null) {
             // Obtener el monto del pago y su moneda
             const pagoMontoRaw = $('#pago_proveedor_monto').val();
             const pagoMonto = parseFloat((pagoMontoRaw || '').replace(/\./g, '').replace(',', '.')) || 0;
             const pagoMoneda = $('#pago_proveedor_tipoMoneda').val();
             const tipoCambio = parseFloat(($('#pago_proveedor_tipoCambio').val() || '').replace(/\./g, '').replace(',', '.')) || 0;
             
-            // Convertir el monto del pago a la moneda de la factura
-            let pagoMontoEnMonedaFactura = pagoMonto;
-            if (pagoMoneda !== facturaMoneda) {
-                if (tipoCambio > 0) {
-                    if (facturaMoneda === 'USD') {
-                        // Pago en ARS, factura en USD: dividir por tipo de cambio
-                        pagoMontoEnMonedaFactura = pagoMonto / tipoCambio;
-                    } else {
-                        // Pago en USD, factura en ARS: multiplicar por tipo de cambio
-                        pagoMontoEnMonedaFactura = pagoMonto * tipoCambio;
-                    }
-                } else {
-                    pagoMontoEnMonedaFactura = 0;
-                }
+            // Convertir el monto del pago a ARS
+            let pagoMontoArs = pagoMonto;
+            if (pagoMoneda === 'USD') {
+                pagoMontoArs = tipoCambio > 0 ? pagoMonto * tipoCambio : 0;
             }
             
-            // Determinar el monto a usar: el menor entre el saldo y el monto del pago (en moneda de la factura)
+            // Determinar el monto a usar: el menor entre el saldo en ARS y el monto del pago en ARS
             // Redondear hacia abajo a 2 decimales para evitar errores de redondeo acumulados
-            const montoAUsar = Math.floor(Math.min(parseFloat(saldo), pagoMontoEnMonedaFactura) * 100) / 100;
+            const montoAUsar = Math.floor(Math.min(parseFloat(saldoArs), pagoMontoArs) * 100) / 100;
             
             // Formatear el monto con separadores de miles
             const montoFormateado = montoAUsar.toLocaleString('es-AR', {
@@ -139,13 +129,9 @@ function actualizarEquivalenteImputacion() {
 
     let equivalente;
     let textoEquivalente;
-    if (facturaMoneda === 'USD') {
-        equivalente = monto * tipoCambio;
-        textoEquivalente = 'Equivale a $ ' + equivalente.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' (ARS)';
-    } else {
-        equivalente = monto / tipoCambio;
-        textoEquivalente = 'Equivale a US$ ' + equivalente.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' (USD)';
-    }
+    // El monto siempre está en ARS, el equivalente es en USD
+    equivalente = monto / tipoCambio;
+    textoEquivalente = 'Equivale a US$ ' + equivalente.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' (USD)';
 
     label.text(textoEquivalente);
 }
@@ -265,7 +251,8 @@ function initImputacionHandler() {
             return;
         }
 
-        if (monto > saldo + 0.01) {
+        const saldoArs = parseFloat(facturaSelect.find('option:selected').data('saldo-ars')) || 0;
+        if (monto > saldoArs + 0.01) {
             Swal.fire({ title: 'El monto imputado supera el saldo pendiente de la factura.', icon: 'warning' });
             return;
         }
@@ -281,102 +268,62 @@ function initImputacionHandler() {
             return;
         }
 
-        // Validar que el monto a imputar no supere el monto del pago (convertido a la moneda de la factura)
+        // Validar que el monto a imputar (en ARS) no supere el monto del pago (convertido a ARS)
         const pagoMontoRaw = $('#pago_proveedor_monto').val();
         const pagoMonto = parseFloat((pagoMontoRaw || '').replace(/\./g, '').replace(',', '.')) || 0;
         const pagoMoneda = $('#pago_proveedor_tipoMoneda').val();
         const tipoCambio = parseFloat(($('#pago_proveedor_tipoCambio').val() || '').replace(/\./g, '').replace(',', '.')) || 0;
 
-        let pagoMontoEnMonedaFactura = pagoMonto;
-        if (pagoMoneda !== moneda) {
-            if (tipoCambio > 0) {
-                if (moneda === 'USD') {
-                    pagoMontoEnMonedaFactura = pagoMonto / tipoCambio;
-                } else {
-                    pagoMontoEnMonedaFactura = pagoMonto * tipoCambio;
-                }
-            } else {
-                pagoMontoEnMonedaFactura = 0;
-            }
+        let pagoMontoArs = pagoMonto;
+        if (pagoMoneda === 'USD') {
+            pagoMontoArs = tipoCambio > 0 ? pagoMonto * tipoCambio : 0;
         }
 
-        if (monto > pagoMontoEnMonedaFactura + 0.01) {
-            const simboloPago = pagoMoneda === 'USD' ? 'US$' : '$';
+        if (monto > pagoMontoArs + 0.01) {
             Swal.fire({
                 title: 'El monto a imputar supera el monto del pago.',
-                text: `Monto del pago: ${simboloPago} ${pagoMonto.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
+                text: `Monto del pago disponible: $ ${pagoMontoArs.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2})} (ARS)`,
                 icon: 'warning'
             });
             return;
         }
 
-        // Validar que la suma de imputaciones existentes + el nuevo monto no supere el monto del pago
-        let totalImputadoEnMonedaPago = 0;
+        // Validar que la suma de imputaciones existentes (en ARS) + el nuevo monto (en ARS) no supere el monto del pago (en ARS)
+        let totalImputadoArs = 0;
         $('.tr-imputacion').each(function () {
             const imputacionMoneda = $(this).data('moneda');
             const imputacionMonto = parseFloat($(this).data('monto')) || 0;
-            let enPago = imputacionMonto;
+            let enArs = imputacionMonto;
 
-            if (imputacionMoneda !== pagoMoneda) {
-                if (tipoCambio <= 0) {
-                    enPago = Infinity;
-                } else if (pagoMoneda === 'USD') {
-                    enPago = imputacionMonto / tipoCambio;
-                } else {
-                    enPago = imputacionMonto * tipoCambio;
-                }
+            if (imputacionMoneda === 'USD') {
+                // El monto guardado está en USD, convertir a ARS usando el tipo de cambio del pago
+                enArs = tipoCambio > 0 ? imputacionMonto * tipoCambio : 0;
             }
 
-            totalImputadoEnMonedaPago += enPago;
+            totalImputadoArs += enArs;
         });
 
-        // Convertir el nuevo monto a la moneda del pago
-        let nuevoMontoEnPago = monto;
-        if (moneda !== pagoMoneda) {
-            if (tipoCambio <= 0) {
-                nuevoMontoEnPago = Infinity;
-            } else if (pagoMoneda === 'USD') {
-                nuevoMontoEnPago = monto / tipoCambio;
-            } else {
-                nuevoMontoEnPago = monto * tipoCambio;
-            }
-        }
-
-        if (totalImputadoEnMonedaPago + nuevoMontoEnPago > pagoMonto + 0.05) {
-            const simboloPago = pagoMoneda === 'USD' ? 'US$' : '$';
-            const totalDisponible = pagoMonto - totalImputadoEnMonedaPago;
-            
-            // Calcular el monto disponible en ambas monedas
-            let disponibleArs = 0;
-            let disponibleUsd = 0;
-            
-            if (pagoMoneda === 'USD') {
-                disponibleUsd = totalDisponible;
-                disponibleArs = tipoCambio > 0 ? totalDisponible * tipoCambio : 0;
-            } else {
-                disponibleArs = totalDisponible;
-                disponibleUsd = tipoCambio > 0 ? totalDisponible / tipoCambio : 0;
-            }
+        if (totalImputadoArs + monto > pagoMontoArs + 0.05) {
+            const totalDisponible = pagoMontoArs - totalImputadoArs;
             
             Swal.fire({
                 title: 'La suma de las imputaciones superaría el monto del pago.',
-                text: `Monto disponible para imputar: $ ${disponibleArs.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2})} (ARS) / US$ ${disponibleUsd.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2})} (USD)`,
+                text: `Monto disponible para imputar: $ ${totalDisponible.toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2})} (ARS)`,
                 icon: 'warning'
             });
             return;
         }
 
         const index = $('.tbody-imputacion').data('index');
-        const simbolo = moneda === 'USD' ? 'US$' : '$';
         const montoFmt = monto.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
         const row = `
-            <tr class="tr-imputacion" data-monto="${monto}" data-moneda="${moneda}">
+            <tr class="tr-imputacion" data-monto="${monto}" data-moneda="ARS">
                 <td class="hidden"><input type="hidden" name="pago_proveedor[imputaciones][${index}][factura]" value="${facturaId}"></td>
                 <td class="hidden"><input type="hidden" name="pago_proveedor[imputaciones][${index}][monto]" value="${montoRaw}"></td>
                 <td class="v-middle text-center">${facturaText}</td>
-                <td class="v-middle text-center">${moneda}</td>
-                <td class="v-middle text-center">${simbolo} ${montoFmt}</td>
+                <td class="v-middle text-center">ARS</td>
+                <td class="v-middle text-center">$ ${montoFmt}</td>
                 <td class="text-center v-middle">
                     <a href="#" class="btn btn-sm delete-link-inline link-delete-imputacion">
                         <i class="fa fa-trash text-danger"></i>

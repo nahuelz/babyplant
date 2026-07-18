@@ -452,6 +452,74 @@ class FacturaController extends BaseController {
     }
 
     /**
+     * @Route("/{id}/aplicar-redondeo", name="factura_aplicar_redondeo", methods={"GET"})
+     */
+    public function aplicarRedondeoAction(Factura $factura, EntityManagerInterface $em): RedirectResponse
+    {
+        $saldoPendienteUSD = $factura->getSaldoPendienteUSD();
+        
+        // Solo aplicar si el saldo pendiente en USD es menor a 0.1 (centavos de redondeo)
+        if ($saldoPendienteUSD < 0.1 && $saldoPendienteUSD > 0) {
+            
+            // Obtener el total pagado actual
+            $totalPagado = (float) $em->getRepository(ImputacionPagoFactura::class)
+                ->createQueryBuilder('i')
+                ->select('COALESCE(SUM(i.monto), 0)')
+                ->join('i.pagoProveedor', 'p')
+                ->where('i.factura = :factura')
+                ->andWhere('i.fechaBaja IS NULL')
+                ->andWhere('p.fechaBaja IS NULL')
+                ->setParameter('factura', $factura)
+                ->getQuery()
+                ->getSingleScalarResult();
+            
+            // Calcular el total sin redondeo (solo detalles)
+            $totalSinRedondeo = 0;
+            foreach ($factura->getDetalles() as $detalle) {
+                $totalSinRedondeo += (float) $detalle->getMontoTotal();
+            }
+            
+            // Calcular el redondeo necesario (diferencia entre pagado y total sin redondeo)
+            if ($factura->getTipoMoneda() === 'USD') {
+                $redondeo = $totalPagado - $totalSinRedondeo;
+                $factura->setRedondeoUSD($redondeo);
+                $factura->setRedondeoARS(0);
+            } else {
+                // Convertir el total pagado a ARS si es necesario
+                if ($factura->getTipoCambio() > 0) {
+                    $totalPagadoARS = $totalPagado * $factura->getTipoCambio();
+                } else {
+                    $totalPagadoARS = $totalPagado;
+                }
+                $redondeo = $totalPagadoARS - $totalSinRedondeo;
+                $factura->setRedondeoARS($redondeo);
+                $factura->setRedondeoUSD(0);
+            }
+            
+            // Actualizar el estado a PAGA
+            $estado = $em->getReference(EstadoFactura::class, ConstanteEstadoFactura::PAGA);
+            $factura->setEstadoFactura($estado);
+            
+            // Registrar histórico
+            $historico = new EstadoFacturaHistorico();
+            $historico->setFactura($factura);
+            $historico->setEstado($estado);
+            $historico->setFecha(new \DateTime());
+            $historico->setMotivo('Redondeo aplicado - Factura pagada');
+            $factura->addHistoricoEstado($historico);
+            $em->persist($historico);
+            
+            $em->flush();
+            
+            $this->addFlash('success', 'Redondeo aplicado correctamente. El saldo pendiente ha sido eliminado.');
+        } else {
+            $this->addFlash('warning', 'No se puede aplicar redondeo. El saldo pendiente es mayor a 0,1 USD.');
+        }
+        
+        return $this->redirectToRoute('factura_show', ['id' => $factura->getId()]);
+    }
+
+    /**
      * @Route("/lista/conceptos", name="lista_conceptos")
      */
     public function listaSubConceptosAction(Request $request) {
