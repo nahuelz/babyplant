@@ -148,10 +148,26 @@
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Sí, cancelar',
-                    cancelButtonText: 'Cancelar'
+                    cancelButtonText: 'Cancelar',
+                    html: '<input id="swal-input-motivo" class="swal2-input" placeholder="Motivo de cancelación (opcional)">',
+                    preConfirm: function () {
+                        return document.getElementById('swal-input-motivo').value;
+                    }
                 }).then(function (result) {
                     if (result.isConfirmed) {
-                        window.location.href = url;
+                        var motivo = result.value || '';
+                        var form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = url;
+                        
+                        var input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'motivo';
+                        input.value = motivo;
+                        form.appendChild(input);
+                        
+                        document.body.appendChild(form);
+                        form.submit();
                     }
                 });
             });

@@ -56,6 +56,11 @@ class Devolucion {
     private mixed $observacion = null;
 
     /**
+     * @ORM\Column(name="motivo_cancelacion", type="string", length=255, nullable=true)
+     */
+    private mixed $motivoCancelacion = null;
+
+    /**
      * @ORM\Column(name="vendias", type="boolean", nullable=true)
      */
     private mixed $vendias = null;
@@ -152,6 +157,16 @@ class Devolucion {
     public function setObservacion(mixed $observacion): void
     {
         $this->observacion = $observacion;
+    }
+
+    public function getMotivoCancelacion(): mixed
+    {
+        return $this->motivoCancelacion;
+    }
+
+    public function setMotivoCancelacion(mixed $motivoCancelacion): void
+    {
+        $this->motivoCancelacion = $motivoCancelacion;
     }
 
     public function getVendias(): mixed

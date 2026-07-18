@@ -47,6 +47,11 @@
                     <div class="row">
                         {{ macro_show._show_detail('Observación / Motivo', entity.observacion|default('-'), 'col-md-12') }}
                     </div>
+                    {% if entity.estado and entity.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoDevolucion::CANCELADA') and entity.motivoCancelacion %}
+                    <div class="row">
+                        {{ macro_show._show_detail('Motivo de Cancelación', entity.motivoCancelacion, 'col-md-12') }}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
 
@@ -74,15 +79,17 @@
             <div class="card-footer d-flex justify-content-between">
                 <a href="{{ path('devolucion_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
                 <div>
-                    {% if entity.cantidadDisponible > 0 %}
-                        <a href="{{ path('reventa_new', {'devolucion': entity.id}) }}" class="btn btn-success font-weight-bold mr-2">
-                            <i class="la la-dollar-sign"></i> Revender
-                        </a>
-                        <a href="{{ path('devolucion_descartar', {'id': entity.id}) }}" class="btn btn-danger font-weight-bold btn-descartar-devolucion">
-                            <i class="la la-trash-alt"></i> Descartar
-                        </a>
+                    {% if entity.estado is null or entity.estado.codigoInterno != constant('App\\Entity\\Constants\\ConstanteEstadoDevolucion::CANCELADA') %}
+                        {% if entity.cantidadDisponible > 0 %}
+                            <a href="{{ path('reventa_new', {'devolucion': entity.id}) }}" class="btn btn-success font-weight-bold mr-2">
+                                <i class="la la-dollar-sign"></i> Revender
+                            </a>
+                            <a href="{{ path('devolucion_descartar', {'id': entity.id}) }}" class="btn btn-danger font-weight-bold btn-descartar-devolucion">
+                                <i class="la la-trash-alt"></i> Descartar
+                            </a>
+                        {% endif %}
+                        <a href="{{ path('devolucion_edit', {'id': entity.id}) }}" class="btn btn-primary font-weight-bold">Editar</a>
                     {% endif %}
-                    <a href="{{ path('devolucion_edit', {'id': entity.id}) }}" class="btn btn-primary font-weight-bold">Editar</a>
                 </div>
             </div>
         </div>

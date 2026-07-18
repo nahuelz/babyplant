@@ -148,18 +148,22 @@ class DevolucionController extends BaseController {
     }
 
     /**
-     * @Route("/{id}/cancelar", name="devolucion_cancelar", methods={"GET"}, requirements={"id"="\d+"})
+     * @Route("/{id}/cancelar", name="devolucion_cancelar", methods={"POST"}, requirements={"id"="\d+"})
      */
-    public function cancelar(Devolucion $devolucion, EntityManagerInterface $em): RedirectResponse
+    public function cancelar(Devolucion $devolucion, Request $request, EntityManagerInterface $em): RedirectResponse
     {
         if ($devolucion->getEstado() != null && $devolucion->getEstado()->getCodigoInterno() != ConstanteEstadoDevolucion::PENDIENTE) {
             $this->addFlash('error', 'Solo se pueden cancelar devoluciones en estado PENDIENTE.');
             return $this->redirectToRoute('devolucion_index');
         }
 
+        $motivo = $request->request->get('motivo', '');
+        $devolucion->setMotivoCancelacion($motivo ?: null);
+
         $estadoCancelada = $em->getRepository(EstadoDevolucion::class)->find(ConstanteEstadoDevolucion::CANCELADA);
         if ($estadoCancelada) {
-            $this->estadoService->cambiarEstadoDevolucion($devolucion, $estadoCancelada, 'Cancelación de devolución');
+            $motivoHistorico = $motivo ? 'Cancelación de devolución: ' . $motivo : 'Cancelación de devolución';
+            $this->estadoService->cambiarEstadoDevolucion($devolucion, $estadoCancelada, $motivoHistorico);
             
             // Actualizar bandejas disponibles del pedidoProducto
             $pedidoProducto = $devolucion->getEntregaProducto()->getPedidoProducto();
