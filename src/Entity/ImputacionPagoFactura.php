@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Traits\Auditoria;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * ImputacionPagoFactura
@@ -13,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity
  * @ORM\Table(name="imputacion_pago_factura")
+ * @Gedmo\SoftDeleteable(fieldName="fechaBaja")
  */
 class ImputacionPagoFactura
 {
