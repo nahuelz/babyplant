@@ -258,6 +258,7 @@ class DevolucionController extends BaseController {
         return new JsonResponse($datosFormateados);
     }
 
+
     /**
      * Print a Devolucion Entity.
      *
