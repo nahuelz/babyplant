@@ -78,6 +78,9 @@
                                     <a href="{{ path('devolucion_edit', {'id': devolucion.id}) }}" class="dropdown-item">
                                         <i class="la la-edit" style="margin-right: 5px;"></i> Editar
                                     </a>
+                                    <a href="{{ path('devolucion_imprimir', {'id': devolucion.id}) }}" class="dropdown-item" target="_blank">
+                                        <i class="la la-print" style="margin-right: 5px;"></i> Imprimir Devolucion
+                                    </a>
                                     <a href="#" class="dropdown-item link-ver-historico-devolucion" data-href="{{ path('devolucion_historico_estado', {'id': devolucion.id}) }}">
                                         <i class="la la-file-alt" style="margin-right: 5px;"></i> Histórico de estados
                                     </a>

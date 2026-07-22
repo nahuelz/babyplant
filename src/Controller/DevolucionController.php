@@ -257,4 +257,29 @@ class DevolucionController extends BaseController {
 
         return new JsonResponse($datosFormateados);
     }
+
+    /**
+     * Print a Devolucion Entity.
+     *
+     * @Route("/{id}/imprimir", name="devolucion_imprimir", methods={"GET"}, requirements={"id"="\d+"})
+     */
+    public function imprimirDevolucionAction($id): Response
+    {
+        $em = $this->doctrine->getManager();
+
+        /* @var $devolucion Devolucion */
+        $devolucion = $em->getRepository("App\Entity\Devolucion")->find($id);
+
+        if (!$devolucion) {
+            throw $this->createNotFoundException("No se puede encontrar la entidad.");
+        }
+
+        $html = $this->renderView('devolucion/devolucion_pdf.html.twig', array('entity' => $devolucion, 'tipo_pdf' => "DEVOLUCION"));
+        $filename = "Devolucion.pdf";
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
+
+        $mpdfOutput = $this->printService->printA4($basePath, $filename, $html);
+
+        return new Response($mpdfOutput);
+    }
 }
