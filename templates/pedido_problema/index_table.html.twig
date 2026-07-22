@@ -28,6 +28,7 @@
         {
         "idPedido": "{{ entity.id }}",
         "cantidadBandejasDisponibles": "{{ entity.cantidadBandejasDisponibles == (entity.cantidadBandejasDisponibles|round(0, 'floor')) ? entity.cantidadBandejasDisponibles|number_format(0, '', '') : entity.cantidadBandejasDisponibles }}",
+        "cantidadBandejasEliminadas": "{{ entity.cantidadBandejasEliminadas == (entity.cantidadBandejasEliminadas|round(0, 'floor')) ? entity.cantidadBandejasEliminadas|number_format(0, '', '') : entity.cantidadBandejasEliminadas }}",
         "nombreCliente": "{{ entity.cliente|default('-') }}",
         "path": "{{ path('situacioncliente_show', { "id": entity.idCliente }) }}"
         },
@@ -60,6 +61,9 @@
             "pedido_producto_editar_solucion": "{{ path( "pedido_producto_editar_solucion", { "id": entity.idProducto })}}",
         {% else %}
             "pedido_producto_marcar_solucion": "{{ path( "pedido_producto_marcar_solucion", { "id": entity.idProducto })}}",
+        {% endif %}
+        {% if entity.cantidadBandejasEliminadas > 0 %}
+            "pedido_producto_revertir_bandeja": "{{ path( "pedido_producto_revertir_bandejas", { "id": entity.idProducto })}}",
         {% endif %}
         "pedido_producto_elimina_bandeja": "{{ path( "pedido_producto_eliminar_bandejas", { "id": entity.idProducto })}}"
         }]

@@ -74,6 +74,11 @@ class EstadoPedidoProductoHistorico {
      */
     private mixed $tipoMotivoEliminacion;
 
+    /**
+     * @ORM\Column(type="decimal", precision=6, scale=1, nullable=true)
+     */
+    private ?string $cantidadBandejas = null;
+
     public function getId(): ?int {
         return $this->id;
     }
@@ -175,6 +180,16 @@ class EstadoPedidoProductoHistorico {
     public function setTipoMotivoEliminacion(mixed $tipoMotivoEliminacion): void
     {
         $this->tipoMotivoEliminacion = $tipoMotivoEliminacion;
+    }
+
+    public function getCantidadBandejas(): ?string
+    {
+        return $this->cantidadBandejas;
+    }
+
+    public function setCantidadBandejas(?string $cantidadBandejas): void
+    {
+        $this->cantidadBandejas = $cantidadBandejas;
     }
 
 }

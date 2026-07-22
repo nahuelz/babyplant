@@ -1131,6 +1131,11 @@ class PedidoProducto {
         $this->cantidadBandejasEliminadas += $cantidadBandejasEliminadas;
     }
 
+    public function setCantidadBandejasEliminadasDirecta(mixed $cantidadBandejasEliminadas): void
+    {
+        $this->cantidadBandejasEliminadas = $cantidadBandejasEliminadas;
+    }
+
     public function getFechaSolucion(): mixed
     {
         return $this->fechaSolucion;

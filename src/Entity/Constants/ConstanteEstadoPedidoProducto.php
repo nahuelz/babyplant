@@ -73,4 +73,10 @@ class ConstanteEstadoPedidoProducto {
      */
     const DEVOLUCION = 13;
 
+
+    /**
+     * REVERTIR BANDEJAS
+     */
+    const REVERTIR_BANDEJAS = 14;
+
 }

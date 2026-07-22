@@ -57,6 +57,43 @@ class BandejaService
         $estadoPedidoProductoHistorico->setEstado($estadoBandejaEliminada);
         $estadoPedidoProductoHistorico->setTipoMotivoEliminacion($motivoEliminacion);
         $estadoPedidoProductoHistorico->setMotivo('Eliminación de ' . $cantidadAEliminar . ' bandejas. Motivo: ' . $motivoEliminacion->getNombre());
+        $estadoPedidoProductoHistorico->setCantidadBandejas($cantidadAEliminar);
+        $pedidoProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
+
+        $this->em->persist($estadoPedidoProductoHistorico);
+        $this->em->flush();
+    }
+
+    /**
+     * Revertir bandejas eliminadas de un pedido producto
+     *
+     * @param PedidoProducto $pedidoProducto
+     * @param float $cantidadARevertir
+     * @return void
+     */
+    public function revertirBandejas(PedidoProducto $pedidoProducto, float $cantidadARevertir): void
+    {
+        // Validar que no supere las bandejas eliminadas
+        if ($cantidadARevertir > $pedidoProducto->getCantidadBandejasEliminadas()) {
+            throw new \InvalidArgumentException('No puede revertir más bandejas de las eliminadas');
+        }
+
+        // Restar de las bandejas eliminadas
+        $nuevaCantidadEliminada = $pedidoProducto->getCantidadBandejasEliminadas() - $cantidadARevertir;
+        $pedidoProducto->setCantidadBandejasEliminadasDirecta($nuevaCantidadEliminada);
+        
+        // Recalcular las bandejas disponibles
+        $pedidoProducto->setCantidadBandejasDisponibles();
+
+        // Crear histórico con estado REVERTIR_BANDEJAS
+        $estadoRevertirBandejas = $this->em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::REVERTIR_BANDEJAS);
+
+        $estadoPedidoProductoHistorico = new EstadoPedidoProductoHistorico();
+        $estadoPedidoProductoHistorico->setPedidoProducto($pedidoProducto);
+        $estadoPedidoProductoHistorico->setFecha(new DateTime());
+        $estadoPedidoProductoHistorico->setEstado($estadoRevertirBandejas);
+        $estadoPedidoProductoHistorico->setMotivo('Reversión de ' . $cantidadARevertir . ' bandejas eliminadas');
+        $estadoPedidoProductoHistorico->setCantidadBandejas($cantidadARevertir);
         $pedidoProducto->addHistoricoEstado($estadoPedidoProductoHistorico);
 
         $this->em->persist($estadoPedidoProductoHistorico);

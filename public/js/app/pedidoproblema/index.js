@@ -39,6 +39,7 @@ $(document).ready(function () {
     initEditarSolucionHandler();
     initOkCheckeoHandler();
     initEliminarBandejasHandler();
+    initRevertirBandejasHandler();
 
 
     var table = $table.DataTable();
@@ -603,7 +604,8 @@ function dataTablesActionFormatter(data, type, full, meta) {
             (actionData.pedido_producto_marcar_solucion !== undefined ? '<a class="dropdown-item marcar-solucion-btn" href="#" data-id="' + full[2].idProducto + '" data-tiene-problema="true" data-observacion=""><i class="la la-check" style="margin-right: 5px;"></i> Marcar Solución</a>' : '') +
             (actionData.pedido_producto_quitar_solucion !== undefined ? '<a class="dropdown-item quitar-solucion-btn" href="#" data-id="' + full[2].idProducto + '" data-tiene-problema="true" data-observacion=""><i class="la la-times" style="margin-right: 5px;"></i> Quitar Solución</a>' : '') +
             (actionData.pedido_producto_editar_solucion !== undefined ? '<a class="dropdown-item editar-solucion-btn" href="#" data-id="' + full[2].idProducto + '" data-solucion="' + (full[2].solucion || '') + '" data-observacion="' + (full[2].observacionSolucion || '') + '"><i class="la la-edit" style="margin-right: 5px;"></i> Editar Solución</a>' : '') +
-            (actionData.pedido_producto_elimina_bandeja !== undefined ? '<a class="dropdown-item elimina-bandeja-btn" href="#" data-id="' + full[2].idProducto + '" data-bandejas-reales="' + full[6] + '" data-bandejas-disponibles="' + full[5].cantidadBandejasDisponibles + '"><i class="la la-trash" style="margin-right: 5px;"></i> Eliminar Bandejas</a>' : '');
+            (actionData.pedido_producto_elimina_bandeja !== undefined ? '<a class="dropdown-item elimina-bandeja-btn" href="#" data-id="' + full[2].idProducto + '" data-bandejas-reales="' + full[6] + '" data-bandejas-disponibles="' + full[5].cantidadBandejasDisponibles + '"><i class="la la-trash" style="margin-right: 5px;"></i> Eliminar Bandejas</a>' : '') +
+            (actionData.pedido_producto_revertir_bandeja !== undefined ? '<a class="dropdown-item revertir-bandeja-btn" href="#" data-id="' + full[2].idProducto + '" data-bandejas-reales="' + full[6] + '" data-bandejas-disponibles="' + full[5].cantidadBandejasEliminadas + '"><i class="la la-refresh" style="margin-right: 5px;"></i> Revertir Bandejas</a>' : '');
 
         actions = ' <div class="dropdown dropdown-inline">\
                         <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\
@@ -1651,6 +1653,123 @@ function initEliminarBandejasHandler() {
                     Swal.fire({
                         title: 'Error',
                         text: 'Ocurrió un error al eliminar las bandejas',
+                        icon: 'error'
+                    });
+                }
+            });
+        });
+    });
+}
+
+function initRevertirBandejasHandler() {
+    $(document).off('click', '.revertir-bandeja-btn').on('click', '.revertir-bandeja-btn', function (e) {
+        e.preventDefault();
+
+        const id = $(this).data('id');
+        const bandejasReales = $(this).data('bandejas-reales');
+        const bandejasEliminadas = $(this).data('bandejas-disponibles');
+
+        // Crear modal para revertir bandejas
+        const modalHtml = `
+            <div class="modal fade" id="modalRevertirBandejas" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="la la-refresh"></i>
+                                Revertir Bandejas Eliminadas
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span>&​times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-info">
+                                <strong>Información:</strong><br>
+                                Bandejas Reales: ${bandejasReales}<br>
+                                Bandejas Eliminadas: ${bandejasEliminadas}
+                            </div>
+                            <form id="formRevertirBandejas">
+                                <div class="form-group">
+                                    <label for="cantidadARevertir">Cantidad de bandejas a revertir:</label>
+                                    <input type="number" class="form-control" id="cantidadARevertir"
+                                           name="cantidadARevertir" min="1" max="${bandejasEliminadas}" required>
+                                    <small class="form-text text-muted">Máximo: ${bandejasEliminadas}</small>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-success" id="revertirBandejas">
+                                <i class="la la-refresh"></i> Revertir Bandejas
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Eliminar modal si ya existe
+        $('#modalRevertirBandejas').remove();
+
+        // Agregar nuevo modal
+        $('body').append(modalHtml);
+
+        // Mostrar modal
+        $('#modalRevertirBandejas').modal('show');
+
+        // Manejar envío del formulario
+        $('#revertirBandejas').off('click').on('click', function() {
+            const cantidadARevertir = parseFloat($('#cantidadARevertir').val());
+
+            if (!cantidadARevertir || cantidadARevertir <= 0) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Debe ingresar una cantidad válida',
+                    icon: 'error'
+                });
+                return;
+            }
+
+            if (cantidadARevertir > bandejasEliminadas) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'No puede revertir más bandejas de las eliminadas',
+                    icon: 'error'
+                });
+                return;
+            }
+
+            // Enviar datos via AJAX
+            $.ajax({
+                url: __HOMEPAGE_PATH__ + `pedidoproblema/${id}/revertir-bandejas`,
+                method: 'POST',
+                contentType: 'application/json',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                data: JSON.stringify({
+                    cantidadARevertir: cantidadARevertir
+                }),
+                success: function(response) {
+                    if (response.success) {
+                        $('#modalRevertirBandejas').modal('hide');
+                        toastr.success(response.message || 'Bandejas revertidas correctamente');
+                        // Recargar la tabla
+                        $('#table-pedido').DataTable().ajax.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: response.message || 'No se pudieron revertir las bandejas',
+                            icon: 'error'
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Ocurrió un error al revertir las bandejas',
                         icon: 'error'
                     });
                 }

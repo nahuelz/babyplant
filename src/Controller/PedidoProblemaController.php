@@ -114,6 +114,7 @@ class PedidoProblemaController extends BaseController {
         $rsm->addScalarResult('tieneSolucion', 'tieneSolucion');
         $rsm->addScalarResult('solucion', 'solucion');
         $rsm->addScalarResult('visto', 'visto');
+        $rsm->addScalarResult('cantidadBandejasEliminadas', 'cantidadBandejasEliminadas');
 
         $nativeQuery = $em->createNativeQuery('call sp_index_pedido_problema(?,?,?,?,?,?)', $rsm);
 
@@ -515,6 +516,49 @@ class PedidoProblemaController extends BaseController {
             'success' => true,
             'message' => 'Bandejas eliminadas correctamente',
             'cantidadBandejasDisponibles' => $nuevaCantidad
+        ]);
+    }
+
+    #[Route('/{id}/revertir-bandejas', name: 'pedido_producto_revertir_bandejas', methods: ['POST'])]
+    public function revertirBandejas(
+        Request $request,
+        PedidoProducto $pedidoProducto,
+        EntityManagerInterface $entityManager,
+        BandejaService $bandejaService
+    ): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $cantidadARevertir = $data['cantidadARevertir'] ?? null;
+
+        if (!$cantidadARevertir || $cantidadARevertir <= 0) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Debe ingresar una cantidad válida de bandejas a revertir'
+            ], 400);
+        }
+
+        // Validar que no supere las bandejas eliminadas
+        if ($cantidadARevertir > $pedidoProducto->getCantidadBandejasEliminadas()) {
+            return $this->json([
+                'success' => false,
+                'message' => 'No puede revertir más bandejas de las eliminadas'
+            ], 400);
+        }
+
+        // Usar el servicio para revertir bandejas
+        $bandejaService->revertirBandejas(
+            $pedidoProducto,
+            $cantidadARevertir
+        );
+
+        $nuevaCantidad = $pedidoProducto->getCantidadBandejasDisponibles();
+
+        return $this->json([
+            'success' => true,
+            'message' => 'Bandejas revertidas correctamente',
+            'cantidadBandejasDisponibles' => $nuevaCantidad,
+            'cantidadBandejasEliminadas' => $pedidoProducto->getCantidadBandejasEliminadas()
         ]);
     }
 }
