@@ -219,6 +219,7 @@ class DevolucionController extends BaseController {
     {
         $idCliente = $request->request->get('id_entity');
 
+        $em = $this->doctrine->getManager();
         $repository = $this->doctrine->getRepository(EntregaProducto::class);
 
         $resultados = $repository->createQueryBuilder('ep')
