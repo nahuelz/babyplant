@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\TipoConcepto;
+use App\Entity\TipoGrupo;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -20,6 +22,16 @@ class TipoConceptoType extends AbstractType
                     'attr' => array(
                         'class' => 'form-control',
                         'tabindex' => '5'))
+            )
+            ->add('tipoGrupo', EntityType::class, array(
+                'required' => false,
+                'label' => 'Grupo',
+                'class' => TipoGrupo::class,
+                'choice_label' => 'nombre',
+                'placeholder' => '-- Seleccione un grupo --',
+                'attr' => array(
+                    'class' => 'form-control',
+                    'tabindex' => '5'))
             )
             ->add('tipo', ChoiceType::class, array(
                     'required' => true,

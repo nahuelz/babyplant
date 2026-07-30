@@ -21,6 +21,12 @@ class TipoConcepto extends EntidadBasica {
      */
     private $tipo;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=TipoGrupo::class, inversedBy="tipoConceptos")
+     * @ORM\JoinColumn(name="id_tipo_grupo", referencedColumnName="id", nullable=true)
+     */
+    private $tipoGrupo;
+
     public function setNombre(string $nombre): self
     {
         parent::setNombre(mb_strtoupper($nombre, 'UTF-8'));
@@ -35,6 +41,17 @@ class TipoConcepto extends EntidadBasica {
     public function setTipo(string $tipo): self
     {
         $this->tipo = $tipo;
+        return $this;
+    }
+
+    public function getTipoGrupo(): ?TipoGrupo
+    {
+        return $this->tipoGrupo;
+    }
+
+    public function setTipoGrupo(?TipoGrupo $tipoGrupo): self
+    {
+        $this->tipoGrupo = $tipoGrupo;
         return $this;
     }
 
