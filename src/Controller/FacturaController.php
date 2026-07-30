@@ -536,4 +536,34 @@ class FacturaController extends BaseController {
             ->getQuery();
         return new JsonResponse($query->getResult());
     }
+
+    /**
+     * @Route("/lista/concepto-y-grupo-por-subconcepto", name="lista_concepto_grupo_por_subconcepto")
+     */
+    public function listaConceptoGrupoPorSubConceptoAction(Request $request) {
+        $id_subconcepto = $request->request->get('id_entity');
+
+        $repository = $this->getDoctrine()->getRepository(TipoSubConcepto::class);
+
+        $subConcepto = $repository->find($id_subconcepto);
+        
+        if (!$subConcepto) {
+            return new JsonResponse(['success' => false, 'message' => 'SubConcepto no encontrado']);
+        }
+
+        $concepto = $subConcepto->getTipoConcepto();
+        $tipoGrupo = $concepto ? $concepto->getTipoGrupo() : null;
+
+        return new JsonResponse([
+            'success' => true,
+            'concepto' => [
+                'id' => $concepto ? $concepto->getId() : null,
+                'nombre' => $concepto ? $concepto->getNombre() : null
+            ],
+            'tipoGrupo' => [
+                'id' => $tipoGrupo ? $tipoGrupo->getId() : null,
+                'nombre' => $tipoGrupo ? $tipoGrupo->getNombre() : null
+            ]
+        ]);
+    }
 }

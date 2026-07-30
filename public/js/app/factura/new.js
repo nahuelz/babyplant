@@ -10,10 +10,36 @@ jQuery(document).ready(function () {
     initBaseSubmitButton();
     initConceptos();
     initTipoCambio();
+
+
 });
 
 function initConceptos() {
-    initChainedSelect($('#factura_detalle_concepto'), $('#factura_detalle_subConcepto'), __HOMEPAGE_PATH__ + 'factura/lista/conceptos', true);
+    $('#factura_detalle_concepto, #factura_detalle_tipoGrupo').on('select2:opening', function(e) {
+        e.preventDefault();
+    });
+
+    // Evento para cargar concepto y grupo cuando se selecciona subconcepto
+    $('#factura_detalle_subConcepto').on('change', function() {
+        const subConceptoId = $(this).val();
+        
+        if (subConceptoId) {
+            $.ajax({
+                url: __HOMEPAGE_PATH__ + 'factura/lista/concepto-y-grupo-por-subconcepto',
+                method: 'POST',
+                data: { id_entity: subConceptoId },
+                success: function(response) {
+                    if (response.success) {
+                        $('#factura_detalle_tipoGrupo').val(response.tipoGrupo.id || '').trigger('change');
+                        $('#factura_detalle_concepto').val(response.concepto.id || '').trigger('change');
+                    }
+                }
+            });
+        } else {
+            $('#factura_detalle_tipoGrupo').val('').trigger('change');
+            $('#factura_detalle_concepto').val('').trigger('change');
+        }
+    });
 }
 
 function initTipoCambio() {
@@ -53,7 +79,6 @@ function initTipoCambio() {
 
 function initSelect2() {
     $('#factura_modoPago').select2();
-    $('#factura_tipoGrupo').select2();
     $('#factura_detalle_tipoGrupo').select2();
     $('#factura_detalle_concepto').select2();
     $('#factura_detalle_subConcepto').select2();
@@ -141,7 +166,7 @@ function initFacturaDetalleHandler() {
                 <td class="hidden"><input type="hidden" name="factura[detalles][${index}][descripcion]" value="${descripcion}"></td>
 
                 <td class="text-center v-middle">${tipoGrupo ? tipoGrupoSelect.find('option:selected').text() : ''}</td>
-                <td class="text-center v-middle">${conceptoSelect.find('option:selected').text()}</td>
+                <td class="text-center v-middle">${concepto ? conceptoSelect.find('option:selected').text() : ''}</td>
                 <td class="text-center v-middle">${subConcepto ? subConceptoSelect.find('option:selected').text() : ''}</td>
                 <td class="text-center v-middle">${descripcion}</td>
                 <td class="text-center v-middle">${cantidad}</td>
@@ -171,9 +196,9 @@ function initFacturaDetalleHandler() {
  * Limpiar formulario de detalle
  */
 function clearDetalleForm() {
-    $('#factura_detalle_tipoGrupo').val('').select2();
-    $('#factura_detalle_concepto').val('').select2();
-    $('#factura_detalle_subConcepto').val('').select2();
+    $('#factura_detalle_tipoGrupo').val('').trigger('change');
+    $('#factura_detalle_concepto').val('').trigger('change');
+    $('#factura_detalle_subConcepto').val('').trigger('change');
     $('#factura_detalle_cantidad').val('');
     $('#factura_detalle_precioUnitario').val('');
     $('#factura_detalle_descripcion').val('');

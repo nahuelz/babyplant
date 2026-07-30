@@ -26,41 +26,29 @@ class FacturaDetalleType extends AbstractType
                 'class' => TipoGrupo::class,
                 'required' => true,
                 'attr' => [
-                    'placeholder' => '-- Elija el tipo grupo --',
+                    'placeholder' => '-- Elija el sub concepto --',
                     'class' => 'form-control choice tipogrupo-select',
-                    'data-placeholder' => '-- Elija el tipo grupo --',
+                    'data-placeholder' => '-- Elija el sub concepto --',
                 ],
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('tg')
-                        ->where('tg.habilitado = 1')
-                        ->orderBy('tg.nombre', 'ASC');
-                },
                 'label_attr' => ['class' => 'control-label required'],
-                'placeholder' => '-- Elija el tipo grupo --',
+                'placeholder' => '-- Elija el sub concepto --',
             ])
             ->add('concepto', EntityType::class, [
                 'label' => 'Concepto',
                 'class' => TipoConcepto::class,
                 'required' => true,
                 'attr' => [
-                    'placeholder' => '-- Elija el concepto --',
+                    'placeholder' => '-- Elija el sub concepto --',
                     'class' => 'form-control choice concepto-select',
-                    'data-placeholder' => '-- Elija el concepto --',
+                    'data-placeholder' => '-- Elija el sub concepto --',
                 ],
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('x')
-                        ->where('x.habilitado = 1')
-                        ->andWhere('x.tipo IN (:tipos)')
-                        ->setParameter('tipos', [TipoConcepto::TIPO_FACTURA, TipoConcepto::TIPO_AMBOS])
-                        ->orderBy('x.nombre', 'ASC');
-                },
                 'label_attr' => ['class' => 'control-label required'],
-                'placeholder' => '-- Elija el concepto --',
+                'placeholder' => '-- Elija el sub concepto --',
             ])
             ->add('subConcepto', EntityType::class, [
                 'label' => 'Sub Concepto',
                 'class' => TipoSubConcepto::class,
-                'required' => false,
+                'required' => true,
                 'attr' => [
                     'placeholder' => '-- Elija el sub concepto --',
                     'class' => 'form-control choice subconcepto-select',
@@ -74,7 +62,7 @@ class FacturaDetalleType extends AbstractType
                         ->setParameter('tipos', [TipoConcepto::TIPO_FACTURA, TipoConcepto::TIPO_AMBOS])
                         ->orderBy('x.nombre', 'ASC');
                 },
-                'label_attr' => ['class' => 'control-label'],
+                'label_attr' => ['class' => 'control-label required'],
                 'placeholder' => '-- Elija el sub concepto --',
             ])
             ->add('cantidad', NumberType::class, [
