@@ -6,10 +6,12 @@ use App\Entity\Constants\ConstanteEstadoEntrega;
 use App\Entity\Constants\ConstanteEstadoEntregaProducto;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Constants\ConstanteEstadoRemito;
+use App\Entity\Constants\ConstanteEstadoReserva;
 use App\Entity\EntregaProducto;
 use App\Entity\EstadoEntrega;
 use App\Entity\EstadoEntregaProducto;
 use App\Entity\EstadoRemito;
+use App\Entity\EstadoReserva;
 use App\Entity\PedidoProducto;
 use App\Entity\Entrega;
 use App\Entity\Remito;
@@ -176,6 +178,15 @@ class EntregaController extends BaseController {
 
             // Cambiar el estado de la entrega a cancelada
             $this->cambiarEstadoEntrega($em, $entrega, $estadoCancelada, 'Entrega cancelada');
+
+            // Si la entrega tiene una reserva, volverla a SIN ENTREGAR
+            $reserva = $entrega->getReserva();
+            if ($reserva) {
+                $estadoSinEntregar = $em->getRepository(EstadoReserva::class)
+                    ->findOneByCodigoInterno(ConstanteEstadoReserva::SIN_ENTREGAR);
+
+                $this->estadoService->cambiarEstadoReserva($reserva, $estadoSinEntregar, 'Entrega cancelada');
+            }
 
             $em->flush();
             $em->commit();
