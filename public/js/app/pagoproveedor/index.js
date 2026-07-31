@@ -4,6 +4,9 @@ jQuery(document).ready(function () {
     pago_proveedor_table = $('#table-pago-proveedor')
     dataTablesInit(pago_proveedor_table, {
         ajax: __HOMEPAGE_PATH__ + 'pago_proveedor/index_table/',
+        responsive: true,
+        autoWidth: false,
+        scrollX: false,
         columnDefs: datatablesGetColDef(),
         order: [[1, 'asc']],
     })
@@ -23,9 +26,10 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'id',
-            width: '30px',
+            width: '5%',
             className: 'dt-center',
             orderable: false,
+            visible: false,
             render: function (data, type, full, meta) {
                 return '\
                     <label class="kt-checkbox kt-checkbox--single kt-checkbox--solid">\
@@ -38,16 +42,19 @@ function datatablesGetColDef() {
             targets: index++,
             className: 'dt-center',
             name: 'proveedor',
+            width: '25%',
         },
         {
             targets: index++,
             className: 'dt-center',
             name: 'fechaPago',
+            width: '15%',
         },
         {
             targets: index++,
             name: 'monto',
             className: 'dt-center',
+            width: '15%',
             render: function (data, type, full, meta) {
 
                 const monto = parseFloat(data.monto || 0);
@@ -68,6 +75,7 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'modoPago',
             className: 'dt-center',
+            width: '15%',
         },
         {
             targets: -1,

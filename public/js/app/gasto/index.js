@@ -67,6 +67,9 @@ function initDataTable() {
         lengthMenu: [5, 10, 25, 50, 100, 500, 1000],
         pageLength: 50,
         destroy: true,
+        responsive: true,
+        autoWidth: false,
+        scrollX: false,
         columnDefs: datatablesGetColDef(),
         order: [[1, 'desc']],
         serverSide: false,
@@ -87,7 +90,7 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'id',
-            width: '15px',
+            width: '5%',
             className: 'dt-center',
             orderable: false,
             render: function (data, type, full, meta) {
@@ -102,24 +105,28 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'fecha',
             className: 'dt-center',
+            width: '10%',
             type: 'string'
         },
         {
             targets: index++,
             name: 'concepto',
             className: 'dt-center',
+            width: '25%',
             type: 'string'
         },
         {
             targets: index++,
             name: 'monto',
             className: 'dt-center',
+            width: '15%',
             type: 'string'
         },
         {
             targets: index++,
             name: 'modoPago',
             className: 'dt-center',
+            width: '15%',
             type: 'string'
         },
         {
@@ -127,6 +134,7 @@ function datatablesGetColDef() {
             name: 'nombreEstado',
             orderable: false,
             className: 'nowrap text-center align-middle',
+            width: '13%',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
                     return '<span class="label label-inline ' + data.colorEstado + ' font-weight-bold p-4" style="width: 120px">' + data.nombreEstado + '</span>';

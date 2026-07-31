@@ -63,6 +63,9 @@ function initDataTable() {
         lengthMenu: [5, 10, 25, 50, 100, 500, 1000],
         pageLength: 50,
         destroy: true,
+        responsive: true,
+        autoWidth: false,
+        scrollX: false,
         columnDefs: datatablesGetColDef(),
         order: [[0, 'desc']],
         serverSide: false,
@@ -84,18 +87,21 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'proveedor',
             className: 'dt-center',
+            width: '15%',
             type: 'string'
         },
         {
             targets: index++,
             name: 'numeroFactura',
             className: 'dt-center',
+            width: '10%',
             type: 'string'
         },
         {
             targets: index++,
             name: 'fecha',
             className: 'dt-center',
+            width: '10%',
             type: 'date',
             render: function (data, type, full, meta) {
                 if (type === 'sort' || type === 'type') {
@@ -108,18 +114,21 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'tipoGrupo',
             className: 'dt-center',
+            width: '10%',
             type: 'string'
         },
         {
             targets: index++,
             name: 'concepto',
             className: 'dt-center',
+            width: '15%',
             type: 'string'
         },
         {
             targets: index++,
             name: 'montoTotal',
             className: 'dt-center',
+            width: '12%',
             render: function (data, type, full, meta) {
 
                 const monto = parseFloat(data.montoTotal || 0);
@@ -141,6 +150,7 @@ function datatablesGetColDef() {
             name: 'nombreEstado',
             orderable: false,
             className: 'nowrap text-center align-middle',
+            width: '13%',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
                     return '<span class="label label-inline ' + data.colorEstado + ' font-weight-bold p-4" style="width: 120px">' + data.nombreEstado + '</span>';

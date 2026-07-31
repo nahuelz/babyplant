@@ -4,6 +4,18 @@
     {{ parent() }}
     <link href="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css"/>
 
+    <style>
+        #table-proveedor {
+            width: 100% !important;
+            table-layout: fixed;
+        }
+        #table-proveedor th,
+        #table-proveedor td {
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+    </style>
+
 {% endblock %}
 
 {% block body %}

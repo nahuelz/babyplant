@@ -4,6 +4,9 @@ jQuery(document).ready(function () {
     proveedor_table = $('#table-proveedor')
     dataTablesInit(proveedor_table, {
         ajax: __HOMEPAGE_PATH__ + 'proveedor/index_table/',
+        responsive: true,
+        autoWidth: false,
+        scrollX: false,
         columnDefs: datatablesGetColDef(),
         order: [[1, 'asc']],
     })
@@ -23,9 +26,10 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'id',
-            width: '30px',
+            width: '5%',
             className: 'dt-center',
             orderable: false,
+            visible: false,
             render: function (data, type, full, meta) {
                 return '\
                     <label class="kt-checkbox kt-checkbox--single kt-checkbox--solid">\
@@ -37,30 +41,37 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'nombre',
+            width: '20%',
         },
         {
             targets: index++,
             name: 'cuit',
+            width: '12%',
         },
         {
             targets: index++,
             name: 'email',
+            width: '15%',
         },
         {
             targets: index++,
             name: 'telefono',
+            width: '10%',
         },
         {
             targets: index++,
             name: 'direccion',
+            width: '15%',
         },
         {
             targets: index++,
             name: 'condicionIva',
+            width: '12%',
         },
         {
             targets: index++,
             name: 'habilitado',
+            width: '8%',
         },
         {
             targets: -1,
