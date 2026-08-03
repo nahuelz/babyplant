@@ -357,11 +357,11 @@ function datatablesGetColDef() {
                     }
 
                     if (data.visto === '1') {
-                        badges += '<span class="badge badge-primary badge-sm ml-1 mb-1" title="SOLUCIÓN">VISTO</span>';
+                        badges += '<span class="badge badge-primary badge-sm ml-1 mb-1" title="VISTO">VISTO</span>';
                     }
 
                     if (data.tieneReservaPorFalla === '1') {
-                        badges += '<span class="badge badge-warning badge-sm ml-1" title="SOLUCIÓN">RSRVA</span>';
+                        badges += '<span class="badge badge-warning badge-sm ml-1" title="RESERVAS POR FALLA">RSRVA</span>';
                     }
 
                     return `
