@@ -382,13 +382,45 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'nombreVariedad',
             orderable: false,
-            className: 'nowrap text-center margin-0 p-0',
+            className: 'nowrap text-center margin-0 padding-0 p-0',
             width: '50px',
             render: function (data, type, full, meta) {
                 if (type === 'display') {
-                    // Reemplazar la línea del render con:
-                    return '<span class="label label-inline margin-0 font-weight-bold p-2" style="font-size: 11px; font-weight: bold !important;width: 220px !important;color: black !important;background-color: ' + data.colorProducto + '; display: inline-block; min-height: auto; height: auto; white-space: normal; line-height: 1.3;">' + data.nombreProductoCompleto + '</span>';
+
+                    let badges = '';
+
+                    if (data.tieneProblema === '1') {
+                        badges += '<span class="badge badge-danger badge-sm ml-1 mb-1" title="PROBLEMA">PROB</span>';
+                    }
+
+                    if (data.tieneSolucion === '1') {
+                        badges += '<span class="badge badge-success badge-sm ml-1 mb-1" title="SOLUCIÓN">SOLU</span>';
+                    }
+
+                    if (data.visto === '1') {
+                        badges += '<span class="badge badge-primary badge-sm ml-1 mb-1" title="SOLUCIÓN">VISTO</span>';
+                    }
+
+                    if (data.tieneReservaPorFalla === '1') {
+                        badges += '<span class="badge badge-warning badge-sm ml-1" title="SOLUCIÓN">RSRVA</span>';
+                    }
+
+                    return `
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            
+                            <span class="label label-inline margin-0 font-weight-bold p-3"
+                                  style="font-size: 11px; font-weight: bold !important; width: 220px; height: auto; min-height: auto; color: black !important; background-color: ${data.colorProducto}; display: inline-block; white-space: normal; line-height: 1.3;">
+                                ${data.nombreProductoCompleto}
+                            </span>
+            
+                            <div style="display: flex; flex-direction: column; align-items: flex-start;font-size: 12px">
+                                ${badges}
+                            </div>
+            
+                        </div>
+                    `;
                 }
+
                 return data.nombreProductoCompleto;
             }
         },
