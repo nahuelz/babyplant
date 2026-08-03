@@ -563,12 +563,15 @@ class PagoProveedorController extends BaseController
                 $saldoUsd = $tipoCambioFactura > 0 ? $saldo / $tipoCambioFactura : 0;
             }
 
+            $denominacionSaldo = $factura->getTipoMoneda() === 'USD'
+                ? 'US$ ' . number_format($saldoUsd, 2, ',', '.')
+                : '$ ' . number_format($saldoArs, 2, ',', '.');
+
             $result[] = [
                 'id' => $factura->getId(),
                 'denominacion' => 'Factura #' . $factura->getNumeroFactura()
                     . ' (' . $factura->getTipoMoneda() . ') - Saldo: '
-                    . '$ ' . number_format($saldoArs, 2, ',', '.')
-                    . ' / US$ ' . number_format($saldoUsd, 2, ',', '.'),
+                    . $denominacionSaldo,
                 'moneda' => $factura->getTipoMoneda(),
                 'saldo' => $saldo,
                 'saldoArs' => $saldoArs,

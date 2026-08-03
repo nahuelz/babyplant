@@ -61,39 +61,18 @@ function initImputacionFacturas() {
     });
     cargarFacturasProveedor($('#pago_proveedor_proveedor').val());
 
-    // Autocompletar monto al seleccionar una factura (siempre en ARS)
+    // Autocompletar monto al seleccionar una factura (el input se muestra en ARS, pero el tope se calcula en USD)
     $('#pago_proveedor_imputacion_factura').on('change', function () {
         const selectedOption = $(this).find('option:selected');
-        const saldoArs = selectedOption.data('saldo-ars');
-        const facturaMoneda = selectedOption.data('moneda');
-        
-        if (saldoArs !== undefined && saldoArs !== null) {
-            // Obtener el monto del pago y su moneda
-            const pagoMontoRaw = $('#pago_proveedor_monto').val();
-            const pagoMonto = parseFloat((pagoMontoRaw || '').replace(/\./g, '').replace(',', '.')) || 0;
-            const pagoMoneda = $('#pago_proveedor_tipoMoneda').val();
-            const tipoCambio = parseFloat(($('#pago_proveedor_tipoCambio').val() || '').replace(/\./g, '').replace(',', '.')) || 0;
-            
-            // Convertir el monto del pago a ARS
-            let pagoMontoArs = pagoMonto;
-            if (pagoMoneda === 'USD') {
-                pagoMontoArs = tipoCambio > 0 ? pagoMonto * tipoCambio : 0;
-            }
-            
-            // Determinar el monto a usar: el menor entre el saldo en ARS y el monto del pago en ARS
-            // Redondear hacia abajo a 2 decimales para evitar errores de redondeo acumulados
-            const montoAUsar = Math.floor(Math.min(parseFloat(saldoArs), pagoMontoArs) * 100) / 100;
-            
-            // Formatear el monto con separadores de miles
-            const montoFormateado = montoAUsar.toLocaleString('es-AR', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-            $('#pago_proveedor_imputacion_monto').val(montoFormateado);
-        } else {
+        const facturaId = selectedOption.val();
+
+        if (!facturaId) {
             $('#pago_proveedor_imputacion_monto').val('');
+            actualizarEquivalenteImputacion();
+            return;
         }
-        actualizarEquivalenteImputacion();
+
+        actualizarMontoImputacionSugerido();
     });
 
     // Actualizar equivalencia al modificar el monto a imputar
@@ -102,13 +81,55 @@ function initImputacionFacturas() {
     });
 
     // Actualizar info del monto del pago al modificar monto, moneda o tipo de cambio
+    // y, si ya hay una factura seleccionada, recalcular el monto sugerido a imputar
     $('#pago_proveedor_monto, #pago_proveedor_tipoCambio').on('input', function () {
         actualizarMontoPagoInfo();
+        actualizarMontoImputacionSugerido();
     });
     $('#pago_proveedor_tipoMoneda').on('change', function () {
         actualizarMontoPagoInfo();
+        actualizarMontoImputacionSugerido();
     });
     actualizarMontoPagoInfo();
+}
+
+/**
+ * Calcula y setea el monto sugerido a imputar (en ARS) tomando como tope
+ * el menor entre el saldo de la factura en USD y el monto del pago en USD.
+ */
+function actualizarMontoImputacionSugerido() {
+    const selectedOption = $('#pago_proveedor_imputacion_factura').find('option:selected');
+    const facturaId = selectedOption.val();
+    const saldoUsd = selectedOption.data('saldo-usd');
+
+    if (!facturaId || saldoUsd === undefined || saldoUsd === null) {
+        return;
+    }
+
+    const pagoMontoRaw = $('#pago_proveedor_monto').val();
+    const pagoMonto = parseFloat((pagoMontoRaw || '').replace(/\./g, '').replace(',', '.')) || 0;
+    const pagoMoneda = $('#pago_proveedor_tipoMoneda').val();
+    const tipoCambio = parseFloat(($('#pago_proveedor_tipoCambio').val() || '').replace(/\./g, '').replace(',', '.')) || 0;
+
+    // Convertir el monto del pago a USD
+    let pagoMontoUsd = pagoMonto;
+    if (pagoMoneda !== 'USD') {
+        pagoMontoUsd = tipoCambio > 0 ? pagoMonto / tipoCambio : 0;
+    }
+
+    // Determinar el monto a usar en USD: el menor entre el saldo en USD y el monto del pago en USD
+    const montoUsdAUsar = Math.min(parseFloat(saldoUsd), pagoMontoUsd);
+
+    // Convertir el resultado a ARS para mostrarlo en el input
+    // Redondear hacia abajo a 2 decimales para evitar errores de redondeo acumulados
+    const montoAUsar = Math.floor((tipoCambio > 0 ? montoUsdAUsar * tipoCambio : 0) * 100) / 100;
+
+    const montoFormateado = montoAUsar.toLocaleString('es-AR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+    $('#pago_proveedor_imputacion_monto').val(montoFormateado);
+    actualizarEquivalenteImputacion();
 }
 
 /**
@@ -251,10 +272,22 @@ function initImputacionHandler() {
             return;
         }
 
-        const saldoArs = parseFloat(facturaSelect.find('option:selected').data('saldo-ars')) || 0;
-        if (monto > saldoArs + 0.01) {
-            Swal.fire({ title: 'El monto imputado supera el saldo pendiente de la factura.', icon: 'warning' });
-            return;
+        const tipoCambioValidacion = parseFloat(($('#pago_proveedor_tipoCambio').val() || '').replace(/\./g, '').replace(',', '.')) || 0;
+
+        if (moneda === 'USD') {
+            const saldoUsd = parseFloat(facturaSelect.find('option:selected').data('saldo-usd')) || 0;
+            const montoUsd = tipoCambioValidacion > 0 ? monto / tipoCambioValidacion : 0;
+
+            if (montoUsd > saldoUsd + 0.01) {
+                Swal.fire({ title: 'El monto imputado supera el saldo pendiente de la factura.', icon: 'warning' });
+                return;
+            }
+        } else {
+            const saldoArs = parseFloat(facturaSelect.find('option:selected').data('saldo-ars')) || 0;
+            if (monto > saldoArs + 0.01) {
+                Swal.fire({ title: 'El monto imputado supera el saldo pendiente de la factura.', icon: 'warning' });
+                return;
+            }
         }
 
         let duplicada = false;
