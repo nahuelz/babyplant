@@ -87,7 +87,9 @@ class EntregaService {
         $cantidadBandejas = $entregaProducto->getCantidadBandejas();
         $mesadaUno = $entregaProducto->getPedidoProducto()->getMesadaUno();
         $estadoMesada = $em->getRepository(EstadoMesada::class)->findOneByCodigoInterno(ConstanteEstadoMesada::PENDIENTE);
+        if ($mesadaUno != null){
         $mesadaUno->revertirBandejas($cantidadBandejas);
+        }
         $this->cambiarEstadoMesada($em, $mesadaUno, $estadoMesada);
     }
 
@@ -122,18 +124,20 @@ class EntregaService {
      * @param Mesada $mesada
      * @param EstadoMesada $estadoMesada
      */
-    private function cambiarEstadoMesada(ObjectManager $em, Mesada $mesada, EstadoMesada $estadoMesada): void
+    private function cambiarEstadoMesada(ObjectManager $em, ?Mesada $mesada, EstadoMesada $estadoMesada): void
     {
-        $mesada->setEstado($estadoMesada);
-        $estadoMesadaHistorico = new EstadoMesadaHistorico();
-        $estadoMesadaHistorico->setMesada($mesada);
-        $estadoMesadaHistorico->setFecha(new DateTime());
-        $estadoMesadaHistorico->setEstado($estadoMesada);
-        $estadoMesadaHistorico->setCantidadBandejas($mesada->getCantidadBandejas());
-        $estadoMesadaHistorico->setMotivo('Entrega de producto.');
-        $mesada->addHistoricoEstado($estadoMesadaHistorico);
+        if ($mesada != null) {
+            $mesada->setEstado($estadoMesada);
+            $estadoMesadaHistorico = new EstadoMesadaHistorico();
+            $estadoMesadaHistorico->setMesada($mesada);
+            $estadoMesadaHistorico->setFecha(new DateTime());
+            $estadoMesadaHistorico->setEstado($estadoMesada);
+            $estadoMesadaHistorico->setCantidadBandejas($mesada->getCantidadBandejas());
+            $estadoMesadaHistorico->setMotivo('Entrega de producto.');
+            $mesada->addHistoricoEstado($estadoMesadaHistorico);
 
-        $em->persist($estadoMesadaHistorico);
+            $em->persist($estadoMesadaHistorico);
+        }
     }
 
     /**
