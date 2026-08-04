@@ -211,7 +211,14 @@ function datatablesGetColDef() {
             targets: index++,
             name: 'fechaCreacion',
             className: 'dt-center',
-            type: 'date'
+            render: function (data, type, full, meta) {
+                if (type === 'sort' || type === 'type') {
+                    if (!data || data === '-') return 0;
+                    var partes = data.split('/'); // [dd, mm, yyyy]
+                    return partes[2] + partes[1] + partes[0]; // yyyymmdd
+                }
+                return data;
+            }
         },
         {
             targets: index++,
