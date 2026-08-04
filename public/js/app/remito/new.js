@@ -303,6 +303,17 @@ function initBaseSubmitButton() {
 
     $("#remito_submit").off('click').on('click', function (e) {
         e.preventDefault();
+
+        if ($('.tr-remito-producto').length === 0) {
+            $('.row-remito-entrega-empty').show('slow');
+            Swal.fire({
+                title: 'Atención',
+                text: 'Debe agregar al menos una entrega/producto antes de crear el remito.',
+                icon: 'warning'
+            });
+            return false;
+        }
+
         $.post({
             url: __HOMEPAGE_PATH__ + "remito/confirmar-remito",
             type: 'post',
