@@ -237,18 +237,18 @@
 
                                                 <div class="display-4 font-weight-bold {{ producto.cantidadBandejasDisponibles == 0 ? 'text-danger' : 'text-success' }}"
                                                      id="disponibles-{{ producto.id }}"
-                                                     data-base="{{ producto.cantidadBandejasDisponiblesBase|round }}"
+                                                     data-base="{{ producto.cantidadBandejasDisponiblesBase }}"
                                                 >
-                                                    {% if producto.cantidadBandejasDisponibles|round != producto.cantidadBandejasDisponiblesBase|round %}
-                                                    {{ producto.cantidadBandejasDisponibles|round|default('-') }}
+                                                    {% if producto.cantidadBandejasDisponibles != producto.cantidadBandejasDisponiblesBase %}
+                                                    {{ producto.cantidadBandejasDisponibles|default('-') }}
                                                     /
-                                                    {{ producto.cantidadBandejasDisponiblesBase|round|default('-') }}
+                                                    {{ producto.cantidadBandejasDisponiblesBase|default('-') }}
                                                     {% else %}
-                                                        {{ producto.cantidadBandejasDisponibles|round|default('-') }}
+                                                        {{ producto.cantidadBandejasDisponibles|default('-') }}
                                                     {% endif %}
                                                 </div>
                                                 {# BOTÓN ACTUALIZAR #}
-                                                {% if producto.cantidadBandejasDisponibles|round != producto.cantidadBandejasDisponiblesBase|round %}
+                                                {% if producto.cantidadBandejasDisponibles != producto.cantidadBandejasDisponiblesBase %}
                                                 <button
                                                         type="button"
                                                         class="btn btn-sm btn-outline-secondary position-absolute js-actualizar-bandejas"
