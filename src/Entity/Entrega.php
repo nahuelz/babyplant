@@ -93,6 +93,12 @@ class Entrega {
      */
     protected $fechaEntrega;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Usuario::class)
+     * @ORM\JoinColumn(name="id_usuario_entrega", referencedColumnName="id", nullable=true)
+     */
+    private $usuarioEntrega;
+
 
     /**
      * @param $historicoEstados
@@ -348,6 +354,22 @@ class Entrega {
     public function setFechaEntrega($fechaEntrega): void
     {
         $this->fechaEntrega = $fechaEntrega;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUsuarioEntrega()
+    {
+        return $this->usuarioEntrega;
+    }
+
+    /**
+     * @param mixed $usuarioEntrega
+     */
+    public function setUsuarioEntrega($usuarioEntrega): void
+    {
+        $this->usuarioEntrega = $usuarioEntrega;
     }
 
 }

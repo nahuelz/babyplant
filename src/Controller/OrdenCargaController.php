@@ -133,6 +133,7 @@ class OrdenCargaController extends BaseController
 
         $this->estadoService->cambiarEstadoEntrega($entrega, $estado, 'ENTREGADO.');
         $entrega->setEntregado(true);
+        $entrega->setUsuarioEntrega($this->getUser());
         $entrega->setFechaEntrega(
             (new \DateTime())->setTime(23, 59, 0)
         );
