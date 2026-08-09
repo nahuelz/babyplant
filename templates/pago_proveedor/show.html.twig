@@ -152,7 +152,8 @@
                                         <th class="text-center">Fecha</th>
                                         <th class="text-center">Moneda</th>
                                         <th class="text-center">Total Factura</th>
-                                        <th class="text-center">Monto Aplicado</th>
+                                        <th class="text-center">Monto Imputado (USD)</th>
+                                        <th class="text-center">Monto Imputado (ARS)</th>
                                     </tr>
                                     </thead>
 
@@ -161,6 +162,8 @@
                                     {% for imputacion in pagoProveedor.imputaciones %}
 
                                         {% set factura = imputacion.factura %}
+                                        {% set montoImputadoUSD = factura.tipoMoneda == 'USD' ? imputacion.monto : (pagoProveedor.tipoCambio > 0 ? imputacion.monto / pagoProveedor.tipoCambio : 0) %}
+                                        {% set montoImputadoARS = factura.tipoMoneda == 'ARS' ? imputacion.monto : imputacion.monto * pagoProveedor.tipoCambio %}
 
                                         <tr>
                                             <td class="text-center">
@@ -183,8 +186,11 @@
                                             </td>
 
                                             <td class="text-center">
-                                                {{ factura.tipoMoneda == 'USD' ? 'US$' : '$' }}
-                                                {{ imputacion.monto|number_format(2, ',', '.') }}
+                                                US$ {{ montoImputadoUSD|number_format(2, ',', '.') }}
+                                            </td>
+
+                                            <td class="text-center">
+                                                $ {{ montoImputadoARS|number_format(2, ',', '.') }}
                                             </td>
 
                                         </tr>

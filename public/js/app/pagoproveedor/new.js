@@ -349,6 +349,8 @@ function initImputacionHandler() {
 
         const index = $('.tbody-imputacion').data('index');
         const montoFmt = monto.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const montoUsd = tipoCambio > 0 ? (monto / tipoCambio) : 0;
+        const montoUsdFmt = montoUsd.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
         const row = `
             <tr class="tr-imputacion" data-monto="${monto}" data-moneda="ARS">
@@ -357,6 +359,7 @@ function initImputacionHandler() {
                 <td class="v-middle text-center">${facturaText}</td>
                 <td class="v-middle text-center">ARS</td>
                 <td class="v-middle text-center">$ ${montoFmt}</td>
+                <td class="v-middle text-center">US$ ${montoUsdFmt}</td>
                 <td class="text-center v-middle">
                     <a href="#" class="btn btn-sm delete-link-inline link-delete-imputacion">
                         <i class="fa fa-trash text-danger"></i>
@@ -398,6 +401,7 @@ function actualizarTotalImputado() {
     const tipoCambio = parseFloat(($('#pago_proveedor_tipoCambio').val() || '').replace(/\./g, '').replace(',', '.')) || 0;
     
     let totalUsd = 0;
+    let totalArs = 0;
     
     $('.tr-imputacion').each(function () {
         const moneda = $(this).data('moneda');
@@ -405,11 +409,18 @@ function actualizarTotalImputado() {
         
         if (moneda === 'USD') {
             totalUsd += monto;
+            totalArs += tipoCambio > 0 ? monto * tipoCambio : 0;
         } else {
+            totalArs += monto;
             totalUsd += tipoCambio > 0 ? monto / tipoCambio : 0;
         }
     });
     
+    $('#total-imputado-ars').text('$ ' + totalArs.toLocaleString('es-AR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }));
+
     $('#total-imputado-usd').text('US$ ' + totalUsd.toLocaleString('es-AR', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2

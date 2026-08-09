@@ -38,13 +38,15 @@
                     <tr>
                         <th class="text-center">Factura</th>
                         <th class="text-center">Moneda</th>
-                        <th class="text-center">Monto imputado</th>
+                        <th class="text-center">Monto imputado (ARS)</th>
+                        <th class="text-center">Monto imputado (USD)</th>
                         <th class="nowrap text-center"></th>
                     </tr>
                 </thead>
                 <tbody class="tbody-imputacion">
                     {% for imputacion in entity.imputaciones %}
                         {% set montoArs = imputacion.factura.tipoMoneda == 'USD' ? (imputacion.monto * entity.tipoCambio) : imputacion.monto %}
+                        {% set montoUsd = entity.tipoCambio > 0 ? (montoArs / entity.tipoCambio) : 0 %}
                         <tr class="tr-imputacion" data-monto="{{ montoArs }}" data-moneda="ARS">
                             {% if imputacion.id %}
                             <td class="hidden">
@@ -61,6 +63,7 @@
                             <td class="v-middle text-center">{{ imputacion.factura.numeroFactura }}</td>
                             <td class="v-middle text-center">ARS</td>
                             <td class="v-middle text-center">$ {{ montoArs|number_format(2, ',', '.') }}</td>
+                            <td class="v-middle text-center">US$ {{ montoUsd|number_format(2, ',', '.') }}</td>
 
                             <td class="text-center v-middle">
                                 <a href="#" class="btn btn-sm delete-link-inline link-delete-imputacion tooltips"
@@ -74,6 +77,7 @@
                 <tfoot class="tfoot-imputacion" style="display:none;">
                     <tr class="tr-imputacion-total bg-light font-weight-bold">
                         <td class="v-middle text-center" colspan="2">TOTAL IMPUTADO</td>
+                        <td class="v-middle text-center" id="total-imputado-ars">$0,00</td>
                         <td class="v-middle text-center" id="total-imputado-usd">US$0,00</td>
                         <td class="v-middle text-center"></td>
                     </tr>
