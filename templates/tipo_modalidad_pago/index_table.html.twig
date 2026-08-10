@@ -1,0 +1,26 @@
+{
+"data": [
+{% for entity in entities %}
+    [
+    "{{ entity.id }}",
+    "{{ entity.nombre|default('-') }}",
+    "{{ entity.habilitado|boolean_format }}",
+    {
+    "token": "{{ csrf_token('tipo_modalidad_pago_habilitar_deshabilitar_' ~ entity.id) }}"
+    {% if is_granted('ROLE_EMPLEADO_CRUD') %}
+        ,"show" : " {{ path( "app_tipo_modalidad_pago_show", { "id": entity.id }) }}"
+        ,"edit" : " {{ path( "app_tipo_modalidad_pago_edit", { "id": entity.id }) }}"
+    {% endif %}
+    {% if is_granted('ROLE_EMPLEADO_CRUD') and entity.habilitado %}
+        ,"deshabilitar": "{{ path('app_tipo_modalidad_pago_habilitar_deshabilitar', { "id": entity.id }) }}"
+    {% elseif is_granted('ROLE_EMPLEADO_CRUD') and not entity.habilitado %}
+        ,"habilitar": "{{ path('app_tipo_modalidad_pago_habilitar_deshabilitar', {"id": entity.id})}}"
+    {% endif %}
+    }
+    ]{{ (loop.last ? '' : ',') }}
+{% endfor %}
+],
+"draw": {{ draw }},
+"recordsTotal": {{ totalRows }},
+"recordsFiltered": {{ totalFiltered }}
+}

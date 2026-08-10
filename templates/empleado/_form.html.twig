@@ -1,0 +1,16 @@
+{% import 'app/_macro_form.html.twig' as macro_form %}
+{{ macro_form._new_field(form.nombre, "col-md-3") }}
+{{ macro_form._new_field(form.apellido, "col-md-3") }}
+{{ macro_form._new_field(form.dni, "col-md-2") }}
+{{ macro_form._new_field(form.cuil, "col-md-2") }}
+{{ macro_form._new_field(form.nacionalidad, "col-md-2") }}
+{{ macro_form._new_field(form.fechaIngreso, "col-md-3") }}
+{{ macro_form._new_field(form.categoria, "col-md-3") }}
+{{ macro_form._new_field(form.modalidadPago, "col-md-3") }}
+{{ macro_form._new_field(form.obraSocial, "col-md-3") }}
+{{ macro_form._new_field(form.banco, "col-md-3") }}
+{{ macro_form._new_field(form.telefono, "col-md-3") }}
+{{ macro_form._new_field(form.observaciones, "col-md-6") }}
+{{ macro_form._new_field(form.activo, 'col-md-2') }}
+{{ form_widget(form._token) }}
+{{ form_end(form, {"render_rest": false}) }}

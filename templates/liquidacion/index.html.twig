@@ -1,0 +1,150 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon-search text-primary"></i></span>
+                <h3 class="card-label">Resumen de liquidaciones — {{ periodo }}</h3>
+            </div>
+            <div class="card-toolbar">
+                <form method="get" action="{{ path('liquidacion_index') }}" class="form-inline mr-3">
+                    <div class="form-group mr-2">
+                        <label for="periodo" class="mr-2">Período</label>
+                        <input type="month" id="periodo" name="periodo" class="form-control" value="{{ periodo }}" required>
+                    </div>
+                    <button type="submit" class="btn btn-light-primary font-weight-bold">Ver</button>
+                </form>
+
+                <form method="post" action="{{ path('liquidacion_generar') }}" class="form-inline" id="form-generar">
+                    <input type="hidden" name="periodo" value="{{ periodo }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('generar_' ~ periodo) }}">
+                    <button type="button" id="btn-generar" class="btn btn-primary font-weight-bold">
+                        <i class="la la-plus"></i>
+                        Generar liquidaciones
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-checkable" id="table-liquidacion">
+                    <thead>
+                        <tr>
+                            <th class="text-left">Empleado</th>
+                            <th class="text-center">Modalidad</th>
+                            {% for semana in semanas %}
+                                <th class="text-center">Sem {{ semana.numero }}<br><small>{{ semana.label }}</small></th>
+                            {% endfor %}
+                            <th class="text-center">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for fila in grid %}
+                            <tr>
+                                <td>
+                                    {% if fila.resumen %}
+                                        <a href="{{ path('liquidacion_show', {'id': fila.resumen.id}) }}" class="font-weight-bold">
+                                            {{ fila.empleado.nombreCompleto }}
+                                        </a>
+                                    {% else %}
+                                        {{ fila.empleado.nombreCompleto }}
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">{{ fila.modalidad }}</td>
+                                {% for semana in fila.semanas %}
+                                    <td class="text-center">
+                                        {% if semana.liquidacion %}
+                                            <a href="#"
+                                               class="font-weight-bold abrir-modal-semana"
+                                               data-action="{{ path('liquidacion_guardar_semana', {'id': semana.liquidacion.id}) }}"
+                                               data-semana="{{ loop.index }}"
+                                               data-apellido="{{ fila.empleado.apellido }}"
+                                               data-nombre="{{ fila.empleado.nombre }}"
+                                               data-sueldo-bruto="{{ semana.liquidacion.sueldoBruto|replace({'.': ','}) }}"
+                                               data-deducciones="{{ semana.liquidacion.deducciones|replace({'.': ','}) }}"
+                                               data-token="{{ csrf_token('guardar_semana_' ~ semana.liquidacion.id) }}">
+                                                {{ semana.valor }}
+                                            </a>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                                <td class="text-center font-weight-bold">
+                                    {% if fila.resumen %}
+                                        <a href="{{ path('liquidacion_show', {'id': fila.resumen.id}) }}" class="font-weight-bold">
+                                            {{ fila.total }}
+                                        </a>
+                                    {% else %}
+                                        {{ fila.total }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="{{ 3 + semanas|length }}" class="text-center text-muted">No hay empleados activos con liquidaciones para este período.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr class="font-weight-bold bg-light">
+                            <th class="text-left">TOTAL</th>
+                            <td></td>
+                            {% for semana in semanas %}
+                                <td class="text-center">
+                                    $ {{ totales_semanas[loop.index0]|number_format(2, ',', '.') }}
+                                </td>
+                            {% endfor %}
+                            <td class="text-center">
+                                $ {{ total_general|number_format(2, ',', '.') }}
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('empleado_index') }}" class="btn btn-light-dark font-weight-bold">Volver a empleados</a>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalSemana" tabindex="-1" role="dialog" aria-labelledby="modalSemanaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form id="formGuardarSemana" method="post" action="">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalSemanaLabel">Liquidación semana</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <i aria-hidden="true" class="ki ki-close"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="semana_sueldoBruto">Sueldo bruto</label>
+                            <input type="text" id="semana_sueldoBruto" name="sueldoBruto" class="form-control" pattern="[0-9]+([,][0-9]+)?" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="semana_deducciones">Deducciones</label>
+                            <input type="text" id="semana_deducciones" name="deducciones" class="form-control" pattern="[0-9]+([,][0-9]+)?" required>
+                        </div>
+                        <input type="hidden" name="_token" id="semana_token" value="">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-dark font-weight-bold" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary font-weight-bold">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/liquidacion/index.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% import 'app/_macro_show.html.twig' as macro_show %}
+
+{% block body %}
+
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+				<span class="card-icon">
+					<i class="flaticon-search text-primary"></i>
+				</span>
+                <h3 class="card-label">Detalles del empleado: {{ empleado.nombreCompleto }}</h3>
+            </div>
+            <div class="card-toolbar">
+                <a href="{{ path('app_empleado_edit', {'id': empleado.id}) }}" class="btn btn-primary font-weight-bolder">
+                    <i class="la la-pen"></i>
+                    Editar
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <h5 class="mb-5">Datos personales</h5>
+            <div class="row">
+                {{ macro_show._show_detail('Nombre', empleado.nombre, 'col-md-3') }}
+                {{ macro_show._show_detail('Apellido', empleado.apellido, 'col-md-3') }}
+                {{ macro_show._show_detail('DNI', empleado.dni, 'col-md-2') }}
+                {{ macro_show._show_detail('CUIL', empleado.cuil|default('-'), 'col-md-2') }}
+                {{ macro_show._show_detail('Nacionalidad', empleado.nacionalidad|default('-'), 'col-md-2') }}
+            </div>
+
+            <h5 class="mb-5 mt-8">Datos laborales</h5>
+            <div class="row">
+                {{ macro_show._show_detail('Fecha de ingreso', empleado.fechaIngreso ? empleado.fechaIngreso|date('d/m/Y') : '-', 'col-md-3') }}
+                {{ macro_show._show_detail('Antigüedad', empleado.antiguedadTexto, 'col-md-3') }}
+                {{ macro_show._show_detail('Categoría', empleado.categoria|default('-'), 'col-md-3') }}
+                {{ macro_show._show_detail('Modalidad de pago', empleado.modalidadPago|default('-'), 'col-md-3') }}
+                {{ macro_show._show_detail('Obra social', empleado.obraSocial|default('-'), 'col-md-3') }}
+                {{ macro_show._show_detail('Banco', empleado.banco|default('-'), 'col-md-3') }}
+                {{ macro_show._show_detail('Teléfono', empleado.telefono|default('-'), 'col-md-3') }}
+                {{ macro_show._show_detail('Activo', empleado.activo ? 'Sí' : 'No', 'col-md-3') }}
+            </div>
+
+            {% if empleado.observaciones %}
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <h5>Observaciones</h5>
+                        <p class="text-muted">{{ empleado.observaciones|nl2br }}</p>
+                    </div>
+                </div>
+            {% endif %}
+
+            <h5 class="mb-5 mt-8">Vacaciones</h5>
+            <div class="row">
+                {% for vacaciones in empleado.vacaciones %}
+                    {{ macro_show._show_detail('Año ' ~ vacaciones.anio ~ ' - Corresponden', vacaciones.diasCorrespondientes, 'col-md-2') }}
+                    {{ macro_show._show_detail('Tomados', vacaciones.diasTomados, 'col-md-2') }}
+                    {{ macro_show._show_detail('Disponibles', vacaciones.diasDisponibles, 'col-md-2') }}
+                {% else %}
+                    <div class="col-12 text-muted">No hay vacaciones registradas.</div>
+                {% endfor %}
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-12">
+                    <h6 class="mb-3">Cargar / actualizar vacaciones</h6>
+                    <form method="post" action="{{ path('app_empleado_vacaciones', {'id': empleado.id}) }}" class="form-inline">
+                        <div class="form-group mr-3">
+                            <label for="anio" class="mr-2">Año</label>
+                            <input type="number" name="anio" id="anio" class="form-control" value="{{ "now"|date('Y') }}" required>
+                        </div>
+                        <div class="form-group mr-3">
+                            <label for="diasCorrespondientes" class="mr-2">Días que corresponden</label>
+                            <input type="number" name="diasCorrespondientes" id="diasCorrespondientes" class="form-control" value="0" required>
+                        </div>
+                        <div class="form-group mr-3">
+                            <label for="diasTomados" class="mr-2">Días tomados</label>
+                            <input type="number" name="diasTomados" id="diasTomados" class="form-control" value="0">
+                        </div>
+                        <button type="submit" class="btn btn-light-primary font-weight-bold">Guardar vacaciones</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('empleado_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
+        </div>
+
+    </div>
+
+{% endblock %}

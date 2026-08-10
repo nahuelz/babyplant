@@ -13,8 +13,11 @@ use App\Entity\EstadoEntregaProducto;
 use App\Entity\EstadoEntregaProductoHistorico;
 use App\Entity\EstadoGasto;
 use App\Entity\EstadoGastoHistorico;
+use App\Entity\EstadoLiquidacion;
+use App\Entity\EstadoLiquidacionHistorico;
 use App\Entity\EstadoMesada;
 use App\Entity\EstadoMesadaHistorico;
+use App\Entity\Liquidacion;
 use App\Entity\EstadoRemito;
 use App\Entity\EstadoRemitoHistorico;
 use App\Entity\EstadoReservaHistorico;
@@ -144,6 +147,17 @@ class EstadoService
         $historico = new EstadoGastoHistorico();
         $historico->setGasto($gasto);
         $this->crearHistorico($historico, $gasto, $estadoGasto, $motivo);
+    }
+
+    /**
+     * Cambiar estado de Liquidacion
+     */
+    public function cambiarEstadoLiquidacion(Liquidacion $liquidacion, EstadoLiquidacion $estadoLiquidacion, string $motivo): void
+    {
+        $liquidacion->setEstado($estadoLiquidacion);
+        $historico = new EstadoLiquidacionHistorico();
+        $historico->setLiquidacion($liquidacion);
+        $this->crearHistorico($historico, $liquidacion, $estadoLiquidacion, $motivo);
     }
 
 }

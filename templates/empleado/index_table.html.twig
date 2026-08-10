@@ -1,0 +1,30 @@
+{
+"data": [
+{% for entity in entities %}
+    [
+    "{{ entity.id }}",
+    "{{ entity.nombreCompleto|default('-') }}",
+    "{{ entity.dni|default('-') }}",
+    "{{ entity.categoria|default('-') }}",
+    "{{ entity.modalidadPago|default('-') }}",
+    "{{ entity.fechaIngreso ? entity.fechaIngreso|date('d/m/Y') : '-' }}",
+    "{{ entity.activo|boolean_format }}",
+    {
+    "token": "{{ csrf_token('empleado_activar_desactivar_' ~ entity.id) }}"
+    {% if is_granted('ROLE_EMPLEADO_CRUD') %}
+        ,"show" : " {{ path( "app_empleado_show", { "id": entity.id }) }}"
+        ,"edit" : " {{ path( "app_empleado_edit", { "id": entity.id }) }}"
+    {% endif %}
+    {% if is_granted('ROLE_EMPLEADO_CRUD') and entity.activo %}
+        ,"deshabilitar": "{{ path('app_empleado_activar_desactivar', { "id": entity.id }) }}"
+    {% elseif is_granted('ROLE_EMPLEADO_CRUD') and not entity.activo %}
+        ,"habilitar": "{{ path('app_empleado_activar_desactivar', {"id": entity.id})}}"
+    {% endif %}
+    }
+    ]{{ (loop.last ? '' : ',') }}
+{% endfor %}
+],
+"draw": {{ draw }},
+"recordsTotal": {{ totalRows }},
+"recordsFiltered": {{ totalFiltered }}
+}
