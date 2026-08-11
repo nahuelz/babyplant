@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% import 'app/_macro_show.html.twig' as macro_show %}
+
+{% block body %}
+
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+				<span class="card-icon">
+					<i class="flaticon-search text-primary"></i>
+				</span>
+                <h3 class="card-label">Detalles del concepto de liquidación</h3>
+            </div>
+            <div class="card-toolbar">
+                <!--begin::Button-->
+                <a href="{{ path('app_tipo_concepto_liquidacion_edit', {'id': tipo_concepto_liquidacion.id}) }}" class="btn btn-primary font-weight-bolder">
+                    <i class="la la-pen"></i>
+                    Editar
+                </a>
+                <!--end::Button-->
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                {{ macro_show._show_detail('Nombre', tipo_concepto_liquidacion.nombre, 'col-md-3') }}
+                {{ macro_show._show_detail('Descripción', tipo_concepto_liquidacion.descripcion|default('-'), 'col-md-3') }}
+                {{ macro_show._show_detail('Código interno', tipo_concepto_liquidacion.codigoInterno, 'col-md-2') }}
+                {{ macro_show._show_detail('Tipo', tipo_concepto_liquidacion.tipo, 'col-md-2') }}
+                {{ macro_show._show_detail('Habilitado', tipo_concepto_liquidacion.habilitado == 1 ? 'Si' : 'No', 'col-md-2') }}
+            </div>
+
+        </div>
+
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('tipoconceptoliquidacion_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
+        </div>
+
+    </div>
+
+{% endblock %}

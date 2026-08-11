@@ -10,6 +10,7 @@ use App\Entity\EstadoLiquidacion;
 use App\Entity\Liquidacion;
 use App\Entity\PagoEmpleado;
 use App\Entity\TipoConceptoLiquidacion;
+use App\Entity\TipoModalidadPago;
 use App\Form\LiquidacionType;
 use App\Form\PagoEmpleadoType;
 use App\Service\LiquidacionService;
@@ -38,11 +39,32 @@ class LiquidacionController extends BaseController
             $periodo = (new DateTime())->format('Y-m');
         }
 
+        $empleadoId = $request->query->get('empleado');
+        $modalidadId = $request->query->get('modalidad');
+
         $semanas = $this->buildSemanasDelMes($periodo);
-        $empleados = $entityManager->getRepository(Empleado::class)->findBy(
+        $empleadosActivos = $entityManager->getRepository(Empleado::class)->findBy(
             ['activo' => true],
             ['apellido' => 'ASC', 'nombre' => 'ASC']
         );
+
+        $modalidades = $entityManager->getRepository(TipoModalidadPago::class)
+            ->findBy([], ['nombre' => 'ASC']);
+
+        $empleados = $empleadosActivos;
+        if ($empleadoId) {
+            $empleadoFiltrado = $entityManager->getRepository(Empleado::class)->find($empleadoId);
+            if ($empleadoFiltrado && $empleadoFiltrado->isActivo()) {
+                $empleados = [$empleadoFiltrado];
+            }
+        }
+
+        if ($modalidadId) {
+            $empleados = array_filter($empleados, function (Empleado $empleado) use ($modalidadId) {
+                $modalidad = $empleado->getModalidadPago();
+                return $modalidad && $modalidad->getId() == $modalidadId;
+            });
+        }
 
         $grid = [];
         foreach ($empleados as $empleado) {
@@ -66,10 +88,161 @@ class LiquidacionController extends BaseController
 
         return $this->render('liquidacion/index.html.twig', [
             'periodo' => $periodo,
+            'empleadoId' => $empleadoId,
+            'modalidadSeleccionada' => $modalidadId,
+            'modalidades' => $modalidades,
+            'empleadosActivos' => $empleadosActivos,
             'semanas' => $semanas,
             'grid' => $grid,
             'totales_semanas' => $totalesPorSemana,
             'total_general' => $totalGeneral,
+        ]);
+    }
+
+    /**
+     * @Route("/excel", name="liquidacion_index_excel", methods={"GET"})
+     */
+    public function exportarExcel(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $periodo = $request->query->get('periodo', (new DateTime())->format('Y-m'));
+
+        if (!preg_match('/^\d{4}-\d{2}$/', $periodo)) {
+            $periodo = (new DateTime())->format('Y-m');
+        }
+
+        $empleadoId = $request->query->get('empleado');
+        $modalidadId = $request->query->get('modalidad');
+
+        $semanas = $this->buildSemanasDelMes($periodo);
+        $empleadosActivos = $entityManager->getRepository(Empleado::class)->findBy(
+            ['activo' => true],
+            ['apellido' => 'ASC', 'nombre' => 'ASC']
+        );
+
+        $empleados = $empleadosActivos;
+        if ($empleadoId) {
+            $empleadoFiltrado = $entityManager->getRepository(Empleado::class)->find($empleadoId);
+            if ($empleadoFiltrado && $empleadoFiltrado->isActivo()) {
+                $empleados = [$empleadoFiltrado];
+            }
+        }
+
+        if ($modalidadId) {
+            $empleados = array_filter($empleados, function (Empleado $empleado) use ($modalidadId) {
+                $modalidad = $empleado->getModalidadPago();
+                return $modalidad && $modalidad->getId() == $modalidadId;
+            });
+        }
+
+        $grid = [];
+        foreach ($empleados as $empleado) {
+            $grid[] = $this->buildFila($empleado, $periodo, $semanas, $entityManager);
+        }
+
+        $totalesPorSemana = array_fill(0, count($semanas), '0');
+        $totalGeneral = '0';
+
+        foreach ($grid as $fila) {
+            foreach ($fila['semanas'] as $index => $semana) {
+                if ($semana['liquidacion']) {
+                    $totalesPorSemana[$index] = Decimal::add(
+                        $totalesPorSemana[$index],
+                        (string) $semana['liquidacion']->getTotalAPagar(),
+                        2
+                    );
+                }
+            }
+
+            if ($fila['resumen']) {
+                $totalGeneral = Decimal::add($totalGeneral, (string) $fila['resumen']->getTotalAPagar(), 2);
+            }
+        }
+
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setTitle('Liquidaciones ' . $periodo);
+
+        $sheet->setCellValue('A1', 'Resumen de liquidaciones — ' . $periodo);
+        $sheet->mergeCells('A1:' . \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(2 + count($semanas) + 1) . '1');
+        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+
+        $sheet->setCellValue('A2', 'Empleado');
+        $sheet->setCellValue('B2', 'Modalidad');
+
+        $col = 3;
+        foreach ($semanas as $semana) {
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . '2', "Sem " . $semana['numero'] . "\n" . $semana['label']);
+            $col++;
+        }
+        $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . '2', 'Total');
+
+        $headerRange = 'A2:' . \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . '2';
+        $sheet->getStyle($headerRange)->getFont()->setBold(true);
+        $sheet->getStyle($headerRange)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('FFC000');
+        $sheet->getStyle($headerRange)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $sheet->getStyle($headerRange)->getAlignment()->setWrapText(true)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+
+        $sheet->getRowDimension(2)->setRowHeight(35);
+
+        $fila = 3;
+        foreach ($grid as $row) {
+            $sheet->setCellValue('A' . $fila, $row['empleado']->getNombreCompleto());
+            $sheet->setCellValue('B' . $fila, $row['modalidad']);
+
+            $col = 3;
+            foreach ($row['semanas'] as $semana) {
+                $valor = $semana['liquidacion'] ? (float) $semana['liquidacion']->getTotalAPagar() : null;
+                $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $fila, $valor);
+                $col++;
+            }
+
+            $total = $row['resumen'] ? (float) $row['resumen']->getTotalAPagar() : 0;
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $fila, $total);
+
+            $fila++;
+        }
+
+        $filaTotal = $fila;
+        $sheet->setCellValue('A' . $filaTotal, 'TOTAL');
+
+        $col = 3;
+        foreach ($totalesPorSemana as $total) {
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal, (float) $total);
+            $col++;
+        }
+        $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal, (float) $totalGeneral);
+
+        $totalRange = 'A' . $filaTotal . ':' . \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal;
+        $sheet->getStyle($totalRange)->getFont()->setBold(true);
+        $sheet->getStyle($totalRange)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('E2E2E2');
+        $sheet->getStyle($totalRange)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+        $sheet->getStyle('A2:' . \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . ($filaTotal - 1))
+            ->getBorders()
+            ->getAllBorders()
+            ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+        $sheet->getStyle('C3:' . \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal)
+            ->getNumberFormat()
+            ->setFormatCode('#,##0.00');
+
+        foreach (range(1, $col) as $columnIndex) {
+            $column = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($columnIndex);
+            $sheet->getColumnDimension($column)->setAutoSize(true);
+        }
+
+        $filename = 'liquidaciones-' . $periodo . '.xlsx';
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+
+        ob_start();
+        $writer->save('php://output');
+        $content = ob_get_clean();
+
+        return new Response($content, Response::HTTP_OK, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ]);
     }
 
@@ -79,10 +252,12 @@ class LiquidacionController extends BaseController
     public function generar(Request $request, EntityManagerInterface $entityManager): Response
     {
         $periodo = $request->request->get('periodo', (new DateTime())->format('Y-m'));
+        $empleadoId = $request->request->get('empleado');
+        $modalidadId = $request->request->get('modalidad');
 
         if (!$this->isCsrfTokenValid('generar_' . $periodo, $request->request->get('_token'))) {
             $this->addFlash('error', 'Token de seguridad inválido.');
-            return $this->redirectToRoute('liquidacion_index', ['periodo' => $periodo]);
+            return $this->redirectToRoute('liquidacion_index', ['periodo' => $periodo, 'empleado' => $empleadoId, 'modalidad' => $modalidadId]);
         }
 
         if (!preg_match('/^\d{4}-\d{2}$/', $periodo)) {
@@ -90,7 +265,30 @@ class LiquidacionController extends BaseController
         }
 
         $semanas = $this->buildSemanasDelMes($periodo);
-        $empleados = $entityManager->getRepository(Empleado::class)->findBy(['activo' => true]);
+
+        $empleadosActivos = $entityManager->getRepository(Empleado::class)->findBy(
+            ['activo' => true],
+            ['apellido' => 'ASC', 'nombre' => 'ASC']
+        );
+
+        $empleados = $empleadosActivos;
+
+        if ($empleadoId) {
+            $empleado = $entityManager->getRepository(Empleado::class)->find($empleadoId);
+            if (!$empleado || !$empleado->isActivo()) {
+                $this->addFlash('error', 'Empleado no encontrado.');
+                return $this->redirectToRoute('liquidacion_index', ['periodo' => $periodo, 'modalidad' => $modalidadId]);
+            }
+            $empleados = [$empleado];
+        }
+
+        if ($modalidadId) {
+            $empleados = array_filter($empleados, function (Empleado $empleado) use ($modalidadId) {
+                $modalidad = $empleado->getModalidadPago();
+                return $modalidad && $modalidad->getId() == $modalidadId;
+            });
+        }
+
         $estadoBorrador = $entityManager->getRepository(EstadoLiquidacion::class)
             ->findOneByCodigoInterno(ConstanteEstadoLiquidacion::BORRADOR);
 
@@ -149,7 +347,7 @@ class LiquidacionController extends BaseController
 
         $this->addFlash('success', 'Se generaron ' . $creadas . ' liquidaciones en borrador.');
 
-        return $this->redirectToRoute('liquidacion_index', ['periodo' => $periodo]);
+        return $this->redirectToRoute('liquidacion_index', ['periodo' => $periodo, 'empleado' => $empleadoId, 'modalidad' => $modalidadId]);
     }
 
     /**
@@ -172,21 +370,20 @@ class LiquidacionController extends BaseController
         $incluirSueldo = !($liquidacion->getDetallesSemanales()->count() > 0);
         $incluirConceptos = $liquidacion->getPadre() === null;
 
-        $form = null;
-        if ($this->puedeEditarContenido($liquidacion)) {
-            $form = $this->createForm(LiquidacionType::class, $liquidacion, [
-                'action' => $this->generateUrl('liquidacion_guardar', ['id' => $liquidacion->getId()]),
-                'method' => 'POST',
-                'incluir_sueldo' => $incluirSueldo,
-                'incluir_conceptos' => $incluirConceptos,
-            ]);
-        }
+        $editable = $this->puedeEditarContenido($liquidacion);
+        $form = $this->createForm(LiquidacionType::class, $liquidacion, [
+            'action' => $this->generateUrl('liquidacion_guardar', ['id' => $liquidacion->getId()]),
+            'method' => 'POST',
+            'incluir_sueldo' => $incluirSueldo,
+            'incluir_conceptos' => $incluirConceptos,
+            'editable' => $editable,
+        ]);
 
         return $this->render('liquidacion/show.html.twig', [
             'liquidacion' => $liquidacion,
-            'form' => $form ? $form->createView() : null,
+            'form' => $form->createView(),
             'pagoForm' => $pagoForm->createView(),
-            'editable' => $this->puedeEditarContenido($liquidacion),
+            'editable' => $editable,
             'totalPagado' => $totalPagado,
             'restante' => $restante,
         ]);
@@ -279,36 +476,38 @@ class LiquidacionController extends BaseController
 
             $entityManager->flush();
 
-            $this->addFlash('success', 'Liquidación guardada correctamente.');
+            if ($request->request->get('accion') === 'aprobar') {
+                foreach ($liquidacion->getDetallesSemanales() as $detalle) {
+                    if (!$detalle->getEstado() || $detalle->getEstado()->getCodigoInterno() !== ConstanteEstadoLiquidacion::APROBADA) {
+                        $this->addFlash('error', 'Debe aprobarse todas las liquidaciones semanales antes de aprobar la liquidación mensual.');
+                        return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
+                    }
+                }
+
+                if ($liquidacion->getPadre() !== null) {
+                    if (Decimal::comp((string) $liquidacion->getSueldoBruto(), '0', 2) === 0) {
+                        $this->addFlash('warning', 'Se aprobó una liquidación con sueldo bruto igual a 0.');
+                    }
+                } elseif ($liquidacion->getDetallesSemanales()->count() === 0) {
+                    if (Decimal::comp((string) $liquidacion->getSueldoBruto(), '0', 2) === 0) {
+                        $this->addFlash('error', 'No se puede aprobar una liquidación con sueldo bruto igual a 0.');
+                        return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
+                    }
+                }
+
+                $liquidacionService->aprobar($liquidacion);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Liquidación guardada y aprobada correctamente.');
+            } else {
+                $this->addFlash('success', 'Liquidación guardada correctamente.');
+            }
 
             $redirectId = $padre !== null ? $padre->getId() : $liquidacion->getId();
             return $this->redirectToRoute('liquidacion_show', ['id' => $redirectId]);
         }
 
         $this->addFlash('error', 'Verifique los datos ingresados.');
-
-        return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
-    }
-
-    /**
-     * @Route("/{id}/calcular", name="liquidacion_calcular", methods={"POST"})
-     */
-    public function calcular(Request $request, Liquidacion $liquidacion, LiquidacionService $liquidacionService, EntityManagerInterface $entityManager): Response
-    {
-        if (!$this->isCsrfTokenValid('calcular_' . $liquidacion->getId(), $request->request->get('_token'))) {
-            $this->addFlash('error', 'Token de seguridad inválido.');
-            return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
-        }
-
-        if (!$this->puedeEditarContenido($liquidacion)) {
-            $this->addFlash('error', 'La liquidación no puede calcularse en este estado.');
-            return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
-        }
-
-        $liquidacionService->calcular($liquidacion);
-        $entityManager->flush();
-
-        $this->addFlash('success', 'Liquidación calculada correctamente.');
 
         return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
     }
@@ -323,9 +522,27 @@ class LiquidacionController extends BaseController
             return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
         }
 
-        if (!$liquidacion->getEstado() || $liquidacion->getEstado()->getCodigoInterno() !== ConstanteEstadoLiquidacion::CALCULADA) {
-            $this->addFlash('error', 'La liquidación debe estar calculada para poder aprobarse.');
+        if (!$liquidacion->getEstado() || $liquidacion->getEstado()->getCodigoInterno() !== ConstanteEstadoLiquidacion::BORRADOR) {
+            $this->addFlash('error', 'La liquidación debe estar en borrador para poder aprobarse.');
             return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
+        }
+
+        foreach ($liquidacion->getDetallesSemanales() as $detalle) {
+            if (!$detalle->getEstado() || $detalle->getEstado()->getCodigoInterno() !== ConstanteEstadoLiquidacion::APROBADA) {
+                $this->addFlash('error', 'Debe aprobarse todas las liquidaciones semanales antes de aprobar la liquidación mensual.');
+                return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
+            }
+        }
+
+        if ($liquidacion->getPadre() !== null) {
+            if (Decimal::comp((string) $liquidacion->getSueldoBruto(), '0', 2) === 0) {
+                $this->addFlash('warning', 'Se aprobó una liquidación con sueldo bruto igual a 0.');
+            }
+        } elseif ($liquidacion->getDetallesSemanales()->count() === 0) {
+            if (Decimal::comp((string) $liquidacion->getSueldoBruto(), '0', 2) === 0) {
+                $this->addFlash('error', 'No se puede aprobar una liquidación con sueldo bruto igual a 0.');
+                return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
+            }
         }
 
         $liquidacionService->aprobar($liquidacion);
@@ -333,7 +550,10 @@ class LiquidacionController extends BaseController
 
         $this->addFlash('success', 'Liquidación aprobada correctamente.');
 
-        return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
+        $padre = $liquidacion->getPadre();
+        $redirectId = $padre !== null ? $padre->getId() : $liquidacion->getId();
+
+        return $this->redirectToRoute('liquidacion_show', ['id' => $redirectId]);
     }
 
     /**
@@ -341,11 +561,23 @@ class LiquidacionController extends BaseController
      */
     public function pagar(Request $request, Liquidacion $liquidacion, LiquidacionService $liquidacionService, EntityManagerInterface $entityManager): Response
     {
+        $padre = $liquidacion->getPadre();
+        $redirectId = $padre !== null ? $padre->getId() : $liquidacion->getId();
+
         $estadoCodigo = $liquidacion->getEstado() ? $liquidacion->getEstado()->getCodigoInterno() : null;
 
         if (!$estadoCodigo || ($estadoCodigo !== ConstanteEstadoLiquidacion::APROBADA && $estadoCodigo !== ConstanteEstadoLiquidacion::PAGADA)) {
             $this->addFlash('error', 'La liquidación debe estar aprobada para registrar pagos.');
-            return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
+            return $this->redirectToRoute('liquidacion_show', ['id' => $redirectId]);
+        }
+
+        if ($liquidacion->getPadre() === null) {
+            foreach ($liquidacion->getDetallesSemanales() as $detalle) {
+                if (!$detalle->getEstado() || $detalle->getEstado()->getCodigoInterno() !== ConstanteEstadoLiquidacion::PAGADA) {
+                    $this->addFlash('error', 'Debe pagarse todas las liquidaciones semanales antes de pagar la liquidación mensual.');
+                    return $this->redirectToRoute('liquidacion_show', ['id' => $redirectId]);
+                }
+            }
         }
 
         $pago = new PagoEmpleado();
@@ -360,7 +592,7 @@ class LiquidacionController extends BaseController
 
             if (Decimal::comp((string) $pago->getImporte(), $restante, 2) > 0) {
                 $this->addFlash('error', 'El pago no puede superar el restante a abonar ($' . $this->formatMoney($restante) . ').');
-                return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
+                return $this->redirectToRoute('liquidacion_show', ['id' => $redirectId]);
             }
 
             $liquidacion->addPago($pago);
@@ -378,12 +610,12 @@ class LiquidacionController extends BaseController
 
             $entityManager->flush();
 
-            return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
+            return $this->redirectToRoute('liquidacion_show', ['id' => $redirectId]);
         }
 
         $this->addFlash('error', 'Verifique los datos del pago.');
 
-        return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
+        return $this->redirectToRoute('liquidacion_show', ['id' => $redirectId]);
     }
 
     /**
@@ -444,6 +676,11 @@ class LiquidacionController extends BaseController
         $entityManager->flush();
 
         $this->addFlash('success', 'Liquidación semanal guardada correctamente.');
+
+        $return = $request->request->get('return');
+        if ($return === 'show' && $padre !== null) {
+            return $this->redirectToRoute('liquidacion_show', ['id' => $padre->getId()]);
+        }
 
         return $this->redirectToRoute('liquidacion_index', ['periodo' => $liquidacion->getPeriodo()]);
     }
@@ -586,16 +823,24 @@ class LiquidacionController extends BaseController
 
     private function puedeEditarContenido(Liquidacion $liquidacion): bool
     {
+        $estadosNoEditables = [
+            ConstanteEstadoLiquidacion::APROBADA,
+            ConstanteEstadoLiquidacion::PAGADA,
+            ConstanteEstadoLiquidacion::ANULADA,
+        ];
+
+        $estado = $liquidacion->getEstado();
+        if ($estado && in_array($estado->getCodigoInterno(), $estadosNoEditables, true)) {
+            return false;
+        }
+
         $relevante = $liquidacion->getPadre() ?? $liquidacion;
-        $estado = $relevante->getEstado();
-        if (!$estado) {
+        $estadoRelevante = $relevante->getEstado();
+        if (!$estadoRelevante) {
             return true;
         }
 
-        return in_array($estado->getCodigoInterno(), [
-            ConstanteEstadoLiquidacion::BORRADOR,
-            ConstanteEstadoLiquidacion::CALCULADA,
-        ], true);
+        return $estadoRelevante->getCodigoInterno() === ConstanteEstadoLiquidacion::BORRADOR;
     }
 
     private function formatMoney($valor): string

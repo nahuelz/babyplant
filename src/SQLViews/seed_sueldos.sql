@@ -2,8 +2,8 @@
 
 -- Categorías
 INSERT INTO babyplant.categoria (nombre, descripcion, codigo_interno, habilitado)
-SELECT 'Obrero', 'Categoría obrero', 1, 1
-WHERE NOT EXISTS (SELECT 1 FROM babyplant.categoria WHERE nombre = 'Obrero');
+SELECT 'Empleado', 'Categoría empleado', 1, 1
+WHERE NOT EXISTS (SELECT 1 FROM babyplant.categoria WHERE nombre = 'Empleado');
 
 -- Obras sociales
 INSERT INTO babyplant.obra_social (nombre, descripcion, codigo_interno, habilitado)
@@ -63,20 +63,24 @@ SELECT 'Guardia', 'Guardias', 4, 1, 'INGRESO'
 WHERE NOT EXISTS (SELECT 1 FROM babyplant.tipo_concepto_liquidacion WHERE codigo_interno = 4);
 
 INSERT INTO babyplant.tipo_concepto_liquidacion (nombre, descripcion, codigo_interno, habilitado, tipo)
-SELECT 'Presentismo', 'Bono por presentismo', 5, 1, 'INGRESO'
+SELECT 'Presentismo', 'Bono por presentismo', 5, 1, 'DESCUENTO'
 WHERE NOT EXISTS (SELECT 1 FROM babyplant.tipo_concepto_liquidacion WHERE codigo_interno = 5);
 
 INSERT INTO babyplant.tipo_concepto_liquidacion (nombre, descripcion, codigo_interno, habilitado, tipo)
-SELECT 'Bonificación', 'Bonificación adicional', 6, 1, 'INGRESO'
-WHERE NOT EXISTS (SELECT 1 FROM babyplant.tipo_concepto_liquidacion WHERE codigo_interno = 6);
+SELECT 'SAC', 'Sueldo Anual Complementario', 6, 1, 'INGRESO'
+    WHERE NOT EXISTS (SELECT 1 FROM babyplant.tipo_concepto_liquidacion WHERE codigo_interno = 6);
 
 INSERT INTO babyplant.tipo_concepto_liquidacion (nombre, descripcion, codigo_interno, habilitado, tipo)
-SELECT 'Viático', 'Viáticos', 7, 1, 'INGRESO'
-WHERE NOT EXISTS (SELECT 1 FROM babyplant.tipo_concepto_liquidacion WHERE codigo_interno = 7);
+SELECT 'Prestamo', 'Prestamo', 7, 1, 'DESCUENTO'
+    WHERE NOT EXISTS (SELECT 1 FROM babyplant.tipo_concepto_liquidacion WHERE codigo_interno = 7);
 
 INSERT INTO babyplant.tipo_concepto_liquidacion (nombre, descripcion, codigo_interno, habilitado, tipo)
-SELECT 'Otro', 'Otros conceptos', 8, 1, 'INGRESO'
-WHERE NOT EXISTS (SELECT 1 FROM babyplant.tipo_concepto_liquidacion WHERE codigo_interno = 8);
+SELECT 'Vacaciones', 'Vacaciones', 8, 1, 'INGRESO'
+    WHERE NOT EXISTS (SELECT 1 FROM babyplant.tipo_concepto_liquidacion WHERE codigo_interno = 8);
+
+INSERT INTO babyplant.tipo_concepto_liquidacion (nombre, descripcion, codigo_interno, habilitado, tipo)
+SELECT 'Dif. Aumento', 'Diferencia aumento', 8, 1, 'INGRESO'
+    WHERE NOT EXISTS (SELECT 1 FROM babyplant.tipo_concepto_liquidacion WHERE codigo_interno = 9);
 
 -- Modos de pago (para pagos a empleados, si no existen)
 INSERT INTO babyplant.modo_pago (nombre, descripcion, codigo_interno, habilitado)

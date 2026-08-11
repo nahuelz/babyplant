@@ -189,9 +189,23 @@ class Liquidacion {
         $this->tipoModalidadPago = $tipoModalidadPago;
     }
 
-    public function getSueldoBruto()
+    public function getSueldoBruto(): string
     {
-        return $this->sueldoBruto;
+        if (!$this->detallesSemanales->isEmpty()) {
+            $total = '0';
+
+            foreach ($this->detallesSemanales as $detalle) {
+                $total = Decimal::add(
+                    $total,
+                    (string) $detalle->getSueldoBruto(),
+                    2
+                );
+            }
+
+            return $total;
+        }
+
+        return (string) $this->sueldoBruto;
     }
 
     public function setSueldoBruto($sueldoBruto): void
@@ -199,9 +213,23 @@ class Liquidacion {
         $this->sueldoBruto = $sueldoBruto;
     }
 
-    public function getDeducciones()
+    public function getDeducciones(): string
     {
-        return $this->deducciones;
+        if (!$this->detallesSemanales->isEmpty()) {
+            $total = '0';
+
+            foreach ($this->detallesSemanales as $detalle) {
+                $total = Decimal::add(
+                    $total,
+                    (string) $detalle->getDeducciones(),
+                    2
+                );
+            }
+
+            return $total;
+        }
+
+        return (string) $this->deducciones;
     }
 
     public function setDeducciones($deducciones): void

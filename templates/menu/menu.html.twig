@@ -43,3 +43,7 @@
 {% if is_granted("ROLE_MENU_CONTABLE") %}
     {% include 'menu/menu_contable.html.twig' %}
 {% endif %}
+
+{% if is_granted("ROLE_MENU_CONTABLE") %}
+    {% include 'menu/menu_empleados.html.twig' %}
+{% endif %}

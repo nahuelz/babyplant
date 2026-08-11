@@ -1,0 +1,79 @@
+<!-- TAB VACACIONES -->
+<div class="tab-pane fade" id="tab-vacaciones">
+    <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap">
+        <form method="get" class="form-inline mb-2 mb-md-0">
+            <div class="form-group mr-3">
+                <label for="anio-vacaciones" class="mr-2 font-weight-bold">Año</label>
+                <select name="anio" id="anio-vacaciones" class="form-control choice">
+                    {% for anio in aniosVacaciones %}
+                        <option value="{{ anio }}" {{ anio == anioSeleccionado ? 'selected' : '' }}>{{ anio }}</option>
+                    {% else %}
+                        <option value="{{ anioActual }}" selected>{{ anioActual }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-light-primary">Filtrar</button>
+        </form>
+        <button class="btn btn-primary" data-toggle="collapse" data-target="#form-vacaciones">
+            <i class="la la-plus"></i> Cargar / actualizar días
+        </button>
+    </div>
+
+    <div class="collapse mb-5" id="form-vacaciones">
+        <div class="card card-custom">
+            <div class="card-body">
+                <form method="post" action="{{ path('app_empleado_vacaciones', {'id': empleado.id}) }}" class="form-inline">
+                    <div class="form-group mr-3">
+                        <label for="anio" class="mr-2">Año</label>
+                        <input type="number" name="anio" id="anio" class="form-control" value="{{ anioSeleccionado }}" required>
+                    </div>
+                    <div class="form-group mr-3">
+                        <label for="diasCorrespondientes" class="mr-2">Días que corresponden</label>
+                        <input type="number" name="diasCorrespondientes" id="diasCorrespondientes" class="form-control" value="{{ vacaciones ? vacaciones.diasCorrespondientes : 0 }}" required>
+                    </div>
+                    <div class="form-group mr-3">
+                        <label for="diasTomados" class="mr-2">Días tomados</label>
+                        <input type="number" name="diasTomados" id="diasTomados" class="form-control" value="{{ vacaciones ? vacaciones.diasTomados : 0 }}">
+                    </div>
+                    <button type="submit" class="btn btn-light-primary font-weight-bold">Guardar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-5">
+            <div class="card card-custom bg-light-info">
+                <div class="card-body tarjeta-resumen">
+                    <div class="numero">{{ vacaciones ? vacaciones.diasCorrespondientes : '-' }}</div>
+                    <div class="etiqueta">Correspondientes</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-5">
+            <div class="card card-custom bg-light-warning">
+                <div class="card-body tarjeta-resumen">
+                    <div class="numero">{{ vacaciones ? vacaciones.diasTomados : '-' }}</div>
+                    <div class="etiqueta">Tomadas</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-5">
+            <div class="card card-custom bg-light-success">
+                <div class="card-body tarjeta-resumen">
+                    <div class="numero">{{ vacaciones ? vacaciones.diasDisponibles : '-' }}</div>
+                    <div class="etiqueta">Disponibles</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card card-custom">
+        <div class="card-header">
+            <h5 class="card-title">Historial de vacaciones {{ anioSeleccionado }}</h5>
+        </div>
+        <div class="card-body">
+            <p class="text-muted mb-0">El registro de fechas de vacaciones estará disponible próximamente.</p>
+        </div>
+    </div>
+</div>

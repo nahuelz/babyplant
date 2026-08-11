@@ -2,14 +2,11 @@
 
 namespace App\Form;
 
-use App\Entity\ModoPago;
 use App\Entity\PagoEmpleado;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -25,6 +22,7 @@ class PagoEmpleadoType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'pattern' => '[0-9]+([,][0-9]+)?',
+                    'readonly' => 'readonly',
                 ],
             ])
             ->add('fecha', DateType::class, [
@@ -32,25 +30,6 @@ class PagoEmpleadoType extends AbstractType
                 'label' => 'Fecha',
                 'widget' => 'single_text',
                 'html5' => true,
-                'attr' => ['class' => 'form-control'],
-            ])
-            ->add('modoPago', EntityType::class, [
-                'class' => ModoPago::class,
-                'choice_label' => 'nombre',
-                'placeholder' => '-- Elija el modo de pago --',
-                'query_builder' => function ($er) {
-                    return $er->createQueryBuilder('m')
-                        ->where('m.habilitado = 1')
-                        ->andWhere('m.fechaBaja IS NULL')
-                        ->orderBy('m.nombre', 'ASC');
-                },
-                'required' => false,
-                'label' => 'Modo de pago',
-                'attr' => ['class' => 'form-control select2'],
-            ])
-            ->add('comprobante', TextType::class, [
-                'required' => false,
-                'label' => 'Comprobante',
                 'attr' => ['class' => 'form-control'],
             ])
             ->add('observaciones', TextareaType::class, [

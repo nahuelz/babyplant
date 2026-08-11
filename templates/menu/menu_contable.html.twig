@@ -4,40 +4,6 @@
     </a>
     <div class="menu-submenu menu-submenu-classic menu-submenu-left" data-hor-direction="menu-submenu-left">
         <ul class="menu-subnav">
-            {% if is_granted("ROLE_EMPLEADO_CRUD") %}
-                <li class="menu-item " aria-haspopup="true">
-                    <a href="{{ path('empleado_index') }}" class="menu-link ">
-                        <span class="menu-text">Empleados</span>
-                    </a>
-                </li>
-                <li class="menu-item " aria-haspopup="true">
-                    <a href="{{ path('liquidacion_index') }}" class="menu-link ">
-                        <span class="menu-text">Liquidaciones</span>
-                    </a>
-                </li>
-                <hr class="m-0">
-                <li class="menu-item " aria-haspopup="true">
-                    <a href="{{ path('categoria_index') }}" class="menu-link ">
-                        <span class="menu-text">Categorías</span>
-                    </a>
-                </li>
-                <li class="menu-item " aria-haspopup="true">
-                    <a href="{{ path('obrasocial_index') }}" class="menu-link ">
-                        <span class="menu-text">Obras Sociales</span>
-                    </a>
-                </li>
-                <li class="menu-item " aria-haspopup="true">
-                    <a href="{{ path('banco_index') }}" class="menu-link ">
-                        <span class="menu-text">Bancos</span>
-                    </a>
-                </li>
-                <li class="menu-item " aria-haspopup="true">
-                    <a href="{{ path('tipomodalidadpago_index') }}" class="menu-link ">
-                        <span class="menu-text">Modalidades de Pago</span>
-                    </a>
-                </li>
-                <hr class="m-0">
-            {% endif %}
             {% if is_granted("ROLE_FACTURA") %}
                 <li class="menu-item " aria-haspopup="true">
                     <a href="{{ path('gasto_index') }}" class="menu-link ">
@@ -70,7 +36,6 @@
                         <span class="menu-text">Configurar Sub Conceptos</span>
                     </a>
                 </li>
-                <hr class="m-0">
                 <li class="menu-item " aria-haspopup="true">
                     <a href="{{ path('tipogrupo_index') }}" class="menu-link ">
                         <span class="menu-text">Configurar Grupos</span>

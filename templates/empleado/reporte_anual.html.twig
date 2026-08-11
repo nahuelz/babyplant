@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .reporte-anual th,
+        .reporte-anual td {
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+    <div class="card card-custom">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-title">
+                <h3 class="card-label">{{ empleado.nombreCompleto }} - Reporte anual {{ anio }}</h3>
+            </div>
+            <div class="card-toolbar">
+                <a href="{{ path('app_empleado_show', {'id': empleado.id, 'anio': anio}) }}" class="btn btn-light-dark font-weight-bold mr-2">
+                    Volver al empleado
+                </a>
+                <a href="{{ path('app_empleado_reporte_anual_excel', {'id': empleado.id, 'anio': anio}) }}" class="btn btn-success">
+                    <i class="la la-file-excel"></i> Exportar Excel
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover reporte-anual">
+                    <thead>
+                        <tr>
+                            <th class="text-left">Mes</th>
+                            <th class="text-right">Bruto</th>
+                            <th class="text-right">Deducciones</th>
+                            <th class="text-right">Neto</th>
+                            <th class="text-right">Sueldo / 2</th>
+                            <th class="text-right">Arreglos</th>
+                            <th class="text-right">Hs Extras</th>
+                            <th class="text-right">Feriados</th>
+                            <th class="text-right">Guardias</th>
+                            <th class="text-right">Otros</th>
+                            <th class="text-right">Adelantos</th>
+                            <th class="text-right">Total a pagar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for mes in reporte %}
+                            <tr>
+                                <td class="font-weight-bold">{{ mes.nombre }}</td>
+                                <td class="text-right">{{ mes.bruto|money_format }}</td>
+                                <td class="text-right">{{ mes.deducciones|money_format }}</td>
+                                <td class="text-right">{{ mes.neto|money_format }}</td>
+                                <td class="text-right">{{ mes.sueldoMedio|money_format }}</td>
+                                <td class="text-right">{{ mes.arreglos|money_format }}</td>
+                                <td class="text-right">{{ mes.horasExtras|money_format }}</td>
+                                <td class="text-right">{{ mes.feriados|money_format }}</td>
+                                <td class="text-right">{{ mes.guardias|money_format }}</td>
+                                <td class="text-right">{{ mes.otros|money_format }}</td>
+                                <td class="text-right">{{ mes.adelantos|money_format }}</td>
+                                <td class="text-right">{{ mes.aPagar|money_format }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr class="font-weight-bold bg-light">
+                            <td>TOTAL</td>
+                            <td class="text-right">{{ totales.bruto|money_format }}</td>
+                            <td class="text-right">{{ totales.deducciones|money_format }}</td>
+                            <td class="text-right">{{ totales.neto|money_format }}</td>
+                            <td class="text-right">{{ totales.sueldoMedio|money_format }}</td>
+                            <td class="text-right">{{ totales.arreglos|money_format }}</td>
+                            <td class="text-right">{{ totales.horasExtras|money_format }}</td>
+                            <td class="text-right">{{ totales.feriados|money_format }}</td>
+                            <td class="text-right">{{ totales.guardias|money_format }}</td>
+                            <td class="text-right">{{ totales.otros|money_format }}</td>
+                            <td class="text-right">{{ totales.adelantos|money_format }}</td>
+                            <td class="text-right">{{ totales.aPagar|money_format }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

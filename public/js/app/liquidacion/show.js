@@ -134,6 +134,27 @@ jQuery(document).ready(function () {
     $(document).on('click', '.link-delete-liquidacion-concepto', eliminarConcepto);
     $('#liquidacion_sueldoBruto, #liquidacion_deducciones').on('input', recalcularTotales);
 
+    // Modal de edición de semana
+    var $modal = $('#modalSemana');
+
+    $(document).on('click', '.abrir-modal-semana', function (e) {
+        e.preventDefault();
+
+        var $link = $(this);
+        var semana = $link.data('semana');
+        var apellido = $link.data('apellido');
+        var nombre = $link.data('nombre');
+
+        $modal.find('#modalSemanaLabel').text('Liquidación Semana ' + semana + ' de ' + apellido + ', ' + nombre);
+        $modal.find('#formGuardarSemana').attr('action', $link.data('action'));
+        $modal.find('#semana_sueldoBruto').val($link.data('sueldo-bruto'));
+        $modal.find('#semana_deducciones').val($link.data('deducciones'));
+        $modal.find('#semana_token').val($link.data('token'));
+        $modal.find('#semana_return').val($link.data('return'));
+
+        $modal.modal('show');
+    });
+
     // Confirmación de anulación
     $('#form-anular').on('submit', function (e) {
         e.preventDefault();

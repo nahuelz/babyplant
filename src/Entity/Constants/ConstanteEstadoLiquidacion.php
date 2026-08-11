@@ -6,7 +6,7 @@ class ConstanteEstadoLiquidacion
 {
     const BORRADOR = 1;
 
-    const CALCULADA = 2;
+    const CALCULADA = 2; // YA NO SE USA
 
     const APROBADA = 3;
 

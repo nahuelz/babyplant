@@ -15,32 +15,35 @@ class LiquidacionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $readonlyAttr = $options['editable'] ? [] : ['readonly' => 'readonly'];
+        $disabledAttr = $options['editable'] ? [] : ['disabled' => 'disabled'];
+
         if ($options['incluir_sueldo']) {
             $builder
                 ->add('sueldoBruto', NumberType::class, [
                     'required' => true,
                     'label' => 'Sueldo bruto',
                     'scale' => 2,
-                    'attr' => [
+                    'attr' => array_merge([
                         'class' => 'form-control',
                         'pattern' => '[0-9]+([,][0-9]+)?',
-                    ],
+                    ], $readonlyAttr),
                 ])
                 ->add('deducciones', NumberType::class, [
                     'required' => true,
                     'label' => 'Deducciones',
                     'scale' => 2,
-                    'attr' => [
+                    'attr' => array_merge([
                         'class' => 'form-control',
                         'pattern' => '[0-9]+([,][0-9]+)?',
-                    ],
+                    ], $readonlyAttr),
                 ]);
         }
 
         $builder->add('observaciones', TextareaType::class, [
             'required' => false,
             'label' => 'Observaciones',
-            'attr' => ['class' => 'form-control', 'rows' => 3],
+            'attr' => array_merge(['class' => 'form-control', 'rows' => 3], $readonlyAttr),
         ]);
 
         if ($options['incluir_conceptos']) {
@@ -50,12 +53,14 @@ class LiquidacionType extends AbstractType
                     'mapped' => false,
                     'data_class' => ConceptoLiquidacion::class,
                     'label' => false,
+                    'validation_groups' => false,
                 ])
                 ->add('conceptos', CollectionType::class, [
                     'entry_type' => ConceptoLiquidacionType::class,
                     'entry_options' => [
                         'label' => false,
                         'attr' => ['class' => 'concepto-item'],
+                        'validation_groups' => false,
                     ],
                     'allow_add' => true,
                     'allow_delete' => true,
@@ -63,7 +68,7 @@ class LiquidacionType extends AbstractType
                     'prototype' => false,
                     'mapped' => false,
                     'label' => false,
-                    'attr' => ['class' => 'hidden'],
+                    'attr' => array_merge(['class' => 'hidden'], $disabledAttr),
                 ]);
         }
     }
@@ -74,9 +79,11 @@ class LiquidacionType extends AbstractType
             'data_class' => Liquidacion::class,
             'incluir_sueldo' => true,
             'incluir_conceptos' => true,
+            'editable' => true,
         ]);
 
         $resolver->setAllowedTypes('incluir_sueldo', 'bool');
         $resolver->setAllowedTypes('incluir_conceptos', 'bool');
+        $resolver->setAllowedTypes('editable', 'bool');
     }
 }

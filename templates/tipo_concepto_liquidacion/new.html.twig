@@ -12,19 +12,20 @@
 				<span class="card-icon">
 					<i class="flaticon-search text-primary"></i>
 				</span>
-                <h3 class="card-label">{{ edit ? 'Editar' : 'Nuevo' }} empleado</h3>
+                <h3 class="card-label">{{ edit ? 'Editar' : 'Nuevo' }} concepto de liquidación</h3>
             </div>
         </div>
         <div class="card-body">
             <div class="row">
-                {{ include('empleado/_form.html.twig') }}
+                {{ include('tipo_concepto_liquidacion/_form.html.twig') }}
             </div>
         </div>
         <div class="card-footer d-flex justify-content-between">
-            <a href="{{ app.request.headers.get('referer') ?: path('empleado_index') }}" class="btn btn-light-dark font-weight-bold">Volver</a>
-            <button type="submit" id="empleado_submit" name="empleado[submit]" class="btn btn-light-primary font-weight-bold submit-button">{{ button_label|default('Guardar') }}</button>
+            <a href="{{ path('tipoconceptoliquidacion_index') }}" class="btn btn-light-dark font-weight-bold">Volver</a>
+            <button type="submit" id="tipo_concepto_liquidacion_submit" name="tipo_concepto_liquidacion[submit]" class="btn btn-light-primary font-weight-bold submit-button">{{ button_label|default('Guardar') }}</button>
         </div>
     </div>
+
 
 {% endblock %}
 

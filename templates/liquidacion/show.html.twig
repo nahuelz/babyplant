@@ -3,6 +3,19 @@
 {% import 'app/_macro_form.html.twig' as macro_form %}
 {% import 'app/_macro_show.html.twig' as macro_show %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .liquidacion-header {
+            background: #fff;
+            border: 1px solid #ebedf3;
+            border-radius: 0.42rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
 
     <div class="card card-custom">
@@ -17,12 +30,25 @@
         </div>
 
         <div class="card-body">
-            <div class="row">
-                {{ macro_show._show_detail('Empleado', liquidacion.empleado.nombreCompleto, 'col-md-4') }}
-                {{ macro_show._show_detail('Período', liquidacion.periodo, 'col-md-2') }}
-                {{ macro_show._show_detail('Desde', liquidacion.fechaDesde ? liquidacion.fechaDesde|date('d/m/Y') : '-', 'col-md-2') }}
-                {{ macro_show._show_detail('Hasta', liquidacion.fechaHasta ? liquidacion.fechaHasta|date('d/m/Y') : '-', 'col-md-2') }}
-                {{ macro_show._show_detail('Modalidad', liquidacion.tipoModalidadPago ? liquidacion.tipoModalidadPago.nombre : '-', 'col-md-2') }}
+
+            <!-- Cabecera -->
+            <div class="liquidacion-header d-flex align-items-center justify-content-between flex-wrap">
+                <div class="d-flex align-items-center">
+                    <div class="symbol symbol-60 symbol-light-primary mr-5">
+                        <span class="symbol-label font-size-h3">{{ liquidacion.empleado.nombreCompleto|first|upper }}</span>
+                    </div>
+                    <div>
+                        <h3 class="mb-1">{{ liquidacion.empleado.nombreCompleto }}</h3>
+                        <span class="text-muted">Período: {{ liquidacion.periodo }}</span><br>
+                        <span class="text-muted">Desde: {{ liquidacion.fechaDesde ? liquidacion.fechaDesde|date('d/m/Y') : '-' }} · Hasta: {{ liquidacion.fechaHasta ? liquidacion.fechaHasta|date('d/m/Y') : '-' }}</span><br>
+                        <span class="text-muted">Modalidad: {{ liquidacion.tipoModalidadPago ? liquidacion.tipoModalidadPago.nombre : '-' }}</span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mt-3 mt-md-0">
+                    <a href="{{ path('app_empleado_show', {'id': liquidacion.empleado.id}) }}" class="btn btn-primary">
+                        <i class="la la-user"></i> Ver empleado
+                    </a>
+                </div>
             </div>
 
             {% if liquidacion.detallesSemanales is not empty %}
@@ -31,24 +57,62 @@
                     <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>Desde</th>
-                                <th>Hasta</th>
-                                <th class="text-right">Sueldo bruto</th>
-                                <th class="text-right">Deducciones</th>
-                                <th class="text-right">Sueldo neto</th>
-                                <th>Acciones</th>
+                                <th class="text-center">Desde</th>
+                                <th class="text-center">Hasta</th>
+                                <th class="text-center">Sueldo bruto</th>
+                                <th class="text-center">Deducciones</th>
+                                <th class="text-center">Sueldo neto</th>
+                                <th class="text-center">Estado</th>
+                                <th class="text-center">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for detalle in liquidacion.detallesSemanales %}
                                 <tr>
-                                    <td>{{ detalle.fechaDesde ? detalle.fechaDesde|date('d/m/Y') : '-' }}</td>
-                                    <td>{{ detalle.fechaHasta ? detalle.fechaHasta|date('d/m/Y') : '-' }}</td>
-                                    <td class="text-right">{{ detalle.sueldoBruto|number_format(2, ',', '.') }}</td>
-                                    <td class="text-right">{{ detalle.deducciones|number_format(2, ',', '.') }}</td>
-                                    <td class="text-right">{{ detalle.sueldoNeto|number_format(2, ',', '.') }}</td>
-                                    <td>
-                                        <a href="{{ path('liquidacion_show', {'id': detalle.id}) }}" class="btn btn-sm btn-light-primary font-weight-bold">Editar semana</a>
+                                    <td class="text-center">{{ detalle.fechaDesde ? detalle.fechaDesde|date('d/m/Y') : '-' }}</td>
+                                    <td class="text-center">{{ detalle.fechaHasta ? detalle.fechaHasta|date('d/m/Y') : '-' }}</td>
+                                    <td class="text-center">{{ detalle.sueldoBruto|number_format(2, ',', '.') }}</td>
+                                    <td class="text-center">{{ detalle.deducciones|number_format(2, ',', '.') }}</td>
+                                    <td class="text-center">{{ detalle.sueldoNeto|number_format(2, ',', '.') }}</td>
+                                    <td class="text-center">
+                                        {% if detalle.estado %}
+                                            {% set estadoColor = '' %}
+                                            {% if detalle.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::APROBADA') %}
+                                                {% set estadoColor = '#fff3cd' %}
+                                            {% elseif detalle.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::PAGADA') %}
+                                                {% set estadoColor = '#d4edda' %}
+                                            {% endif %}
+                                            <span class="badge badge-light" style="{% if estadoColor %}background-color: {{ estadoColor }};{% endif %}">{{ detalle.estado }}</span>
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if detalle.estado and detalle.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::BORRADOR') %}
+                                            <a href="#"
+                                               class="btn btn-sm btn-light-primary font-weight-bold abrir-modal-semana"
+                                               data-action="{{ path('liquidacion_guardar_semana', {'id': detalle.id}) }}"
+                                               data-semana="{{ loop.index }}"
+                                               data-apellido="{{ detalle.empleado.apellido }}"
+                                               data-nombre="{{ detalle.empleado.nombre }}"
+                                               data-sueldo-bruto="{{ detalle.sueldoBruto|replace({'.': ','}) }}"
+                                               data-deducciones="{{ detalle.deducciones|replace({'.': ','}) }}"
+                                               data-token="{{ csrf_token('guardar_semana_' ~ detalle.id) }}"
+                                               data-return="show">
+                                                Editar
+                                            </a>
+                                            <form method="post" action="{{ path('liquidacion_aprobar', {'id': detalle.id}) }}" class="d-inline ml-2">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('aprobar_' ~ detalle.id) }}">
+                                                <button type="submit" class="btn btn-sm btn-success font-weight-bold btn-aprobar-confirm" data-tipo="hija" data-sueldo-bruto="{{ detalle.sueldoBruto|replace({'.': ','}) }}">Aprobar</button>
+                                            </form>
+                                        {% elseif detalle.estado and detalle.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::APROBADA') %}
+                                            <form method="post" action="{{ path('liquidacion_pagar', {'id': detalle.id}) }}" class="d-inline ml-2">
+                                                <input type="hidden" name="pago_empleado[_token]" value="{{ csrf_token('pago_empleado') }}">
+                                                <input type="hidden" name="pago_empleado[importe]" value="{{ detalle.totalAPagar|number_format(2, ',', '') }}">
+                                                <input type="hidden" name="pago_empleado[fecha]" value="{{ 'now'|date('Y-m-d') }}">
+                                                <button type="submit" class="btn btn-sm btn-warning font-weight-bold">Pagar</button>
+                                            </form>
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -62,48 +126,49 @@
                 </div>
             {% endif %}
 
-            {% if form %}
-                {{ form_start(form, {'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
+            {{ form_start(form, {'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
 
                 <div class="row mt-8">
-                    {% if form.sueldoBruto is defined %}{{ macro_form._new_field(form.sueldoBruto, 'col-md-3') }}{% endif %}
-                    {% if form.deducciones is defined %}{{ macro_form._new_field(form.deducciones, 'col-md-3') }}{% endif %}
-                    {% if form.observaciones is defined %}{{ macro_form._new_field(form.observaciones, 'col-md-3') }}{% endif %}
+                    {% if form.sueldoBruto is defined %}{{ macro_form._new_field(form.sueldoBruto, 'col-md-6') }}{% endif %}
+                    {% if form.deducciones is defined %}{{ macro_form._new_field(form.deducciones, 'col-md-6') }}{% endif %}
+                    {% if form.observaciones is defined %}{{ macro_form._new_field(form.observaciones, 'col-md-12') }}{% endif %}
                 </div>
 
                 {% if liquidacion.detallesSemanales is not empty %}
-                    <input type="hidden" id="liquidacion_sueldoBruto" value="{{ liquidacion.sueldoNeto }}">
+                    <input type="hidden" id="liquidacion_sueldoBruto" value="{{ liquidacion.sueldoNeto|number_format(2, ',', '.') }}">
                     <input type="hidden" id="liquidacion_deducciones" value="0">
                 {% endif %}
 
                 {% if form.conceptos is defined %}
                     <h5 class="mt-8 mb-3">Conceptos</h5>
 
-                    <div class="row row-liquidacion-concepto-form align-items-end">
-                        <div class="col-md-2">
-                            {{ macro_form._new_field(form.concepto.tipoConceptoLiquidacion, '') }}
-                        </div>
-                        <div class="col-md-3">
-                            {{ macro_form._new_field(form.concepto.descripcion, '') }}
-                        </div>
-                        <div class="col-md-1">
-                            {{ macro_form._new_field(form.concepto.cantidad, '') }}
-                        </div>
-                        <div class="col-md-2">
-                            {{ macro_form._new_field(form.concepto.valorUnitario, '') }}
-                        </div>
-                        <div class="col-md-2">
-                            {{ macro_form._new_field(form.concepto.importe, '') }}
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <button type="button" class="btn btn-success font-weight-bold link-add-liquidacion-concepto">
-                                    <i class="la la-plus"></i>
-                                    AGREGAR CONCEPTO
-                                </button>
+                    {% if editable %}
+                        <div class="row row-liquidacion-concepto-form align-items-end">
+                            <div class="col-md-2">
+                                {{ macro_form._new_field(form.concepto.tipoConceptoLiquidacion, '') }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ macro_form._new_field(form.concepto.descripcion, '') }}
+                            </div>
+                            <div class="col-md-1">
+                                {{ macro_form._new_field(form.concepto.cantidad, '') }}
+                            </div>
+                            <div class="col-md-2">
+                                {{ macro_form._new_field(form.concepto.valorUnitario, '') }}
+                            </div>
+                            <div class="col-md-2">
+                                {{ macro_form._new_field(form.concepto.importe, '') }}
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success font-weight-bold link-add-liquidacion-concepto">
+                                        <i class="la la-plus"></i>
+                                        AGREGAR CONCEPTO
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    {% endif %}
 
                     <div class="row row-liquidacion-concepto-empty margin-top-20" style="display: none;">
                         <div class="col-md-12">
@@ -113,7 +178,7 @@
                         </div>
                     </div>
 
-                    <div class="row row-liquidacion-conceptos margin-top-15" style="{{ liquidacion.conceptos is empty ? 'display: none;' : '' }}">
+                    <div class="row row-liquidacion-conceptos margin-top-15">
                         <div class="col-md-12">
                             <div class="table-scrollable">
                                 <table class="table table-striped table-bordered table-advance table-hover">
@@ -141,7 +206,7 @@
                                                     <input type="hidden" name="liquidacion[conceptos][{{ loop.index0 }}][descripcion]" value="{{ concepto.descripcion }}">
                                                 </td>
                                                 <td class="hidden">
-                                                    <input type="hidden" name="liquidacion[conceptos][{{ loop.index0 }}][cantidad]" value="{{ concepto.cantidad }}">
+                                                    <input type="hidden" name="liquidacion[conceptos][{{ loop.index0 }}][cantidad]" value="{{ concepto.cantidad|number_format(2, ',', '.') }}">
                                                 </td>
                                                 <td class="hidden">
                                                     <input type="hidden" name="liquidacion[conceptos][{{ loop.index0 }}][valorUnitario]" value="{{ concepto.valorUnitario|number_format(2, ',', '.') }}">
@@ -156,10 +221,16 @@
                                                 <td class="v-middle text-center">$ {{ concepto.importe|number_format(2, ',', '.') }}</td>
                                                 <td class="v-middle text-center">{{ concepto.tipoConceptoLiquidacion.tipo }}</td>
                                                 <td class="text-center v-middle">
-                                                    <a href="#" class="btn btn-sm delete-link-inline link-delete-liquidacion-concepto tooltips" data-placement="top" data-original-title="Eliminar">
-                                                        <i class="fa fa-trash text-danger"></i>
-                                                    </a>
+                                                    {% if editable %}
+                                                        <a href="#" class="btn btn-sm delete-link-inline link-delete-liquidacion-concepto tooltips" data-placement="top" data-original-title="Eliminar">
+                                                            <i class="fa fa-trash text-danger"></i>
+                                                        </a>
+                                                    {% endif %}
                                                 </td>
+                                            </tr>
+                                        {% else %}
+                                            <tr>
+                                                <td colspan="7" class="text-center text-muted">No se registró ningún concepto</td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>
@@ -174,131 +245,33 @@
                     Total a pagar: <span id="resumen-total"></span>
                 </div>
 
+                {% set hijasPendientesDeAprobar = liquidacion.detallesSemanales|filter(d => d.estado is null or d.estado.codigoInterno != constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::APROBADA'))|length %}
+                {% set hijasPendientesDePagar = liquidacion.detallesSemanales|filter(d => d.estado is null or d.estado.codigoInterno != constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::PAGADA'))|length %}
+
                 <div class="card-footer d-flex justify-content-between mt-8">
                     <a href="{{ path('liquidacion_index', {'periodo': liquidacion.periodo}) }}" class="btn btn-light-dark font-weight-bold">Volver</a>
                     <div>
                         {{ form_widget(form._token) }}
-                        <button type="submit" class="btn btn-primary font-weight-bold mr-2">Guardar borrador</button>
+                        {% if editable %}
+                            <input type="hidden" name="accion" value="guardar" id="liquidacion-accion">
+                            <button type="submit" class="btn btn-primary font-weight-bold mr-2">Guardar borrador</button>
+                            {% if liquidacion.estado and liquidacion.estado.codigoInterno == 1 and hijasPendientesDeAprobar == 0 %}
+                                <button type="submit" class="btn btn-success font-weight-bold btn-aprobar-confirm" data-tipo="principal">Aprobar</button>
+                            {% endif %}
+                        {% endif %}
+                        {% if liquidacion.estado and liquidacion.estado.codigoInterno == 3 and hijasPendientesDePagar == 0 %}
+                            <button type="button" class="btn btn-warning font-weight-bold mr-2" data-toggle="modal" data-target="#pagoModal">
+                                Pagar
+                            </button>
+                        {% endif %}
+                        {{ form_end(form, {'render_rest': false}) }}
                     </div>
                 </div>
 
-                {{ form_end(form, {'render_rest': false}) }}
 
-                <div class="d-flex justify-content-end mt-3">
-                    {#
-                    {% if liquidacion.estado and liquidacion.estado.codigoInterno == 1 %}
-                        <form method="post" action="{{ path('liquidacion_calcular', {'id': liquidacion.id}) }}" class="d-inline mr-2">
-                            <input type="hidden" name="_token" value="{{ csrf_token('calcular_' ~ liquidacion.id) }}">
-                            <button type="submit" class="btn btn-info font-weight-bold">Calcular</button>
-                        </form>
-                    {% endif %}
-                    #}
-
-                    {% if liquidacion.estado and liquidacion.estado.codigoInterno == 2 %}
-                        <form method="post" action="{{ path('liquidacion_aprobar', {'id': liquidacion.id}) }}" class="d-inline mr-2">
-                            <input type="hidden" name="_token" value="{{ csrf_token('aprobar_' ~ liquidacion.id) }}">
-                            <button type="submit" class="btn btn-success font-weight-bold">Aprobar</button>
-                        </form>
-                    {% endif %}
-
-                    {% if liquidacion.estado and liquidacion.estado.codigoInterno == 3 %}
-                        <button type="button" class="btn btn-warning font-weight-bold mr-2" data-toggle="modal" data-target="#pagoModal">
-                            <i class="la la-dollar-sign"></i>
-                            Pagar
-                        </button>
-                    {% endif %}
-                    {#
-                    {% if liquidacion.estado and liquidacion.estado.codigoInterno != 5 %}
-                        <form method="post" action="{{ path('liquidacion_anular', {'id': liquidacion.id}) }}" class="d-inline" id="form-anular">
-                            <input type="hidden" name="_token" value="{{ csrf_token('anular_' ~ liquidacion.id) }}">
-                            <input type="hidden" name="motivo" value="Anulación desde detalle">
-                            <button type="submit" class="btn btn-danger font-weight-bold">Anular</button>
-                        </form>
-                    {% endif %}
-                    #}
-                </div>
-            {% else %}
-                <h5 class="mt-8 mb-3">Valores</h5>
-                <div class="row">
-                    {{ macro_show._show_detail('Sueldo bruto', liquidacion.sueldoBruto|number_format(2, ',', '.'), 'col-md-2') }}
-                    {{ macro_show._show_detail('Deducciones', liquidacion.deducciones|number_format(2, ',', '.'), 'col-md-2') }}
-                    {{ macro_show._show_detail('Sueldo neto', liquidacion.sueldoNeto|number_format(2, ',', '.'), 'col-md-2') }}
-                    {{ macro_show._show_detail('Total a pagar', liquidacion.totalAPagar|number_format(2, ',', '.'), 'col-md-2') }}
-                    {{ macro_show._show_detail('Total pagado', totalPagado|number_format(2, ',', '.'), 'col-md-2') }}
-                    {{ macro_show._show_detail('Restante', restante|number_format(2, ',', '.'), 'col-md-2') }}
-                </div>
-
-                <h5 class="mt-8 mb-3">Conceptos</h5>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Concepto</th>
-                                <th>Descripción</th>
-                                <th class="text-right">Cantidad</th>
-                                <th class="text-right">Valor unitario</th>
-                                <th class="text-right">Importe</th>
-                                <th>Tipo</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for concepto in liquidacion.conceptos %}
-                                <tr>
-                                    <td>{{ concepto.tipoConceptoLiquidacion }}</td>
-                                    <td>{{ concepto.descripcion|default('-') }}</td>
-                                    <td class="text-right">{{ concepto.cantidad|number_format(2, ',', '.') }}</td>
-                                    <td class="text-right">{{ concepto.valorUnitario|number_format(2, ',', '.') }}</td>
-                                    <td class="text-right">{{ concepto.importe|number_format(2, ',', '.') }}</td>
-                                    <td>{{ concepto.tipoConceptoLiquidacion.tipo }}</td>
-                                </tr>
-                            {% else %}
-                                <tr>
-                                    <td colspan="6" class="text-center text-muted">Sin conceptos cargados.</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="d-flex justify-content-end mt-3">
-                    <a href="{{ path('liquidacion_index', {'periodo': liquidacion.periodo}) }}" class="btn btn-light-dark font-weight-bold">Volver</a>
-                </div>
-            {% endif %}
-
-            {#
-            <h5 class="mt-8 mb-3">Pagos registrados</h5>
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Modo</th>
-                            <th>Comprobante</th>
-                            <th class="text-right">Importe</th>
-                            <th>Observaciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for pago in liquidacion.pagos %}
-                            <tr>
-                                <td>{{ pago.fecha ? pago.fecha|date('d/m/Y') : '-' }}</td>
-                                <td>{{ pago.modoPago|default('-') }}</td>
-                                <td>{{ pago.comprobante|default('-') }}</td>
-                                <td class="text-right">{{ pago.importe|number_format(2, ',', '.') }}</td>
-                                <td>{{ pago.observaciones|default('-') }}</td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td colspan="5" class="text-center text-muted">Sin pagos registrados.</td>
-                            </tr>
-                        {% endfor %}
-                </table>
-            </div>
-            #}
         </div>
     </div>
 
-    {#
     {% if liquidacion.estado and liquidacion.estado.codigoInterno == 3 %}
         <div class="modal fade" id="pagoModal" tabindex="-1" role="dialog" aria-labelledby="pagoModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -316,10 +289,6 @@
                             {{ macro_form._new_field(pagoForm.fecha, 'col-md-6') }}
                         </div>
                         <div class="row">
-                            {{ macro_form._new_field(pagoForm.modoPago, 'col-md-6') }}
-                            {{ macro_form._new_field(pagoForm.comprobante, 'col-md-6') }}
-                        </div>
-                        <div class="row">
                             {{ macro_form._new_field(pagoForm.observaciones, 'col-md-12') }}
                         </div>
                     </div>
@@ -333,11 +302,66 @@
             </div>
         </div>
     {% endif %}
-    #}
+
+    {% include 'liquidacion/_modal_semana.html.twig' %}
 
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/liquidacion/show.js') }}"></script>
+    <script>
+        function parseSueldoBruto(valor) {
+            if (!valor) return 0;
+            return parseFloat(valor.replace(/\./g, '').replace(',', '.'));
+        }
+
+        function aprobarConConfirmacion(btn, callback) {
+            var sueldoBruto = 0;
+            var tipo = btn.getAttribute('data-tipo');
+
+            if (tipo === 'principal') {
+                var input = document.querySelector('[name="liquidacion[sueldoBruto]"]');
+                sueldoBruto = input ? parseSueldoBruto(input.value) : 0;
+            } else if (tipo === 'hija') {
+                sueldoBruto = parseSueldoBruto(btn.getAttribute('data-sueldo-bruto'));
+            }
+
+            if (sueldoBruto === 0) {
+                Swal.fire({
+                    title: 'Advertencia',
+                    text: 'La liquidación tiene sueldo bruto igual a 0. ¿Desea aprobar de todas formas?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, aprobar',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#dc3545'
+                }).then(function(result) {
+                    if (result.isConfirmed) {
+                        callback();
+                    }
+                });
+            } else {
+                callback();
+            }
+        }
+
+        document.querySelectorAll('.btn-aprobar-confirm').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                var form = btn.closest('form');
+                aprobarConConfirmacion(btn, function() {
+                    if (btn.getAttribute('data-tipo') === 'principal') {
+                        document.getElementById('liquidacion-accion').value = 'aprobar';
+                    }
+                    if (form) {
+                        form.submit();
+                    } else {
+                        btn.closest('form').submit();
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}
