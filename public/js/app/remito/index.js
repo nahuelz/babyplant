@@ -87,7 +87,7 @@ function initDataTable() {
                 title: 'Reporte Remitos',
                 className: 'filtrados',
                 exportOptions: {
-                    columns: [1, 5, 4, 6, 3, 11, 8, 9, 10, 13, 14, 7],
+                    columns: [1, 5, 4, 6, 3, 11, 8, 9, 10, 13, 14, 7, 16],
                     filter: 'applied',
                     page: 'all',
                     format: {
@@ -104,7 +104,8 @@ function initDataTable() {
                                 10: 'Precio Total',
                                 13: 'Deudores',
                                 14: 'Caj Plant',
-                                7: 'Condicion'
+                                7: 'Condicion',
+                                16: 'Observacion'
                             };
                             return headers[columnIdx] || data;
                         },
@@ -296,6 +297,11 @@ function datatablesGetColDef() {
             render: function (data, type, full, meta) {
                 return JSON.stringify(data); // guardamos como string para fácil acceso en endRender
             }
+        },
+        {
+            targets: index++,
+            name: 'observacion',
+            visible: false
         },
         {
             targets: -1,

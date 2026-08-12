@@ -35,6 +35,7 @@
         "precioTotalConDescuento": "{{ entity.precioTotalConDescuento|default('default') }}",
         "montoPendiente": "{{ entity.montoPendiente|default('default') }}"
         },
+        "{{ entity.observacion|default('-') }}",
         {
         "situacion_cliente": "{{ path( "situacioncliente_show", { "id": entity.idCliente }) }}",
         "show": "{{ path('remito_show',{id: entity.idRemito}) }}",

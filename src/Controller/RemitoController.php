@@ -93,6 +93,7 @@ class RemitoController extends BaseController {
         $rsm->addScalarResult('montoTotalConDescuentoProducto', 'montoTotalConDescuentoProducto');
         $rsm->addScalarResult('montoPendienteProducto', 'montoPendienteProducto');
         $rsm->addScalarResult('montoPagoProducto', 'montoPagoProducto');
+        $rsm->addScalarResult('observacion', 'observacion');
 
         $nativeQuery = $em->createNativeQuery('call sp_index_remito(?,?,?)', $rsm);
 
