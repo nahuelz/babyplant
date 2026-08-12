@@ -48,7 +48,7 @@
             <a href="{{ path('app_empleado_edit', {'id': empleado.id}) }}" class="btn btn-primary mr-2">
                 <i class="la la-pen"></i> Editar
             </a>
-            <a href="{{ path('liquidacion_index') }}" class="btn btn-light-primary mr-2">
+            <a href="{{ path('liquidacion_index') }}" class="btn btn-primary mr-2">
                 <i class="la la-plus"></i> Nueva liquidación
             </a>
             <div class="dropdown">
@@ -101,10 +101,16 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip();
+        function initTablaLiquidaciones() {
+            try {
+                if (!$.fn.DataTable || !$('#tabla-liquidaciones').length) {
+                    return;
+                }
 
-            if ($.fn.DataTable && $('#tabla-liquidaciones').length) {
+                if ($.fn.DataTable.isDataTable('#tabla-liquidaciones')) {
+                    $('#tabla-liquidaciones').DataTable().destroy();
+                }
+
                 $('#tabla-liquidaciones').DataTable({
                     responsive: true,
                     paging: false,
@@ -115,7 +121,76 @@
                         url: '//cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json'
                     }
                 });
+            } catch (err) {
+                console.error('Error al inicializar la tabla de liquidaciones', err);
             }
+        }
+
+        function refrescarPaneAjax(target, url) {
+            var $pane = $(target);
+
+            $.get(url, function (html) {
+                var $doc = $($.parseHTML(html, document, false));
+                var $nuevoContenido = $doc.find(target);
+
+                if (!$nuevoContenido.length) {
+                    $nuevoContenido = $doc.filter(target);
+                }
+
+                if ($nuevoContenido.length) {
+                    $pane.html($nuevoContenido.html());
+                }
+
+                var $flash = $doc.find('#flash-messages-container');
+                if ($flash.length) {
+                    $('#flash-messages-container').html($flash.html());
+                }
+
+                initTablaLiquidaciones();
+
+                if (typeof initSelects === 'function') {
+                    initSelects();
+                }
+
+                $('[data-toggle="tooltip"]').tooltip();
+                history.replaceState(null, '', url);
+            });
+        }
+
+        $(document).on('submit', '.ajax-filter-form', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var $form = $(this);
+            var confirmMsg = $form.data('confirm');
+
+            if (confirmMsg && !window.confirm(confirmMsg)) {
+                return false;
+            }
+
+            var target = $form.data('ajaxTarget');
+            var method = ($form.attr('method') || 'get').toUpperCase();
+
+            if (method === 'GET') {
+                refrescarPaneAjax(target, window.location.pathname + '?' + $form.serialize());
+                return false;
+            }
+
+            $.post($form.attr('action'), $form.serialize()).always(function () {
+                var anioField = $form.data('ajaxAnioField') || 'anio';
+                var anioValor = $form.find('[name="' + anioField + '"]').val();
+                var url = window.location.pathname + (anioValor ? '?anio=' + encodeURIComponent(anioValor) : '');
+
+                refrescarPaneAjax(target, url);
+            });
+
+            return false;
+        });
+
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+
+            initTablaLiquidaciones();
 
             const anioReporte = document.getElementById('anio-reporte');
             if (anioReporte) {

@@ -43,9 +43,9 @@
                         id="link-ver-reporte"
                         href="{{ path('app_empleado_reporte_anual', {
                             'id': empleado.id,
-                            'anio': anioSeleccionado
+                            'anio': anioSeleccionado > 0 ? anioSeleccionado : anioActual
                         }) }}"
-                        class="btn btn-light-primary mr-2"
+                        class="btn btn-primary mr-2"
                     >
                         <i class="la la-file-alt"></i>
                         Ver reporte
@@ -55,7 +55,7 @@
                         id="link-exportar-excel"
                         href="{{ path('app_empleado_reporte_anual_excel', {
                             'id': empleado.id,
-                            'anio': anioSeleccionado
+                            'anio': anioSeleccionado > 0 ? anioSeleccionado : anioActual
                         }) }}"
                         class="btn btn-success"
                     >

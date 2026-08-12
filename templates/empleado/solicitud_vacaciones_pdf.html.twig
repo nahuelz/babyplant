@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+
+    <head>
+        <style type="text/css">
+            body {
+                font-size: 15px;
+                line-height: 1.6;
+            }
+            .firmas {
+                width: 100%;
+            }
+            .firmas td {
+                width: 50%;
+                text-align: center;
+            }
+            .firmas .espacio-firma {
+                height: 60px;
+            }
+            .linea-firma {
+                border-top: 1px solid black;
+                padding-top: 5px;
+            }
+        </style>
+        <title>Solicitud de Vacaciones</title>
+    </head>
+
+    <body>
+        <p>
+            <strong>{{ empleado.nombre }}, {{ empleado.apellido }}<br></strong>
+            Sres. Baby Plant SRL, el <strong>{{ diaFechaSolicitud }}</strong> de <strong>{{ mesFechaSolicitud }}</strong> del <strong>{{ anioFechaSolicitud }}</strong>, solicito:<br>
+            <br>
+            - Desde el <strong>{{ diaDesde }}</strong> de <strong>{{ mesDesde }}</strong> del <strong>{{ anioDesde }}</strong><br>
+            - Hasta el <strong>{{ diaHasta }}</strong> de <strong>{{ mesHasta }}</strong> del <strong>{{ anioHasta }}</strong> en concepto de vacaciones ordinarias, reincorporándome a mis tareas el dia <strong>{{ fechaReincorporacion }}</strong> sumando la cantidad de <strong>{{ solicitud.cantidadDias }}</strong> dias corridos.<br>
+            En este caso restarían la cantidad total de <strong>{{ solicitud.diasRestantesPeriodo }}</strong> correspondientes al periodo <strong>{{ solicitud.periodo }}</strong><br>
+            <br>
+        </p>
+
+        <table class="firmas">
+            <tr>
+                <td class="espacio-firma">&nbsp;</td>
+                <td class="espacio-firma">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="linea-firma">Firma del empleado</td>
+                <td class="linea-firma">Firma del encargado</td>
+            </tr>
+        </table>
+    </body>
+</html>

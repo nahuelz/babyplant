@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Adelanto;
+use App\Entity\Constants\ConstanteEstadoLiquidacion;
 use App\Entity\Constants\ConstanteTipoConceptoLiquidacion;
 use App\Entity\Constants\ConstanteTipoConsulta;
 use App\Entity\Empleado;
 use App\Entity\Liquidacion;
+use App\Entity\SolicitudVacaciones;
 use App\Entity\Vacaciones;
 use App\Form\EmpleadoType;
 use App\Util\Decimal;
@@ -29,6 +31,12 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
  */
 class EmpleadoController extends BaseController
 {
+    private const MESES = [
+        '01' => 'Enero', '02' => 'Febrero', '03' => 'Marzo', '04' => 'Abril',
+        '05' => 'Mayo', '06' => 'Junio', '07' => 'Julio', '08' => 'Agosto',
+        '09' => 'Septiembre', '10' => 'Octubre', '11' => 'Noviembre', '12' => 'Diciembre',
+    ];
+
     #[Route('/', name: 'empleado_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
@@ -93,27 +101,60 @@ class EmpleadoController extends BaseController
     {
         $anioActual = (int) (new DateTime())->format('Y');
         $anioSeleccionado = (int) $request->query->get('anio', $anioActual);
+        $mesSeleccionado = (int) $request->query->get('mes', 0);
 
-        $liquidaciones = $entityManager->getRepository(Liquidacion::class)
+        $qbLiquidaciones = $entityManager->getRepository(Liquidacion::class)
             ->createQueryBuilder('l')
             ->where('l.empleado = :empleado')
             ->andWhere('l.padre IS NULL')
-            ->andWhere('l.periodo LIKE :periodo')
             ->setParameter('empleado', $empleado)
-            ->setParameter('periodo', $anioSeleccionado . '-%')
-            ->orderBy('l.periodo', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->orderBy('l.periodo', 'DESC');
+
+        if ($anioSeleccionado > 0 && $mesSeleccionado > 0) {
+            $qbLiquidaciones
+                ->andWhere('l.periodo = :periodo')
+                ->setParameter('periodo', $anioSeleccionado . '-' . str_pad((string) $mesSeleccionado, 2, '0', STR_PAD_LEFT));
+        } elseif ($anioSeleccionado > 0) {
+            $qbLiquidaciones
+                ->andWhere('l.periodo LIKE :periodo')
+                ->setParameter('periodo', $anioSeleccionado . '-%');
+        } elseif ($mesSeleccionado > 0) {
+            $qbLiquidaciones
+                ->andWhere('l.periodo LIKE :periodo')
+                ->setParameter('periodo', '%-' . str_pad((string) $mesSeleccionado, 2, '0', STR_PAD_LEFT));
+        }
+
+        $liquidaciones = $qbLiquidaciones->getQuery()->getResult();
 
         $aniosDisponibles = $this->obtenerAniosDisponibles($empleado, $entityManager);
+        $mesesDisponibles = self::MESES;
+        $mesSeleccionadoNombre = $mesSeleccionado > 0
+            ? (self::MESES[str_pad((string) $mesSeleccionado, 2, '0', STR_PAD_LEFT)] ?? null)
+            : null;
+
+        $anioVacacionesSeleccionado = $anioSeleccionado > 0 ? $anioSeleccionado : $anioActual;
 
         $vacaciones = $entityManager->getRepository(Vacaciones::class)
             ->findOneBy([
                 'empleado' => $empleado,
-                'anio' => $anioSeleccionado,
+                'anio' => $anioVacacionesSeleccionado,
             ]);
 
         $aniosVacaciones = $this->obtenerAniosVacaciones($empleado, $entityManager);
+
+        $solicitudesVacaciones = $entityManager->getRepository(SolicitudVacaciones::class)
+            ->createQueryBuilder('s')
+            ->where('s.empleado = :empleado')
+            ->andWhere('s.periodo = :periodo')
+            ->setParameter('empleado', $empleado)
+            ->setParameter('periodo', $anioVacacionesSeleccionado)
+            ->orderBy('s.fechaDesde', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        $diasTomadosVacaciones = $this->calcularDiasTomadosPeriodo($empleado, $anioVacacionesSeleccionado, $entityManager);
+        $diasCorrespondientesVacaciones = $vacaciones ? (int) $vacaciones->getDiasCorrespondientes() : 0;
+        $diasDisponiblesVacaciones = Decimal::sub((string) $diasCorrespondientesVacaciones, $diasTomadosVacaciones, 1);
 
         $adelantos = $empleado->getAdelantos()->filter(function (Adelanto $a) {
             return $a->getFechaBaja() === null;
@@ -121,17 +162,32 @@ class EmpleadoController extends BaseController
 
         $resumenLiquidaciones = $this->calcularResumenLiquidaciones($liquidaciones);
 
-        return $this->render('empleado/show/show.html.twig', [
+        $response = $this->render('empleado/show/show.html.twig', [
             'empleado' => $empleado,
             'anioSeleccionado' => $anioSeleccionado,
             'anioActual' => $anioActual,
+            'mesSeleccionado' => $mesSeleccionado,
+            'mesesDisponibles' => $mesesDisponibles,
+            'mesSeleccionadoNombre' => $mesSeleccionadoNombre,
             'liquidaciones' => $liquidaciones,
             'resumenLiquidaciones' => $resumenLiquidaciones,
             'aniosDisponibles' => $aniosDisponibles,
             'vacaciones' => $vacaciones,
             'aniosVacaciones' => $aniosVacaciones,
+            'anioVacacionesSeleccionado' => $anioVacacionesSeleccionado,
+            'solicitudesVacaciones' => $solicitudesVacaciones,
+            'diasTomadosVacaciones' => $diasTomadosVacaciones,
+            'diasCorrespondientesVacaciones' => $diasCorrespondientesVacaciones,
+            'diasDisponiblesVacaciones' => $diasDisponiblesVacaciones,
             'adelantos' => $adelantos,
         ]);
+
+        $response->setPrivate();
+        $response->headers->addCacheControlDirective('no-store');
+        $response->headers->addCacheControlDirective('no-cache');
+        $response->headers->addCacheControlDirective('must-revalidate');
+
+        return $response;
     }
 
     #[Route('/{id}/reporte-anual/{anio}', name: 'app_empleado_reporte_anual', requirements: ['anio' => '\d{4}'], methods: ['GET'])]
@@ -495,7 +551,6 @@ class EmpleadoController extends BaseController
     {
         $anio = (int) $request->request->get('anio');
         $diasCorrespondientes = (int) $request->request->get('diasCorrespondientes');
-        $diasTomados = (int) $request->request->get('diasTomados', 0);
 
         $vacaciones = $entityManager->getRepository(Vacaciones::class)->findOneBy([
             'empleado' => $empleado,
@@ -509,14 +564,130 @@ class EmpleadoController extends BaseController
         }
 
         $vacaciones->setDiasCorrespondientes($diasCorrespondientes);
-        $vacaciones->setDiasTomados($diasTomados);
 
         $entityManager->persist($vacaciones);
         $entityManager->flush();
 
         $this->addFlash('success', 'Vacaciones actualizadas correctamente');
 
-        return $this->redirectToRoute('app_empleado_show', ['id' => $empleado->getId()]);
+        return $this->redirectToRoute('app_empleado_show', ['id' => $empleado->getId(), 'anio' => $anio]);
+    }
+
+    /**
+     * Registra un período de vacaciones efectivamente tomado por el empleado.
+     *
+     * @Route("/{id}/vacaciones/solicitud", name="app_empleado_vacaciones_solicitud", methods={"POST"})
+     */
+    public function crearSolicitudVacaciones(Request $request, Empleado $empleado, EntityManagerInterface $entityManager): Response
+    {
+        $periodo = (int) $request->request->get('periodo');
+        $fechaSolicitud = DateTime::createFromFormat('Y-m-d', (string) $request->request->get('fechaSolicitud'));
+        $fechaDesde = DateTime::createFromFormat('Y-m-d', (string) $request->request->get('fechaDesde'));
+        $fechaHasta = DateTime::createFromFormat('Y-m-d', (string) $request->request->get('fechaHasta'));
+        $fechaReincorporacionStr = (string) $request->request->get('fechaReincorporacion');
+        $fechaReincorporacion = $fechaReincorporacionStr !== ''
+            ? DateTime::createFromFormat('Y-m-d', $fechaReincorporacionStr)
+            : null;
+        $cantidadDias = (string) $request->request->get('cantidadDias', '0');
+
+        if ($periodo <= 0 || !$fechaSolicitud || !$fechaDesde || !$fechaHasta || Decimal::comp($cantidadDias, '0', 1) <= 0) {
+            $this->addFlash('error', 'Complete todos los campos obligatorios de la solicitud de vacaciones.');
+
+            return $this->redirectToRoute('app_empleado_show', ['id' => $empleado->getId(), 'anio' => $periodo]);
+        }
+
+        $vacaciones = $entityManager->getRepository(Vacaciones::class)->findOneBy([
+            'empleado' => $empleado,
+            'anio' => $periodo,
+        ]);
+        $diasCorrespondientes = $vacaciones ? (string) $vacaciones->getDiasCorrespondientes() : '0';
+
+        $diasTomadosPrevios = $this->calcularDiasTomadosPeriodo($empleado, $periodo, $entityManager);
+        $diasRestantesPeriodo = Decimal::sub($diasCorrespondientes, Decimal::add($diasTomadosPrevios, $cantidadDias, 1), 1);
+
+        $solicitud = new SolicitudVacaciones();
+        $solicitud->setEmpleado($empleado);
+        $solicitud->setPeriodo($periodo);
+        $solicitud->setFechaSolicitud($fechaSolicitud);
+        $solicitud->setFechaDesde($fechaDesde);
+        $solicitud->setFechaHasta($fechaHasta);
+        $solicitud->setFechaReincorporacion($fechaReincorporacion);
+        $solicitud->setCantidadDias($cantidadDias);
+        $solicitud->setDiasRestantesPeriodo($diasRestantesPeriodo);
+
+        $entityManager->persist($solicitud);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Solicitud de vacaciones registrada correctamente');
+
+        return $this->redirectToRoute('app_empleado_show', ['id' => $empleado->getId(), 'anio' => $periodo]);
+    }
+
+    /**
+     * Elimina un registro de vacaciones tomadas.
+     *
+     * @Route("/{id}/vacaciones/solicitud/{solicitud}", name="app_empleado_vacaciones_solicitud_eliminar", methods={"POST"})
+     */
+    public function eliminarSolicitudVacaciones(Empleado $empleado, SolicitudVacaciones $solicitud, EntityManagerInterface $entityManager): Response
+    {
+        $periodo = $solicitud->getPeriodo();
+
+        $entityManager->remove($solicitud);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Registro de vacaciones eliminado correctamente');
+
+        return $this->redirectToRoute('app_empleado_show', ['id' => $empleado->getId(), 'anio' => $periodo]);
+    }
+
+    /**
+     * Imprime el comprobante de solicitud de vacaciones.
+     *
+     * @Route("/{id}/vacaciones/solicitud/{solicitud}/imprimir", name="app_empleado_vacaciones_solicitud_imprimir", methods={"GET"})
+     */
+    public function imprimirSolicitudVacaciones(Empleado $empleado, SolicitudVacaciones $solicitud): Response
+    {
+        $fechaSolicitud = $solicitud->getFechaSolicitud();
+        $fechaDesde = $solicitud->getFechaDesde();
+        $fechaHasta = $solicitud->getFechaHasta();
+        $fechaReincorporacion = $solicitud->getFechaReincorporacion();
+
+        $html = $this->renderView('empleado/solicitud_vacaciones_pdf.html.twig', [
+            'empleado' => $empleado,
+            'solicitud' => $solicitud,
+            'diaFechaSolicitud' => (int) $fechaSolicitud->format('d'),
+            'mesFechaSolicitud' => self::MESES[$fechaSolicitud->format('m')],
+            'anioFechaSolicitud' => $fechaSolicitud->format('Y'),
+            'diaDesde' => (int) $fechaDesde->format('d'),
+            'mesDesde' => self::MESES[$fechaDesde->format('m')],
+            'anioDesde' => $fechaDesde->format('Y'),
+            'diaHasta' => (int) $fechaHasta->format('d'),
+            'mesHasta' => self::MESES[$fechaHasta->format('m')],
+            'anioHasta' => $fechaHasta->format('Y'),
+            'fechaReincorporacion' => $fechaReincorporacion ? $fechaReincorporacion->format('d/m/Y') : '-',
+        ]);
+
+        $filename = 'SolicitudVacaciones.pdf';
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
+
+        $mpdfOutput = $this->printService->printA4($basePath, $filename, $html);
+
+        return new Response($mpdfOutput);
+    }
+
+    private function calcularDiasTomadosPeriodo(Empleado $empleado, int $periodo, EntityManagerInterface $entityManager): string
+    {
+        $total = $entityManager->getRepository(SolicitudVacaciones::class)
+            ->createQueryBuilder('s')
+            ->select('SUM(s.cantidadDias) as total')
+            ->where('s.empleado = :empleado')
+            ->andWhere('s.periodo = :periodo')
+            ->setParameter('empleado', $empleado)
+            ->setParameter('periodo', $periodo)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return $total !== null ? (string) $total : '0';
     }
 
     private function obtenerAniosDisponibles(Empleado $empleado, EntityManagerInterface $entityManager): array
@@ -544,12 +715,21 @@ class EmpleadoController extends BaseController
             'neto' => '0',
             'adicionales' => '0',
             'aPagar' => '0',
+            'pagado' => '0',
         ];
 
         foreach ($liquidaciones as $liquidacion) {
             $resumen['cantidad']++;
             $resumen['neto'] = Decimal::add($resumen['neto'], $liquidacion->getSueldoNeto(), 2);
-            $resumen['aPagar'] = Decimal::add($resumen['aPagar'], (string) $liquidacion->getTotalAPagar(), 2);
+
+            $estadoCodigo = $liquidacion->getEstado() ? $liquidacion->getEstado()->getCodigoInterno() : null;
+            if ($estadoCodigo !== ConstanteEstadoLiquidacion::PAGADA) {
+                $resumen['aPagar'] = Decimal::add($resumen['aPagar'], (string) $liquidacion->getTotalAPagar(), 2);
+            }
+
+            foreach ($liquidacion->getPagos() as $pago) {
+                $resumen['pagado'] = Decimal::add($resumen['pagado'], (string) $pago->getImporte(), 2);
+            }
 
             $adicionalesLiquidacion = '0';
             foreach ($liquidacion->getConceptos() as $concepto) {
@@ -566,18 +746,29 @@ class EmpleadoController extends BaseController
 
     private function obtenerAniosVacaciones(Empleado $empleado, EntityManagerInterface $entityManager): array
     {
-        $resultados = $entityManager->getRepository(Vacaciones::class)
+        $resultadosVacaciones = $entityManager->getRepository(Vacaciones::class)
             ->createQueryBuilder('v')
             ->select('v.anio')
             ->where('v.empleado = :empleado')
             ->setParameter('empleado', $empleado)
-            ->orderBy('v.anio', 'DESC')
             ->getQuery()
             ->getResult();
 
-        return array_map(function ($row) {
+        $resultadosSolicitudes = $entityManager->getRepository(SolicitudVacaciones::class)
+            ->createQueryBuilder('s')
+            ->select('s.periodo as anio')
+            ->where('s.empleado = :empleado')
+            ->setParameter('empleado', $empleado)
+            ->getQuery()
+            ->getResult();
+
+        $anios = array_unique(array_map(function ($row) {
             return (int) $row['anio'];
-        }, $resultados);
+        }, array_merge($resultadosVacaciones, $resultadosSolicitudes)));
+
+        rsort($anios);
+
+        return $anios;
     }
 
     private function construirReporteAnual(Empleado $empleado, int $anio, EntityManagerInterface $entityManager): array
@@ -593,11 +784,7 @@ class EmpleadoController extends BaseController
             ->getQuery()
             ->getResult();
 
-        $meses = [
-            '01' => 'Enero', '02' => 'Febrero', '03' => 'Marzo', '04' => 'Abril',
-            '05' => 'Mayo', '06' => 'Junio', '07' => 'Julio', '08' => 'Agosto',
-            '09' => 'Septiembre', '10' => 'Octubre', '11' => 'Noviembre', '12' => 'Diciembre',
-        ];
+        $meses = self::MESES;
 
         $reporte = [];
         $totales = [

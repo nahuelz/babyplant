@@ -10,7 +10,7 @@ class Decimal
             return bcadd((string) $left, (string) $right, $scale);
         }
 
-        return self::fromCents(self::toCents($left) + self::toCents($right), $scale);
+        return self::fromCents(self::toCents($left, $scale) + self::toCents($right, $scale), $scale);
     }
 
     public static function sub(string|float|int $left, string|float|int $right, int $scale = 2): string
@@ -19,7 +19,7 @@ class Decimal
             return bcsub((string) $left, (string) $right, $scale);
         }
 
-        return self::fromCents(self::toCents($left) - self::toCents($right), $scale);
+        return self::fromCents(self::toCents($left, $scale) - self::toCents($right, $scale), $scale);
     }
 
     public static function comp(string|float|int $left, string|float|int $right, int $scale = 2): int
@@ -28,8 +28,8 @@ class Decimal
             return bccomp((string) $left, (string) $right, $scale);
         }
 
-        $leftCents = self::toCents($left);
-        $rightCents = self::toCents($right);
+        $leftCents = self::toCents($left, $scale);
+        $rightCents = self::toCents($right, $scale);
 
         if ($leftCents === $rightCents) {
             return 0;
@@ -47,18 +47,18 @@ class Decimal
         $right = (string) $right;
 
         if ($right === '1' || $right === '1.00' || $right === '+1' || $right === '+1.00') {
-            return self::fromCents(self::toCents($left), $scale);
+            return self::fromCents(self::toCents($left, $scale), $scale);
         }
 
         if ($right === '-1' || $right === '-1.00' || $right === '-1.0') {
-            return self::fromCents(-self::toCents($left), $scale);
+            return self::fromCents(-self::toCents($left, $scale), $scale);
         }
 
         $result = (float) $left * (float) $right;
         return number_format($result, $scale, '.', '');
     }
 
-    private static function toCents(string|float|int $value): int
+    private static function toCents(string|float|int $value, int $scale = 2): int
     {
         $value = trim((string) $value);
         $negative = false;
@@ -73,7 +73,7 @@ class Decimal
         }
 
         [$int, $dec] = array_pad(explode('.', $value, 2), 2, '');
-        $dec = substr(str_pad($dec, 2, '0'), 0, 2);
+        $dec = substr(str_pad($dec, $scale, '0'), 0, $scale);
 
         $cents = (int) ltrim($int . $dec, '0');
 

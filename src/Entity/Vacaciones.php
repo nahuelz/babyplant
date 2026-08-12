@@ -38,11 +38,6 @@ class Vacaciones {
      */
     private $diasCorrespondientes;
 
-    /**
-     * @ORM\Column(name="dias_tomados", type="integer", nullable=false, options={"default": 0})
-     */
-    private $diasTomados = 0;
-
     public function getId()
     {
         return $this->id;
@@ -76,21 +71,6 @@ class Vacaciones {
     public function setDiasCorrespondientes(int $diasCorrespondientes): void
     {
         $this->diasCorrespondientes = $diasCorrespondientes;
-    }
-
-    public function getDiasTomados(): int
-    {
-        return $this->diasTomados;
-    }
-
-    public function setDiasTomados(int $diasTomados): void
-    {
-        $this->diasTomados = $diasTomados;
-    }
-
-    public function getDiasDisponibles(): int
-    {
-        return $this->diasCorrespondientes - $this->diasTomados;
     }
 
 }

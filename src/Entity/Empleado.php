@@ -105,6 +105,11 @@ class Empleado {
     private $adelantos;
 
     /**
+     * @ORM\OneToMany(targetEntity=SolicitudVacaciones::class, mappedBy="empleado", cascade={"all"})
+     */
+    private $solicitudesVacaciones;
+
+    /**
      * @ORM\OneToMany(targetEntity=Liquidacion::class, mappedBy="empleado", cascade={"all"})
      */
     private $liquidaciones;
@@ -113,6 +118,7 @@ class Empleado {
     {
         $this->vacaciones = new ArrayCollection();
         $this->adelantos = new ArrayCollection();
+        $this->solicitudesVacaciones = new ArrayCollection();
         $this->liquidaciones = new ArrayCollection();
         $this->activo = true;
     }
@@ -309,6 +315,21 @@ class Empleado {
         if (!$this->adelantos->contains($adelanto)) {
             $this->adelantos[] = $adelanto;
             $adelanto->setEmpleado($this);
+        }
+
+        return $this;
+    }
+
+    public function getSolicitudesVacaciones()
+    {
+        return $this->solicitudesVacaciones;
+    }
+
+    public function addSolicitudVacaciones(SolicitudVacaciones $solicitudVacaciones): self
+    {
+        if (!$this->solicitudesVacaciones->contains($solicitudVacaciones)) {
+            $this->solicitudesVacaciones[] = $solicitudVacaciones;
+            $solicitudVacaciones->setEmpleado($this);
         }
 
         return $this;

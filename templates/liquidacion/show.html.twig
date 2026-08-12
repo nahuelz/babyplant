@@ -245,9 +245,6 @@
                     Total a pagar: <span id="resumen-total"></span>
                 </div>
 
-                {% set hijasPendientesDeAprobar = liquidacion.detallesSemanales|filter(d => d.estado is null or d.estado.codigoInterno != constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::APROBADA'))|length %}
-                {% set hijasPendientesDePagar = liquidacion.detallesSemanales|filter(d => d.estado is null or d.estado.codigoInterno != constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::PAGADA'))|length %}
-
                 <div class="card-footer d-flex justify-content-between mt-8">
                     <a href="{{ path('liquidacion_index', {'periodo': liquidacion.periodo}) }}" class="btn btn-light-dark font-weight-bold">Volver</a>
                     <div>
@@ -255,11 +252,11 @@
                         {% if editable %}
                             <input type="hidden" name="accion" value="guardar" id="liquidacion-accion">
                             <button type="submit" class="btn btn-primary font-weight-bold mr-2">Guardar borrador</button>
-                            {% if liquidacion.estado and liquidacion.estado.codigoInterno == 1 and hijasPendientesDeAprobar == 0 %}
+                            {% if liquidacion.estado and liquidacion.estado.codigoInterno == 1 %}
                                 <button type="submit" class="btn btn-success font-weight-bold btn-aprobar-confirm" data-tipo="principal">Aprobar</button>
                             {% endif %}
                         {% endif %}
-                        {% if liquidacion.estado and liquidacion.estado.codigoInterno == 3 and hijasPendientesDePagar == 0 %}
+                        {% if liquidacion.estado and liquidacion.estado.codigoInterno == 3 %}
                             <button type="button" class="btn btn-warning font-weight-bold mr-2" data-toggle="modal" data-target="#pagoModal">
                                 Pagar
                             </button>
@@ -317,17 +314,19 @@
         }
 
         function aprobarConConfirmacion(btn, callback) {
-            var sueldoBruto = 0;
+            var sueldoBruto = null;
             var tipo = btn.getAttribute('data-tipo');
 
             if (tipo === 'principal') {
                 var input = document.querySelector('[name="liquidacion[sueldoBruto]"]');
-                sueldoBruto = input ? parseSueldoBruto(input.value) : 0;
+                if (input) {
+                    sueldoBruto = parseSueldoBruto(input.value);
+                }
             } else if (tipo === 'hija') {
                 sueldoBruto = parseSueldoBruto(btn.getAttribute('data-sueldo-bruto'));
             }
 
-            if (sueldoBruto === 0) {
+            if (sueldoBruto !== null && sueldoBruto === 0) {
                 Swal.fire({
                     title: 'Advertencia',
                     text: 'La liquidación tiene sueldo bruto igual a 0. ¿Desea aprobar de todas formas?',

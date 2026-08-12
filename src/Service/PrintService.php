@@ -10,6 +10,13 @@ use Afip;
 
 class PrintService{
 
+    private string $projectDir;
+
+    public function __construct(string $projectDir)
+    {
+        $this->projectDir = $projectDir;
+    }
+
     /**
      * @throws Exception
      */
@@ -120,6 +127,7 @@ class PrintService{
             'margin_header' => 0,
             'margin_footer' => 0,
             'orientation' => 'P',
+            'tempDir' => $this->getTempDir(),
         ];
     }
 
@@ -133,7 +141,19 @@ class PrintService{
             'margin_top' => 2,
             'margin_bottom' => 2,
             'orientation' => 'P',
+            'tempDir' => $this->getTempDir(),
         ];
+    }
+
+    private function getTempDir(): string
+    {
+        $tempDir = $this->projectDir . '/var/mpdf_tmp';
+
+        if (!is_dir($tempDir)) {
+            mkdir($tempDir, 0775, true);
+        }
+
+        return $tempDir;
     }
 
     protected function recortarTicket($mpdfService){
