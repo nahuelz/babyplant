@@ -73,6 +73,24 @@ class PedidoRepository extends ServiceEntityRepository {
     }
 
     /**
+     * Cantidad de pedidos nuevos registrados en un rango de fechas
+     */
+    public function contarPedidosNuevos(\DateTime $desde, \DateTime $hasta): int
+    {
+        return (int) $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->join('p.cliente', 'u')
+            ->where('p.fechaCreacion BETWEEN :desde AND :hasta')
+            ->andWhere('UPPER(u.nombre) NOT LIKE :stockFilter')
+            ->andWhere('UPPER(u.apellido) NOT LIKE :stockFilter')
+            ->setParameter('desde', $desde->format('Y-m-d 00:00:00'))
+            ->setParameter('hasta', $hasta->format('Y-m-d 23:59:59'))
+            ->setParameter('stockFilter', '%STOCK%')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
      * Obtener total de pedidos por cliente para paginación
      */
     public function getTotalPedidosPorCliente(\DateTime $desde, \DateTime $hasta): int

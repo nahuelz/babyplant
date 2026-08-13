@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
+use App\Entity\EstadoPedidoProductoHistorico;
 use App\Entity\PedidoProducto;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -110,6 +111,101 @@ class PedidoProductoRepository extends ServiceEntityRepository {
             ->getQuery();
 
         return $query->getResult();
+    }
+
+    /**
+     * Detalle de productos pedidos en un rango de fechas (según fecha de creación del Pedido),
+     * con paginación. Usado en el dashboard de estadísticas para mostrar el detalle de "pedidos nuevos".
+     */
+    public function getPedidosNuevosDetalle(\DateTime $desde, \DateTime $hasta, int $limite = 10, int $offset = 0): array
+    {
+        return $this->queryPedidosNuevosDetalle($desde, $hasta)
+            ->setFirstResult($offset)
+            ->setMaxResults($limite)
+            ->getQuery()
+            ->getArrayResult();
+    }
+
+    /**
+     * Cantidad total de filas de detalle de pedidos nuevos en un rango de fechas (sin paginar),
+     * usado para calcular la cantidad de páginas.
+     */
+    public function contarPedidosNuevosDetalle(\DateTime $desde, \DateTime $hasta): int
+    {
+        return (int) $this->queryPedidosNuevosDetalle($desde, $hasta)
+            ->select('COUNT(pp.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    private function queryPedidosNuevosDetalle(\DateTime $desde, \DateTime $hasta)
+    {
+        return $this->createQueryBuilder('pp')
+            ->select([
+                "CONCAT(tp.nombre,' ',tsp.nombre,' ',tv.nombre) as producto",
+                'tp.color as colorProducto',
+                'pp.cantidadBandejasPedidas as cantidadBandejasPedidas',
+                'tb.nombre as tipoBandeja',
+                "CONCAT(u.nombre,', ',u.apellido) as cliente",
+                'u.id as idCliente',
+                'p.id as idPedido',
+                'p.fechaCreacion as fechaCreacion',
+            ])
+            ->join('pp.pedido', 'p')
+            ->join('p.cliente', 'u')
+            ->join('pp.tipoVariedad', 'tv')
+            ->join('tv.tipoSubProducto', 'tsp')
+            ->join('tsp.tipoProducto', 'tp')
+            ->join('pp.tipoBandeja', 'tb')
+            ->where('p.fechaCreacion BETWEEN :desde AND :hasta')
+            ->andWhere('p.fechaBaja IS NULL AND pp.fechaBaja IS NULL')
+            ->andWhere('UPPER(u.nombre) NOT LIKE :stockFilter')
+            ->andWhere('UPPER(u.apellido) NOT LIKE :stockFilter')
+            ->setParameter('desde', $desde->format('Y-m-d 00:00:00'))
+            ->setParameter('hasta', $hasta->format('Y-m-d 23:59:59'))
+            ->setParameter('stockFilter', '%STOCK%')
+            ->orderBy('p.fechaCreacion', 'DESC');
+    }
+
+    /**
+     * Últimos cambios de estado registrados sobre pedidos (EstadoPedidoProductoHistorico),
+     * usado en el dashboard de estadísticas como "últimas tareas realizadas".
+     */
+    public function getUltimasTareasPedidos(int $limite = 10): array
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select([
+                'h.fecha as fecha',
+                'h.motivo as motivo',
+                'e.nombre as estado',
+                'e.color as colorEstado',
+                'e.icono as iconoEstado',
+                'e.colorIcono as colorIconoEstado',
+                'p.id as idPedido',
+                "CONCAT(tp.nombre,' ',tsp.nombre,' ',tv.nombre) as producto",
+                'tp.color as colorProducto',
+                "CONCAT(u.nombre,', ',u.apellido) as cliente",
+                'u.id as idCliente',
+                "CONCAT(uc.nombre,' ',uc.apellido) as usuarioResponsable",
+            ])
+            ->from(EstadoPedidoProductoHistorico::class, 'h')
+            ->join('h.pedidoProducto', 'pp')
+            ->join('pp.pedido', 'p')
+            ->join('p.cliente', 'u')
+            ->join('h.estado', 'e')
+            ->join('pp.tipoVariedad', 'tv')
+            ->join('tv.tipoSubProducto', 'tsp')
+            ->join('tsp.tipoProducto', 'tp')
+            ->leftJoin('h.usuarioCreacion', 'uc')
+            ->where('p.fechaBaja IS NULL AND pp.fechaBaja IS NULL')
+            ->andWhere('UPPER(u.nombre) NOT LIKE :stockFilter')
+            ->andWhere('UPPER(u.apellido) NOT LIKE :stockFilter')
+            ->setParameter('stockFilter', '%STOCK%')
+            ->orderBy('h.fecha', 'DESC')
+            ->addOrderBy('h.id', 'DESC')
+            ->setMaxResults($limite)
+            ->getQuery()
+            ->getArrayResult();
     }
 
     public function getProduccionPorProducto(\DateTime $desde, \DateTime $hasta): array

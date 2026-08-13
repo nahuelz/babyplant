@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Entity\Constants\ConstanteEstadoRemito;
 use App\Entity\Traits;
 use App\Entity\Traits\Auditoria;
+use App\Repository\RemitoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,7 +15,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * Grupo
  *
  * @ORM\Table(name="remito")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass=RemitoRepository::class)
  * @Gedmo\SoftDeleteable(fieldName="fechaBaja")
  */
 class Remito {

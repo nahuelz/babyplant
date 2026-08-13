@@ -2,10 +2,13 @@
 
 namespace App\Controller;
 
+use App\Repository\EntregaRepository;
 use App\Repository\PedidoProductoRepository;
 use App\Repository\PedidoRepository;
+use App\Repository\RemitoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,6 +21,199 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class EstadisticasController extends AbstractController
 {
+    /**
+     * Dashboard general de Estadísticas.
+     *
+     * Vista general del sistema: pedidos, remitos, clientes.
+     *
+     * Implementado hasta el momento:
+     * - Pedidos nuevos registrados: hoy, semana actual (desde el lunes) y mes actual,
+     *   con detalle (producto, cantidad de bandejas, cliente) al hacer clic en cada KPI.
+     * - Entregas nuevas registradas: hoy, semana actual y mes actual, con el mismo
+     *   detalle (producto, cantidad de bandejas, cliente) al hacer clic en cada KPI.
+     * - Últimas tareas realizadas sobre pedidos: últimos cambios de estado
+     *   (EstadoPedidoProductoHistorico), con producto, estado, cliente y usuario responsable.
+     *
+     * Funcionalidad futura prevista para esta vista:
+     * - KPIs generales: pedidos activos, remitos del mes,
+     *   deuda total de clientes (cuenta corriente), producción del mes.
+     * - Gráfico de entregas por día (últimos 30 días).
+     * - Gráfico de estado de pedidos (pendiente / entregado / cancelado).
+     * - Top clientes por volumen de entregas o facturación del período.
+     * - Productos más entregados (resumen).
+     * - Alertas / accesos rápidos: pedidos atrasados, gastos del mes, liquidaciones pendientes.
+     *
+     * @Route("/", name="estadisticas_dashboard")
+     */
+    public function dashboard(
+        PedidoRepository $pedidoRepository,
+        PedidoProductoRepository $pedidoProductoRepository,
+        EntregaRepository $entregaRepository,
+        RemitoRepository $remitoRepository
+    ): Response
+    {
+        [, $desdeHoy, $hastaHoy] = $this->getRangoPeriodo('hoy');
+        [, $desdeSemana, $hastaSemana] = $this->getRangoPeriodo('semana');
+        [, $desdeMes, $hastaMes] = $this->getRangoPeriodo('mes');
+
+        return $this->render('estadisticas/dashboard.html.twig', [
+            'pedidos_hoy' => $pedidoRepository->contarPedidosNuevos($desdeHoy, $hastaHoy),
+            'pedidos_semana' => $pedidoRepository->contarPedidosNuevos($desdeSemana, $hastaSemana),
+            'pedidos_mes' => $pedidoRepository->contarPedidosNuevos($desdeMes, $hastaMes),
+            'entregas_hoy' => $entregaRepository->contarEntregasNuevas($desdeHoy, $hastaHoy),
+            'entregas_semana' => $entregaRepository->contarEntregasNuevas($desdeSemana, $hastaSemana),
+            'entregas_mes' => $entregaRepository->contarEntregasNuevas($desdeMes, $hastaMes),
+            'remitos_hoy' => $remitoRepository->contarRemitosNuevos($desdeHoy, $hastaHoy),
+            'remitos_semana' => $remitoRepository->contarRemitosNuevos($desdeSemana, $hastaSemana),
+            'remitos_mes' => $remitoRepository->contarRemitosNuevos($desdeMes, $hastaMes),
+            'ultimas_tareas' => $pedidoProductoRepository->getUltimasTareasPedidos(10),
+        ]);
+    }
+
+    /**
+     * Detalle de pedidos nuevos registrados según el período seleccionado (hoy, semana o mes).
+     * Se usa para poblar el modal que se abre al hacer clic en los KPIs del dashboard.
+     *
+     * @Route("/pedidos-nuevos-detalle", name="estadisticas_pedidos_nuevos_detalle")
+     */
+    public function pedidosNuevosDetalle(Request $request, PedidoProductoRepository $pedidoProductoRepository): Response
+    {
+        $periodo = $request->query->get('periodo', 'hoy');
+        $pagina = max(1, (int) $request->query->get('pagina', 1));
+        $limite = 10;
+        $offset = ($pagina - 1) * $limite;
+
+        [$titulo, $desde, $hasta] = $this->getRangoPeriodo($periodo);
+
+        $detalle = $pedidoProductoRepository->getPedidosNuevosDetalle($desde, $hasta, $limite, $offset);
+        $total = $pedidoProductoRepository->contarPedidosNuevosDetalle($desde, $hasta);
+        $totalPaginas = (int) ceil($total / $limite);
+
+        $html = $this->renderView('estadisticas/_pedidos_nuevos_detalle.html.twig', [
+            'detalle' => $detalle,
+            'periodo' => $periodo,
+            'pagina_actual' => $pagina,
+            'total_paginas' => $totalPaginas,
+        ]);
+
+        return new JsonResponse([
+            'titulo' => $titulo,
+            'html' => $html,
+        ]);
+    }
+
+    /**
+     * Detalle de entregas nuevas registradas según el período seleccionado (hoy, semana o mes).
+     * Se usa para poblar el panel que se abre al hacer clic en los KPIs de entregas del dashboard.
+     *
+     * @Route("/entregas-nuevas-detalle", name="estadisticas_entregas_nuevas_detalle")
+     */
+    public function entregasNuevasDetalle(Request $request, EntregaRepository $entregaRepository): Response
+    {
+        $periodo = $request->query->get('periodo', 'hoy');
+        $pagina = max(1, (int) $request->query->get('pagina', 1));
+        $limite = 10;
+        $offset = ($pagina - 1) * $limite;
+
+        [, $desde, $hasta] = $this->getRangoPeriodo($periodo);
+        $titulo = $this->getTituloPeriodo('Entregas nuevas', $periodo);
+
+        $detalle = $entregaRepository->getEntregasNuevasDetalle($desde, $hasta, $limite, $offset);
+        $total = $entregaRepository->contarEntregasNuevasDetalle($desde, $hasta);
+        $totalPaginas = (int) ceil($total / $limite);
+
+        $html = $this->renderView('estadisticas/_entregas_nuevas_detalle.html.twig', [
+            'detalle' => $detalle,
+            'periodo' => $periodo,
+            'pagina_actual' => $pagina,
+            'total_paginas' => $totalPaginas,
+        ]);
+
+        return new JsonResponse([
+            'titulo' => $titulo,
+            'html' => $html,
+        ]);
+    }
+
+    /**
+     * Detalle de remitos nuevos registrados según el período seleccionado (hoy, semana o mes).
+     * Se usa para poblar el panel que se abre al hacer clic en los KPIs de remitos del dashboard.
+     *
+     * @Route("/remitos-nuevos-detalle", name="estadisticas_remitos_nuevos_detalle")
+     */
+    public function remitosNuevosDetalle(Request $request, RemitoRepository $remitoRepository): Response
+    {
+        $periodo = $request->query->get('periodo', 'hoy');
+        $pagina = max(1, (int) $request->query->get('pagina', 1));
+        $limite = 10;
+        $offset = ($pagina - 1) * $limite;
+
+        [, $desde, $hasta] = $this->getRangoPeriodo($periodo);
+        $titulo = $this->getTituloPeriodo('Remitos nuevos', $periodo);
+
+        $detalle = $remitoRepository->getRemitosNuevosDetalle($desde, $hasta, $limite, $offset);
+        $total = $remitoRepository->contarRemitosNuevosDetalle($desde, $hasta);
+        $totalPaginas = (int) ceil($total / $limite);
+
+        $html = $this->renderView('estadisticas/_remitos_nuevos_detalle.html.twig', [
+            'detalle' => $detalle,
+            'periodo' => $periodo,
+            'pagina_actual' => $pagina,
+            'total_paginas' => $totalPaginas,
+        ]);
+
+        return new JsonResponse([
+            'titulo' => $titulo,
+            'html' => $html,
+        ]);
+    }
+
+    /**
+     * Calcula el rango de fechas (desde / hasta) para los períodos usados en el
+     * dashboard: 'hoy', 'semana' (semana actual desde el lunes) y 'mes' (mes
+     * actual desde el día 1). El título devuelto corresponde a "Pedidos nuevos";
+     * para otras secciones usar getTituloPeriodo().
+     *
+     * @return array{0: string, 1: \DateTime, 2: \DateTime}
+     */
+    private function getRangoPeriodo(string $periodo): array
+    {
+        $hoy = new \DateTime();
+
+        switch ($periodo) {
+            case 'semana':
+                $desde = (clone $hoy)->modify('monday this week');
+                $titulo = $this->getTituloPeriodo('Pedidos nuevos', $periodo);
+                break;
+            case 'mes':
+                $desde = (clone $hoy)->modify('first day of this month');
+                $titulo = $this->getTituloPeriodo('Pedidos nuevos', $periodo);
+                break;
+            default:
+                $desde = clone $hoy;
+                $titulo = $this->getTituloPeriodo('Pedidos nuevos', $periodo);
+                break;
+        }
+
+        return [$titulo, $desde, clone $hoy];
+    }
+
+    /**
+     * Construye el título a mostrar según la sección (ej: 'Pedidos nuevos',
+     * 'Entregas nuevas') y el período ('hoy', 'semana', 'mes').
+     */
+    private function getTituloPeriodo(string $etiqueta, string $periodo): string
+    {
+        switch ($periodo) {
+            case 'semana':
+                return $etiqueta . ' - Esta semana';
+            case 'mes':
+                return $etiqueta . ' - Este mes';
+            default:
+                return $etiqueta . ' - Hoy';
+        }
+    }
+
     /**
      * @Route("/entregas", name="estadisticas_entregas")
      */

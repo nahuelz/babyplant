@@ -1,0 +1,422 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Estadísticas · Dashboard{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .kpi-card {
+            border: none;
+            border-radius: 0.85rem;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            box-shadow: 0 0.1rem 0.75rem rgba(0, 0, 0, 0.06);
+        }
+        .kpi-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+        }
+        .kpi-card .card-body {
+            padding: 1.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+        .kpi-icon {
+            width: 56px;
+            height: 56px;
+            min-width: 56px;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+        }
+        .kpi-icon.primary { background-color: #e1f0ff; color: #3699ff; }
+        .kpi-icon.success { background-color: #e8fff3; color: #1bc5bd; }
+        .kpi-icon.warning { background-color: #fff4de; color: #ffa800; }
+        .kpi-value {
+            font-size: 2.1rem;
+            font-weight: 700;
+            line-height: 1.1;
+            color: #181c32;
+        }
+        .kpi-label {
+            color: #b5b5c3;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+        .kpi-card.active {
+            box-shadow: 0 0 0 2px #3699ff, 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+        }
+        .col-detalle-pedidos-nuevos {
+            display: none;
+        }
+        .col-detalle-entregas-nuevas {
+            display: none;
+        }
+        .col-detalle-remitos-nuevos {
+            display: none;
+        }
+        .col-ultimas-tareas {
+            display: none;
+        }
+        .tareas-table td, .tareas-table th {
+            font-size: 0.9rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid mt-4">
+
+        <div class="mb-4 d-flex align-items-center justify-content-between">
+            <div>
+                <h2 class="fw-bold">📊 Dashboard general</h2>
+                <p class="text-muted mb-0">
+                    Vista general del sistema: pedidos, remitos, clientes.
+                </p>
+            </div>
+            <button type="button" class="btn btn-light-primary font-weight-bold" id="toggleUltimasTareas">
+                <i class="la la-history"></i> Ver últimas tareas
+            </button>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card kpi-card h-100 js-kpi-pedidos" data-periodo="hoy">
+                    <div class="card-body">
+                        <div class="kpi-icon primary">
+                            <i class="la la-calendar-check"></i>
+                        </div>
+                        <div>
+                            <div class="kpi-value">{{ pedidos_hoy }}</div>
+                            <div class="kpi-label">Pedidos nuevos hoy</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card kpi-card h-100 js-kpi-pedidos" data-periodo="semana">
+                    <div class="card-body">
+                        <div class="kpi-icon success">
+                            <i class="la la-calendar"></i>
+                        </div>
+                        <div>
+                            <div class="kpi-value">{{ pedidos_semana }}</div>
+                            <div class="kpi-label">Pedidos nuevos esta semana</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card kpi-card h-100 js-kpi-pedidos" data-periodo="mes">
+                    <div class="card-body">
+                        <div class="kpi-icon warning">
+                            <i class="la la-calendar-plus-o"></i>
+                        </div>
+                        <div>
+                            <div class="kpi-value">{{ pedidos_mes }}</div>
+                            <div class="kpi-label">Pedidos nuevos este mes</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card kpi-card h-100 js-kpi-entregas" data-periodo="hoy">
+                    <div class="card-body">
+                        <div class="kpi-icon primary">
+                            <i class="la la-truck"></i>
+                        </div>
+                        <div>
+                            <div class="kpi-value">{{ entregas_hoy }}</div>
+                            <div class="kpi-label">Entregas nuevas hoy</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card kpi-card h-100 js-kpi-entregas" data-periodo="semana">
+                    <div class="card-body">
+                        <div class="kpi-icon success">
+                            <i class="la la-truck"></i>
+                        </div>
+                        <div>
+                            <div class="kpi-value">{{ entregas_semana }}</div>
+                            <div class="kpi-label">Entregas nuevas esta semana</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card kpi-card h-100 js-kpi-entregas" data-periodo="mes">
+                    <div class="card-body">
+                        <div class="kpi-icon warning">
+                            <i class="la la-truck"></i>
+                        </div>
+                        <div>
+                            <div class="kpi-value">{{ entregas_mes }}</div>
+                            <div class="kpi-label">Entregas nuevas este mes</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card kpi-card h-100 js-kpi-remitos" data-periodo="hoy">
+                    <div class="card-body">
+                        <div class="kpi-icon primary">
+                            <i class="la la-file-text"></i>
+                        </div>
+                        <div>
+                            <div class="kpi-value">{{ remitos_hoy }}</div>
+                            <div class="kpi-label">Remitos nuevos hoy</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card kpi-card h-100 js-kpi-remitos" data-periodo="semana">
+                    <div class="card-body">
+                        <div class="kpi-icon success">
+                            <i class="la la-file-text"></i>
+                        </div>
+                        <div>
+                            <div class="kpi-value">{{ remitos_semana }}</div>
+                            <div class="kpi-label">Remitos nuevos esta semana</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card kpi-card h-100 js-kpi-remitos" data-periodo="mes">
+                    <div class="card-body">
+                        <div class="kpi-icon warning">
+                            <i class="la la-file-text"></i>
+                        </div>
+                        <div>
+                            <div class="kpi-value">{{ remitos_mes }}</div>
+                            <div class="kpi-label">Remitos nuevos este mes</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-4 col-ultimas-tareas" id="ultimasTareas">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="mb-0">Últimas tareas realizadas</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if ultimas_tareas is empty %}
+                            <div class="text-center text-muted py-4">
+                                <i class="fas fa-clipboard-list fa-2x mb-3"></i>
+                                <div>No hay tareas registradas todavía</div>
+                            </div>
+                        {% else %}
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0 tareas-table">
+                                    <thead class="table-light">
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Pedido / Producto</th>
+                                        <th>Estado</th>
+                                        <th>Cliente</th>
+                                        <th>Usuario</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for tarea in ultimas_tareas %}
+                                        <tr>
+                                            <td class="text-nowrap">{{ tarea.fecha|date('d/m/Y H:i') }}</td>
+                                            <td>
+                                                <a href="{{ path('pedido_show', { id: tarea.idPedido }) }}">
+                                                    N° {{ tarea.idPedido }}
+                                                </a>
+                                                <br>
+                                                <span class="label label-inline font-weight-bold p-4 mt-1"
+                                                      style="font-size: 10px; color: black !important; background-color: {{ tarea.colorProducto }}">
+                                                    {{ tarea.producto }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="label label-inline font-weight-bold p-4"
+                                                      style="font-size: 10px; background-color: {{ tarea.colorEstado }}">
+                                                    {{ tarea.estado }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <a href="{{ path('situacioncliente_show', { id: tarea.idCliente }) }}">
+                                                    {{ tarea.cliente }}
+                                                </a>
+                                            </td>
+                                            <td>{{ tarea.usuarioResponsable|default('-') }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4 col-detalle-pedidos-nuevos" id="detallePedidosNuevos">
+                <div class="card h-100">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0" id="detallePedidosNuevosTitulo"></h5>
+                        <button type="button" class="btn btn-sm btn-icon" id="cerrarDetallePedidosNuevos" title="Cerrar">
+                            <i class="la la-close"></i>
+                        </button>
+                    </div>
+                    <div class="card-body" id="detallePedidosNuevosContenido"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-4 col-detalle-entregas-nuevas" id="detalleEntregasNuevas">
+                <div class="card h-100">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0" id="detalleEntregasNuevasTitulo"></h5>
+                        <button type="button" class="btn btn-sm btn-icon" id="cerrarDetalleEntregasNuevas" title="Cerrar">
+                            <i class="la la-close"></i>
+                        </button>
+                    </div>
+                    <div class="card-body" id="detalleEntregasNuevasContenido"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-4 col-detalle-remitos-nuevos" id="detalleRemitosNuevos">
+                <div class="card h-100">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0" id="detalleRemitosNuevosTitulo"></h5>
+                        <button type="button" class="btn btn-sm btn-icon" id="cerrarDetalleRemitosNuevos" title="Cerrar">
+                            <i class="la la-close"></i>
+                        </button>
+                    </div>
+                    <div class="card-body" id="detalleRemitosNuevosContenido"></div>
+                </div>
+            </div>
+        </div>
+        {# Próximamente: clientes, gráficos y alertas. #}
+
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        jQuery(document).ready(function () {
+
+            // Configuración genérica para las secciones "Pedidos nuevos" y "Entregas nuevas",
+            // que comparten el mismo comportamiento (tarjetas KPI + panel de detalle paginado)
+            var seccionesKpi = {
+                pedidos: {
+                    urlDetalle: 'estadisticas/pedidos-nuevos-detalle',
+                    claseKpi: '.js-kpi-pedidos',
+                    clasePagina: '.js-pedidos-nuevos-pagina',
+                    idDetalle: '#detallePedidosNuevos',
+                    idTitulo: '#detallePedidosNuevosTitulo',
+                    idContenido: '#detallePedidosNuevosContenido',
+                    errorMsg: 'Ocurrió un error al obtener el detalle de pedidos.'
+                },
+                entregas: {
+                    urlDetalle: 'estadisticas/entregas-nuevas-detalle',
+                    claseKpi: '.js-kpi-entregas',
+                    clasePagina: '.js-entregas-nuevas-pagina',
+                    idDetalle: '#detalleEntregasNuevas',
+                    idTitulo: '#detalleEntregasNuevasTitulo',
+                    idContenido: '#detalleEntregasNuevasContenido',
+                    errorMsg: 'Ocurrió un error al obtener el detalle de entregas.'
+                },
+                remitos: {
+                    urlDetalle: 'estadisticas/remitos-nuevos-detalle',
+                    claseKpi: '.js-kpi-remitos',
+                    clasePagina: '.js-remitos-nuevos-pagina',
+                    idDetalle: '#detalleRemitosNuevos',
+                    idTitulo: '#detalleRemitosNuevosTitulo',
+                    idContenido: '#detalleRemitosNuevosContenido',
+                    errorMsg: 'Ocurrió un error al obtener el detalle de remitos.'
+                }
+            };
+
+            function cargarDetalle(config, periodo, pagina, scrollHacia) {
+                var $detalle = $(config.idDetalle);
+
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'json',
+                    url: __HOMEPAGE_PATH__ + config.urlDetalle,
+                    data: { periodo: periodo, pagina: pagina }
+                }).done(function (data) {
+                    $(config.idTitulo).text(data.titulo);
+                    $(config.idContenido).html(data.html);
+                    $detalle.slideDown(150);
+
+                    if (scrollHacia) {
+                        $('html, body').animate({
+                            scrollTop: $detalle.offset().top - 90
+                        }, 250);
+                    }
+                }).fail(function () {
+                    alert(config.errorMsg);
+                });
+            }
+
+            $.each(seccionesKpi, function (key, config) {
+                $(config.claseKpi).on('click', function () {
+                    var $card = $(this);
+                    var periodo = $card.data('periodo');
+
+                    // Si se vuelve a clickear la misma tarjeta ya activa, se oculta el detalle
+                    if ($card.hasClass('active')) {
+                        $card.removeClass('active');
+                        $(config.idDetalle).slideUp(150);
+                        return;
+                    }
+
+                    $(config.claseKpi).removeClass('active');
+                    $card.addClass('active');
+
+                    cargarDetalle(config, periodo, 1, true);
+                });
+
+                // Delegado porque los links de paginación se inyectan dinámicamente
+                $(document).on('click', config.clasePagina, function (e) {
+                    e.preventDefault();
+                    var periodo = $(this).data('periodo');
+                    var pagina = $(this).data('pagina');
+                    cargarDetalle(config, periodo, pagina, false);
+                });
+
+                $(config.idDetalle).find('[id^="cerrarDetalle"]').on('click', function () {
+                    $(config.claseKpi).removeClass('active');
+                    $(config.idDetalle).slideUp(150);
+                });
+            });
+
+            $('#toggleUltimasTareas').on('click', function () {
+                var $tareas = $('#ultimasTareas');
+                var visible = $tareas.is(':visible');
+
+                $tareas.slideToggle(150);
+                $(this).html(
+                    '<i class="la la-history"></i> ' + (visible ? 'Ver últimas tareas' : 'Ocultar últimas tareas')
+                );
+            });
+        });
+    </script>
+{% endblock %}
