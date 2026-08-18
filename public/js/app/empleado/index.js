@@ -6,6 +6,7 @@ jQuery(document).ready(function () {
         ajax: __HOMEPAGE_PATH__ + 'empleado/index_table/',
         columnDefs: datatablesGetColDef(),
         order: [[1, 'asc']],
+        scrollX: false,
     })
 
     $(document).on('click', '.accion-habilitar', function (e) {
