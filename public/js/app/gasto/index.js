@@ -71,7 +71,7 @@ function initDataTable() {
         autoWidth: false,
         scrollX: false,
         columnDefs: datatablesGetColDef(),
-        order: [[1, 'desc']],
+        order: [[0, 'desc']],
         serverSide: false,
     });
 
@@ -89,24 +89,16 @@ function datatablesGetColDef() {
     return [
         {
             targets: index++,
-            name: 'id',
-            width: '5%',
-            className: 'dt-center',
-            orderable: false,
-            render: function (data, type, full, meta) {
-                return '\
-                    <label class="kt-checkbox kt-checkbox--single kt-checkbox--solid">\
-                        <input type="checkbox" value="" class="kt-checkable">\
-                        <span></span>\
-                    </label>';
-            },
-        },
-        {
-            targets: index++,
             name: 'fecha',
             className: 'dt-center',
             width: '10%',
-            type: 'string'
+            render: function (data, type, full, meta) {
+                if (type === 'sort' || type === 'type') {
+                    var partes = (data || '').split('/');
+                    return partes.length === 3 ? partes[2] + partes[1] + partes[0] : data;
+                }
+                return data;
+            }
         },
         {
             targets: index++,
