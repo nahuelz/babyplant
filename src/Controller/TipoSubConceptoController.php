@@ -44,6 +44,7 @@ class TipoSubConceptoController extends BaseController
 
         $columnDefinition = [
             ['field' => 'id', 'type' => '', 'searchable' => false, 'sortable' => false],
+            ['field' => 'concepto', 'type' => 'string', 'searchable' => true, 'sortable' => true],
             ['field' => 'nombre', 'type' => 'string', 'searchable' => true, 'sortable' => true],
             ['field' => 'habilitado', 'type' => 'select', 'searchable' => true, 'sortable' => true],
             ['field' => 'acciones', 'type' => '', 'searchable' => false, 'sortable' => false]
