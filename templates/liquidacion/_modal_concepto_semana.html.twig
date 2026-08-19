@@ -1,0 +1,46 @@
+<div class="modal fade" id="modalConceptoSemana" tabindex="-1" role="dialog" aria-labelledby="modalConceptoSemanaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form id="formAgregarConceptoSemana" method="post" action="">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalConceptoSemanaLabel">Agregar concepto</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i aria-hidden="true" class="ki ki-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="concepto_semana_tipoConceptoLiquidacion">Concepto</label>
+                        <select id="concepto_semana_tipoConceptoLiquidacion" name="tipoConceptoLiquidacion" class="form-control choice concepto-tipo" required>
+                            <option value="">-- Elija el tipo de concepto --</option>
+                            {% for tipo in tiposConcepto %}
+                                <option value="{{ tipo.id }}" data-tipo="{{ tipo.tipo }}">{{ tipo.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="concepto_semana_descripcion">Descripción</label>
+                        <input type="text" id="concepto_semana_descripcion" name="descripcion" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="concepto_semana_cantidad">Cantidad</label>
+                        <input type="text" id="concepto_semana_cantidad" name="cantidad" class="form-control" pattern="[0-9]+([,][0-9]+)?" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="concepto_semana_valorUnitario">Valor unitario</label>
+                        <input type="text" id="concepto_semana_valorUnitario" name="valorUnitario" class="form-control" pattern="[0-9]+([,][0-9]+)?" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="concepto_semana_importe">Importe</label>
+                        <input type="text" id="concepto_semana_importe" class="form-control" readonly>
+                    </div>
+                    <input type="hidden" name="_token" id="concepto_semana_token" value="">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-dark font-weight-bold" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary font-weight-bold">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

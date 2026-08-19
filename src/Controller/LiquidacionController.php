@@ -379,6 +379,14 @@ class LiquidacionController extends BaseController
             'editable' => $editable,
         ]);
 
+        $tiposConcepto = $entityManager->getRepository(TipoConceptoLiquidacion::class)
+            ->createQueryBuilder('t')
+            ->where('t.habilitado = 1')
+            ->andWhere('t.fechaBaja IS NULL')
+            ->orderBy('t.nombre', 'ASC')
+            ->getQuery()
+            ->getResult();
+
         return $this->render('liquidacion/show.html.twig', [
             'liquidacion' => $liquidacion,
             'form' => $form->createView(),
@@ -386,7 +394,76 @@ class LiquidacionController extends BaseController
             'editable' => $editable,
             'totalPagado' => $totalPagado,
             'restante' => $restante,
+            'tiposConcepto' => $tiposConcepto,
         ]);
+    }
+
+    /**
+     * @Route("/{id}/semana", name="liquidacion_show_semana", methods={"GET"})
+     */
+    public function showSemana(Liquidacion $liquidacion, Request $request): Response
+    {
+        if ($liquidacion->getPadre() === null) {
+            return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
+        }
+
+        $returnTo = $request->query->get('returnTo');
+        if ($returnTo && !str_starts_with($returnTo, '/')) {
+            $returnTo = null;
+        }
+
+        $totalPagado = $this->getTotalPagado($liquidacion);
+        $restante = Decimal::sub((string) $liquidacion->getTotalAPagar(), $totalPagado, 2);
+
+        $editable = $this->puedeEditarContenido($liquidacion);
+
+        return $this->render('liquidacion/show_semana.html.twig', [
+            'liquidacion' => $liquidacion,
+            'returnTo' => $returnTo,
+            'totalPagado' => $totalPagado,
+            'restante' => $restante,
+            'editable' => $editable,
+        ]);
+    }
+
+    /**
+     * @Route("/concepto/{id}/eliminar", name="liquidacion_concepto_eliminar", methods={"POST"})
+     */
+    public function eliminarConcepto(Request $request, ConceptoLiquidacion $concepto, EntityManagerInterface $entityManager): Response
+    {
+        $liquidacion = $concepto->getLiquidacion();
+        $returnTo = $request->request->get('returnTo');
+
+        if (!$liquidacion) {
+            $this->addFlash('error', 'Concepto no asociado a una liquidación.');
+            return $this->redirectToRoute('liquidacion_index');
+        }
+
+        if (!$this->isCsrfTokenValid('eliminar_concepto_' . $concepto->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Token de seguridad inválido.');
+            return $this->redirectToRoute('liquidacion_show_semana', ['id' => $liquidacion->getId(), 'returnTo' => $returnTo]);
+        }
+
+        if (!$this->puedeEditarContenido($liquidacion)) {
+            $this->addFlash('error', 'La liquidación no puede editarse en este estado.');
+            return $this->redirectToRoute('liquidacion_show_semana', ['id' => $liquidacion->getId(), 'returnTo' => $returnTo]);
+        }
+
+        $padre = $liquidacion->getPadre();
+
+        $liquidacion->removeConcepto($concepto);
+        $entityManager->remove($concepto);
+        $liquidacion->recalcularTotal();
+
+        if ($padre !== null) {
+            $padre->recalcularTotal();
+        }
+
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Concepto eliminado correctamente.');
+
+        return $this->redirectToRoute('liquidacion_show_semana', ['id' => $liquidacion->getId(), 'returnTo' => $returnTo]);
     }
 
     /**
@@ -713,6 +790,60 @@ class LiquidacionController extends BaseController
         }
 
         return $this->redirectToRoute('liquidacion_index', ['periodo' => $liquidacion->getPeriodo()]);
+    }
+
+    /**
+     * @Route("/{id}/agregar-concepto", name="liquidacion_agregar_concepto_semana", methods={"POST"})
+     */
+    public function agregarConceptoSemana(Request $request, Liquidacion $liquidacion, EntityManagerInterface $entityManager): Response
+    {
+        $padre = $liquidacion->getPadre();
+        $redirectId = $padre !== null ? $padre->getId() : $liquidacion->getId();
+
+        if (!$this->isCsrfTokenValid('agregar_concepto_semana_' . $liquidacion->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Token de seguridad inválido.');
+            return $this->redirectToRoute('liquidacion_show', ['id' => $redirectId]);
+        }
+
+        if ($liquidacion->getPadre() === null) {
+            $this->addFlash('error', 'Solo se pueden agregar conceptos a liquidaciones semanales desde esta acción.');
+            return $this->redirectToRoute('liquidacion_show', ['id' => $redirectId]);
+        }
+
+        if (!$this->puedeEditarContenido($liquidacion)) {
+            $this->addFlash('error', 'La liquidación no puede editarse en este estado.');
+            return $this->redirectToRoute('liquidacion_show', ['id' => $redirectId]);
+        }
+
+        $tipoConceptoId = $request->request->get('tipoConceptoLiquidacion');
+        $tipoConcepto = $tipoConceptoId ? $entityManager->getRepository(TipoConceptoLiquidacion::class)->find($tipoConceptoId) : null;
+        $cantidad = str_replace(['.', ','], ['', '.'], $request->request->get('cantidad', '0'));
+        $valorUnitario = str_replace(['.', ','], ['', '.'], $request->request->get('valorUnitario', '0'));
+        $descripcion = $request->request->get('descripcion');
+
+        if (!$tipoConcepto || Decimal::comp($cantidad, '0', 2) <= 0 || Decimal::comp($valorUnitario, '0', 2) <= 0) {
+            $this->addFlash('error', 'Debe completar el tipo de concepto, cantidad y valor unitario (mayores a 0).');
+            return $this->redirectToRoute('liquidacion_show', ['id' => $redirectId]);
+        }
+
+        $concepto = new ConceptoLiquidacion();
+        $concepto->setTipoConceptoLiquidacion($tipoConcepto);
+        $concepto->setDescripcion($descripcion);
+        $concepto->setCantidad($cantidad);
+        $concepto->setValorUnitario($valorUnitario);
+        $concepto->setImporte(Decimal::mul($cantidad, $valorUnitario, 2));
+        $liquidacion->addConcepto($concepto);
+
+        $entityManager->persist($concepto);
+
+        $liquidacion->recalcularTotal();
+        $padre->recalcularTotal();
+
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Concepto agregado correctamente a la liquidación semanal.');
+
+        return $this->redirectToRoute('liquidacion_show', ['id' => $redirectId]);
     }
 
     private function buildSemanasDelMes(string $periodo): array

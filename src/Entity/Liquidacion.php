@@ -383,19 +383,64 @@ class Liquidacion {
     }
 
     /**
-     * Recalcula el total a pagar en base al sueldo neto y a los conceptos cargados
-     * (INGRESO suma, DESCUENTO resta). Incluye el/los concepto/s ADELANTO ya imputados.
+     * Suma de los totales de conceptos de las semanas hijas. Vacío (0) para
+     * empleados mensuales.
      */
-    public function recalcularTotal(): void
+    public function getTotalConceptosSemanas(): string
     {
-        $total = $this->getSueldoNeto();
+        $total = '0';
+
+        foreach ($this->detallesSemanales as $detalle) {
+            $total = Decimal::add($total, $detalle->getTotalConceptos(), 2);
+        }
+
+        return $total;
+    }
+
+    /**
+     * Suma signada de los conceptos cargados directamente en esta liquidación
+     * (INGRESO suma, DESCUENTO resta). No incluye los conceptos de las semanas hijas.
+     */
+    public function getTotalConceptos(): string
+    {
+        $total = '0';
 
         foreach ($this->conceptos as $concepto) {
             $signo = $concepto->getTipoConceptoLiquidacion()->esDescuento() ? '-1' : '1';
             $total = Decimal::add($total, Decimal::mul((string) $concepto->getImporte(), $signo, 2), 2);
         }
 
-        $this->totalAPagar = $total;
+        return $total;
+    }
+
+    /**
+     * Base de cálculo del total a pagar. Para una liquidación mensual (con
+     * semanas hijas) es la suma del total a pagar de cada semana (que ya
+     * incluye sus propios conceptos); para una liquidación simple (mensual
+     * sin semanas o una semana individual) es el sueldo neto.
+     */
+    private function getBaseCalculoTotal(): string
+    {
+        if (!$this->detallesSemanales->isEmpty()) {
+            $total = '0';
+            foreach ($this->detallesSemanales as $detalle) {
+                $total = Decimal::add($total, (string) $detalle->getTotalAPagar(), 2);
+            }
+            return $total;
+        }
+
+        return $this->getSueldoNeto();
+    }
+
+    /**
+     * Recalcula el total a pagar en base al sueldo neto (o, si es una liquidación
+     * mensual con semanas, la suma de los totales de esas semanas) y a los
+     * conceptos cargados directamente en esta liquidación (INGRESO suma,
+     * DESCUENTO resta). Incluye el/los concepto/s ADELANTO ya imputados.
+     */
+    public function recalcularTotal(): void
+    {
+        $this->totalAPagar = Decimal::add($this->getBaseCalculoTotal(), $this->getTotalConceptos(), 2);
     }
 
 }

@@ -57,11 +57,11 @@
                     <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th class="text-center">Desde</th>
-                                <th class="text-center">Hasta</th>
+                                <th class="text-center">Semana</th>
                                 <th class="text-center">Sueldo bruto</th>
                                 <th class="text-center">Deducciones</th>
                                 <th class="text-center">Sueldo neto</th>
+                                <th class="text-center">Conceptos</th>
                                 <th class="text-center">Estado</th>
                                 <th class="text-center">Acciones</th>
                             </tr>
@@ -69,11 +69,17 @@
                         <tbody>
                             {% for detalle in liquidacion.detallesSemanales %}
                                 <tr>
-                                    <td class="text-center">{{ detalle.fechaDesde ? detalle.fechaDesde|date('d/m/Y') : '-' }}</td>
-                                    <td class="text-center">{{ detalle.fechaHasta ? detalle.fechaHasta|date('d/m/Y') : '-' }}</td>
-                                    <td class="text-center">{{ detalle.sueldoBruto|number_format(2, ',', '.') }}</td>
-                                    <td class="text-center">{{ detalle.deducciones|number_format(2, ',', '.') }}</td>
-                                    <td class="text-center">{{ detalle.sueldoNeto|number_format(2, ',', '.') }}</td>
+                                    <td class="text-center">
+                                        {% if detalle.fechaDesde and detalle.fechaHasta %}
+                                            {{ detalle.fechaDesde|date('d/m') }} - {{ detalle.fechaHasta|date('d/m') }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">{{ detalle.sueldoBruto|money_format }}</td>
+                                    <td class="text-center">{{ detalle.deducciones|money_format }}</td>
+                                    <td class="text-center">{{ detalle.sueldoNeto|money_format }}</td>
+                                    <td class="text-center">{{ detalle.totalConceptos|money_format }}</td>
                                     <td class="text-center">
                                         {% if detalle.estado %}
                                             {% set estadoColor = '' %}
@@ -88,9 +94,13 @@
                                         {% endif %}
                                     </td>
                                     <td class="text-center">
+                                        <a href="{{ path('liquidacion_show_semana', {'id': detalle.id}) }}?returnTo={{ app.request.requestUri|url_encode }}"
+                                           class="btn btn-sm btn-light-info font-weight-bold" title="VER DETALLE">
+                                            <i class="la la-search"></i>
+                                        </a>
                                         {% if detalle.estado and detalle.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::BORRADOR') %}
                                             <a href="#"
-                                               class="btn btn-sm btn-light-primary font-weight-bold abrir-modal-semana"
+                                               class="btn btn-sm btn-light-primary font-weight-bold abrir-modal-semana ml-2"
                                                data-action="{{ path('liquidacion_guardar_semana', {'id': detalle.id}) }}"
                                                data-semana="{{ loop.index }}"
                                                data-apellido="{{ detalle.empleado.apellido }}"
@@ -98,13 +108,24 @@
                                                data-sueldo-bruto="{{ detalle.sueldoBruto|replace({'.': ','}) }}"
                                                data-deducciones="{{ detalle.deducciones|replace({'.': ','}) }}"
                                                data-token="{{ csrf_token('guardar_semana_' ~ detalle.id) }}"
-                                               data-return="show">
-                                                Editar
+                                               data-return="show"
+                                               title="EDITAR">
+                                                <i class="la la-edit"></i>
                                             </a>
                                             <form method="post" action="{{ path('liquidacion_aprobar', {'id': detalle.id}) }}" class="d-inline ml-2">
                                                 <input type="hidden" name="_token" value="{{ csrf_token('aprobar_' ~ detalle.id) }}">
-                                                <button type="submit" class="btn btn-sm btn-success font-weight-bold btn-aprobar-confirm" data-tipo="hija" data-sueldo-bruto="{{ detalle.sueldoBruto|replace({'.': ','}) }}">Aprobar</button>
+                                                <button type="submit" class="btn btn-sm btn-light-success font-weight-bold btn-aprobar-confirm" data-tipo="hija" data-sueldo-bruto="{{ detalle.sueldoBruto|replace({'.': ','}) }}" title="APROBAR"><i class="la la-check"></i></button>
                                             </form>
+                                            <a href="#"
+                                               class="btn btn-sm btn-light-dark font-weight-bold abrir-modal-concepto-semana ml-2"
+                                               data-action="{{ path('liquidacion_agregar_concepto_semana', {'id': detalle.id}) }}"
+                                               data-semana="{{ loop.index }}"
+                                               data-apellido="{{ detalle.empleado.apellido }}"
+                                               data-nombre="{{ detalle.empleado.nombre }}"
+                                               data-token="{{ csrf_token('agregar_concepto_semana_' ~ detalle.id) }}"
+                                               title="AGREGAR CONPCEPTO">
+                                                <i class="la la-plus"></i>
+                                            </a>
                                         {% elseif detalle.estado and detalle.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::APROBADA') %}
                                             <form method="post" action="{{ path('liquidacion_pagar', {'id': detalle.id}) }}" class="d-inline ml-2">
                                                 <input type="hidden" name="pago_empleado[_token]" value="{{ csrf_token('pago_empleado') }}">
@@ -117,9 +138,10 @@
                                 </tr>
                             {% endfor %}
                             <tr class="font-weight-bold">
-                                <td colspan="4" class="text-right">Total semanas</td>
-                                <td class="text-right">{{ liquidacion.sueldoNeto|number_format(2, ',', '.') }}</td>
-                                <td></td>
+                                <td colspan="3" class="text-right">Total semanas</td>
+                                <td class="text-right">{{ liquidacion.sueldoNeto|money_format }}</td>
+                                <td class="text-right">{{ liquidacion.totalConceptosSemanas|money_format }}</td>
+                                <td colspan="2"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -137,6 +159,7 @@
                 {% if liquidacion.detallesSemanales is not empty %}
                     <input type="hidden" id="liquidacion_sueldoBruto" value="{{ liquidacion.sueldoNeto|number_format(2, ',', '.') }}">
                     <input type="hidden" id="liquidacion_deducciones" value="0">
+                    <input type="hidden" id="liquidacion_totalConceptosSemanas" value="{{ liquidacion.totalConceptosSemanas|number_format(2, ',', '.') }}">
                 {% endif %}
 
                 {% if form.conceptos is defined %}
@@ -217,8 +240,8 @@
                                                 <td class="v-middle text-center">{{ concepto.tipoConceptoLiquidacion }}</td>
                                                 <td class="v-middle text-center">{{ concepto.descripcion|default('-') }}</td>
                                                 <td class="v-middle text-center">{{ concepto.cantidad|number_format(2, ',', '.') }}</td>
-                                                <td class="v-middle text-center">$ {{ concepto.valorUnitario|number_format(2, ',', '.') }}</td>
-                                                <td class="v-middle text-center">$ {{ concepto.importe|number_format(2, ',', '.') }}</td>
+                                                <td class="v-middle text-center">{{ concepto.valorUnitario|money_format }}</td>
+                                                <td class="v-middle text-center">{{ concepto.importe|money_format }}</td>
                                                 <td class="v-middle text-center">{{ concepto.tipoConceptoLiquidacion.tipo }}</td>
                                                 <td class="text-center v-middle">
                                                     {% if editable %}
@@ -309,6 +332,7 @@
     {% endif %}
 
     {% include 'liquidacion/_modal_semana.html.twig' %}
+    {% include 'liquidacion/_modal_concepto_semana.html.twig' %}
 
 {% endblock %}
 
