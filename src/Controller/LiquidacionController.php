@@ -478,8 +478,9 @@ class LiquidacionController extends BaseController
 
             if ($request->request->get('accion') === 'aprobar') {
                 foreach ($liquidacion->getDetallesSemanales() as $detalle) {
-                    if (!$detalle->getEstado() || $detalle->getEstado()->getCodigoInterno() !== ConstanteEstadoLiquidacion::APROBADA) {
-                        $this->addFlash('error', 'Debe aprobarse todas las liquidaciones semanales antes de aprobar la liquidación mensual.');
+                    $codigoInterno = $detalle->getEstado() ? $detalle->getEstado()->getCodigoInterno() : null;
+                    if ($codigoInterno !== ConstanteEstadoLiquidacion::APROBADA && $codigoInterno !== ConstanteEstadoLiquidacion::PAGADA) {
+                        $this->addFlash('error', 'Debe aprobarse (o pagarse) todas las liquidaciones semanales antes de aprobar la liquidación mensual.');
                         return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
                     }
                 }
@@ -528,8 +529,9 @@ class LiquidacionController extends BaseController
         }
 
         foreach ($liquidacion->getDetallesSemanales() as $detalle) {
-            if (!$detalle->getEstado() || $detalle->getEstado()->getCodigoInterno() !== ConstanteEstadoLiquidacion::APROBADA) {
-                $this->addFlash('error', 'Debe aprobarse todas las liquidaciones semanales antes de aprobar la liquidación mensual.');
+            $codigoInterno = $detalle->getEstado() ? $detalle->getEstado()->getCodigoInterno() : null;
+            if ($codigoInterno !== ConstanteEstadoLiquidacion::APROBADA && $codigoInterno !== ConstanteEstadoLiquidacion::PAGADA) {
+                $this->addFlash('error', 'Debe aprobarse (o pagarse) todas las liquidaciones semanales antes de aprobar la liquidación mensual.');
                 return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
             }
         }
