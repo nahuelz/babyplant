@@ -621,6 +621,34 @@ class LiquidacionController extends BaseController
     }
 
     /**
+     * @Route("/{id}/revertir", name="liquidacion_revertir", methods={"POST"})
+     */
+    public function revertir(Request $request, Liquidacion $liquidacion, LiquidacionService $liquidacionService, EntityManagerInterface $entityManager): Response
+    {
+        if (!$this->isCsrfTokenValid('revertir_' . $liquidacion->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Token de seguridad inválido.');
+            return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
+        }
+
+        if ($liquidacion->getPadre() !== null) {
+            $this->addFlash('error', 'Debe revertirse el pago desde la liquidación mensual.');
+            return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getPadre()->getId()]);
+        }
+
+        if (!$liquidacion->getEstado() || $liquidacion->getEstado()->getCodigoInterno() !== ConstanteEstadoLiquidacion::PAGADA) {
+            $this->addFlash('error', 'La liquidación debe estar pagada para poder revertirse.');
+            return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
+        }
+
+        $liquidacionService->revertirPago($liquidacion);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Se revirtió el pago de la liquidación correctamente.');
+
+        return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
+    }
+
+    /**
      * @Route("/{id}/anular", name="liquidacion_anular", methods={"POST"})
      */
     public function anular(Request $request, Liquidacion $liquidacion, LiquidacionService $liquidacionService, EntityManagerInterface $entityManager): Response

@@ -134,6 +134,38 @@ class LiquidacionService
     }
 
     /**
+     * Revierte el pago de una liquidación PAGADA, anulando (soft-delete) sus
+     * PagoEmpleado y devolviéndola a BORRADOR. Si es una liquidación mensual
+     * (resumen), revierte en cascada todas sus semanas pagadas.
+     */
+    public function revertirPago(Liquidacion $liquidacion): void
+    {
+        $estadoBorrador = $this->em->getRepository(EstadoLiquidacion::class)
+            ->findOneByCodigoInterno(ConstanteEstadoLiquidacion::BORRADOR);
+
+        if ($liquidacion->getPadre() === null) {
+            foreach ($liquidacion->getDetallesSemanales() as $detalle) {
+                $this->anularPagos($detalle);
+                $this->estadoService->cambiarEstadoLiquidacion(
+                    $detalle,
+                    $estadoBorrador,
+                    'Pago revertido (liquidación mensual revertida).'
+                );
+            }
+        }
+
+        $this->anularPagos($liquidacion);
+        $this->estadoService->cambiarEstadoLiquidacion($liquidacion, $estadoBorrador, 'Pago revertido.');
+    }
+
+    private function anularPagos(Liquidacion $liquidacion): void
+    {
+        foreach ($liquidacion->getPagos() as $pago) {
+            $this->em->remove($pago);
+        }
+    }
+
+    /**
      * Anula una liquidación y libera los adelantos imputados para que puedan
      * volver a imputarse en una nueva liquidación.
      */

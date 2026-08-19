@@ -261,6 +261,14 @@
                                 Pagar
                             </button>
                         {% endif %}
+                        {% if liquidacion.padre is null and liquidacion.estado and liquidacion.estado.codigoInterno == 4 %}
+                            <button type="button"
+                                    class="btn btn-danger font-weight-bold btn-revertir-confirm"
+                                    data-action="{{ path('liquidacion_revertir', {'id': liquidacion.id}) }}"
+                                    data-token="{{ csrf_token('revertir_' ~ liquidacion.id) }}">
+                                Revertir pago
+                            </button>
+                        {% endif %}
                         {{ form_end(form, {'render_rest': false}) }}
                     </div>
                 </div>

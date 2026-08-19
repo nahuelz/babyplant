@@ -168,5 +168,24 @@ jQuery(document).ready(function () {
         });
     });
 
+    // Confirmación de reversión de pago
+    $(document).on('click', '.btn-revertir-confirm', function (e) {
+        e.preventDefault();
+        var $this = $(this);
+        var actionUrl = $this.data('action');
+        var token = $this.data('token');
+        show_confirm({
+            title: 'Confirmación',
+            type: 'warning',
+            msg: '¿Desea revertir el pago de esta liquidación? La liquidación y sus semanas volverán a estado borrador y se anularán los pagos registrados.',
+            callbackOK: function () {
+                var $form = $('<form>', {action: actionUrl, method: 'post', style: 'display:none;'});
+                $form.append($('<input>', {type: 'hidden', name: '_token', value: token}));
+                $('body').append($form);
+                $form.submit();
+            }
+        });
+    });
+
     recalcularTotales();
 });

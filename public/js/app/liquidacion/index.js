@@ -6,6 +6,12 @@ jQuery(document).ready(function () {
         $empleado.select2();
     }
 
+    // Inicializar Select2 del filtro de modalidad
+    var $modalidad = $('#modalidad');
+    if ($modalidad.length && !$modalidad.data('select2')) {
+        $modalidad.select2();
+    }
+
     // Inicializar datepicker del período (vista de meses, formato yyyy-mm)
     var $periodo = $('#periodo');
     if ($periodo.length && !$periodo.data('datepicker')) {
@@ -20,6 +26,18 @@ jQuery(document).ready(function () {
             todayHighlight: true
         });
     }
+
+    // Auto-submit del formulario de filtros al cambiar cualquier campo
+    var $formFiltros = $empleado.closest('form');
+    $empleado.on('change', function () {
+        $formFiltros.submit();
+    });
+    $modalidad.on('change', function () {
+        $formFiltros.submit();
+    });
+    $periodo.on('changeDate', function () {
+        $formFiltros.submit();
+    });
 
     $('#btn-generar').on('click', function (e) {
         e.preventDefault();
