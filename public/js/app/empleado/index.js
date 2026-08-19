@@ -6,6 +6,8 @@ jQuery(document).ready(function () {
         ajax: __HOMEPAGE_PATH__ + 'empleado/index_table/',
         columnDefs: datatablesGetColDef(),
         order: [[1, 'asc']],
+        responsive: true,
+        autoWidth: false,
         scrollX: false,
     })
 
@@ -38,7 +40,7 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'id',
-            width: '30px',
+            width: '5%',
             className: 'dt-center',
             orderable: false,
             render: function (data, type, full, meta) {
@@ -52,27 +54,33 @@ function datatablesGetColDef() {
         {
             targets: index++,
             name: 'nombreCompleto',
+            width: '22%',
         },
         {
             targets: index++,
             name: 'dni',
+            width: '12%',
         },
         {
             targets: index++,
             name: 'categoria',
+            width: '14%',
         },
         {
             targets: index++,
             name: 'modalidadPago',
+            width: '15%',
         },
         {
             targets: index++,
             name: 'fechaIngreso',
+            width: '13%',
         },
         {
             targets: index++,
             name: 'activo',
             className: 'dt-center',
+            width: '9%',
         },
         {
             targets: -1,
@@ -80,7 +88,7 @@ function datatablesGetColDef() {
             title: 'Acciones',
             className: "text-center dt-acciones",
             orderable: false,
-            width: '90px',
+            width: '10%',
             render: dataTablesActionFormatter
         }
     ]
