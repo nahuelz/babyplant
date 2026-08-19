@@ -25,6 +25,13 @@
                 <h3 class="card-label">Liquidación de {{ liquidacion.empleado.nombreCompleto }} — {{ liquidacion.periodo }}</h3>
             </div>
             <div class="card-toolbar">
+                <a href="{{ path('liquidacion_index_excel', {
+                    'periodo': liquidacion.periodo,
+                    'empleado': liquidacion.empleado.id,
+                    'modalidad': liquidacion.tipoModalidadPago ? liquidacion.tipoModalidadPago.id : ''
+                }) }}" class="btn btn-success font-weight-bold mr-3">
+                    <i class="la la-file-excel"></i> Exportar Excel
+                </a>
                 <span class="badge badge-info mr-3">{{ liquidacion.estado }}</span>
             </div>
         </div>
