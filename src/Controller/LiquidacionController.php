@@ -140,6 +140,7 @@ class LiquidacionController extends BaseController
         }
 
         $totalesPorSemana = array_fill(0, count($semanas), '0');
+        $totalConceptosMensual = '0';
         $totalGeneral = '0';
 
         foreach ($grid as $fila) {
@@ -154,6 +155,11 @@ class LiquidacionController extends BaseController
             }
 
             if ($fila['resumen']) {
+                $totalConceptosMensual = Decimal::add(
+                    $totalConceptosMensual,
+                    (string) $fila['resumen']->getTotalConceptos(),
+                    2
+                );
                 $totalGeneral = Decimal::add($totalGeneral, (string) $fila['resumen']->getTotalAPagar(), 2);
             }
         }
@@ -164,7 +170,7 @@ class LiquidacionController extends BaseController
         $sheet->setTitle('Liquidaciones ' . $periodo);
 
         $sheet->setCellValue('A1', 'Resumen de liquidaciones — ' . $periodo);
-        $sheet->mergeCells('A1:' . \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(2 + count($semanas) + 1) . '1');
+        $sheet->mergeCells('A1:' . \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(2 + count($semanas) + 2) . '1');
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
 
         $sheet->setCellValue('A2', 'Empleado');
@@ -175,6 +181,8 @@ class LiquidacionController extends BaseController
             $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . '2', "Sem " . $semana['numero'] . "\n" . $semana['label']);
             $col++;
         }
+        $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . '2', 'Conceptos');
+        $col++;
         $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . '2', 'Total');
 
         $headerRange = 'A2:' . \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . '2';
@@ -191,11 +199,37 @@ class LiquidacionController extends BaseController
             $sheet->setCellValue('B' . $fila, $row['modalidad']);
 
             $col = 3;
+            $esSemanal = $row['empleado']->getModalidadPago() && $row['empleado']->getModalidadPago()->getCodigoInterno() == ConstanteTipoModalidadPago::SEMANAL;
             foreach ($row['semanas'] as $semana) {
-                $valor = $semana['liquidacion'] ? (float) $semana['liquidacion']->getTotalAPagar() : null;
-                $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $fila, $valor);
+                if ($semana['liquidacion']) {
+                    if ($esSemanal) {
+                        $neto = $this->formatMoney($semana['liquidacion']->getSueldoNeto());
+                        $totalConceptos = (float) $semana['liquidacion']->getTotalConceptos();
+                        if (abs($totalConceptos) > 0.001) {
+                            $signo = $totalConceptos >= 0 ? '+' : '-';
+                            $conceptos = $this->formatMoney(abs($totalConceptos));
+                            $valor = $neto . ' (' . $signo . $conceptos . ')';
+                        } else {
+                            $valor = $neto;
+                        }
+                        $sheet->setCellValueExplicit(
+                            \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $fila,
+                            $valor,
+                            \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
+                        );
+                    } else {
+                        $valor = (float) $semana['liquidacion']->getTotalAPagar();
+                        $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $fila, $valor);
+                    }
+                } else {
+                    $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $fila, '');
+                }
                 $col++;
             }
+
+            $conceptosMensual = $row['resumen'] ? (float) $row['resumen']->getTotalConceptos() : 0;
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $fila, $conceptosMensual);
+            $col++;
 
             $total = $row['resumen'] ? (float) $row['resumen']->getTotalAPagar() : 0;
             $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $fila, $total);
@@ -211,6 +245,8 @@ class LiquidacionController extends BaseController
             $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal, (float) $total);
             $col++;
         }
+        $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal, (float) $totalConceptosMensual);
+        $col++;
         $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal, (float) $totalGeneral);
 
         $totalRange = 'A' . $filaTotal . ':' . \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal;
