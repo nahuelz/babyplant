@@ -105,6 +105,12 @@ class Empleado {
     private $adelantos;
 
     /**
+     * @ORM\OneToMany(targetEntity=Prestamo::class, mappedBy="empleado", cascade={"all"})
+     * @ORM\OrderBy({"fecha" = "DESC", "id" = "DESC"})
+     */
+    private $prestamos;
+
+    /**
      * @ORM\OneToMany(targetEntity=SolicitudVacaciones::class, mappedBy="empleado", cascade={"all"})
      */
     private $solicitudesVacaciones;
@@ -118,6 +124,7 @@ class Empleado {
     {
         $this->vacaciones = new ArrayCollection();
         $this->adelantos = new ArrayCollection();
+        $this->prestamos = new ArrayCollection();
         $this->solicitudesVacaciones = new ArrayCollection();
         $this->liquidaciones = new ArrayCollection();
         $this->activo = true;
@@ -315,6 +322,32 @@ class Empleado {
         if (!$this->adelantos->contains($adelanto)) {
             $this->adelantos[] = $adelanto;
             $adelanto->setEmpleado($this);
+        }
+
+        return $this;
+    }
+
+    public function getPrestamos()
+    {
+        return $this->prestamos;
+    }
+
+    public function addPrestamo(Prestamo $prestamo): self
+    {
+        if (!$this->prestamos->contains($prestamo)) {
+            $this->prestamos[] = $prestamo;
+            $prestamo->setEmpleado($this);
+        }
+
+        return $this;
+    }
+
+    public function removePrestamo(Prestamo $prestamo): self
+    {
+        if ($this->prestamos->removeElement($prestamo)) {
+            if ($prestamo->getEmpleado() === $this) {
+                $prestamo->setEmpleado(null);
+            }
         }
 
         return $this;

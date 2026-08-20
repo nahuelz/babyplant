@@ -81,6 +81,9 @@
             <a class="nav-link" data-toggle="tab" href="#tab-vacaciones">Vacaciones</a>
         </li>
         <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#tab-prestamos">Préstamos</a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#tab-reportes">Reportes</a>
         </li>
     </ul>
@@ -89,6 +92,7 @@
         {{ include('empleado/show/_tab_datos.html.twig') }}
         {{ include('empleado/show/_tab_liquidaciones.html.twig') }}
         {{ include('empleado/show/_tab_vacaciones.html.twig') }}
+        {{ include('empleado/show/_tab_prestamos.html.twig') }}
         {{ include('empleado/show/_tab_reportes.html.twig') }}
     </div>
 
@@ -189,6 +193,11 @@
 
         $(function () {
             $('[data-toggle="tooltip"]').tooltip();
+
+            var hash = window.location.hash;
+            if (hash) {
+                $('#empleadoTabs a[href="' + hash + '"]').tab('show');
+            }
 
             initTablaLiquidaciones();
 

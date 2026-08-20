@@ -8,9 +8,11 @@ use App\Entity\Constants\ConstanteTipoConceptoLiquidacion;
 use App\Entity\Constants\ConstanteTipoConsulta;
 use App\Entity\Empleado;
 use App\Entity\Liquidacion;
+use App\Entity\Prestamo;
 use App\Entity\SolicitudVacaciones;
 use App\Entity\Vacaciones;
 use App\Form\EmpleadoType;
+use App\Form\PrestamoType;
 use App\Util\Decimal;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -160,6 +162,12 @@ class EmpleadoController extends BaseController
             return $a->getFechaBaja() === null;
         });
 
+        $prestamos = $empleado->getPrestamos()->filter(function (Prestamo $p) {
+            return $p->getFechaBaja() === null;
+        });
+
+        $formPrestamo = $this->createForm(PrestamoType::class, new Prestamo());
+
         $resumenLiquidaciones = $this->calcularResumenLiquidaciones($liquidaciones);
 
         $response = $this->render('empleado/show/show.html.twig', [
@@ -180,6 +188,8 @@ class EmpleadoController extends BaseController
             'diasCorrespondientesVacaciones' => $diasCorrespondientesVacaciones,
             'diasDisponiblesVacaciones' => $diasDisponiblesVacaciones,
             'adelantos' => $adelantos,
+            'prestamos' => $prestamos,
+            'formPrestamo' => $formPrestamo->createView(),
         ]);
 
         $response->setPrivate();

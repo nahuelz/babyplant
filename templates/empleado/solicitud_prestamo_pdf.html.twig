@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <style type="text/css">
+        body {
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .titulo {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: underline;
+            margin-bottom: 30px;
+        }
+
+        .firma {
+            margin-top: 60px;
+            width: 40%;
+            border-top: 1px solid black;
+            padding-top: 5px;
+            text-align: center;
+        }
+    </style>
+
+    <title>Recibo de Préstamo</title>
+</head>
+
+<body>
+
+<p><strong>{{ prestamo.empleado.nombreCompleto|upper }}</strong></p>
+<div class="titulo">
+    Recibo de Préstamo
+</div>
+
+<p>
+    Por la presente dejo constancia que he recibido por parte de la empresa
+    Baby Plant un préstamo de sueldo de
+    <strong>{{ (prestamo.monto ?? adelanto.monto)|money_format }}</strong>
+    Pesos.
+</p>
+
+<p>
+    <strong>FECHA:</strong>
+    {{ (prestamo.fecha ?? adelanto.fecha)|date('d / m / Y') }}
+</p>
+
+<div class="firma">
+    Firma del empleado
+</div>
+
+</body>
+</html>
