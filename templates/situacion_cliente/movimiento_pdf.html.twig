@@ -72,25 +72,29 @@
             </tr>
         </table>
     </div>
-
+{% set referencia = entity.cuentaCorrientePedido ? 'N° ' ~ entity.cuentaCorrientePedido.pedido.id : (entity.cuentaCorrienteUsuario ? '-' : 'N° ' ~ entity.reserva.id) %}
 <div class="datos-productos">
     <table class="datos-productos-table" border="1" cellpadding="0" cellspacing="0" align="center">
         <thead>
         <tr>
-            <th class="text-center">FECHA</th>
             <th class="text-center">TIPO</th>
             <th class="text-center">MONTO</th>
             <th class="text-center">MODO PAGO</th>
-            <th class="text-center">{{ entity.pedido ? 'PEDIDO' : entity.cuentaCorrienteUsuario ? 'REMITO' : 'RESERVA' }}</th>
+            <th class="text-center">DESCRIPCION</th>
+            {% if referencia != '-' %}
+                <th class="text-center">{{ entity.pedido ? 'PEDIDO' : entity.cuentaCorrienteUsuario ? 'REMITO' : 'RESERVA' }}</th>
+            {% endif %}
         </tr>
         </thead>
         <tbody>
         <tr>
-            <td width="120" align="center">{{ entity.fechaCreacion is not null ? entity.fechaCreacion|date('d/m/Y') : '-' }}</td>
-            <td width="170" align="center">{{ entity.tipoMovimiento }}</td>
-            <td width="170" align="center">{{ entity.monto|money_format  }}</td>
-            <td width="170" align="center">{{ entity.modoPago  }}</td>
-            <td width="150" align="center">{{ entity.cuentaCorrientePedido ? "N° " ~ entity.cuentaCorrientePedido.pedido.id : entity.cuentaCorrienteUsuario ? " - " : "N° " ~ entity.reserva.id }}</td>
+            <td width="200" align="center">{{ entity.tipoMovimiento }}</td>
+            <td width="200" align="center">{{ entity.monto|money_format  }}</td>
+            <td width="200" align="center">{{ entity.modoPago  }}</td>
+            <td width="200" align="center">{{ entity.descripcion|default('-')  }}</td>
+            {% if referencia != '-' %}
+                <td width="200" align="center">{{ referencia }}</td>
+            {% endif %}
         </tr>
         </tbody>
         <tfoot>
