@@ -267,8 +267,8 @@ function dataTablesActionFormatter(data, type, full, meta) {
         actions = '';
     } else {
         actions +=
-            /*(data.generar_remito !== undefined ? '<a class="dropdown-item" href="' + data.generar_remito + '"><i class="la la-edit" style="margin-right: 5px;"></i> Generar Remito</a>' : '')
-            +*/
+            (data.generar_remito !== undefined ? '<a class="dropdown-item" href="' + data.generar_remito + '"><i class="la la-edit" style="margin-right: 5px;"></i> Generar Remito</a>' : '')
+            +
             (data.situacion_cliente !== undefined ? '<a class="dropdown-item" href="' + data.situacion_cliente + '"><i class="la la-user" style="margin-right: 5px;"></i> Situacion Cliente</a>' : '')
             +
             (data.show !== undefined ? '<a class="dropdown-item" href="' + data.show + '"><i class="la la-search" style="margin-right: 5px;"></i> Ver Entrega</a>' : '')
