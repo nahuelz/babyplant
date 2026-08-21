@@ -167,6 +167,7 @@ class PrintService{
             'margin_top' => 2,
             'margin_bottom' => 2,
             'orientation' => 'L',
+            'tempDir' => $this->getTempDir(),
         ]);
         return $mpdfService;
     }

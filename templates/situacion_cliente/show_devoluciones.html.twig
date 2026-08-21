@@ -22,7 +22,7 @@
                                         <thead>
                                         <tr>
                                             <th class="text-center nowrap">Devolución</th>
-                                            <th class="text-center nowrap">Producto</th>
+                                            <th class="text-center nowrap">Entrega</th>
                                             <th class="text-center nowrap">Bandejas</th>
                                             <th class="text-center nowrap">Valor Total</th>
                                             <th class="text-center nowrap">Fecha</th>
@@ -34,10 +34,18 @@
                                         {% for devolucion in devoluciones %}
                                             <tr>
                                                 <td class="v-middle nowrap text-center">
-                                                    Devolución N° {{ devolucion.id }}
+                                                    <a href="{{ path('devolucion_show', {'id': devolucion.id}) }}" class="font-weight-bold text-primary">
+                                                        Devolución N° {{ devolucion.id }}
+                                                    </a>
                                                 </td>
                                                 <td class="v-middle nowrap text-center">
-                                                    {{ devolucion.pedidoProducto.getNombreCompleto|default('-') }}
+                                                    {% if devolucion.entregaProducto and devolucion.entregaProducto.entrega %}
+                                                        <a href="{{ path('entrega_show', {'id': devolucion.entregaProducto.entrega.id}) }}" class="font-weight-bold text-primary">
+                                                            Entrega N° {{ devolucion.entregaProducto.entrega.id }}
+                                                        </a>
+                                                    {% else %}
+                                                        -
+                                                    {% endif %}
                                                 </td>
                                                 <td class="v-middle nowrap text-center">
                                                     {{ devolucion.cantidadBandejas|default('-') }}
@@ -60,6 +68,11 @@
                                                             <a href="{{ path('devolucion_show',{id: devolucion.id}) }}" class="dropdown-item">
                                                                 <i class="la la-search" style="margin-right: 5px;"></i> Ver Devolución
                                                             </a>
+                                                            {% if devolucion.entregaProducto and devolucion.entregaProducto.entrega %}
+                                                                <a href="{{ path('entrega_show',{id: devolucion.entregaProducto.entrega.id}) }}" class="dropdown-item">
+                                                                    <i class="la la-search" style="margin-right: 5px;"></i> Ver Entrega
+                                                                </a>
+                                                            {% endif %}
                                                             <a href="{{ path('devolucion_edit',{id: devolucion.id}) }}" class="dropdown-item">
                                                                 <i class="la la-edit" style="margin-right: 5px;"></i> Editar
                                                             </a>

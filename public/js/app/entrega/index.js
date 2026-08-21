@@ -267,8 +267,8 @@ function dataTablesActionFormatter(data, type, full, meta) {
         actions = '';
     } else {
         actions +=
-            (data.generar_remito !== undefined ? '<a class="dropdown-item" href="' + data.generar_remito + '"><i class="la la-edit" style="margin-right: 5px;"></i> Generar Remito</a>' : '')
-            +
+            /*(data.generar_remito !== undefined ? '<a class="dropdown-item" href="' + data.generar_remito + '"><i class="la la-edit" style="margin-right: 5px;"></i> Generar Remito</a>' : '')
+            +*/
             (data.situacion_cliente !== undefined ? '<a class="dropdown-item" href="' + data.situacion_cliente + '"><i class="la la-user" style="margin-right: 5px;"></i> Situacion Cliente</a>' : '')
             +
             (data.show !== undefined ? '<a class="dropdown-item" href="' + data.show + '"><i class="la la-search" style="margin-right: 5px;"></i> Ver Entrega</a>' : '')
@@ -282,8 +282,8 @@ function dataTablesActionFormatter(data, type, full, meta) {
             (data.print_pdf_interno !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf_interno + '"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Entrega Interno</a>' : '')
             +
             (data.delete !== undefined ? '<a class="dropdown-item accion-borrar" href="' + data.delete + '"><i class="la la-remove" style="margin-right: 5px;"></i> Borrar</a>' : '')
-            +
-            (data.cancelar !== undefined ? '<a class="dropdown-item accion-cancelar" href="' + data.cancelar + '" data-es-reventa="' + (data.es_reventa || false) + '"><i class="la la-remove" style="margin-right: 5px;"></i> Cancelar </a>' : '')
+            /*+
+            (data.cancelar !== undefined ? '<a class="dropdown-item accion-cancelar" href="' + data.cancelar + '" data-es-reventa="' + (data.es_reventa || false) + '"><i class="la la-remove" style="margin-right: 5px;"></i> Cancelar </a>' : '')*/
         ;
 
         actions = ' <div class="dropdown dropdown-inline">\
