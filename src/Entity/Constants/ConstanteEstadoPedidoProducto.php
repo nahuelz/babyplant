@@ -79,4 +79,9 @@ class ConstanteEstadoPedidoProducto {
      */
     const REVERTIR_BANDEJAS = 14;
 
+    /**
+     * ELIMINADO
+     */
+    const ELIMINADO = 15;
+
 }

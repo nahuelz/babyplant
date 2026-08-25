@@ -38,12 +38,19 @@ class BandejaService
         $pedidoProducto->setCantidadBandejasDisponibles();
         $nuevaCantidadDisponible = $pedidoProducto->getCantidadBandejasDisponibles();
 
-        // Si no quedan más bandejas disponibles, cambiar el estado a ENTREGADO
-        if ($nuevaCantidadDisponible == 0 && $pedidoProducto->getCantidadBandejasReservadas() == 0) {
-            $estadoEntregado = $this->em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::ENTREGADO);
+        // Si no quedan más bandejas disponibles, decidir estado final
+        if ($nuevaCantidadDisponible == 0 && $pedidoProducto->getCantidadBandejasReservadasSinEntregar() == 0) {
+            $codigoEstado = ConstanteEstadoPedidoProducto::ENTREGADO;
+
+            // Si se eliminaron todas las bandejas reales del producto, pasa a ELIMINADO
+            if ($pedidoProducto->getCantidadBandejasEliminadas() >= $pedidoProducto->getCantidadBandejasReales()) {
+                $codigoEstado = ConstanteEstadoPedidoProducto::ELIMINADO;
+            }
+
+            $estado = $this->em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno($codigoEstado);
             $this->estadoService->cambiarEstadoPedidoProducto(
                 $pedidoProducto,
-                $estadoEntregado,
+                $estado,
                 'Eliminación de bandejas: ' . $motivoEliminacion->getNombre()
             );
         }
@@ -84,6 +91,22 @@ class BandejaService
         
         // Recalcular las bandejas disponibles
         $pedidoProducto->setCantidadBandejasDisponibles();
+        $nuevaCantidadDisponible = $pedidoProducto->getCantidadBandejasDisponibles();
+
+        // Si vuelve a tener bandejas disponibles, regresar a EN_INVERNACULO
+        // solo cuando el estado actual era ENTREGADO o ELIMINADO
+        $estadoActual = $pedidoProducto->getEstado()?->getCodigoInterno();
+        if (
+            $nuevaCantidadDisponible > 0
+            && in_array($estadoActual, [ConstanteEstadoPedidoProducto::ELIMINADO, ConstanteEstadoPedidoProducto::ENTREGADO], true)
+        ) {
+            $estadoEnInvernaculo = $this->em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::EN_INVERNACULO);
+            $this->estadoService->cambiarEstadoPedidoProducto(
+                $pedidoProducto,
+                $estadoEnInvernaculo,
+                'Reversión de bandejas eliminadas'
+            );
+        }
 
         // Crear histórico con estado REVERTIR_BANDEJAS
         $estadoRevertirBandejas = $this->em->getRepository(EstadoPedidoProducto::class)->findOneByCodigoInterno(ConstanteEstadoPedidoProducto::REVERTIR_BANDEJAS);
