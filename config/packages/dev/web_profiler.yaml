@@ -1,6 +1,14 @@
+#web_profiler:
+#    toolbar: true
+#    intercept_redirects: false
+#
+#framework:
+#    profiler: { only_exceptions: false }
+
 web_profiler:
-    toolbar: true
+    toolbar: false
     intercept_redirects: false
 
 framework:
-    profiler: { only_exceptions: false }
+    profiler:
+        enabled: false
