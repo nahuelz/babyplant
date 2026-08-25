@@ -8,6 +8,9 @@ imports:
 
 parameters:
     MPDF_BASE_PATH: '%env(MPDF_BASE_PATH)%'
+    AFIPSDK_ACCESS_TOKEN: '%env(AFIPSDK_ACCESS_TOKEN)%'
+    ARCA_PRODUCTION: '%env(bool:ARCA_PRODUCTION)%'
+    ARCA_CUIT: '%env(int:ARCA_CUIT)%'
 
 services:
     # default configuration for services in *this* file
@@ -16,6 +19,9 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
             string $projectDir: '%kernel.project_dir%'
+            string $afipAccessToken: '%AFIPSDK_ACCESS_TOKEN%'
+            bool $arcaProduction: '%ARCA_PRODUCTION%'
+            int $arcaCuit: '%ARCA_CUIT%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name

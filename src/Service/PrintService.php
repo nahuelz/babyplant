@@ -11,10 +11,12 @@ use Afip;
 class PrintService{
 
     private string $projectDir;
+    private string $afipAccessToken;
 
-    public function __construct(string $projectDir)
+    public function __construct(string $projectDir, string $afipAccessToken)
     {
         $this->projectDir = $projectDir;
+        $this->afipAccessToken = $afipAccessToken;
     }
 
     /**
@@ -109,7 +111,8 @@ class PrintService{
         return new Afip(array(
             'CUIT' => $tax_id,
             'cert' => $cert,
-            'key' => $key
+            'key' => $key,
+            'access_token' => $this->afipAccessToken
         ));
     }
 

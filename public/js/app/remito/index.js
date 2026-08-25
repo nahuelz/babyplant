@@ -339,6 +339,10 @@ function dataTablesActionFormatter(data, type, full, meta) {
             +
             (data.print_pdf !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf + '"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Remito</a>' : '')
             +
+            (data.print_factura_arca !== undefined ? '<a class="dropdown-item" href="' + data.print_factura_arca + '" target="_blank"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Factura Arca</a>' : '')
+            +
+            (data.print_ticket_arca !== undefined ? '<a class="dropdown-item" href="' + data.print_ticket_arca + '" target="_blank"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Ticket Arca</a>' : '')
+            +
             (data.cancelar !== undefined ? '<a class="dropdown-item accion-cancelar" href="' + data.cancelar + '"><i class="la la-remove" style="margin-right: 5px;"></i> Cancelar</a>' : '')
         ;
 

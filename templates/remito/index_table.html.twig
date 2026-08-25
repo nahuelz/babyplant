@@ -43,12 +43,11 @@
             "cancelar" : " {{ path( "remito_cancelar", { "id": entity.idRemito }) }}"
         {% else %}
             "historico_estados" : "{{ path('remito_historico_estado',{id: entity.idRemito}) }}",
-            "print_pdf": "{{ path( "imprimir_remito", { "id": entity.idRemito }) }}"
+            "print_pdf": "{{ path( "imprimir_remito", { "id": entity.idRemito }) }}",
+            "print_factura_arca": "{{ path( "imprimir_factura_arca", { "id": entity.idRemito }) }}",
+            "print_ticket_arca": "{{ path( "imprimir_ticket_arca", { "id": entity.idRemito }) }}"
         {% endif %}
         }
-        {#"print_factura_arca": "{{ path( "imprimir_factura_arca", { "id": entity.idRemito }) }}",
-        "print_ticket_arca": "{{ path( "imprimir_ticket_arca", { "id": entity.idRemito }) }}"
-        #}
         ]{{ (loop.last ? '' : ',') }}
     {% endfor %}
     ]

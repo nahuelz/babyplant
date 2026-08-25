@@ -3,13 +3,56 @@
 namespace App\Controller;
 
 use Afip;
+use App\Service\EntityManagementGuesser;
+use App\Service\EstadoService;
+use App\Service\PrintService;
+use App\Service\SelectService;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Asset\Packages;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * @Route("/arca")
  */
 class ArcaController extends BaseController {
+    private string $afipAccessToken;
+    private bool $arcaProduction;
+    private int $arcaCuit;
+
+    public function __construct(
+        ManagerRegistry $doctrine,
+        EntityManagementGuesser $emg,
+        Container $container,
+        SelectService $selectService,
+        EstadoService $estadoService,
+        PrintService $printService,
+        ParameterBagInterface $parameterBag,
+        AuthorizationCheckerInterface $authChecker,
+        Packages $assets,
+        string $afipAccessToken,
+        bool $arcaProduction,
+        int $arcaCuit
+    ) {
+        parent::__construct(
+            $doctrine,
+            $emg,
+            $container,
+            $selectService,
+            $estadoService,
+            $printService,
+            $parameterBag,
+            $authChecker,
+            $assets
+        );
+
+        $this->afipAccessToken = $afipAccessToken;
+        $this->arcaProduction = $arcaProduction;
+        $this->arcaCuit = $arcaCuit;
+    }
+
     /**
      * @Route("/CreateVoucher", name="arca_index", methods={"GET"})
      */
@@ -68,20 +111,7 @@ class ArcaController extends BaseController {
             )
         );
 
-        // Certificado (Puede estar guardado en archivos, DB, etc)
-        $cert = file_get_contents('certificado/prueba.crt');
-
-        // Key (Puede estar guardado en archivos, DB, etc)
-        $key = file_get_contents('certificado/prueba');
-
-
-        // Tu CUIT
-        $tax_id = 20382971923;
-        $afip = new Afip(array(
-            'CUIT' => $tax_id,
-            'cert' => $cert,
-            'key' => $key
-        ));
+        $afip = $this->createAfipClient();
 
         var_dump($afip->ElectronicBilling->CreateVoucher($data));
 
@@ -121,20 +151,7 @@ class ArcaController extends BaseController {
      */
     public function pdf()
     {
-        // Certificado (Puede estar guardado en archivos, DB, etc)
-        $cert = file_get_contents('certificado/prueba.crt');
-
-        // Key (Puede estar guardado en archivos, DB, etc)
-        $key = file_get_contents('certificado/prueba');
-
-
-        // Tu CUIT
-        $tax_id = 20382971923;
-        $afip = new Afip(array(
-            'CUIT' => $tax_id,
-            'cert' => $cert,
-            'key' => $key
-        ));
+        $afip = $this->createAfipClient();
 
 
         // Descargamos el HTML de ejemplo (ver mas arriba)
@@ -171,4 +188,25 @@ class ArcaController extends BaseController {
         return $this->redirect(($res['file']));
     }
 
+    private function createAfipClient(): Afip
+    {
+        $certificado = $this->arcaProduction
+            ? 'certificado/produccion.crt'
+            : 'certificado/prueba.crt';
+
+        $clave = $this->arcaProduction
+            ? 'certificado/produccion'
+            : 'certificado/prueba';
+
+        $cert = file_get_contents($certificado);
+        $key = file_get_contents($clave);
+
+        return new Afip(array(
+            'CUIT' => $this->arcaCuit,
+            'cert' => $cert,
+            'key' => $key,
+            'access_token' => $this->afipAccessToken,
+            'production' => $this->arcaProduction
+        ));
+    }
 }
