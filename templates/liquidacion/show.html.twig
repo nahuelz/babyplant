@@ -134,6 +134,12 @@
                                                 <i class="la la-plus"></i>
                                             </a>
                                         {% elseif detalle.estado and detalle.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::APROBADA') %}
+                                            {% if liquidacion.estado and liquidacion.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::BORRADOR') %}
+                                                <form method="post" action="{{ path('liquidacion_revertir_aprobacion', {'id': detalle.id}) }}" class="d-inline ml-2">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('revertir_aprobacion_' ~ detalle.id) }}">
+                                                    <button type="submit" class="btn btn-sm btn-light-danger font-weight-bold btn-revertir-aprobacion-semana-confirm" title="REVERTIR APROBACIÓN"><i class="la la-undo"></i></button>
+                                                </form>
+                                            {% endif %}
                                             <form method="post" action="{{ path('liquidacion_pagar', {'id': detalle.id}) }}" class="d-inline ml-2">
                                                 <input type="hidden" name="pago_empleado[_token]" value="{{ csrf_token('pago_empleado') }}">
                                                 <input type="hidden" name="pago_empleado[importe]" value="{{ detalle.totalAPagar|number_format(2, ',', '') }}">
@@ -290,6 +296,14 @@
                             <button type="button" class="btn btn-warning font-weight-bold mr-2" data-toggle="modal" data-target="#pagoModal">
                                 Pagar
                             </button>
+                            {% if liquidacion.padre is null %}
+                                <button type="button"
+                                        class="btn btn-danger font-weight-bold btn-revertir-aprobacion-confirm"
+                                        data-action="{{ path('liquidacion_revertir_aprobacion', {'id': liquidacion.id}) }}"
+                                        data-token="{{ csrf_token('revertir_aprobacion_' ~ liquidacion.id) }}">
+                                    Revertir aprobación
+                                </button>
+                            {% endif %}
                         {% endif %}
                         {% if liquidacion.padre is null and liquidacion.estado and liquidacion.estado.codigoInterno == 4 %}
                             <button type="button"

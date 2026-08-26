@@ -14,12 +14,14 @@ $(document).ready(function () {
         sessionStorage.removeItem('successMessage'); // Limpiar después de mostrar
     }
     
+    initProblemasFilter();
+    initProblemasSinSolucionFilter();
     initTable();
     initVerHistoricoEstadoHandler();
     initColumnsHandler();
     $('#multiple').select2({
-    closeOnSelect: false
-});
+        closeOnSelect: false
+    });
     setSameHeight('.portlet-nivel-1');
     initCancelarButton();
     initClienteSelect2();
@@ -27,8 +29,6 @@ $(document).ready(function () {
     initFiltrosHandler();
     initBusquedaHandler();
     initColumnasHandler();
-    initProblemasFilter();
-    initProblemasSinSolucionFilter();
     initSubmitMesada();
     initMarcarSolucionHandler();
     initCambiarMesadaHandler();
@@ -40,7 +40,6 @@ $(document).ready(function () {
     initOkCheckeoHandler();
     initEliminarBandejasHandler();
     initRevertirBandejasHandler();
-
 
     var table = $table.DataTable();
 
@@ -191,12 +190,15 @@ function initTable() {
         e.preventDefault();
         $('.datatable-input').each(function () {
             $(this).val('').trigger('change');
-            $('#filtro_codigo_sobre').val('');
-            $('#filtro_problema_sin_solucion').prop('checked', false);
             if (init) {
                 $table.DataTable().column($(this).data('col-index')).search('', false, false);
             }
         });
+        $('#filtro_codigo_sobre').val('');
+        $('#filtro_problema').prop('checked', false);
+        $('#filtro_problema_sin_solucion').prop('checked', false);
+        localStorage.setItem('filtro_problema', '0');
+        localStorage.setItem('filtro_problema_sin_solucion', '0');
         if (init) {
             $table.DataTable().ajax.reload();
         }
@@ -210,6 +212,27 @@ function initTable() {
 function initDataTable() {
 
     $table.show();
+
+    var exportFormat = {
+        body: function (data, row, column, node) {
+            // Columna B. SEMBRADAS (índice 5 en columnas exportadas)
+            if (column === 5) {
+                if (typeof data === 'string' && data.indexOf('<') !== -1) {
+                    var div = document.createElement('div');
+                    div.innerHTML = data;
+                    var badge = div.querySelector('.badge');
+                    if (badge) badge.remove();
+                    return (div.textContent || div.innerText || '').trim();
+                }
+            }
+            if (typeof data === 'string' && data.indexOf('<') !== -1) {
+                var div = document.createElement('div');
+                div.innerHTML = data;
+                return (div.textContent || div.innerText || '').trim();
+            }
+            return data;
+        }
+    };
 
     dataTablesInit($table, {
         "sAjaxSource": __HOMEPAGE_PATH__ + 'pedidoproblema/index_table/',
@@ -248,7 +271,9 @@ function initDataTable() {
                 title: '',
                 className: 'print',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+                    orthogonal: 'export',
+                    format: exportFormat,
                     rows: ':visible'
                 }
             },
@@ -258,7 +283,9 @@ function initDataTable() {
                 title: '',
                 className: 'pagina',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+                    orthogonal: 'export',
+                    format: exportFormat,
                     rows: ':visible'
                 }
             },
@@ -268,7 +295,9 @@ function initDataTable() {
                 title: '',
                 className: 'filtrados',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+                    orthogonal: 'export',
+                    format: exportFormat,
                     filter: 'applied',
                     page: 'all'
                 }
@@ -279,7 +308,9 @@ function initDataTable() {
                 title: '',
                 className: 'todos',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+                    orthogonal: 'export',
+                    format: exportFormat,
                     page: 'all',
                     rows: {
                         search: 'none'
@@ -295,7 +326,9 @@ function initDataTable() {
                 orientation: 'landscape',
                 pageSize: 'LEGAL',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+                    orthogonal: 'export',
+                    format: exportFormat,
                     page: 'all',
                     filter: 'applied',
                     rows: {
@@ -450,17 +483,40 @@ function datatablesGetColDef() {
                 if (type === 'display') {
 
                     let badge = `
-                <span class="badge badge-success badge-sm ml-1 mb-1"
-                    title="DISPONIBLES"
-                    style="font-size: 12px;">
-                    ${full[5].cantidadBandejasDisponibles}
-                </span>
-            `;
+                        <span class="badge badge-success badge-sm ml-1 mb-1"
+                            title="DISPONIBLES"
+                            style="font-size: 12px;">
+                            ${full[5].cantidadBandejasDisponibles}
+                        </span>
+                    `;
 
                     return data + ' ' + badge;
                 }
 
                 return data;
+            }
+        },
+        {
+            targets: index++,
+            name: 'cantidadBandejasEliminadas',
+            orderable: false,
+            className: 'dt-center p-0',
+            width: '50px',
+            render: function (data, type, full, meta) {
+                if (type === 'display') {
+                    if (full[5].cantidadBandejasEliminadas > 0) {
+                        return `
+                            <span class="badge badge-danger badge-sm ml-1 mb-1"
+                                title="ELIMINADAS"
+                                style="font-size: 12px;">
+                                ${full[5].cantidadBandejasEliminadas}
+                            </span>
+                        `;
+                    }
+                    return '<span class="text-muted">-</span>';
+                }
+
+                return full[5].cantidadBandejasEliminadas || 0;
             }
         },
         {
@@ -620,8 +676,8 @@ function datatablesGetColDef() {
  * @returns {String}
  */
 function dataTablesActionFormatter(data, type, full, meta) {
-    // Los datos de acciones están en full[18], no en el parámetro data
-    const actionData = full[19];
+    // Los datos de acciones están en full[20], no en el parámetro data
+    const actionData = full[20];
 
     let actions = '';
 
@@ -1479,16 +1535,16 @@ function resaltarFilasConProblemas() {
 
 
         // Problema tipo 1 -> rojo
-        if (data && data[17] === "1" && data[2].nombreRevision === "FALLO") {
+        if (data && data[18] === "1" && data[2].nombreRevision === "FALLO") {
             $row.addClass('fila-con-problema-critico');
         }
         // Resto de problemas -> amarillo
-        else if (data && data[17] === "1") {
+        else if (data && data[18] === "1") {
             $row.addClass('fila-con-problema');
         }
 
         // Solucionado -> verde
-        if (data && data[18] === "1") {
+        if (data && data[19] === "1") {
             $row.addClass('fila-con-solucion');
             $row.removeClass('fila-con-problema');
             $row.removeClass('fila-con-problema-critico');

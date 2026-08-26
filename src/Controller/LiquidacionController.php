@@ -763,6 +763,40 @@ class LiquidacionController extends BaseController
     }
 
     /**
+     * @Route("/{id}/revertir-aprobacion", name="liquidacion_revertir_aprobacion", methods={"POST"})
+     */
+    public function revertirAprobacion(Request $request, Liquidacion $liquidacion, LiquidacionService $liquidacionService, EntityManagerInterface $entityManager): Response
+    {
+        $padre = $liquidacion->getPadre();
+        $redirectId = $padre !== null ? $padre->getId() : $liquidacion->getId();
+
+        if (!$this->isCsrfTokenValid('revertir_aprobacion_' . $liquidacion->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Token de seguridad inválido.');
+            return $this->redirectToRoute('liquidacion_show', ['id' => $redirectId]);
+        }
+
+        if (!$liquidacion->getEstado() || $liquidacion->getEstado()->getCodigoInterno() !== ConstanteEstadoLiquidacion::APROBADA) {
+            $this->addFlash('error', 'La liquidación debe estar aprobada para poder revertirse a borrador.');
+            return $this->redirectToRoute('liquidacion_show', ['id' => $redirectId]);
+        }
+
+        if ($padre !== null) {
+            $estadoPadre = $padre->getEstado() ? $padre->getEstado()->getCodigoInterno() : null;
+            if ($estadoPadre !== ConstanteEstadoLiquidacion::BORRADOR) {
+                $this->addFlash('error', 'Debe revertirse primero la liquidación mensual.');
+                return $this->redirectToRoute('liquidacion_show', ['id' => $redirectId]);
+            }
+        }
+
+        $liquidacionService->revertirAprobacion($liquidacion);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Se revirtió la aprobación de la liquidación correctamente.');
+
+        return $this->redirectToRoute('liquidacion_show', ['id' => $redirectId]);
+    }
+
+    /**
      * @Route("/{id}/anular", name="liquidacion_anular", methods={"POST"})
      */
     public function anular(Request $request, Liquidacion $liquidacion, LiquidacionService $liquidacionService, EntityManagerInterface $entityManager): Response

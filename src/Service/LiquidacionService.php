@@ -158,6 +158,33 @@ class LiquidacionService
         $this->estadoService->cambiarEstadoLiquidacion($liquidacion, $estadoBorrador, 'Pago revertido.');
     }
 
+    /**
+     * Revierte la aprobación de una liquidación APROBADA devolviéndola a BORRADOR.
+     * Si es una liquidación mensual (resumen), revierte también sus semanas aprobadas a BORRADOR.
+     */
+    public function revertirAprobacion(Liquidacion $liquidacion): void
+    {
+        $estadoBorrador = $this->em->getRepository(EstadoLiquidacion::class)
+            ->findOneByCodigoInterno(ConstanteEstadoLiquidacion::BORRADOR);
+
+        if ($liquidacion->getPadre() === null) {
+            foreach ($liquidacion->getDetallesSemanales() as $detalle) {
+                $codigoDetalle = $detalle->getEstado() ? $detalle->getEstado()->getCodigoInterno() : null;
+                if ($codigoDetalle === ConstanteEstadoLiquidacion::APROBADA) {
+                    $this->anularPagos($detalle);
+                    $this->estadoService->cambiarEstadoLiquidacion(
+                        $detalle,
+                        $estadoBorrador,
+                        'Aprobación revertida (liquidación mensual revertida).'
+                    );
+                }
+            }
+        }
+
+        $this->anularPagos($liquidacion);
+        $this->estadoService->cambiarEstadoLiquidacion($liquidacion, $estadoBorrador, 'Aprobación revertida.');
+    }
+
     private function anularPagos(Liquidacion $liquidacion): void
     {
         foreach ($liquidacion->getPagos() as $pago) {

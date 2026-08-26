@@ -233,6 +233,38 @@ jQuery(document).ready(function () {
         });
     });
 
+    // Confirmación de reversión de aprobación
+    $(document).on('click', '.btn-revertir-aprobacion-confirm', function (e) {
+        e.preventDefault();
+        var $this = $(this);
+        var actionUrl = $this.data('action');
+        var token = $this.data('token');
+        show_confirm({
+            title: 'Confirmación',
+            type: 'warning',
+            msg: '¿Desea revertir la aprobación de esta liquidación? La liquidación y sus semanas volverán a estado borrador.',
+            callbackOK: function () {
+                var $form = $('<form>', {action: actionUrl, method: 'post', style: 'display:none;'});
+                $form.append($('<input>', {type: 'hidden', name: '_token', value: token}));
+                $('body').append($form);
+                $form.submit();
+            }
+        });
+    });
+
+    $(document).on('click', '.btn-revertir-aprobacion-semana-confirm', function (e) {
+        e.preventDefault();
+        var $form = $(this).closest('form');
+        show_confirm({
+            title: 'Confirmación',
+            type: 'warning',
+            msg: '¿Desea revertir la aprobación de esta semana? Volverá a estado borrador.',
+            callbackOK: function () {
+                $form.submit();
+            }
+        });
+    });
+
     // Confirmación de eliminación de concepto desde el detalle de semana
     $(document).on('click', '.btn-eliminar-concepto-semana', function (e) {
         e.preventDefault();
