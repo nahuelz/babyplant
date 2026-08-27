@@ -148,7 +148,7 @@ class DevolucionController extends BaseController {
     }
 
     /**
-     * @Route("/{id}/cancelar", name="devolucion_cancelar", methods={"POST"}, requirements={"id"="\d+"})
+     * @Route("/{id}/cancelar", name="devolucion_cancelar", methods={"GET", "POST"}, requirements={"id"="\d+"})
      */
     public function cancelar(Devolucion $devolucion, Request $request, EntityManagerInterface $em): RedirectResponse
     {
