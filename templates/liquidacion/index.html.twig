@@ -9,10 +9,48 @@
                 <h3 class="card-label">Resumen de liquidaciones — {{ periodo }}</h3>
             </div>
             <div class="card-toolbar">
-                <form method="get" action="{{ path('liquidacion_index') }}" class="form-inline mr-3">
+                {% if vista != 'anual' %}
+                    <form method="post" action="{{ path('liquidacion_generar') }}" class="form-inline mr-2" id="form-generar">
+                        <input type="hidden" name="periodo" value="{{ periodo }}">
+                        <input type="hidden" name="empleado" value="{{ empleadoId }}">
+                        <input type="hidden" name="modalidad" value="{{ modalidadSeleccionada }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('generar_' ~ periodo) }}">
+                        <button type="button" id="btn-generar" class="btn btn-primary font-weight-bold">
+                            <i class="la la-plus"></i>
+                            Generar liquidaciones
+                        </button>
+                    </form>
+                {% endif %}
+
+                <a
+                    href="{{ path('liquidacion_index_excel', {
+                        'periodo': periodo,
+                        'empleado': empleadoId,
+                        'modalidad': modalidadSeleccionada,
+                        'vista': vista
+                    }) }}"
+                    class="btn btn-success font-weight-bold"
+                >
+                    <i class="la la-file-excel"></i>
+                    Exportar Excel
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="mb-5">
+                <form method="get" action="{{ path('liquidacion_index') }}" class="form-inline">
+                    <div class="form-group mr-2">
+                        <label for="vista" class="mr-2">Vista</label>
+                        <select name="vista" id="vista" class="form-control choice" style="min-width: 130px;">
+                            <option value="semanal" {{ vista == 'semanal' ? 'selected' : '' }}>Semanal</option>
+                            <option value="mensual" {{ vista == 'mensual' ? 'selected' : '' }}>Mensual</option>
+                            <option value="anual" {{ vista == 'anual' ? 'selected' : '' }}>Anual</option>
+                        </select>
+                    </div>
                     <div class="form-group mr-2">
                         <label for="periodo" class="mr-2">Período</label>
-                        <input type="text" id="periodo" name="periodo" class="form-control" value="{{ periodo }}" required>
+                        <input type="text" id="periodo" name="periodo" class="form-control" value="{{ periodo }}" autocomplete="off" required>
                     </div>
                     <div class="form-group mr-2">
                         <label for="empleado" class="mr-2">Empleado</label>
@@ -35,115 +73,208 @@
                         </select>
                     </div>
                 </form>
-
-                <form method="post" action="{{ path('liquidacion_generar') }}" class="form-inline mr-2" id="form-generar">
-                    <input type="hidden" name="periodo" value="{{ periodo }}">
-                    <input type="hidden" name="empleado" value="{{ empleadoId }}">
-                    <input type="hidden" name="modalidad" value="{{ modalidadSeleccionada }}">
-                    <input type="hidden" name="_token" value="{{ csrf_token('generar_' ~ periodo) }}">
-                    <button type="button" id="btn-generar" class="btn btn-primary font-weight-bold">
-                        <i class="la la-plus"></i>
-                        Generar liquidaciones
-                    </button>
-                </form>
-
-                <a
-                    href="{{ path('liquidacion_index_excel', {
-                        'periodo': periodo,
-                        'empleado': empleadoId,
-                        'modalidad': modalidadSeleccionada
-                    }) }}"
-                    class="btn btn-success font-weight-bold"
-                >
-                    <i class="la la-file-excel"></i>
-                    Exportar Excel
-                </a>
             </div>
-        </div>
-
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover table-checkable" id="table-liquidacion">
-                    <thead>
-                        <tr>
-                            <th class="text-left">Empleado</th>
-                            <th class="text-center">Modalidad</th>
-                            {% for semana in semanas %}
-                                <th class="text-center">Sem {{ semana.numero }}<br><small>{{ semana.label }}</small></th>
-                            {% endfor %}
-                            <th class="text-center">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for fila in grid %}
-                            <tr style="
-                                {% if fila.resumen and fila.resumen.estado %}
-                                    {% if fila.resumen.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::APROBADA') %}background-color: #fff3cd;{% endif %}
-                                    {% if fila.resumen.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::PAGADA') %}background-color: #d4edda;{% endif %}
-                                {% endif %}
-                            ">
-                                <td>
-                                    <a href="{{ path('app_empleado_show', {'id': fila.empleado.id}) }}" class="font-weight-bold">
-                                        {{ fila.empleado.nombreCompleto }}
-                                    </a>
-                                </td>
-                                <td class="text-center">{{ fila.modalidad }}</td>
-                                {% for semana in fila.semanas %}
-                                    <td class="text-center">
-                                        {% if semana.liquidacion %}
-                                            {% if fila.resumen and fila.resumen.estado and fila.resumen.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::APROBADA') %}
-                                                <span class="font-weight-bold">{{ semana.valor }}</span>
-                                            {% else %}
-                                                <a href="#"
-                                                   class="font-weight-bold abrir-modal-semana"
-                                                   data-action="{{ path('liquidacion_guardar_semana', {'id': semana.liquidacion.id}) }}"
-                                                   data-semana="{{ loop.index }}"
-                                                   data-apellido="{{ fila.empleado.apellido }}"
-                                                   data-nombre="{{ fila.empleado.nombre }}"
-                                                   data-sueldo-bruto="{{ semana.liquidacion.sueldoBruto|replace({'.': ','}) }}"
-                                                   data-deducciones="{{ semana.liquidacion.deducciones|replace({'.': ','}) }}"
-                                                   data-token="{{ csrf_token('guardar_semana_' ~ semana.liquidacion.id) }}"
-                                                   data-return="index">
-                                                    {{ semana.valor }}
-                                                </a>
-                                            {% endif %}
+            {% if vista == 'mensual' %}
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover table-checkable" id="table-liquidacion-mensual">
+                        <thead>
+                            <tr>
+                                <th class="text-left">Empleado</th>
+                                <th class="text-center">Modalidad</th>
+                                <th class="text-right">Bruto</th>
+                                <th class="text-right">Deducciones</th>
+                                <th class="text-right">Neto</th>
+                                <th class="text-right">Conceptos</th>
+                                <th class="text-right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for fila in grid %}
+                                <tr style="
+                                    {% if fila.resumen and fila.resumen.estado %}
+                                        {% if fila.resumen.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::APROBADA') %}background-color: #fff3cd;{% endif %}
+                                        {% if fila.resumen.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::PAGADA') %}background-color: #d4edda;{% endif %}
+                                    {% endif %}
+                                ">
+                                    <td>
+                                        <a href="{{ path('app_empleado_show', {'id': fila.empleado.id}) }}" class="font-weight-bold">
+                                            {{ fila.empleado.nombreCompleto }}
+                                        </a>
+                                    </td>
+                                    <td class="text-center">{{ fila.modalidad }}</td>
+                                    <td class="text-right">{{ fila.bruto }}</td>
+                                    <td class="text-right">{{ fila.deducciones }}</td>
+                                    <td class="text-right">{{ fila.neto }}</td>
+                                    <td class="text-right">{{ fila.conceptos }}</td>
+                                    <td class="text-right font-weight-bold">
+                                        {% if fila.resumen %}
+                                            <a href="{{ path('liquidacion_show', {'id': fila.resumen.id}) }}" class="font-weight-bold">
+                                                {{ fila.total }}
+                                            </a>
                                         {% else %}
-                                            <span class="text-muted">-</span>
+                                            {{ fila.total }}
                                         {% endif %}
                                     </td>
-                                {% endfor %}
-                                <td class="text-center font-weight-bold">
-                                    {% if fila.resumen %}
-                                        <a href="{{ path('liquidacion_show', {'id': fila.resumen.id}) }}" class="font-weight-bold">
-                                            {{ fila.total }}
-                                        </a>
-                                    {% else %}
-                                        {{ fila.total }}
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td colspan="{{ 3 + semanas|length }}" class="text-center text-muted">No hay empleados activos con liquidaciones para este período.</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                    <tfoot>
-                        <tr class="font-weight-bold bg-light">
-                            <th class="text-left">TOTAL</th>
-                            <td></td>
-                            {% for semana in semanas %}
-                                <td class="text-center">
-                                    $ {{ totales_semanas[loop.index0]|number_format(2, ',', '.') }}
-                                </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted">No hay empleados activos con liquidaciones para este período.</td>
+                                </tr>
                             {% endfor %}
-                            <td class="text-center">
-                                $ {{ total_general|number_format(2, ',', '.') }}
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
+                        </tbody>
+                        <tfoot>
+                            <tr class="font-weight-bold bg-light">
+                                <th class="text-left">TOTAL</th>
+                                <td></td>
+                                <td class="text-right">$ {{ totales_mensuales.bruto|number_format(2, ',', '.') }}</td>
+                                <td class="text-right">$ {{ totales_mensuales.deducciones|number_format(2, ',', '.') }}</td>
+                                <td class="text-right">$ {{ totales_mensuales.neto|number_format(2, ',', '.') }}</td>
+                                <td class="text-right">$ {{ totales_mensuales.conceptos|number_format(2, ',', '.') }}</td>
+                                <td class="text-right">$ {{ totales_mensuales.total|number_format(2, ',', '.') }}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            {% elseif vista == 'anual' %}
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover table-checkable" id="table-liquidacion-anual">
+                        <thead>
+                            <tr>
+                                <th class="text-left">Empleado</th>
+                                {% for nombreMes in meses_nombres %}
+                                    <th class="text-right">{{ nombreMes }}</th>
+                                {% endfor %}
+                                <th class="text-right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for fila in grid_anual %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ path('app_empleado_show', {'id': fila.empleado.id}) }}" class="font-weight-bold">
+                                            {{ fila.empleado.nombreCompleto }}
+                                        </a>
+                                    </td>
+                                    {% for mes in fila.meses %}
+                                        <td class="text-right">
+                                            {% if mes.resumen %}
+                                                <a href="{{ path('liquidacion_show', {'id': mes.resumen.id}) }}" class="font-weight-bold">
+                                                    {{ mes.monto }}
+                                                </a>
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                    <td class="text-right font-weight-bold">
+                                        {{ fila.total }}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="14" class="text-center text-muted">No hay empleados activos con liquidaciones para este año.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr class="font-weight-bold bg-light">
+                                <th class="text-left">TOTAL</th>
+                                {% for totalMes in totales_meses %}
+                                    <td class="text-right">
+                                        $ {{ totalMes|number_format(2, ',', '.') }}
+                                    </td>
+                                {% endfor %}
+                                <td class="text-right">
+                                    $ {{ total_general_anual|number_format(2, ',', '.') }}
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover table-checkable" id="table-liquidacion">
+                        <thead>
+                            <tr>
+                                <th class="text-left">Empleado</th>
+                                <th class="text-center">Modalidad</th>
+                                {% for semana in semanas %}
+                                    <th class="text-center">Sem {{ semana.numero }}<br><small>{{ semana.label }}</small></th>
+                                {% endfor %}
+                                <th class="text-center">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for fila in grid %}
+                                <tr style="
+                                    {% if fila.resumen and fila.resumen.estado %}
+                                        {% if fila.resumen.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::APROBADA') %}background-color: #fff3cd;{% endif %}
+                                        {% if fila.resumen.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::PAGADA') %}background-color: #d4edda;{% endif %}
+                                    {% endif %}
+                                ">
+                                    <td>
+                                        <a href="{{ path('app_empleado_show', {'id': fila.empleado.id}) }}" class="font-weight-bold">
+                                            {{ fila.empleado.nombreCompleto }}
+                                        </a>
+                                    </td>
+                                    <td class="text-center">{{ fila.modalidad }}</td>
+                                    {% for semana in fila.semanas %}
+                                        <td class="text-center">
+                                            {% if semana.liquidacion %}
+                                                {% if fila.resumen and fila.resumen.estado and fila.resumen.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::APROBADA') %}
+                                                    <span class="font-weight-bold">{{ semana.valor }}</span>
+                                                {% else %}
+                                                    <a href="#"
+                                                       class="font-weight-bold abrir-modal-semana"
+                                                       data-action="{{ path('liquidacion_guardar_semana', {'id': semana.liquidacion.id}) }}"
+                                                       data-semana="{{ loop.index }}"
+                                                       data-apellido="{{ fila.empleado.apellido }}"
+                                                       data-nombre="{{ fila.empleado.nombre }}"
+                                                       data-sueldo-bruto="{{ semana.liquidacion.sueldoBruto|replace({'.': ','}) }}"
+                                                       data-deducciones="{{ semana.liquidacion.deducciones|replace({'.': ','}) }}"
+                                                       data-token="{{ csrf_token('guardar_semana_' ~ semana.liquidacion.id) }}"
+                                                       data-return="index">
+                                                        {{ semana.valor }}
+                                                    </a>
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                    <td class="text-center font-weight-bold">
+                                        {% if fila.resumen %}
+                                            <a href="{{ path('liquidacion_show', {'id': fila.resumen.id}) }}" class="font-weight-bold">
+                                                {{ fila.total }}
+                                            </a>
+                                        {% else %}
+                                            {{ fila.total }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="{{ 3 + semanas|length }}" class="text-center text-muted">No hay empleados activos con liquidaciones para este período.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr class="font-weight-bold bg-light">
+                                <th class="text-left">TOTAL</th>
+                                <td></td>
+                                {% for semana in semanas %}
+                                    <td class="text-center">
+                                        $ {{ totales_semanas[loop.index0]|number_format(2, ',', '.') }}
+                                    </td>
+                                {% endfor %}
+                                <td class="text-center">
+                                    $ {{ total_general|number_format(2, ',', '.') }}
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            {% endif %}
         </div>
 
         <div class="card-footer d-flex justify-content-between">

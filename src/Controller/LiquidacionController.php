@@ -33,16 +33,28 @@ class LiquidacionController extends BaseController
      */
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $periodo = $request->query->get('periodo', (new DateTime())->format('Y-m'));
+        $vista = $request->query->get('vista', 'semanal');
+        if (!in_array($vista, ['semanal', 'mensual', 'anual'], true)) {
+            $vista = 'semanal';
+        }
 
-        if (!preg_match('/^\d{4}-\d{2}$/', $periodo)) {
-            $periodo = (new DateTime())->format('Y-m');
+        $periodo = $request->query->get('periodo', (new DateTime())->format('Y-m'));
+        if ($vista === 'anual') {
+            $periodo = preg_match('/^\d{4}/', $periodo) ? substr($periodo, 0, 4) : (new DateTime())->format('Y');
+        } else {
+            if (!preg_match('/^\d{4}-\d{2}$/', $periodo)) {
+                if (preg_match('/^\d{4}$/', $periodo)) {
+                    $periodo = $periodo . '-' . (new DateTime())->format('m');
+                } else {
+                    $periodo = (new DateTime())->format('Y-m');
+                }
+            }
         }
 
         $empleadoId = $request->query->get('empleado');
         $modalidadId = $request->query->get('modalidad');
 
-        $semanas = $this->buildSemanasDelMes($periodo);
+        $semanas = $vista === 'anual' ? [] : $this->buildSemanasDelMes($periodo);
         $empleadosActivos = $entityManager->getRepository(Empleado::class)->findBy(
             ['activo' => true],
             ['apellido' => 'ASC', 'nombre' => 'ASC']
@@ -67,22 +79,50 @@ class LiquidacionController extends BaseController
         }
 
         $grid = [];
-        foreach ($empleados as $empleado) {
-            $grid[] = $this->buildFila($empleado, $periodo, $semanas, $entityManager);
-        }
-
-        $totalesPorSemana = array_fill(0, count($semanas), '0');
+        $totalesPorSemana = [];
         $totalGeneral = '0';
+        $totalesMensuales = [];
+        $gridAnual = [];
+        $mesesNombres = [];
+        $totalesMeses = [];
+        $totalGeneralAnual = '0';
 
-        foreach ($grid as $fila) {
-            foreach ($fila['semanas'] as $index => $semana) {
-                if ($semana['liquidacion']) {
-                    $totalesPorSemana[$index] = Decimal::add($totalesPorSemana[$index], (string) $semana['liquidacion']->getTotalAPagar(), 2);
-                }
+        if ($vista === 'anual') {
+            $datosAnuales = $this->buildGridAnual($empleados, $periodo, $entityManager);
+            $gridAnual = $datosAnuales['grid'];
+            $mesesNombres = $datosAnuales['meses_nombres'];
+            $totalesMeses = $datosAnuales['totales_meses'];
+            $totalGeneralAnual = $datosAnuales['total_general_anual'];
+        } else {
+            foreach ($empleados as $empleado) {
+                $grid[] = $this->buildFila($empleado, $periodo, $semanas, $entityManager);
             }
 
-            if ($fila['resumen']) {
-                $totalGeneral = Decimal::add($totalGeneral, (string) $fila['resumen']->getTotalAPagar(), 2);
+            $totalesPorSemana = array_fill(0, count($semanas), '0');
+            $totalesMensuales = [
+                'bruto' => '0',
+                'deducciones' => '0',
+                'neto' => '0',
+                'conceptos' => '0',
+                'total' => '0',
+            ];
+
+            foreach ($grid as $fila) {
+                foreach ($fila['semanas'] as $index => $semana) {
+                    if ($semana['liquidacion']) {
+                        $totalesPorSemana[$index] = Decimal::add($totalesPorSemana[$index], (string) $semana['liquidacion']->getTotalAPagar(), 2);
+                    }
+                }
+
+                if ($fila['resumen']) {
+                    $totalGeneral = Decimal::add($totalGeneral, (string) $fila['resumen']->getTotalAPagar(), 2);
+                    $totalesMensuales['bruto'] = Decimal::add($totalesMensuales['bruto'], (string) $fila['resumen']->getSueldoBruto(), 2);
+                    $totalesMensuales['deducciones'] = Decimal::add($totalesMensuales['deducciones'], (string) $fila['resumen']->getDeducciones(), 2);
+                    $totalesMensuales['neto'] = Decimal::add($totalesMensuales['neto'], (string) $fila['resumen']->getSueldoNeto(), 2);
+                    $conceptosFila = Decimal::add((string) $fila['resumen']->getTotalConceptosSemanas(), (string) $fila['resumen']->getTotalConceptos(), 2);
+                    $totalesMensuales['conceptos'] = Decimal::add($totalesMensuales['conceptos'], $conceptosFila, 2);
+                    $totalesMensuales['total'] = Decimal::add($totalesMensuales['total'], (string) $fila['resumen']->getTotalAPagar(), 2);
+                }
             }
         }
 
@@ -90,12 +130,18 @@ class LiquidacionController extends BaseController
             'periodo' => $periodo,
             'empleadoId' => $empleadoId,
             'modalidadSeleccionada' => $modalidadId,
+            'vista' => $vista,
             'modalidades' => $modalidades,
             'empleadosActivos' => $empleadosActivos,
             'semanas' => $semanas,
             'grid' => $grid,
             'totales_semanas' => $totalesPorSemana,
             'total_general' => $totalGeneral,
+            'totales_mensuales' => $totalesMensuales,
+            'grid_anual' => $gridAnual,
+            'meses_nombres' => $mesesNombres,
+            'totales_meses' => $totalesMeses,
+            'total_general_anual' => $totalGeneralAnual,
         ]);
     }
 
@@ -104,16 +150,27 @@ class LiquidacionController extends BaseController
      */
     public function exportarExcel(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $periodo = $request->query->get('periodo', (new DateTime())->format('Y-m'));
+        $vista = $request->query->get('vista', 'semanal');
+        if (!in_array($vista, ['semanal', 'mensual', 'anual'], true)) {
+            $vista = 'semanal';
+        }
 
-        if (!preg_match('/^\d{4}-\d{2}$/', $periodo)) {
-            $periodo = (new DateTime())->format('Y-m');
+        $periodo = $request->query->get('periodo', (new DateTime())->format('Y-m'));
+        if ($vista === 'anual') {
+            $periodo = preg_match('/^\d{4}/', $periodo) ? substr($periodo, 0, 4) : (new DateTime())->format('Y');
+        } else {
+            if (!preg_match('/^\d{4}-\d{2}$/', $periodo)) {
+                if (preg_match('/^\d{4}$/', $periodo)) {
+                    $periodo = $periodo . '-' . (new DateTime())->format('m');
+                } else {
+                    $periodo = (new DateTime())->format('Y-m');
+                }
+            }
         }
 
         $empleadoId = $request->query->get('empleado');
         $modalidadId = $request->query->get('modalidad');
 
-        $semanas = $this->buildSemanasDelMes($periodo);
         $empleadosActivos = $entityManager->getRepository(Empleado::class)->findBy(
             ['activo' => true],
             ['apellido' => 'ASC', 'nombre' => 'ASC']
@@ -134,11 +191,44 @@ class LiquidacionController extends BaseController
             });
         }
 
-        $grid = [];
-        foreach ($empleados as $empleado) {
-            $grid[] = $this->buildFila($empleado, $periodo, $semanas, $entityManager);
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setTitle('Liquidaciones ' . $periodo);
+
+        if ($vista === 'anual') {
+            $datosAnuales = $this->buildGridAnual($empleados, $periodo, $entityManager);
+            $this->buildExcelAnual($sheet, $datosAnuales['grid'], $periodo, $datosAnuales['meses_nombres'], $datosAnuales['totales_meses'], $datosAnuales['total_general_anual']);
+        } else {
+            $semanas = $this->buildSemanasDelMes($periodo);
+            $grid = [];
+            foreach ($empleados as $empleado) {
+                $grid[] = $this->buildFila($empleado, $periodo, $semanas, $entityManager);
+            }
+
+            if ($vista === 'mensual') {
+                $this->buildExcelMensual($sheet, $grid, $periodo);
+            } else {
+                $this->buildExcelSemanal($sheet, $grid, $semanas, $periodo);
+            }
         }
 
+        $filename = 'liquidaciones-' . $periodo . '.xlsx';
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+
+        ob_start();
+        $writer->save('php://output');
+        $content = ob_get_clean();
+
+        return new Response($content, Response::HTTP_OK, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
+    }
+
+    private function buildExcelSemanal(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet, array $grid, array $semanas, string $periodo): void
+    {
         $totalesPorSemana = array_fill(0, count($semanas), '0');
         $totalConceptosMensual = '0';
         $totalGeneral = '0';
@@ -163,11 +253,6 @@ class LiquidacionController extends BaseController
                 $totalGeneral = Decimal::add($totalGeneral, (string) $fila['resumen']->getTotalAPagar(), 2);
             }
         }
-
-        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-
-        $sheet->setTitle('Liquidaciones ' . $periodo);
 
         $sheet->setCellValue('A1', 'Resumen de liquidaciones — ' . $periodo);
         $sheet->mergeCells('A1:' . \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(2 + count($semanas) + 2) . '1');
@@ -267,19 +352,231 @@ class LiquidacionController extends BaseController
             $column = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($columnIndex);
             $sheet->getColumnDimension($column)->setAutoSize(true);
         }
+    }
 
-        $filename = 'liquidaciones-' . $periodo . '.xlsx';
+    private function buildExcelMensual(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet, array $grid, string $periodo): void
+    {
+        $totalesMensuales = [
+            'bruto' => '0',
+            'deducciones' => '0',
+            'neto' => '0',
+            'conceptos' => '0',
+            'total' => '0',
+        ];
 
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        foreach ($grid as $fila) {
+            if ($fila['resumen']) {
+                $totalesMensuales['bruto'] = Decimal::add($totalesMensuales['bruto'], (string) $fila['resumen']->getSueldoBruto(), 2);
+                $totalesMensuales['deducciones'] = Decimal::add($totalesMensuales['deducciones'], (string) $fila['resumen']->getDeducciones(), 2);
+                $totalesMensuales['neto'] = Decimal::add($totalesMensuales['neto'], (string) $fila['resumen']->getSueldoNeto(), 2);
+                $conceptosFila = Decimal::add((string) $fila['resumen']->getTotalConceptosSemanas(), (string) $fila['resumen']->getTotalConceptos(), 2);
+                $totalesMensuales['conceptos'] = Decimal::add($totalesMensuales['conceptos'], $conceptosFila, 2);
+                $totalesMensuales['total'] = Decimal::add($totalesMensuales['total'], (string) $fila['resumen']->getTotalAPagar(), 2);
+            }
+        }
 
-        ob_start();
-        $writer->save('php://output');
-        $content = ob_get_clean();
+        $sheet->setCellValue('A1', 'Resumen de liquidaciones — ' . $periodo);
+        $sheet->mergeCells('A1:G1');
+        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
 
-        return new Response($content, Response::HTTP_OK, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-        ]);
+        $headers = ['Empleado', 'Modalidad', 'Bruto', 'Deducciones', 'Neto', 'Conceptos', 'Total'];
+        foreach ($headers as $index => $header) {
+            $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($index + 1);
+            $sheet->setCellValue($colLetter . '2', $header);
+        }
+
+        $headerRange = 'A2:G2';
+        $sheet->getStyle($headerRange)->getFont()->setBold(true);
+        $sheet->getStyle($headerRange)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('FFC000');
+        $sheet->getStyle($headerRange)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $sheet->getStyle($headerRange)->getAlignment()->setWrapText(true)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        $sheet->getRowDimension(2)->setRowHeight(35);
+
+        $fila = 3;
+        foreach ($grid as $row) {
+            $sheet->setCellValue('A' . $fila, $row['empleado']->getNombreCompleto());
+            $sheet->setCellValue('B' . $fila, $row['modalidad']);
+
+            $bruto = $row['resumen'] ? (float) $row['resumen']->getSueldoBruto() : 0;
+            $deducciones = $row['resumen'] ? (float) $row['resumen']->getDeducciones() : 0;
+            $neto = $row['resumen'] ? (float) $row['resumen']->getSueldoNeto() : 0;
+            $conceptos = $row['resumen'] ? (float) Decimal::add((string) $row['resumen']->getTotalConceptosSemanas(), (string) $row['resumen']->getTotalConceptos(), 2) : 0;
+            $total = $row['resumen'] ? (float) $row['resumen']->getTotalAPagar() : 0;
+
+            $sheet->setCellValue('C' . $fila, $bruto);
+            $sheet->setCellValue('D' . $fila, $deducciones);
+            $sheet->setCellValue('E' . $fila, $neto);
+            $sheet->setCellValue('F' . $fila, $conceptos);
+            $sheet->setCellValue('G' . $fila, $total);
+
+            $fila++;
+        }
+
+        $filaTotal = $fila;
+        $sheet->setCellValue('A' . $filaTotal, 'TOTAL');
+        $sheet->setCellValue('B' . $filaTotal, '');
+        $sheet->setCellValue('C' . $filaTotal, (float) $totalesMensuales['bruto']);
+        $sheet->setCellValue('D' . $filaTotal, (float) $totalesMensuales['deducciones']);
+        $sheet->setCellValue('E' . $filaTotal, (float) $totalesMensuales['neto']);
+        $sheet->setCellValue('F' . $filaTotal, (float) $totalesMensuales['conceptos']);
+        $sheet->setCellValue('G' . $filaTotal, (float) $totalesMensuales['total']);
+
+        $totalRange = 'A' . $filaTotal . ':G' . $filaTotal;
+        $sheet->getStyle($totalRange)->getFont()->setBold(true);
+        $sheet->getStyle($totalRange)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('E2E2E2');
+        $sheet->getStyle($totalRange)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+        $sheet->getStyle('A2:G' . ($filaTotal - 1))
+            ->getBorders()
+            ->getAllBorders()
+            ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+        $sheet->getStyle('C3:G' . $filaTotal)
+            ->getNumberFormat()
+            ->setFormatCode('#,##0.00');
+
+        foreach (range(1, 7) as $columnIndex) {
+            $column = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($columnIndex);
+            $sheet->getColumnDimension($column)->setAutoSize(true);
+        }
+    }
+
+    private function buildGridAnual(array $empleados, string $anio, EntityManagerInterface $entityManager): array
+    {
+        $mesesNombres = [
+            1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
+            5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
+            9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre',
+        ];
+
+        $liquidaciones = $entityManager->getRepository(Liquidacion::class)->createQueryBuilder('l')
+            ->where('l.padre IS NULL')
+            ->andWhere('l.periodo LIKE :anio')
+            ->setParameter('anio', $anio . '-%')
+            ->getQuery()
+            ->getResult();
+
+        $resumenesPorEmpleado = [];
+        foreach ($liquidaciones as $liq) {
+            $empId = $liq->getEmpleado()->getId();
+            $mesNum = (int) substr($liq->getPeriodo(), 5, 2);
+            $resumenesPorEmpleado[$empId][$mesNum] = $liq;
+        }
+
+        $grid = [];
+        $totalesMeses = array_fill(1, 12, '0');
+        $totalGeneralAnual = '0';
+
+        foreach ($empleados as $empleado) {
+            $empId = $empleado->getId();
+            $filaMeses = [];
+            $totalEmpleado = '0';
+
+            for ($m = 1; $m <= 12; $m++) {
+                $resumen = $resumenesPorEmpleado[$empId][$m] ?? null;
+                $monto = '0';
+                if ($resumen !== null) {
+                    $monto = Decimal::add((string) $resumen->getSueldoNeto(), (string) $resumen->getDeducciones(), 2);
+                }
+
+                $totalEmpleado = Decimal::add($totalEmpleado, $monto, 2);
+                $totalesMeses[$m] = Decimal::add($totalesMeses[$m], $monto, 2);
+
+                $filaMeses[] = [
+                    'numero' => $m,
+                    'nombre' => $mesesNombres[$m],
+                    'resumen' => $resumen,
+                    'monto' => $this->formatMoney($monto),
+                    'monto_raw' => $monto,
+                ];
+            }
+
+            $totalGeneralAnual = Decimal::add($totalGeneralAnual, $totalEmpleado, 2);
+
+            $grid[] = [
+                'empleado' => $empleado,
+                'modalidad' => $empleado->getModalidadPago() ? $empleado->getModalidadPago()->getNombre() : '-',
+                'meses' => $filaMeses,
+                'total' => $this->formatMoney($totalEmpleado),
+                'total_raw' => $totalEmpleado,
+            ];
+        }
+
+        return [
+            'grid' => $grid,
+            'meses_nombres' => array_values($mesesNombres),
+            'totales_meses' => array_values($totalesMeses),
+            'total_general_anual' => $totalGeneralAnual,
+        ];
+    }
+
+    private function buildExcelAnual(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet, array $gridAnual, string $periodo, array $mesesNombres, array $totalesMeses, string $totalGeneralAnual): void
+    {
+        $sheet->setCellValue('A1', 'Resumen de liquidaciones — ' . $periodo);
+        $sheet->mergeCells('A1:N1');
+        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+
+        $headers = array_merge(['Empleado'], $mesesNombres, ['Total']);
+        foreach ($headers as $index => $header) {
+            $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($index + 1);
+            $sheet->setCellValue($colLetter . '2', $header);
+        }
+
+        $headerRange = 'A2:N2';
+        $sheet->getStyle($headerRange)->getFont()->setBold(true);
+        $sheet->getStyle($headerRange)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('FFC000');
+        $sheet->getStyle($headerRange)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $sheet->getStyle($headerRange)->getAlignment()->setWrapText(true)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        $sheet->getRowDimension(2)->setRowHeight(35);
+
+        $fila = 3;
+        foreach ($gridAnual as $row) {
+            $sheet->setCellValue('A' . $fila, $row['empleado']->getNombreCompleto());
+
+            $col = 2;
+            foreach ($row['meses'] as $mes) {
+                $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col);
+                $sheet->setCellValue($colLetter . $fila, (float) $mes['monto_raw']);
+                $col++;
+            }
+
+            $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col);
+            $sheet->setCellValue($colLetter . $fila, (float) $row['total_raw']);
+
+            $fila++;
+        }
+
+        $filaTotal = $fila;
+        $sheet->setCellValue('A' . $filaTotal, 'TOTAL');
+
+        $col = 2;
+        foreach ($totalesMeses as $totalMes) {
+            $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col);
+            $sheet->setCellValue($colLetter . $filaTotal, (float) $totalMes);
+            $col++;
+        }
+
+        $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col);
+        $sheet->setCellValue($colLetter . $filaTotal, (float) $totalGeneralAnual);
+
+        $totalRange = 'A' . $filaTotal . ':N' . $filaTotal;
+        $sheet->getStyle($totalRange)->getFont()->setBold(true);
+        $sheet->getStyle($totalRange)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('E2E2E2');
+        $sheet->getStyle($totalRange)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+        $sheet->getStyle('A2:N' . ($filaTotal - 1))
+            ->getBorders()
+            ->getAllBorders()
+            ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+        $sheet->getStyle('B3:N' . $filaTotal)
+            ->getNumberFormat()
+            ->setFormatCode('#,##0.00');
+
+        foreach (range(1, 14) as $columnIndex) {
+            $column = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($columnIndex);
+            $sheet->getColumnDimension($column)->setAutoSize(true);
+        }
     }
 
     /**
@@ -965,12 +1262,21 @@ class LiquidacionController extends BaseController
             }
         }
 
+        $conceptosMensuales = '0';
+        if ($resumen !== null) {
+            $conceptosMensuales = Decimal::add((string) $resumen->getTotalConceptosSemanas(), (string) $resumen->getTotalConceptos(), 2);
+        }
+
         $fila = [
             'empleado' => $empleado,
             'resumen' => $resumen,
             'modalidad' => $empleado->getModalidadPago() ? $empleado->getModalidadPago()->getNombre() : '-',
             'semanas' => [],
-            'total' => '0',
+            'total' => $resumen !== null ? $this->formatMoney($resumen->getTotalAPagar()) : $this->formatMoney('0'),
+            'bruto' => $resumen !== null ? $this->formatMoney($resumen->getSueldoBruto()) : $this->formatMoney('0'),
+            'deducciones' => $resumen !== null ? $this->formatMoney($resumen->getDeducciones()) : $this->formatMoney('0'),
+            'neto' => $resumen !== null ? $this->formatMoney($resumen->getSueldoNeto()) : $this->formatMoney('0'),
+            'conceptos' => $this->formatMoney($conceptosMensuales),
         ];
 
         foreach ($semanas as $semana) {
@@ -989,10 +1295,6 @@ class LiquidacionController extends BaseController
                 }
             }
         }
-
-        $fila['total'] = $resumen !== null
-            ? $this->formatMoney($resumen->getTotalAPagar())
-            : $this->formatMoney('0');
 
         return $fila;
     }

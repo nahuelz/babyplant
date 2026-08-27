@@ -1,5 +1,11 @@
 jQuery(document).ready(function () {
 
+    // Inicializar Select2 del filtro de vista
+    var $vista = $('#vista');
+    if ($vista.length && !$vista.data('select2')) {
+        $vista.select2();
+    }
+
     // Inicializar Select2 del filtro de empleado
     var $empleado = $('#empleado');
     if ($empleado.length && !$empleado.data('select2')) {
@@ -12,15 +18,16 @@ jQuery(document).ready(function () {
         $modalidad.select2();
     }
 
-    // Inicializar datepicker del período (vista de meses, formato yyyy-mm)
+    // Inicializar datepicker del período (años para anual, meses para semanal/mensual)
     var $periodo = $('#periodo');
     if ($periodo.length && !$periodo.data('datepicker')) {
+        var esAnual = $vista.val() === 'anual';
         $periodo.datepicker({
             autoclose: true,
             clearBtn: true,
-            format: 'yyyy-mm',
-            viewMode: 'months',
-            minViewMode: 1,
+            format: esAnual ? 'yyyy' : 'yyyy-mm',
+            viewMode: esAnual ? 'years' : 'months',
+            minViewMode: esAnual ? 2 : 1,
             maxViewMode: 2,
             language: 'es',
             todayHighlight: true
@@ -29,6 +36,9 @@ jQuery(document).ready(function () {
 
     // Auto-submit del formulario de filtros al cambiar cualquier campo
     var $formFiltros = $empleado.closest('form');
+    $vista.on('change', function () {
+        $formFiltros.submit();
+    });
     $empleado.on('change', function () {
         $formFiltros.submit();
     });
