@@ -41,8 +41,10 @@
                         {{ macro_show._show_detail('Disponibles', entity.cantidadDisponible|default('-'), 'col-md-3') }}
                     </div>
                     <div class="row">
-                        {{ macro_show._show_detail('Precio Unitario', '$ ' ~ entity.precioUnitario|number_format(2, ',', '.')|default('-'), 'col-md-4') }}
-                        {{ macro_show._show_detail('Valor Total', '$ ' ~ entity.valorTotal|number_format(2, ',', '.')|default('-'), 'col-md-4') }}
+                        {{ macro_show._show_detail('Precio Unitario', '$ ' ~ entity.precioUnitario|number_format(2, ',', '.')|default('-'), 'col-md-3') }}
+                        {{ macro_show._show_detail('Valor Total', '$ ' ~ entity.valorTotal|number_format(2, ',', '.')|default('-'), 'col-md-3') }}
+                        {{ macro_show._show_detail('Vendidas', entity.vendias ? 'SI' : 'NO', 'col-md-3') }}
+                        {{ macro_show._show_detail('Pagas', entity.pagas ? 'SI' : 'NO', 'col-md-3') }}
                     </div>
                     <div class="row">
                         {{ macro_show._show_detail('Observación / Motivo', entity.observacion|default('-'), 'col-md-12') }}
