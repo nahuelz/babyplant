@@ -7,6 +7,8 @@ function initTipoUsuario(){
         $('.usuario-password').hide();
         $('.grupo').hide();
         $('.razon-social').show();
+        $('.condicion-iva').show();
+        $('.tipo-documento').show();
         initRazonSocial();
 
         $('#registration_form_tieneRazonSocial').attr('required', 'required');
@@ -26,7 +28,10 @@ function initTipoUsuario(){
         $('.grupo').show();
         $('#registration_form_cuit').val('');
         $('#registration_form_razonSocial').val('');
+        $('#registration_form_condicionIva').val('').select2().change();
         $('.razon-social').hide();
+        $('.condicion-iva').hide();
+        $('.tipo-documento').hide();
         $('.razonSocial').hide();
         $('#registration_form_tieneRazonSocial').val('').select2().change();
 
@@ -111,6 +116,8 @@ jQuery(document).ready(function () {
         $('.datos-personales').hide();
         $('.grupo').hide();
         $('.razon-social').hide();
+        $('.condicion-iva').hide();
+        $('.tipo-documento').hide();
         $('.razonSocial').hide();
     }
     initTipoUsuarioHandler();

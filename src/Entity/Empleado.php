@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Traits\Auditoria;
+use App\Util\Decimal;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -381,6 +382,47 @@ class Empleado {
         }
 
         return $this;
+    }
+
+    public function getMontoAguinaldo(?string $hastaPeriodo = null): string
+    {
+        $hasta = $hastaPeriodo ? \DateTime::createFromFormat('Y-m', $hastaPeriodo) : new \DateTime();
+        if ($hasta === false) {
+            $hasta = new \DateTime();
+        }
+        $hasta->modify('last day of this month')->setTime(23, 59, 59);
+
+        $desde = (clone $hasta)->modify('-6 months')->modify('first day of this month')->setTime(0, 0, 0);
+
+        $maximoBruto = '0';
+
+        foreach ($this->liquidaciones as $liquidacion) {
+            if ($liquidacion->getPadre() !== null) {
+                continue;
+            }
+
+            $periodo = $liquidacion->getPeriodo();
+            if ($periodo === null) {
+                continue;
+            }
+
+            $fechaPeriodo = \DateTime::createFromFormat('Y-m', $periodo);
+            if ($fechaPeriodo === false) {
+                continue;
+            }
+            $fechaPeriodo->modify('first day of this month')->setTime(0, 0, 0);
+
+            if ($fechaPeriodo < $desde || $fechaPeriodo > $hasta) {
+                continue;
+            }
+
+            $bruto = (string) $liquidacion->getSueldoBruto();
+            if (Decimal::comp($bruto, $maximoBruto, 2) > 0) {
+                $maximoBruto = $bruto;
+            }
+        }
+
+        return Decimal::mul($maximoBruto, '0.5', 2);
     }
 
 }

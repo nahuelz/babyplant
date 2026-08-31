@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Entity\Constants\ConstanteEstadoRemito;
+use App\Entity\Enum\CondicionIva;
+use App\Entity\Enum\TipoDocumento;
 use App\Entity\Traits\Auditoria;
 use App\Entity\Traits\Habilitado;
 use App\Repository\UsuarioRepository;
@@ -52,6 +54,11 @@ class Usuario implements UserInterface {
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $apellido;
+
+    /**
+     * @ORM\Column(name="tipo_documento", type="string", length=20, nullable=true, enumType=TipoDocumento::class, options={"default": "CUIT"})
+     */
+    private ?TipoDocumento $tipoDocumento = TipoDocumento::CUIT;
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true)
@@ -124,6 +131,11 @@ class Usuario implements UserInterface {
     protected $domicilio;
 
     /**
+     * @ORM\Column(name="condicion_iva", type="string", length=50, nullable=true, enumType=CondicionIva::class)
+     */
+    private ?CondicionIva $condicionIva = null;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="tiene_razon_social", type="boolean", nullable=true, options={"default": 0})
@@ -164,6 +176,7 @@ class Usuario implements UserInterface {
         $this->grupos = new \Doctrine\Common\Collections\ArrayCollection();
         $this->habilitado = true;
         $this->tieneRazonSocial = false;
+        $this->tipoDocumento = TipoDocumento::CUIT;
         $this->pedidos = new \Doctrine\Common\Collections\ArrayCollection();
         $this->remitos = new \Doctrine\Common\Collections\ArrayCollection();
         $this->entregas = new \Doctrine\Common\Collections\ArrayCollection();
@@ -634,6 +647,42 @@ class Usuario implements UserInterface {
     {
         $celularLimpio = preg_replace('/\D+/', '', $this->celular);
         return '+54' . $celularLimpio;
+    }
+
+    public function getCondicionIva(): ?CondicionIva
+    {
+        return $this->condicionIva;
+    }
+
+    public function setCondicionIva(CondicionIva|string|null $condicionIva): void
+    {
+        if (is_string($condicionIva)) {
+            $condicionIva = CondicionIva::tryFrom($condicionIva);
+        }
+        $this->condicionIva = $condicionIva;
+    }
+
+    public function getCondicionIvaDescripcion(): ?string
+    {
+        return $this->condicionIva?->getDescripcion();
+    }
+
+    public function getTipoDocumento(): ?TipoDocumento
+    {
+        return $this->tipoDocumento;
+    }
+
+    public function setTipoDocumento(TipoDocumento|string|null $tipoDocumento): void
+    {
+        if (is_string($tipoDocumento)) {
+            $tipoDocumento = TipoDocumento::tryFrom($tipoDocumento);
+        }
+        $this->tipoDocumento = $tipoDocumento ?? TipoDocumento::CUIT;
+    }
+
+    public function getTipoDocumentoDescripcion(): ?string
+    {
+        return $this->tipoDocumento?->getDescripcion();
     }
 
 

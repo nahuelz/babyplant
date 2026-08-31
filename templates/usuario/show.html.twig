@@ -4,14 +4,18 @@
 
 {% block body %}
 
+	{% set esCliente = entity.tipoUsuario and entity.tipoUsuario.codigoInterno == constant('App\\Entity\\Constants\\ConstanteTipoUsuario::CLIENTE') %}
+
 	<div class="card card-custom">
 		<div class="card-header">
 			<div class="card-title">
 				<span class="card-icon">
 					<i class="flaticon-search text-primary"></i>
 				</span>
-				<h3 class="card-label">Detalles del usuario
-					{{ entity }}</h3>
+				<h3 class="card-label">
+					{{ esCliente ? 'Detalles del cliente' : 'Detalles del usuario' }}
+					{{ entity }}
+				</h3>
 			</div>
 			{% if is_granted('ROLE_USUARIO_EDIT') %}
 			<div class="card-toolbar">
@@ -26,62 +30,133 @@
 		</div>
 
 		<div class="card-body">
-			<div class="row">
-				{{ macro_show._show_detail('Email', entity.email, 'col-md-4') }}				
-				{{ macro_show._show_detail('Logueado', (usuario != null and usuario.logueado ? 'Sí' : 'No'), 'col-md-4') }}				
-			</div>
-			<div class="row">
-                {{ macro_show._show_detail('Grupos', entity.grupos|join(' | '), 'col-md-12') }}
-			</div>
-			<div class="row mt-10">
-                <div class="col">
-					<div class="d-flex">
-						<div class="mt-3"><h4>Sesiones del usuario</h4></div>
-						{% if usuario != null and usuario.logueado %}
-							<div class="ml-auto align-middle"><a class="btn btn-danger pull-rigth" href="{{path('usuario_closesessions', {'usuario': entity.id})}}" role="button">Cerrar todas las sesiones</a></div>
+			{% if esCliente %}
+				<h5 class="text-primary mb-4">Datos del cliente</h5>
+				<div class="row">
+					{{ macro_show._show_detail('Tipo de Usuario', entity.tipoUsuario, 'col-md-4') }}
+					{{ macro_show._show_detail('Nombre', entity.nombre, 'col-md-4') }}
+					{{ macro_show._show_detail('Apellido', entity.apellido, 'col-md-4') }}
+				</div>
+				<div class="row">
+					{{ macro_show._show_detail('Email', entity.email|default('-'), 'col-md-3') }}
+					{{ macro_show._show_detail('Tipo Documento', entity.tipoDocumento ? entity.tipoDocumento.descripcion : 'CUIT', 'col-md-3') }}
+					{{ macro_show._show_detail('N° Documento', entity.cuit|default('-'), 'col-md-3') }}
+					{{ macro_show._show_detail('Celular', entity.celular|default(entity.telefono)|default('-'), 'col-md-3') }}
+				</div>
+				<div class="row">
+					{{ macro_show._show_detail('Domicilio', entity.domicilio|default('-'), 'col-md-4') }}
+					{{ macro_show._show_detail('Condición IVA', entity.condicionIva ? entity.condicionIva.descripcion : '-', 'col-md-4') }}
+					{{ macro_show._show_detail('¿Tiene razón social?', entity.tieneRazonSocial ? 'Sí' : 'No', 'col-md-4') }}
+				</div>
+				{% if entity.tieneRazonSocial %}
+				<div class="row">
+					{{ macro_show._show_detail('Razón Social', entity.razonSocial ? entity.razonSocial : '-', 'col-md-4') }}
+				</div>
+				{% endif %}
+			{% else %}
+				<div class="row">
+					{{ macro_show._show_detail('Tipo de Usuario', entity.tipoUsuario, 'col-md-4') }}
+					{{ macro_show._show_detail('Usuario', entity.username, 'col-md-4') }}
+					{{ macro_show._show_detail('Email', entity.email|default('-'), 'col-md-4') }}
+				</div>
+				<div class="row">
+					{{ macro_show._show_detail('Nombre', entity.nombre, 'col-md-4') }}
+					{{ macro_show._show_detail('Apellido', entity.apellido, 'col-md-4') }}
+					{{ macro_show._show_detail('Logueado', (usuario != null and usuario.logueado ? 'Sí' : 'No'), 'col-md-4') }}
+				</div>
+				<div class="row">
+					{{ macro_show._show_detail('Grupos', entity.grupos|join(' | '), 'col-md-12') }}
+				</div>
+				<div class="row mt-10">
+					<div class="col">
+						<div class="d-flex">
+							<div class="mt-3"><h4>Sesiones del usuario</h4></div>
+							{% if usuario != null and usuario.logueado %}
+								<div class="ml-auto align-middle"><a class="btn btn-danger pull-rigth" href="{{path('usuario_closesessions', {'usuario': entity.id})}}" role="button">Cerrar todas las sesiones</a></div>
+							{% endif %}
+						</div>
+						<hr>
+						<table class="table">
+							<thead>
+								<tr>
+									<th scope="col">#</th>
+									<th scope="col">IP</th>
+									<th scope="col">Estado</th>
+									<th scope="col">&Uacute;ltima vez</th>
+									<th scope="col">Expira el</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% if sesiones is not empty %}
+									{% for session in sesiones %}
+										{% set expirada = 'now'|date('U') > session.sess_lifetime %}
+										<tr>
+											<th scope="row">{{ offset_sesiones + loop.index }}</th>
+											<td>{{ session.user_ip }}</td>
+											<td>
+												<span class="label label-inline label-light-{{expirada ? 'danger' : 'success'}} font-weight-bold">
+													{{expirada ? 'Expirada' : 'Activa'}}
+												</span>
+											</td>
+											<td>{{ session.ultima_vez|date('d/m/Y H:i:s') }}</td>
+											<td>{{ expirada ? '(expirada)' : session.expira_el|date('d/m/Y H:i:s') }}</td>
+										</tr>
+									{% endfor %}
+								{% else %}
+									<tr>
+										<td colspan="5">No tiene sesiones registradas</td>
+									</tr>
+								{% endif %}
+							</tbody>
+						</table>
+
+						{% if total_paginas > 1 %}
+							<div class="d-flex justify-content-between align-items-center mt-4">
+								<small class="text-muted">
+									Mostrando {{ sesiones|length }} de {{ total_sesiones }} sesiones
+								</small>
+								<nav>
+									<ul class="pagination pagination-sm justify-content-end mb-0">
+										{% set start_page = max(1, pagina_actual - 2) %}
+										{% set end_page = min(total_paginas, pagina_actual + 2) %}
+										
+										{% if pagina_actual > 1 %}
+											<li class="page-item">
+												<a class="page-link" href="{{ path('usuario_show', {'id': entity.id, 'pagina': pagina_actual - 1}) }}">&laquo;</a>
+											</li>
+										{% endif %}
+										
+										{% for page in range(start_page, end_page) %}
+											{% if page == pagina_actual %}
+												<li class="page-item active">
+													<span class="page-link">{{ page }}</span>
+												</li>
+											{% else %}
+												<li class="page-item">
+													<a class="page-link" href="{{ path('usuario_show', {'id': entity.id, 'pagina': page}) }}">{{ page }}</a>
+												</li>
+											{% endif %}
+										{% endfor %}
+										
+										{% if pagina_actual < total_paginas %}
+											<li class="page-item">
+												<a class="page-link" href="{{ path('usuario_show', {'id': entity.id, 'pagina': pagina_actual + 1}) }}">&raquo;</a>
+											</li>
+										{% endif %}
+									</ul>
+								</nav>
+							</div>
 						{% endif %}
 					</div>
-					<hr>
-					<table class="table">
-						<thead>
-							<tr>
-								<th scope="col">#</th>
-								<th scope="col">IP</th>
-								<th scope="col">Estado</th>
-								<th scope="col">&Uacute;ltima vez</th>
-								<th scope="col">Expira el</th>
-							</tr>
-						</thead>
-						<tbody>
-							{% set sessions = usuario != null and usuario.sesiones != null ? usuario.sesiones|split('____') : null %}
-							{% if sessions != null %}
-								{% for session in sessions %}
-									{% set session_data = session|split('___') %}
-									{% set expirada = 'now'|date('U') > session_data[2]|date('U') %}
-									<tr>
-										<th scope="row">{{loop.index}}</th>
-										<td>{{ session_data[3] }}</td>
-										<td>
-											<span class="label label-inline label-light-{{expirada ? 'danger' : 'success'}} font-weight-bold">
-												{{expirada ? 'Expirada' : 'Activa'}}
-											</span>
-										</td>
-										<td>{{session_data[1]|date('d/m/Y H:i:s')}}</td>
-										<td>{{expirada ? '(expirada)' : session_data[2]|date('d/m/Y H:i:s') }}</td>
-									</tr>
-								{% endfor %}
-							{% else %}
-								<tr>
-									<td colspan="5">No tiene sesiones registradas</td>
-								</tr>
-							{% endif %}
-						</tbody>
-					</table>
 				</div>
-			</div>
+			{% endif %}
 		</div>
 		<div class="card-footer d-flex justify-content-between">
-			<a href="{{ path('usuario_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
+			{% if esCliente %}
+				<a href="{{ path('cliente_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
+			{% else %}
+				<a href="{{ path('usuario_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
+			{% endif %}
 		</div>
 
 	</div>

@@ -2,6 +2,8 @@
 
 namespace App\Form;
 
+use App\Entity\Enum\CondicionIva;
+use App\Entity\Enum\TipoDocumento;
 use App\Entity\Grupo;
 use App\Entity\RazonSocial;
 use App\Entity\TipoUsuario;
@@ -54,8 +56,20 @@ class RegistrationFormType extends AbstractType {
             ->add('apellido', TextType::class, array(
                 'attr' => array('class' => 'form-control'))
             )
+            ->add('tipoDocumento', ChoiceType::class, [
+                'required' => false,
+                'label' => 'Tipo de Documento',
+                'choices' => TipoDocumento::getChoices(),
+                'choice_value' => fn (?TipoDocumento $choice) => $choice?->value,
+                'data' => $options['data']?->getTipoDocumento() ?? TipoDocumento::CUIT,
+                'attr' => [
+                    'class' => 'form-control choice',
+                    'data-placeholder' => '-- Elija --',
+                    'tabindex' => '5',
+                ],
+            ])
             ->add('cuit', TextType::class, array(
-                'label' => 'Cuit',
+                'label' => 'N° Documento',
                 'required' => false,
                 'attr' => array(
                     'maxlength' => 14,
@@ -70,6 +84,18 @@ class RegistrationFormType extends AbstractType {
                     'required' => false,
                     'attr' => array('class' => 'form-control'))
             )
+            ->add('condicionIva', ChoiceType::class, [
+                'required' => false,
+                'label' => 'Condición IVA',
+                'choices' => CondicionIva::getChoices(),
+                'choice_value' => fn (?CondicionIva $choice) => $choice?->value,
+                'placeholder' => '-- Elija --',
+                'attr' => [
+                    'class' => 'form-control choice',
+                    'data-placeholder' => '-- Elija --',
+                    'tabindex' => '5',
+                ],
+            ])
             ->add('tieneRazonSocial', ChoiceType::class, array(
                     'required' => true,
                     'label' => '¿Tiene razon social?',

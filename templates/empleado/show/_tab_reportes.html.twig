@@ -1,6 +1,88 @@
 <!-- TAB REPORTES -->
 <div class="tab-pane fade" id="tab-reportes">
 
+    {% set anio_reporte = anioSeleccionado > 0 ? anioSeleccionado : anioActual %}
+    {% set mes_reporte = mesSeleccionado > 0 ? '%02d'|format(mesSeleccionado) : 'now'|date('m') %}
+    {% set periodo_mensual = anio_reporte ~ '-' ~ mes_reporte %}
+
+    <div class="card card-custom mb-5">
+        <div class="card-header">
+            <div class="card-title">
+                <h5 class="font-weight-bold mb-0">
+                    Reporte mensual de sueldos
+                </h5>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <p class="text-muted mb-5">
+                Seleccione el año y mes para consultar el resumen mensual del empleado.
+            </p>
+
+            <div class="form-row align-items-end">
+                <div class="form-group col-md-3">
+                    <label for="anio-reporte-mensual" class="font-weight-bold">Año</label>
+                    <select
+                        name="anio_mensual"
+                        id="anio-reporte-mensual"
+                        class="form-control choice"
+                    >
+                        {% for anio in aniosDisponibles %}
+                            <option
+                                value="{{ anio }}"
+                                {{ anio == anio_reporte ? 'selected' : '' }}
+                            >
+                                {{ anio }}
+                            </option>
+                        {% else %}
+                            <option value="{{ anioActual }}" selected>
+                                {{ anioActual }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="mes-reporte-mensual" class="font-weight-bold">Mes</label>
+                    <select
+                        name="mes_mensual"
+                        id="mes-reporte-mensual"
+                        class="form-control choice"
+                    >
+                        {% for numero, nombre in mesesDisponibles %}
+                            <option
+                                value="{{ numero }}"
+                                {{ numero == mes_reporte ? 'selected' : '' }}
+                            >
+                                {{ nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <a
+                        id="link-ver-reporte-mensual"
+                        href="{{ path('app_empleado_reporte_mensual', {'id': empleado.id, 'periodo': periodo_mensual}) }}"
+                        class="btn btn-primary mr-2"
+                    >
+                        <i class="la la-file-alt"></i>
+                        Ver reporte
+                    </a>
+
+                    <a
+                        id="link-exportar-excel-mensual"
+                        href="{{ path('app_empleado_reporte_mensual_excel', {'id': empleado.id, 'periodo': periodo_mensual}) }}"
+                        class="btn btn-success"
+                    >
+                        <i class="la la-file-excel"></i>
+                        Exportar Excel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="card card-custom">
         <div class="card-header">
             <div class="card-title">

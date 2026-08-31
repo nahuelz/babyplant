@@ -6,6 +6,7 @@ use App\Entity\Adelanto;
 use App\Entity\Constants\ConstanteEstadoLiquidacion;
 use App\Entity\Constants\ConstanteTipoConceptoLiquidacion;
 use App\Entity\Constants\ConstanteTipoConsulta;
+use App\Entity\Constants\ConstanteTipoModalidadPago;
 use App\Entity\Empleado;
 use App\Entity\Liquidacion;
 use App\Entity\Prestamo;
@@ -506,6 +507,62 @@ class EmpleadoController extends BaseController
         );
     }
 
+    #[Route('/{id}/reporte-mensual/{periodo}', name: 'app_empleado_reporte_mensual', requirements: ['periodo' => '\d{4}-\d{2}'], methods: ['GET'])]
+    public function reporteMensual(Empleado $empleado, string $periodo, EntityManagerInterface $entityManager): Response
+    {
+        if (!preg_match('/^\d{4}-\d{2}$/', $periodo)) {
+            throw $this->createNotFoundException('Período inválido.');
+        }
+
+        $semanas = $this->buildSemanasDelMes($periodo);
+        $datos = $this->buildFilaMensual($empleado, $periodo, $semanas, $entityManager);
+
+        return $this->render('empleado/reporte_mensual.html.twig', [
+            'empleado' => $empleado,
+            'periodo' => $periodo,
+            'semanas' => $semanas,
+            'fila' => $datos['fila'],
+            'totales' => $datos['totales'],
+        ]);
+    }
+
+    #[Route('/{id}/reporte-mensual/{periodo}/excel', name: 'app_empleado_reporte_mensual_excel', requirements: ['periodo' => '\d{4}-\d{2}'], methods: ['GET'])]
+    public function reporteMensualExcel(Empleado $empleado, string $periodo, EntityManagerInterface $entityManager): Response
+    {
+        if (!preg_match('/^\d{4}-\d{2}$/', $periodo)) {
+            throw $this->createNotFoundException('Período inválido.');
+        }
+
+        $semanas = $this->buildSemanasDelMes($periodo);
+        $datos = $this->buildFilaMensual($empleado, $periodo, $semanas, $entityManager);
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $this->buildExcelSemanal($sheet, $datos['fila'], $semanas, $datos['totales'], $periodo);
+
+        $filename = sprintf(
+            'reporte-mensual-%s-%s.xlsx',
+            $periodo,
+            strtolower(str_replace(' ', '-', $empleado->getApellido() . '-' . $empleado->getNombre()))
+        );
+
+        $writer = new Xlsx($spreadsheet);
+
+        ob_start();
+        $writer->save('php://output');
+        $content = ob_get_clean();
+
+        return new Response(
+            $content,
+            Response::HTTP_OK,
+            [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            ]
+        );
+    }
+
     #[Route('/{id}/edit', name: 'app_empleado_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Empleado $empleado, EntityManagerInterface $entityManager): Response
     {
@@ -906,6 +963,331 @@ class EmpleadoController extends BaseController
             'reporte' => $reporte,
             'totales' => $totales,
         ];
+    }
+
+    private function buildSemanasDelMes(string $periodo): array
+    {
+        $semanas = [];
+        $inicio = new DateTime($periodo . '-01');
+        $finMes = clone $inicio;
+        $finMes->modify('last day of this month');
+
+        $numero = 1;
+        while ($inicio <= $finMes) {
+            $fin = clone $inicio;
+            $fin->modify('+6 days');
+
+            if ($fin > $finMes) {
+                $fin = clone $finMes;
+            }
+
+            $semanas[] = [
+                'numero' => $numero,
+                'inicio' => clone $inicio,
+                'fin' => clone $fin,
+                'label' => $inicio->format('d/m') . ' - ' . $fin->format('d/m'),
+            ];
+
+            $inicio = clone $fin;
+            $inicio->modify('+1 day');
+            $numero++;
+        }
+
+        return $semanas;
+    }
+
+    private function buildFilaMensual(Empleado $empleado, string $periodo, array $semanas, EntityManagerInterface $entityManager): array
+    {
+        $liquidaciones = $entityManager->getRepository(Liquidacion::class)->findBy([
+            'empleado' => $empleado,
+            'periodo' => $periodo,
+        ]);
+
+        $resumen = null;
+        $detalles = [];
+        foreach ($liquidaciones as $liquidacion) {
+            if ($liquidacion->getPadre() === null) {
+                $resumen = $liquidacion;
+            } else {
+                $detalles[$liquidacion->getFechaHasta()->format('Y-m-d')] = $liquidacion;
+            }
+        }
+
+        $conceptosColumnas = [];
+        $nombresVistos = [];
+        $agregarConcepto = function ($concepto) use (&$conceptosColumnas, &$nombresVistos) {
+            $tipo = $concepto->getTipoConceptoLiquidacion();
+            if (!$tipo) {
+                return;
+            }
+
+            $descripcion = (string) ($concepto->getDescripcion() ?? '');
+            $nombre = $tipo->getNombre();
+
+            $original = $nombre;
+            $indice = 1;
+            while (isset($nombresVistos[$nombre])) {
+                $nombre = $original . ' (' . $indice . ')';
+                $indice++;
+            }
+            $nombresVistos[$nombre] = true;
+
+            $importe = (string) $concepto->getImporte();
+            $signo = $tipo->esDescuento() ? '-1' : '1';
+            $importeSignado = Decimal::mul($importe, $signo, 2);
+
+            $conceptosColumnas[] = [
+                'nombre' => $nombre,
+                'descripcion' => $descripcion,
+                'importe' => $importeSignado,
+            ];
+        };
+
+        if ($resumen !== null) {
+            foreach ($resumen->getConceptos() as $concepto) {
+                $agregarConcepto($concepto);
+            }
+            foreach ($resumen->getDetallesSemanales() as $detalle) {
+                foreach ($detalle->getConceptos() as $concepto) {
+                    $agregarConcepto($concepto);
+                }
+            }
+        }
+
+        $totalAPagar = '0';
+        $bruto = '0';
+        $deducciones = '0';
+        $neto = '0';
+
+        if ($resumen !== null) {
+            $totalAPagar = (string) $resumen->getTotalAPagar();
+            $bruto = (string) $resumen->getSueldoBruto();
+            $deducciones = (string) $resumen->getDeducciones();
+            $neto = (string) $resumen->getSueldoNeto();
+        }
+
+        $esMensual = $empleado->getModalidadPago() && $empleado->getModalidadPago()->getCodigoInterno() == ConstanteTipoModalidadPago::MENSUAL;
+        $esSemanal = $empleado->getModalidadPago() && $empleado->getModalidadPago()->getCodigoInterno() == ConstanteTipoModalidadPago::SEMANAL;
+
+        $filaSemanas = [];
+        $totalesPorSemana = [];
+
+        foreach ($semanas as $semana) {
+            $liquidacion = $detalles[$semana['fin']->format('Y-m-d')] ?? null;
+            $valor = null;
+            $valorRaw = null;
+            $totalSemana = '0';
+
+            if ($liquidacion) {
+                $totalSemana = (string) $liquidacion->getTotalAPagar();
+
+                if ($esSemanal) {
+                    $netoSemanal = $liquidacion->getSueldoNeto();
+                    $totalConceptos = (float) $liquidacion->getTotalConceptos();
+                    if (abs($totalConceptos) > 0.001) {
+                        $signo = $totalConceptos >= 0 ? '+' : '-';
+                        $conceptos = $this->formatMoney(abs($totalConceptos));
+                        $valor = $this->formatMoney($netoSemanal) . ' (' . $signo . $conceptos . ')';
+                    } else {
+                        $valor = $this->formatMoney($netoSemanal);
+                    }
+                    $valorRaw = $valor;
+                } else {
+                    $valor = $this->formatMoney($totalSemana);
+                    $valorRaw = $totalSemana;
+                }
+            }
+
+            $filaSemanas[] = [
+                'numero' => $semana['numero'],
+                'label' => $semana['label'],
+                'liquidacion' => $liquidacion,
+                'valor' => $valor,
+                'valor_raw' => $valorRaw,
+            ];
+
+            $totalesPorSemana[] = $totalSemana;
+        }
+
+        $fila = [
+            'empleado' => $empleado,
+            'resumen' => $resumen,
+            'modalidad' => $empleado->getModalidadPago() ? $empleado->getModalidadPago()->getNombre() : '-',
+            'esMensual' => $esMensual,
+            'semanas' => $filaSemanas,
+            'mensual' => [
+                'bruto' => $bruto,
+                'deducciones' => $deducciones,
+                'neto' => $neto,
+            ],
+            'conceptos' => $conceptosColumnas,
+            'total' => $totalAPagar,
+        ];
+
+        $totales = [
+            'semanas' => $totalesPorSemana,
+            'mensual' => [
+                'bruto' => $bruto,
+                'deducciones' => $deducciones,
+                'neto' => $neto,
+            ],
+            'conceptos' => $conceptosColumnas,
+            'total' => $totalAPagar,
+        ];
+
+        return [
+            'fila' => $fila,
+            'totales' => $totales,
+        ];
+    }
+
+    private function buildExcelSemanal(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet, array $fila, array $semanas, array $totales, string $periodo): void
+    {
+        $conceptosColumnas = $fila['conceptos'];
+        $totalConceptosColumnas = $totales['conceptos'];
+        $totalGeneral = $totales['total'];
+        $esMensual = $fila['esMensual'];
+
+        $cantidadColumnas = count($conceptosColumnas) + 1;
+        if ($esMensual) {
+            $cantidadColumnas += 3;
+        } else {
+            $cantidadColumnas += count($semanas);
+        }
+
+        $ultimaColumna = 1 + $cantidadColumnas;
+
+        $sheet->setCellValue('A1', 'Resumen de liquidaciones — ' . $periodo);
+        $sheet->mergeCells('A1:' . \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($ultimaColumna) . '1');
+        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+
+        $col = 2;
+        if ($esMensual) {
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . '2', 'Bruto');
+            $col++;
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . '2', 'Deducciones');
+            $col++;
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . '2', 'Neto');
+            $col++;
+        } else {
+            foreach ($semanas as $semana) {
+                $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . '2', "Sem " . $semana['numero'] . "\n" . $semana['label']);
+                $col++;
+            }
+        }
+        foreach ($conceptosColumnas as $concepto) {
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . '2', $concepto['nombre']);
+            $col++;
+        }
+        $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . '2', 'Total');
+
+        $headerRange = 'A2:' . \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . '2';
+        $sheet->getStyle($headerRange)->getFont()->setBold(true);
+        $sheet->getStyle($headerRange)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('FFC000');
+        $sheet->getStyle($headerRange)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $sheet->getStyle($headerRange)->getAlignment()->setWrapText(true)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+
+        $sheet->getRowDimension(2)->setRowHeight(35);
+
+        $filaNum = 3;
+
+        $col = 2;
+        if ($esMensual) {
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaNum, $this->formatMoney($fila['mensual']['bruto']));
+            $col++;
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaNum, $this->formatMoney($fila['mensual']['deducciones']));
+            $col++;
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaNum, $this->formatMoney($fila['mensual']['neto']));
+            $col++;
+        } else {
+            $esSemanal = $fila['empleado']->getModalidadPago() && $fila['empleado']->getModalidadPago()->getCodigoInterno() == ConstanteTipoModalidadPago::SEMANAL;
+            foreach ($fila['semanas'] as $semana) {
+                if ($semana['liquidacion']) {
+                    if ($esSemanal) {
+                        $sheet->setCellValueExplicit(
+                            \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaNum,
+                            $semana['valor_raw'],
+                            \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
+                        );
+                    } else {
+                        $valor = (float) $semana['valor_raw'];
+                        $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaNum, $valor);
+                    }
+                } else {
+                    $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaNum, '');
+                }
+                $col++;
+            }
+        }
+
+        foreach ($conceptosColumnas as $concepto) {
+            $valorCelda = $concepto['descripcion'] !== ''
+                ? $concepto['descripcion'] . "\n" . $this->formatMoney($concepto['importe'])
+                : $this->formatMoney($concepto['importe']);
+            $sheet->setCellValueExplicit(
+                \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaNum,
+                $valorCelda,
+                \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
+            );
+            $col++;
+        }
+
+        if ($fila['resumen']) {
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaNum, $this->formatMoney($fila['total']));
+        } else {
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaNum, '');
+        }
+
+        $filaTotal = $filaNum + 1;
+        $sheet->setCellValue('A' . $filaTotal, 'TOTAL');
+
+        $col = 2;
+        if ($esMensual) {
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal, $this->formatMoney($totales['mensual']['bruto']));
+            $col++;
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal, $this->formatMoney($totales['mensual']['deducciones']));
+            $col++;
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal, $this->formatMoney($totales['mensual']['neto']));
+            $col++;
+        } else {
+            foreach ($totales['semanas'] as $total) {
+                $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal, (float) $total);
+                $col++;
+            }
+        }
+        foreach ($totalConceptosColumnas as $concepto) {
+            $sheet->setCellValue(
+                \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal,
+                $this->formatMoney($concepto['importe'])
+            );
+            $col++;
+        }
+        $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal, $this->formatMoney($totalGeneral));
+
+        $totalRange = 'A' . $filaTotal . ':' . \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal;
+        $sheet->getStyle($totalRange)->getFont()->setBold(true);
+        $sheet->getStyle($totalRange)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('E2E2E2');
+        $sheet->getStyle($totalRange)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+        $sheet->getStyle('A2:' . \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . ($filaTotal - 1))
+            ->getBorders()
+            ->getAllBorders()
+            ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+        $sheet->getStyle('B3:' . \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal)
+            ->getNumberFormat()
+            ->setFormatCode('#,##0.00');
+
+        foreach (range(1, $col) as $columnIndex) {
+            $column = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($columnIndex);
+            $sheet->getColumnDimension($column)->setAutoSize(true);
+        }
+    }
+
+    private function formatMoney($valor): string
+    {
+        $valor = (float) $valor;
+        return '$' . number_format($valor, 2, ',', '.');
     }
 
     private function decimalToCsv(string $valor): string

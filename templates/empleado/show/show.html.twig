@@ -220,6 +220,36 @@
                     document.getElementById('link-exportar-excel').href = urlExcel;
                 });
             }
+
+            const anioReporteMensual = document.getElementById('anio-reporte-mensual');
+            const mesReporteMensual = document.getElementById('mes-reporte-mensual');
+
+            function actualizarLinksReporteMensual() {
+                if (!anioReporteMensual || !mesReporteMensual) {
+                    return;
+                }
+
+                const anio = anioReporteMensual.value;
+                const mes = mesReporteMensual.value;
+                const periodo = anio + '-' + mes;
+
+                const linkVer = document.getElementById('link-ver-reporte-mensual');
+                const linkExcel = document.getElementById('link-exportar-excel-mensual');
+
+                if (linkVer) {
+                    linkVer.href = linkVer.href.replace(/\/\d{4}-\d{2}$/, '/' + periodo);
+                }
+                if (linkExcel) {
+                    linkExcel.href = linkExcel.href.replace(/\/\d{4}-\d{2}\/excel$/, '/' + periodo + '/excel');
+                }
+            }
+
+            if (anioReporteMensual) {
+                anioReporteMensual.addEventListener('change', actualizarLinksReporteMensual);
+            }
+            if (mesReporteMensual) {
+                mesReporteMensual.addEventListener('change', actualizarLinksReporteMensual);
+            }
         });
     </script>
 {% endblock %}

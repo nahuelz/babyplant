@@ -62,7 +62,7 @@ function datatablesGetColDef() {
 
     {
       targets: index++,
-      name: 'email',
+      name: 'username',
     },
     {
       targets: index++,

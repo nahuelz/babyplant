@@ -51,15 +51,17 @@ class UsuarioController extends BaseController {
         $rsm = new ResultSetMapping();
 
         $rsm->addScalarResult('id', 'id');
+        $rsm->addScalarResult('username', 'username');
         $rsm->addScalarResult('email', 'email');
         $rsm->addScalarResult('nombre', 'nombre');
         $rsm->addScalarResult('apellido', 'apellido');
         $rsm->addScalarResult('celular', 'celular');
         $rsm->addScalarResult('grupos', 'grupos');
         $rsm->addScalarResult('habilitado', 'habilitado');
+        $rsm->addScalarResult('id_tipo_usuario', 'id_tipo_usuario');
 
         $columnDefinition = [
-            ['field' => 'email', 'type' => 'string', 'searchable' => true, 'sortable' => true],
+            ['field' => 'username', 'type' => 'string', 'searchable' => true, 'sortable' => true],
             ['field' => 'nombre', 'type' => 'string', 'searchable' => true, 'sortable' => true],
             ['field' => 'apellido', 'type' => 'string', 'searchable' => true, 'sortable' => true],
             ['field' => 'celular', 'type' => 'string', 'searchable' => true, 'sortable' => true],
@@ -68,7 +70,11 @@ class UsuarioController extends BaseController {
         ];
 
         $renderPage = "usuario/index_table.html.twig";
-        return parent::baseIndexTableAction($request, $columnDefinition, $entityTable, ConstanteTipoConsulta::VIEW, $rsm, $renderPage);
+        return parent::baseIndexTableAction($request, $columnDefinition, $entityTable, ConstanteTipoConsulta::VIEW, $rsm, $renderPage, [], [], true);
+    }
+
+    protected function getAditionalCustomWhereSQL($aliasTable, $request) {
+        return "($aliasTable.id_tipo_usuario != " . \App\Entity\Constants\ConstanteTipoUsuario::CLIENTE . " OR $aliasTable.id_tipo_usuario IS NULL)";
     }
 
     /**
@@ -81,27 +87,60 @@ class UsuarioController extends BaseController {
 
     protected function getExtraParametersShowAction($entity): array
     {
-
         $em = $this->doctrine->getManager();
+        $connection = $em->getConnection();
+        $request = $this->getRequest();
 
-        $query = "SELECT
-                    IF(s.sess_lifetime IS NULL || UNIX_TIMESTAMP() > MAX(s.sess_lifetime), false, true) AS logueado, 
-                    GROUP_CONCAT(CONCAT(CONVERT(s.sess_id,char), '___', from_unixtime(s.sess_time, '%Y-%m-%d %H:%i:%s'), '___', from_unixtime(s.sess_lifetime, '%Y-%m-%d %H:%i'), '___', s.user_ip) ORDER BY s.sess_time DESC SEPARATOR '____') AS sesiones
-                FROM sessions s
-                WHERE s.user_id = ?
-                GROUP BY s.user_id";
+        $pagina = max(1, (int) ($request ? $request->query->get('pagina', 1) : 1));
+        $limite = 20;
+        $offset = ($pagina - 1) * $limite;
 
-        $rsm = new ResultSetMapping();
-        $rsm->addScalarResult('logueado', 'logueado');
-        $rsm->addScalarResult('sesiones', 'sesiones');
+        // Verificar si el usuario tiene sesiones activas
+        $stmtLogueado = $connection->prepare('
+            SELECT IF(COUNT(s.sess_id) > 0, 1, 0) AS logueado
+            FROM sessions s
+            WHERE s.user_id = :userId AND s.sess_lifetime > UNIX_TIMESTAMP()
+        ');
+        $resultLogueado = $stmtLogueado->executeQuery(['userId' => $entity->getId()]);
+        $logueadoResult = $resultLogueado->fetchAssociative();
+        $logueado = $logueadoResult ? (bool) $logueadoResult['logueado'] : false;
 
-        $nativeQuery = $em->createNativeQuery($query, $rsm);
-        $nativeQuery->setParameter(1, $entity->getId());
+        // Contar total de sesiones
+        $stmtCount = $connection->prepare('
+            SELECT COUNT(*) AS total
+            FROM sessions s
+            WHERE s.user_id = :userId
+        ');
+        $resultCount = $stmtCount->executeQuery(['userId' => $entity->getId()]);
+        $countResult = $resultCount->fetchAssociative();
+        $totalSesiones = $countResult ? (int) $countResult['total'] : 0;
+        $totalPaginas = (int) ceil($totalSesiones / $limite);
 
-        $usuario = $nativeQuery->getArrayResult();
+        // Obtener sesiones paginadas
+        $stmtSesiones = $connection->prepare('
+            SELECT 
+                CONVERT(s.sess_id, CHAR) AS sess_id,
+                from_unixtime(s.sess_time, "%Y-%m-%d %H:%i:%s") AS ultima_vez,
+                from_unixtime(s.sess_lifetime, "%Y-%m-%d %H:%i:%s") AS expira_el,
+                s.sess_lifetime,
+                s.user_ip
+            FROM sessions s
+            WHERE s.user_id = :userId
+            ORDER BY s.sess_time DESC
+            LIMIT ' . (int) $offset . ', ' . (int) $limite . '
+        ');
+        $resultSesiones = $stmtSesiones->executeQuery(['userId' => $entity->getId()]);
+        $sesiones = $resultSesiones->fetchAllAssociative();
 
         return [
-            'usuario' => count($usuario) ? $usuario[0] : []
+            'usuario' => [
+                'logueado' => $logueado,
+            ],
+            'sesiones' => $sesiones,
+            'pagina_actual' => $pagina,
+            'total_paginas' => $totalPaginas,
+            'total_sesiones' => $totalSesiones,
+            'offset_sesiones' => $offset,
         ];
     }
 

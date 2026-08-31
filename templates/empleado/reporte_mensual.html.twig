@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .reporte-mensual th,
+        .reporte-mensual td {
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+    <div class="card card-custom">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-title">
+                <h3 class="card-label">{{ empleado.nombreCompleto }} - Reporte mensual {{ periodo }}</h3>
+            </div>
+            <div class="card-toolbar">
+                <a href="{{ path('app_empleado_show', {'id': empleado.id, 'anio': periodo|slice(0,4), 'mes': periodo|slice(5,2)}) }}" class="btn btn-light-dark font-weight-bold mr-2">
+                    Volver al empleado
+                </a>
+                <a href="{{ path('app_empleado_reporte_mensual_excel', {'id': empleado.id, 'periodo': periodo}) }}" class="btn btn-success">
+                    <i class="la la-file-excel"></i> Exportar Excel
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover reporte-mensual">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            {% if fila.esMensual %}
+                                <th class="text-right">Bruto</th>
+                                <th class="text-right">Deducciones</th>
+                                <th class="text-right">Neto</th>
+                            {% else %}
+                                {% for semana in semanas %}
+                                    <th class="text-right">Semana {{ semana.numero }}<br><small>{{ semana.label }}</small></th>
+                                {% endfor %}
+                            {% endif %}
+                            {% for concepto in fila.conceptos %}
+                                <th class="text-right">{{ concepto.nombre }}</th>
+                            {% endfor %}
+                            <th class="text-right">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            {% if fila.esMensual %}
+                                <td class="text-right">{{ fila.mensual.bruto|money_format }}</td>
+                                <td class="text-right">{{ fila.mensual.deducciones|money_format }}</td>
+                                <td class="text-right">{{ fila.mensual.neto|money_format }}</td>
+                            {% else %}
+                                {% for semana in fila.semanas %}
+                                    <td class="text-right">
+                                        {% if semana.liquidacion %}
+                                            {{ semana.valor }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            {% endif %}
+                            {% for concepto in fila.conceptos %}
+                                <td class="text-right">
+                                    {% if concepto.descripcion %}
+                                        <small>{{ concepto.descripcion }}</small><br>
+                                    {% endif %}
+                                    {{ concepto.importe|money_format }}
+                                </td>
+                            {% endfor %}
+                            <td class="text-right">{{ fila.total|money_format }}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="font-weight-bold bg-light">
+                            <td>TOTAL</td>
+                            {% if fila.esMensual %}
+                                <td class="text-right">{{ totales.mensual.bruto|money_format }}</td>
+                                <td class="text-right">{{ totales.mensual.deducciones|money_format }}</td>
+                                <td class="text-right">{{ totales.mensual.neto|money_format }}</td>
+                            {% else %}
+                                {% for total in totales.semanas %}
+                                    <td class="text-right">{{ total|money_format }}</td>
+                                {% endfor %}
+                            {% endif %}
+                            {% for concepto in totales.conceptos %}
+                                <td class="text-right">{{ concepto.importe|money_format }}</td>
+                            {% endfor %}
+                            <td class="text-right">{{ totales.total|money_format }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

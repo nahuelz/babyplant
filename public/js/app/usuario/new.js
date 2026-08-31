@@ -14,6 +14,7 @@ function initTipoUsuario(){
         $('.grupo').show();
         $('#usuario_cuit').val('');
         $('#usuario_razonSocial').val('');
+        $('#usuario_condicionIva').val('').trigger('change');
     }
 }
 function initTipoUsuarioHandler(){

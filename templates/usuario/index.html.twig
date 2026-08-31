@@ -83,7 +83,7 @@
 
 				{% if is_granted('ROLE_USUARIO_CREATE') %}
 					<!--begin::Button-->
-					<a href="{{ path('app_register') }}" class="btn btn-primary font-weight-bolder">
+					<a href="{{ path('app_register', {'tipo_usuario': constant('App\\Entity\\Constants\\ConstanteTipoUsuario::TECNICO')}) }}" class="btn btn-primary font-weight-bolder">
 						<i class="la la-plus"></i>
 						Agregar
 					</a>
@@ -97,7 +97,7 @@
 			<table class="table table-bordered table-hover table-checkable" id="table-usuario">
 				<thead>
 					<tr>
-						<th data-type="string">Email</th>
+						<th data-type="string">Usuario</th>
 						<th data-type="string">Nombre</th>
 						<th data-type="string">Apellido</th>
 						<th data-type="string">Telefono</th>

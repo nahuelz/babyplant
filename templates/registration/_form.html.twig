@@ -36,6 +36,9 @@
             <div class="col-md-4 mb-4">
                 {{ macro_form._new_field(registrationForm.email) }}
             </div>
+            <div class="col-md-4 mb-4 tipo-documento">
+                {{ macro_form._new_field(registrationForm.tipoDocumento) }}
+            </div>
             <div class="col-md-4 mb-4">
                 {{ macro_form._new_field(registrationForm.cuit) }}
             </div>
@@ -44,6 +47,9 @@
             </div>
             <div class="col-md-4 mb-4">
                 {{ macro_form._new_field(registrationForm.celular) }}
+            </div>
+            <div class="col-md-4 mb-4 condicion-iva">
+                {{ macro_form._new_field(registrationForm.condicionIva) }}
             </div>
         </div>
 
@@ -74,7 +80,11 @@
 
     {% if not modal %}
         <div class="card-footer d-flex justify-content-between">
-            <a href="{{ path('usuario_index') }}" class="btn btn-light-dark font-weight-bold">← Volver</a>
+            {% if tipoUsuarioId is defined and tipoUsuarioId == constant('App\\Entity\\Constants\\ConstanteTipoUsuario::CLIENTE') %}
+                <a href="{{ path('cliente_index') }}" class="btn btn-light-dark font-weight-bold">← Volver</a>
+            {% else %}
+                <a href="{{ path('usuario_index') }}" class="btn btn-light-dark font-weight-bold">← Volver</a>
+            {% endif %}
             {{ form_widget(registrationForm.submit, {'attr': {'class': 'btn btn-primary font-weight-bold'}}) }}
         </div>
     {% endif %}

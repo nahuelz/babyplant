@@ -28,11 +28,13 @@
 				{{ macro_form._new_field(form.username, "col-md-3 user-password ") }}
 				{{ macro_form._new_field(form.nombre, "col-md-3 email-nombre-apelldio") }}
 				{{ macro_form._new_field(form.apellido, "col-md-3 email-nombre-apelldio") }}
-				{{ macro_form._new_field(form.cuit, "col-md-3 datos-personales") }}
+				{{ macro_form._new_field(form.tipoDocumento, "col-md-3 datos-personales") }}
 			</div>
 			<div class="row">
-				{{ macro_form._new_field(form.domicilio, "col-md-4 datos-personales") }}
-				{{ macro_form._new_field(form.celular, "col-md-4 datos-personales") }}
+				{{ macro_form._new_field(form.cuit, "col-md-3 datos-personales") }}
+				{{ macro_form._new_field(form.domicilio, "col-md-3 datos-personales") }}
+				{{ macro_form._new_field(form.celular, "col-md-3 datos-personales") }}
+				{{ macro_form._new_field(form.condicionIva, "col-md-3 datos-personales") }}
 			</div>
 
 			<div class="row mb-4 d-flex align-items-center razon-social">

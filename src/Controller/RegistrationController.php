@@ -31,10 +31,19 @@ class RegistrationController extends AbstractController {
      */
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, $isAjaxCall = false): Response {
 
+        $entityManager = $this->getDoctrine()->getManager();
+        $tipoUsuarioId = $request->get('tipo_usuario', $request->get('tipo'));
+
         $user = new Usuario();
+        if ($tipoUsuarioId) {
+            $tipoUsuario = $entityManager->getRepository(\App\Entity\TipoUsuario::class)->find($tipoUsuarioId);
+            if ($tipoUsuario) {
+                $user->setTipoUsuario($tipoUsuario);
+            }
+        }
 
         $form = $this->createForm(RegistrationFormType::class, $user, array(
-            'action' => $this->generateUrl('app_register'),
+            'action' => $this->generateUrl('app_register', $tipoUsuarioId ? ['tipo_usuario' => $tipoUsuarioId] : []),
             'method' => 'POST'
         ));
 
@@ -58,13 +67,14 @@ class RegistrationController extends AbstractController {
 
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
-            $entityManager = $this->getDoctrine()->getManager();
             $existeUsuario = $this->validarExisteUsuario($user, $entityManager);
             if ($existeUsuario) {
                 $this->get('session')->getFlashBag()->add('error', $existeUsuario);
                 if (!$isAjaxCall) {
                     return $this->render('registration/register.html.twig', [
                         'registrationForm' => $form->createView(),
+                        'razonSocialForm' => $formRazonSocial->createView(),
+                        'tipoUsuarioId' => $tipoUsuarioId,
                     ]);
                 }else {
                     return $this->redirectToRoute('pedido_new');
@@ -109,6 +119,9 @@ class RegistrationController extends AbstractController {
             if ($this->getUser()) {
                 $this->get('session')->getFlashBag()->add('success', 'Usuario registrado con exito.');
                 if(!$isAjaxCall) {
+                    if ($user->getTipoUsuario() && $user->getTipoUsuario()->getCodigoInterno() == ConstanteTipoUsuario::CLIENTE) {
+                        return $this->redirectToRoute('cliente_index');
+                    }
                     return $this->redirectToRoute('usuario_index');
                 }else{
                     return $this->redirectToRoute('pedido_new');
@@ -119,7 +132,8 @@ class RegistrationController extends AbstractController {
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
-            'razonSocialForm' => $formRazonSocial->createView()
+            'razonSocialForm' => $formRazonSocial->createView(),
+            'tipoUsuarioId' => $tipoUsuarioId,
         ]);
     }
 
