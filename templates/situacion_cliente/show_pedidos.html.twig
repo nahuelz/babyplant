@@ -32,7 +32,11 @@
                                             {% for producto in pedido.pedidosProductos %}
                                                 <tr>
                                                     <td class="v-middle nowrap text-center">
-                                                        {{ producto|default('-') }}
+                                                        {% if producto %}
+                                                            Pedido N° <strong>{{ producto.pedido.id }}</strong> Orden Siembra: <strong>{{ producto.numeroOrdenCompleto }}</strong> Producto: <span style="color: {{ producto.tipoProducto.color|default('#000') }};">{{ producto.nombreCompleto }}</span> Bandejas: <strong>{{ producto.cantidadBandejasReales }} (x{{ producto.tipoBandeja }})</strong> Semilla: <strong>{{ producto.tipoOrigenSemilla.nombre }}</strong>
+                                                        {% else %}
+                                                            -
+                                                        {% endif %}
                                                     </td>
                                                     <td class="v-middle nowrap text-center">
                                                         {{ producto.adelanto|money_format|default('-') }}

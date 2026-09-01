@@ -35,7 +35,11 @@
                                                 {% set producto = entregaProducto.pedidoProducto %}
                                                 <tr>
                                                     <td class="v-middle nowrap text-center">
-                                                        Entrega N° {{ entrega.id }} {{ producto|default('-') }}
+                                                        {% if producto %}
+                                                            Entrega N° <strong>{{ entrega.id }}</strong> Pedido N° <strong>{{ producto.pedido.id }}</strong> Orden Siembra: <strong>{{ producto.numeroOrdenCompleto }}</strong> Producto: <span style="color: {{ producto.tipoProducto.color|default('#000') }};">{{ producto.nombreCompleto }}</span> Bandejas: <strong>{{ producto.cantidadBandejasReales }} (x{{ producto.tipoBandeja }})</strong> Semilla: <strong>{{ producto.tipoOrigenSemilla.nombre }}</strong>
+                                                        {% else %}
+                                                            Entrega N° {{ entrega.id }} -
+                                                        {% endif %}
                                                     </td>
                                                     <td class="v-middle nowrap text-center">
                                                         {{ entrega.fechaCreacion|date('d/m/Y') }}

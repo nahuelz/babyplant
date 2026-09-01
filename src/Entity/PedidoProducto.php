@@ -296,7 +296,7 @@ class PedidoProducto {
 
     public function __toString()
     {
-        return 'Pedido N° ' .$this->getPedido()->getId() . ' Producto N° '.$this->getId(). ' Orden Siembra: '.$this->getNumeroOrdenCompleto(). ' Producto: '.$this->getNombreCompleto(). ' Bandejas: '.$this->getCantidadBandejasReales().' (x'.$this->getTipoBandeja().')'. ' Semilla: '.$this->getTipoOrigenSemilla()->getNombre();
+        return 'Pedido N° ' .$this->getPedido()->getId() . ' Orden Siembra: '.$this->getNumeroOrdenCompleto(). ' Producto: '.$this->getNombreCompleto(). ' Bandejas: '.$this->getCantidadBandejasReales().' (x'.$this->getTipoBandeja().')'. ' Semilla: '.$this->getTipoOrigenSemilla()->getNombre();
     }
 
     /**

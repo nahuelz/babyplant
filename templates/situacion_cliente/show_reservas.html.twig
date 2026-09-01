@@ -44,7 +44,11 @@
                                         {% for reserva in entity.reservas %}
                                             <tr{% if reserva.porFalla %} class="fila-con-problema-critico"{% endif %}>
                                                 <td class="v-middle nowrap text-center">
-                                                    Reserva N° {{ reserva.id }} {{ reserva.pedidoProducto|default('-') }}
+                                                    {% if reserva.pedidoProducto %}
+                                                        Reserva N° <strong>{{ reserva.id }}</strong> Pedido N° <strong>{{ reserva.pedidoProducto.pedido.id }}</strong> Orden Siembra: <strong>{{ reserva.pedidoProducto.numeroOrdenCompleto }}</strong> Producto: <span style="color: {{ reserva.pedidoProducto.tipoProducto.color|default('#000') }};">{{ reserva.pedidoProducto.nombreCompleto }}</span> Bandejas: <strong>{{ reserva.pedidoProducto.cantidadBandejasReales }} (x{{ reserva.pedidoProducto.tipoBandeja }})</strong> Semilla: <strong>{{ reserva.pedidoProducto.tipoOrigenSemilla.nombre }}</strong>
+                                                    {% else %}
+                                                        Reserva N° {{ reserva.id }} -
+                                                    {% endif %}
                                                 </td>
                                                 <td class="v-middle nowrap text-center">
                                                     {{ reserva.fechaEntregaEstimada|date('d/m/Y') }}
