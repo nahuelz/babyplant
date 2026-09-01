@@ -112,10 +112,8 @@
                     {% endif %}
 
                     {# MODULO TAREAS #}
-                    {% if is_granted("ROLE_TAREA_EMPLEADO") or is_granted("ROLE_TAREA_ENCARGADO") %}
-                        {% set tarea_route = is_granted("ROLE_TAREA_ENCARGADO") ? 'tarea_index' : 'tarea_empleado_index' %}
-                        {% include 'modulo.html.twig' with {'iconClass': 'fas fa-tasks icon-3x text-dark', 'nombreModulo': 'TAREAS', 'action': path(tarea_route), 'descripcionModulo': 'Control de tareas' } %}
-                    {% endif %}
+                    {% set tarea_route = is_granted("ROLE_TAREA_ENCARGADO") ? 'tarea_index' : 'tarea_empleado_index' %}
+                    {% include 'modulo.html.twig' with {'iconClass': 'fas fa-tasks icon-3x text-dark', 'nombreModulo': 'TAREAS', 'action': path(tarea_route), 'descripcionModulo': 'Control de tareas' } %}
                 </div>
             </div>
         </div>

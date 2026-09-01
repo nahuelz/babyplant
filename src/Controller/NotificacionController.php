@@ -97,13 +97,13 @@ class NotificacionController extends BaseController {
 
         // Get user roles and create JSON array conditions
         $userRoles = $this->getUser()->getRoles();
+        $userId = $this->getUser()->getId();
         $rolesConditions = [];
         foreach ($userRoles as $role) {
             $rolesConditions[] = "JSON_CONTAINS(n.destinatarios, '\"$role\"')";
         }
-        // Temporal: comentar filtro de roles para debug
-        // $rolesCondition = !empty($rolesConditions) ? 'AND (' . implode(' OR ', $rolesConditions) . ')' : '';
-        $rolesCondition = '';
+        $rolesConditions[] = "JSON_CONTAINS(n.destinatarios, '\"USER_$userId\"')";
+        $rolesCondition = !empty($rolesConditions) ? 'AND (' . implode(' OR ', $rolesConditions) . ')' : '';
 
         if ($showAll) {
             $sql .= 'SELECT n.id,

@@ -26,14 +26,14 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class TareaController extends BaseController
 {
     #[Route('/empleado', name: 'tarea_empleado_index', methods: ['GET'])]
-    #[IsGranted('ROLE_TAREA_EMPLEADO')]
+    #[IsGranted('ROLE_USER')]
     public function indexEmpleado(): Response
     {
         return $this->render('tarea/index_empleado.html.twig', parent::baseIndexAction());
     }
 
     #[Route('/empleado/mis_tareas_table/', name: 'tarea_empleado_mis_tareas_table', methods: ['GET|POST'])]
-    #[IsGranted('ROLE_TAREA_EMPLEADO')]
+    #[IsGranted('ROLE_USER')]
     public function misTareasTableAction(Request $request): Response
     {
         $columnDefinition = [
@@ -57,7 +57,7 @@ class TareaController extends BaseController
     }
 
     #[Route('/empleado/disponibles_table/', name: 'tarea_empleado_disponibles_table', methods: ['GET|POST'])]
-    #[IsGranted('ROLE_TAREA_EMPLEADO')]
+    #[IsGranted('ROLE_USER')]
     public function disponiblesTableAction(Request $request): Response
     {
         $columnDefinition = [
@@ -81,7 +81,7 @@ class TareaController extends BaseController
     }
 
     #[Route('/{id}/tomar', name: 'tarea_tomar', methods: ['POST'], requirements: ['id' => '\d+'])]
-    #[IsGranted('ROLE_TAREA_EMPLEADO')]
+    #[IsGranted('ROLE_USER')]
     public function tomar(Request $request, Tarea $tarea, EntityManagerInterface $em): Response
     {
         if (!$this->isCsrfTokenValid('tarea_tomar_' . $tarea->getId(), $request->request->get('_token'))) {
@@ -121,7 +121,7 @@ class TareaController extends BaseController
     }
 
     #[Route('/{id}/finalizar', name: 'tarea_finalizar', methods: ['POST'], requirements: ['id' => '\d+'])]
-    #[IsGranted('ROLE_TAREA_EMPLEADO')]
+    #[IsGranted('ROLE_USER')]
     public function finalizar(Request $request, Tarea $tarea, EntityManagerInterface $em): Response
     {
         if (!$this->isCsrfTokenValid('tarea_finalizar_' . $tarea->getId(), $request->request->get('_token'))) {
@@ -251,7 +251,7 @@ class TareaController extends BaseController
     }
 
     #[Route('/{id}', name: 'tarea_show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    #[IsGranted('ROLE_TAREA_EMPLEADO')]
+    #[IsGranted('ROLE_USER')]
     public function show(Tarea $tarea): Response
     {
         $this->verificarAccesoTarea($tarea);
@@ -263,7 +263,7 @@ class TareaController extends BaseController
     }
 
     #[Route('/{id}/historico_estados', name: 'tarea_historico_estado', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
-    #[IsGranted('ROLE_TAREA_EMPLEADO')]
+    #[IsGranted('ROLE_USER')]
     public function showHistoricoEstadoAction(Tarea $tarea): Response
     {
         $this->verificarAccesoTarea($tarea);
@@ -552,11 +552,10 @@ class TareaController extends BaseController
         $notificacion = new Notificacion();
         $notificacion->setTitulo('Nueva tarea asignada');
         $notificacion->setContenido(sprintf(
-            'Se te asignó la tarea #%d: %s',
-            $tarea->getId(),
-            substr($tarea->getDescripcion(), 0, 100) . (strlen($tarea->getDescripcion()) > 100 ? '...' : '')
+            'Se te asignó la tarea: %s',
+            substr($tarea->getTitulo(), 0, 100) . (strlen($tarea->getTitulo()) > 100 ? '...' : '')
         ));
-        $notificacion->setDestinatarios(['ROLE_TAREA_EMPLEADO']);
+        $notificacion->setDestinatarios(['USER_' . $empleado->getId()]);
         $notificacion->setFechaDesde(new DateTime());
 
         $em->persist($notificacion);

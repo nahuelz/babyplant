@@ -25,8 +25,7 @@ security:
         ROLE_TIPO_USUARIO: [ROLE_USER, ROLE_TIPO_USUARIO]
 
         #TAREAS
-        ROLE_TAREA_EMPLEADO: [ROLE_USER, ROLE_TAREA_EMPLEADO]
-        ROLE_TAREA_ENCARGADO: [ROLE_USER, ROLE_TAREA_ENCARGADO, ROLE_TAREA_EMPLEADO]
+        ROLE_TAREA_ENCARGADO: [ROLE_USER, ROLE_TAREA_ENCARGADO]
 
 
         #---------------------------------------- PEDIDOS   ----------------------------------------#
