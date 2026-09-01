@@ -1,0 +1,27 @@
+{% if entity is defined %}
+<div class="timeline timeline-5">
+    {% if historicoEstados is defined and historicoEstados|length > 0 %}
+        <div class="timeline-items">
+            {% for estadoHistorico in historicoEstados %}
+                <div class="timeline-item">
+                    <div class="timeline-media bg-light-{{ estadoHistorico.estado.colorIcono|default('primary') }}">
+                        <span class="{{ estadoHistorico.estado.icono|default('fas fa-circle') }}"></span>
+                    </div>
+                    <div class="timeline-desc timeline-desc-light-{{ estadoHistorico.estado.colorIcono|default('primary') }}">
+                        <span class="font-weight-bolder text-{{ estadoHistorico.estado.colorIcono|default('primary') }}">
+                            {{ estadoHistorico.fechaCreacion|date('d/m/y H:i') }}
+                        </span>
+                        <p class="font-weight-normal text-dark-50 pb-2">
+                            Estado: <b>{{ estadoHistorico.estado }}</b><br>
+                            Motivo: {{ estadoHistorico.motivo|default('-') }}<br>
+                            Usuario: {{ estadoHistorico.usuarioCreacion|default('-') }}
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No hay registros históricos.</p>
+    {% endif %}
+</div>
+{% endif %}

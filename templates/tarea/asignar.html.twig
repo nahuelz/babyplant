@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon-users text-primary"></i></span>
+                <h3 class="card-label">Asignar tarea #{{ tarea.id }}</h3>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <p><strong>Descripción:</strong> {{ tarea.descripcion|default('-') }}</p>
+                </div>
+            </div>
+            {% include 'tarea/_asignar_form.html.twig' %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}"></script>
+{% endblock %}

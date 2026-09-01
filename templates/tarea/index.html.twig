@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+{% block body %}
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon2-layers text-primary"></i></span>
+                <h3 class="card-label">Control de Tareas</h3>
+            </div>
+            <div class="card-toolbar">
+                <a href="{{ path('tarea_new') }}" class="btn btn-primary font-weight-bolder mr-2">
+                    <i class="la la-plus"></i> Agregar
+                </a>
+            </div>
+        </div>
+
+        <div class="row padding-top-15 d-flex align-items-stretch">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12" id="filtros">
+                        {% include 'tarea/tiles.html.twig' %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        {% include 'tarea/filtros.html.twig' %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 d-flex flex-column actividad-reciente" style="max-height: 260px !important;">
+                {% include 'tarea/index_actividad_reciente.html.twig' %}
+            </div>
+        </div>
+
+        <div class="card-body padding-top-15 padding-bottom-0">
+            <table class="table table-bordered table-hover table-checkable" id="table-tarea">
+                <thead>
+                    <tr>
+                        <th data-type="string">Tarea</th>
+                        <th>Estado</th>
+                        <th>Empleado asignado</th>
+                        <th data-type="search">Acciones</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalAsignarTarea" tabindex="-1" role="dialog" aria-labelledby="modalAsignarTareaLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAsignarTareaLabel">Asignar tarea</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalAsignarTareaBody">
+                    Cargando...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalEditarTarea" tabindex="-1" role="dialog" aria-labelledby="modalEditarTareaLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEditarTareaLabel">Editar tarea</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalEditarTareaBody">
+                    Cargando...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalHistoricoTarea" tabindex="-1" role="dialog" aria-labelledby="modalHistoricoTareaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalHistoricoTareaLabel">Histórico de estados</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalHistoricoTareaBody">
+                    Cargando...
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}" ></script>
+
+    <script type="text/javascript" src="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.js') }}"></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-datatables.js') }}"></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/tarea/index.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,20 @@
+{
+"data": [
+{% for entity in entities %}
+    [
+    {"titulo": "{{ entity.titulo|default('-')|e('js') }}", "descripcion": "{{ entity.descripcion|default('')|e('js') }}", "editUrl": "{{ path('tarea_edit', { 'id': entity.id }) }}"},
+    {"estado": "{{ entity.estado|default('-') }}", "colorEstado": "{{ entity.estado ? entity.estado.color|default('label-light-primary') : 'label-light-secondary' }}"},
+    "{% if entity.empleado %}{{ entity.empleado }} <a href='{{ path('tarea_asignar', {'id': entity.id }) }}' class='btn btn-sm btn-clean btn-icon btn-asignar-tarea' title='Cambiar empleado'><i class='la la-edit'></i></a>{% elseif is_granted('ROLE_TAREA_ENCARGADO') and entity.estado is not null and entity.estado.codigoInterno is defined and entity.estado.codigoInterno in [constant('App\\Entity\\Constants\\ConstanteEstadoTarea::NUEVA'), constant('App\\Entity\\Constants\\ConstanteEstadoTarea::ASIGNADA')] %}<a href='{{ path('tarea_asignar', {'id': entity.id }) }}' class='btn btn-sm btn-primary font-weight-bold btn-asignar-tarea'>Asignar</a>{% else %}-{% endif %}",
+    {
+    "id" : {{ entity.id }},
+    "show" : "{{ path('tarea_show', { 'id': entity.id }) }}"
+    ,"historico" : "{{ path('tarea_historico_estado', { 'id': entity.id }) }}"
+    {% if is_granted('ROLE_TAREA_ENCARGADO') and entity.estado.codigoInterno is defined and entity.estado.codigoInterno not in [constant('App\\Entity\\Constants\\ConstanteEstadoTarea::TERMINADA'), constant('App\\Entity\\Constants\\ConstanteEstadoTarea::CANCELADA')] %}
+        ,"cancelar": "{{ path('tarea_cancelar', { 'id': entity.id }) }}"
+        ,"token": "{{ csrf_token('tarea_cancelar_' ~ entity.id) }}"
+    {% endif %}
+    }
+    ]{{ (loop.last ? '' : ',') }}
+{% endfor %}
+]
+}

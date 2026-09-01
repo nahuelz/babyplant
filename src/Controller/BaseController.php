@@ -615,49 +615,87 @@ class BaseController extends AbstractController {
 
         $where = "";
         $queryParameters = [];
-        $ruleBaseIndex = 0;
+        $paramIndex = 1;
+        $whereArray = [];
 
-        if (!empty($searchArray)) {
+        foreach ($searchArray as $rule) {
+            $typeFilter = $rule['type'];
+            $fieldName = $aliasTable . "." . $rule['field'];
 
-            $where = " WHERE ";
-            $whereArray = [];
+            if ($typeFilter == ConstanteTipoFiltro::DATE) {
+                $fieldName = "DATE($fieldName)";
+            }
 
-            foreach ($searchArray as $ruleIndex => $rule) {
+            if ($typeFilter == ConstanteTipoFiltro::DATETIME) {
+                $fieldName = "date_format($fieldName, '%Y-%m-%d %H:%i')";
+            }
 
-                $typeFilter = $rule['type'];
+            $fieldOperation = $this->getFieldOperation($rule, $paramIndex, $isTable);
+            $fieldParameter = $this->getFieldParameter($rule);
 
-                $fieldName = $aliasTable . "." . $rule['field'];
+            if ($fieldOperation != "") {
+                $whereArray[] = $fieldName . $fieldOperation;
+            }
 
-                if ($typeFilter == ConstanteTipoFiltro::DATE) {
-                    $fieldName = "DATE($fieldName)";
+            if ($fieldParameter != null) {
+                $queryParameters[] = [
+                    'index' => $paramIndex,
+                    'parameter' => $fieldParameter
+                ];
+            }
+
+            $paramIndex++;
+        }
+
+        $globalSearch = '';
+        $searchParam = $request->get('search');
+        if (is_array($searchParam) && isset($searchParam['value'])) {
+            $globalSearch = trim($searchParam['value']);
+        }
+
+        $globalSearchConditions = [];
+        if ($globalSearch !== '') {
+            foreach ($columnDefinition as $colDef) {
+                if (empty($colDef['searchable']) || $colDef['type'] !== ConstanteTipoFiltro::STRING) {
+                    continue;
                 }
 
-                if ($typeFilter == ConstanteTipoFiltro::DATETIME) {
-                    $fieldName = "date_format($fieldName, '%Y-%m-%d %H:%i')";
-                }
+                $rule = [
+                    'column' => $colDef['field'],
+                    'field' => $colDef['field'],
+                    'value' => $globalSearch,
+                    'type' => ConstanteTipoFiltro::STRING,
+                ];
 
-                $fieldOperation = $this->getFieldOperation($rule, $ruleIndex + 1, $isTable);
+                $fieldName = $aliasTable . "." . $colDef['field'];
+                $fieldOperation = $this->getFieldOperation($rule, $paramIndex, $isTable);
                 $fieldParameter = $this->getFieldParameter($rule);
 
                 if ($fieldOperation != "") {
-                    $whereArray[] = $fieldName . $fieldOperation;
+                    $globalSearchConditions[] = $fieldName . $fieldOperation;
                 }
 
                 if ($fieldParameter != null) {
                     $queryParameters[] = [
-                        'index' => $ruleIndex + 1,
+                        'index' => $paramIndex,
                         'parameter' => $fieldParameter
                     ];
                 }
 
-                $ruleBaseIndex++;
+                $paramIndex++;
             }
+        }
 
-            if (count($whereArray) > 0) {
-                $where .= join(" AND ", $whereArray);
-            } else {
-                $where .= " 1=1";
+        if (!empty($whereArray) || !empty($globalSearchConditions)) {
+            $where = " WHERE ";
+            $parts = [];
+            if (!empty($whereArray)) {
+                $parts[] = "(" . join(" AND ", $whereArray) . ")";
             }
+            if (!empty($globalSearchConditions)) {
+                $parts[] = "(" . join(" OR ", $globalSearchConditions) . ")";
+            }
+            $where .= join(" AND ", $parts);
         }
 
         return [

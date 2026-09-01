@@ -17,22 +17,23 @@ use App\Entity\EstadoLiquidacion;
 use App\Entity\EstadoLiquidacionHistorico;
 use App\Entity\EstadoMesada;
 use App\Entity\EstadoMesadaHistorico;
-use App\Entity\Liquidacion;
 use App\Entity\EstadoRemito;
 use App\Entity\EstadoRemitoHistorico;
 use App\Entity\EstadoReservaHistorico;
 use App\Entity\EstadoReventa;
 use App\Entity\EstadoReventaHistorico;
+use App\Entity\EstadoTarea;
+use App\Entity\EstadoTareaHistorico;
 use App\Entity\Gasto;
+use App\Entity\Liquidacion;
 use App\Entity\Mesada;
+use App\Entity\PedidoProducto;
 use App\Entity\Remito;
 use App\Entity\Reserva;
 use App\Entity\Reventa;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Entity\PedidoProducto;
-use App\Entity\EstadoPedidoProducto;
-use App\Entity\EstadoPedidoProductoHistorico;
+use App\Entity\Tarea;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 
 class EstadoService
 {
@@ -158,6 +159,17 @@ class EstadoService
         $historico = new EstadoLiquidacionHistorico();
         $historico->setLiquidacion($liquidacion);
         $this->crearHistorico($historico, $liquidacion, $estadoLiquidacion, $motivo);
+    }
+
+    /**
+     * Cambiar estado de Tarea
+     */
+    public function cambiarEstadoTarea(Tarea $tarea, EstadoTarea $estadoTarea, string $motivo): void
+    {
+        $tarea->setEstado($estadoTarea);
+        $historico = new EstadoTareaHistorico();
+        $historico->setTarea($tarea);
+        $this->crearHistorico($historico, $tarea, $estadoTarea, $motivo);
     }
 
 }

@@ -18,6 +18,12 @@ $(document).ajaxStart(function () {
     unblockPageContent();
 });
 
+$.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+    if (options.url && (options.url.indexOf('_table/') !== -1 || options.url.indexOf('index_table') !== -1 || options.url.indexOf('tiles/data') !== -1)) {
+        options.global = false;
+    }
+});
+
 $(document).ready(function () {
 
     $('form:not(.no-spinner)').submit(function (e) {
@@ -30,7 +36,10 @@ $(document).ready(function () {
     });
 
     $.ajaxSetup({
-        'beforeSend': function () {
+        'beforeSend': function (jqXHR, settings) {
+            if (settings.global === false) {
+                return;
+            }
             if (!$('.blockUI').length) {
                 blockPageContent();
             }

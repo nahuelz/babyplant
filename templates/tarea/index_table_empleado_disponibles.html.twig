@@ -1,0 +1,20 @@
+{
+"data": [
+{% for entity in entities %}
+    [
+    {"titulo": "{{ entity.titulo|default('-')|e('js') }}", "descripcion": "{{ entity.descripcion|default('')|e('js') }}"},
+    {"estado": "{{ entity.estado|default('-') }}", "colorEstado": "{{ entity.estado ? entity.estado.color|default('label-light-primary') : 'label-light-secondary' }}"},
+    {
+    "show" : " {{ path('tarea_show', { 'id': entity.id }) }}"
+    {% if is_granted('ROLE_TAREA_EMPLEADO') and entity.estado.codigoInterno is defined and entity.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoTarea::NUEVA') and entity.empleado is null %}
+        ,"tomar": "{{ path('tarea_tomar', { 'id': entity.id }) }}"
+        ,"token": "{{ csrf_token('tarea_tomar_' ~ entity.id) }}"
+    {% endif %}
+    }
+    ]{{ (loop.last ? '' : ',') }}
+{% endfor %}
+],
+"draw": {{ draw }},
+"recordsTotal": {{ totalRows }},
+"recordsFiltered": {{ totalFiltered }}
+}

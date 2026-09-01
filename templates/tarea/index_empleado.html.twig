@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+{% block body %}
+    <div class="card card-custom gutter-b">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon2-user text-primary"></i></span>
+                <h3 class="card-label">Mis Tareas</h3>
+            </div>
+            <div class="card-toolbar">
+                {% if is_granted('ROLE_TAREA_ENCARGADO') %}
+                    <a href="{{ path('tarea_new') }}" class="btn btn-primary font-weight-bolder">
+                        <i class="la la-plus"></i> Agregar
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <input type="text" id="mis-tareas-search" class="form-control" placeholder="Buscar mis tareas...">
+                </div>
+            </div>
+            <table class="table table-bordered table-hover table-checkable" id="table-mis-tareas">
+                <thead>
+                    <tr>
+                        <th data-type="string" style="width: 80%">Tarea</th>
+                        <th>Estado</th>
+                        <th data-type="search">Acciones</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon2-list text-primary"></i></span>
+                <h3 class="card-label">Tareas Disponibles</h3>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <input type="text" id="tareas-disponibles-search" class="form-control" placeholder="Buscar tareas disponibles...">
+                </div>
+            </div>
+            <table class="table table-bordered table-hover table-checkable" id="table-tareas-disponibles">
+                <thead>
+                    <tr>
+                        <th data-type="string" style="width: 80%">Tarea</th>
+                        <th>Estado</th>
+                        <th data-type="search">Acciones</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.js') }}"></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-datatables.js') }}"></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/tarea/index_empleado.js') }}"></script>
+{% endblock %}

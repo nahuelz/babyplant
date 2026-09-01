@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% import 'app/_macro_show.html.twig' as macro_show %}
+
+{% block body %}
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon-search text-primary"></i></span>
+                <h3 class="card-label">Tarea #{{ tarea.id }}</h3>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                {{ macro_show._show_detail('Descripción', tarea.descripcion|nl2br|default('-'), 'col-md-12') }}
+            </div>
+            <div class="row">
+                {{ macro_show._show_detail('Estado', tarea.estado|default('-'), 'col-md-4') }}
+                {{ macro_show._show_detail('Empleado', tarea.empleado|default('-'), 'col-md-4') }}
+                {{ macro_show._show_detail('Creado por', tarea.usuarioCreacion|default('-'), 'col-md-4') }}
+            </div>
+            <div class="row">
+                {{ macro_show._show_detail('Fecha creación', tarea.fechaCreacion ? tarea.fechaCreacion|date('d/m/Y H:i') : '-', 'col-md-4') }}
+                {{ macro_show._show_detail('Fecha asignación', tarea.asignadoEn ? tarea.asignadoEn|date('d/m/Y H:i') : '-', 'col-md-4') }}
+                {{ macro_show._show_detail('Fecha programada', tarea.fechaProgramada ? tarea.fechaProgramada|date('d/m/Y H:i') : '-', 'col-md-4') }}
+            </div>
+            <div class="row">
+                {{ macro_show._show_detail('Fecha terminación', tarea.terminadoEn ? tarea.terminadoEn|date('d/m/Y H:i') : '-', 'col-md-4') }}
+                {{ macro_show._show_detail('Fecha cancelación', tarea.canceladoEn ? tarea.canceladoEn|date('d/m/Y H:i') : '-', 'col-md-4') }}
+            </div>
+
+            <hr>
+
+            <h5>Histórico de estados</h5>
+            {% include 'tarea/historico_estados.html.twig' with {'entity': tarea, 'historicoEstados': historicoEstados} %}
+        </div>
+
+        <div class="card-footer d-flex justify-content-between">
+            {% if is_granted('ROLE_TAREA_ENCARGADO') %}
+                <a href="{{ path('tarea_index') }}" class="btn btn-light-dark font-weight-bold">Volver al listado</a>
+            {% else %}
+                <a href="{{ path('tarea_empleado_index') }}" class="btn btn-light-dark font-weight-bold">Volver</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

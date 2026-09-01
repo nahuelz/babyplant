@@ -1,0 +1,13 @@
+{% import 'app/_macro_form.html.twig' as macro_form %}
+
+{{ form_start(form, {'action': path('tarea_asignar', {'id': tarea.id}), 'method': 'POST', 'attr': {'class': 'horizontal-form', 'novalidate': 'novalidate', 'id': 'form-asignar-tarea'}}) }}
+    {% include ('app/_fields_errors.html.twig') %}
+    <div class="row">
+        {{ macro_form._new_field(form.empleado, 'col-md-12') }}
+    </div>
+    <div class="text-right mt-3">
+        <button type="button" class="btn btn-light-dark font-weight-bold" data-dismiss="modal">Cancelar</button>
+        {{ form_widget(form.submit, {'attr': {'class': 'btn btn-light-primary font-weight-bold submit-button'}}) }}
+    </div>
+    {{ form_widget(form._token) }}
+{{ form_end(form, {'render_rest': false}) }}

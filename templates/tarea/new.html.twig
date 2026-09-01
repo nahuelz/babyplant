@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% set edit = form.vars.value.id != null %}
+
+{% import 'app/_macro_form.html.twig' as macro_form %}
+
+{% block body %}
+    {% set action = edit ? path('tarea_update', {'id': form.vars.value.id}) : path('tarea_create') %}
+    {{ form_start(form, {'action': action, 'method': 'POST', 'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
+    {% include ('app/_fields_errors.html.twig') %}
+
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <span class="card-icon"><i class="flaticon-search text-primary"></i></span>
+                <h3 class="card-label">{{ edit ? 'Edición' : 'Ingreso'}} de tarea</h3>
+                {% set submitButton = form_widget(form.submit) %}
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                {{ macro_form._new_field(form.fechaProgramada, 'col-md-3') }}
+            </div>
+            {% if form.empleado is defined %}
+                <div class="row">
+                    {{ macro_form._new_field(form.empleado, 'col-md-6') }}
+                </div>
+            {% endif %}
+            <div class="row">
+                {{ macro_form._new_field(form.titulo, 'col-md-12') }}
+            </div>
+            <div class="row">
+                {{ macro_form._new_field(form.descripcion, 'col-md-12 observacion') }}
+            </div>
+        </div>
+
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{{ path('tarea_index') }}" class="btn btn-light-dark font-weight-bold">Volver</a>
+            {{ submitButton|raw }}
+        </div>
+    </div>
+    {{ form_widget(form._token) }}
+    {{ form_end(form, {"render_rest": false}) }}
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-form.js') }}"></script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/tarea/new.js') }}"></script>
+{% endblock %}

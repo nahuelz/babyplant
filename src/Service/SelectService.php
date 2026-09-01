@@ -34,6 +34,18 @@ class SelectService {
 
     }
 
+    public function getEmpleadoFilter() {
+
+        $sql = "SELECT x.id, CONCAT(x.apellido, ', ', x.nombre) AS nombre
+                FROM App\Entity\Usuario x 
+                WHERE x.fechaBaja IS NULL AND x.tipoUsuario = 2 AND x.habilitado = 1
+                ORDER BY x.apellido ASC";
+
+        $query = $this->em->createQuery($sql);
+        return $query->getResult();
+
+    }
+
     public function getConceptoFilter() {
 
         $sql = "SELECT x.id, x.nombre AS nombre
