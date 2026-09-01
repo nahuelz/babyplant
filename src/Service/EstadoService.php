@@ -34,6 +34,8 @@ use App\Entity\Reventa;
 use App\Entity\Tarea;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\EstadoPedidoProducto;
+use App\Entity\EstadoPedidoProductoHistorico;
 
 class EstadoService
 {
