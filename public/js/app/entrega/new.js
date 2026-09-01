@@ -12,6 +12,7 @@ jQuery(document).ready(function () {
     initPreValidation();
     //initClienteEntregaHandler();
     initClienteSelect2();
+    initMensajeDeuda();
 });
 
 function initClienteEntregaHandler() {
@@ -271,6 +272,38 @@ function initBaseSubmitButton() {
 
         e.stopPropagation();
     });
+}
+
+function initMensajeDeuda() {
+    var $select = $('#entrega_clienteEntrega');
+    if (typeof clienteEntregaInicial !== 'undefined' && clienteEntregaInicial) {
+        actualizarMensajeDeuda(clienteEntregaInicial);
+    }
+    $select.on('change', function () {
+        actualizarMensajeDeuda($(this).val());
+    });
+}
+
+function actualizarMensajeDeuda(clienteId) {
+    var $alert = $('#mensaje-deuda-cliente');
+    if (!clienteId) {
+        $alert.addClass('d-none').removeClass('alert-danger alert-success').text('');
+        return;
+    }
+    $.get(__HOMEPAGE_PATH__ + 'entrega/consultar-deuda/' + clienteId)
+        .done(function (response) {
+            var pendiente = parseFloat(response.pendiente) || 0;
+            var pendienteFormateado = pendiente.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            if (pendiente > 0) {
+                $alert.removeClass('d-none alert-success').addClass('alert alert-danger');
+                $alert.html('<i class="fa fa-exclamation-circle"></i> El cliente tiene una deuda pendiente de $' + pendienteFormateado);
+            } else {
+                $alert.addClass('d-none').removeClass('alert-danger alert-success').text('');
+            }
+        })
+        .fail(function () {
+            $alert.addClass('d-none').removeClass('alert-danger alert-success').text('');
+        });
 }
 
 function customAfterChainedSelect(){

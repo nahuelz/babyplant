@@ -29,6 +29,7 @@
         </div>
 
         <div class="card-body">
+            <div id="mensaje-deuda-cliente" class="offset-md-6 alert d-none mb-2" role="alert"></div>
             <div class="row">
                 {{ macro_form._new_field(form.cliente, 'col-md-6') }}
                 {{ macro_form._new_field(form.clienteEntrega, 'col-md-6') }}
@@ -64,6 +65,13 @@
 
     <script>
         var preserve_values = {{ preserve_values is defined ? (preserve_values  ? 'true' : 'false'): 'false'}};
+        {% set idClienteEntrega = null %}
+        {% if app.request.query.get('id') %}
+            {% set idClienteEntrega = app.request.query.get('id') %}
+        {% elseif form.clienteEntrega.vars.value is not null and form.clienteEntrega.vars.value.id is defined %}
+            {% set idClienteEntrega = form.clienteEntrega.vars.value.id %}
+        {% endif %}
+        var clienteEntregaInicial = {{ idClienteEntrega ?: 'null' }};
     </script>
 
 {% endblock %}

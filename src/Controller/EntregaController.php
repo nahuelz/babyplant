@@ -274,6 +274,24 @@ class EntregaController extends BaseController {
     }
 
     /**
+     * @Route("/consultar-deuda/{id}", name="entrega_consultar_deuda_cliente", methods={"GET"})
+     */
+    public function consultarDeudaClienteAction($id): JsonResponse
+    {
+        $em = $this->doctrine->getManager();
+        $usuario = $id ? $em->getRepository(Usuario::class)->find($id) : null;
+
+        $pendiente = 0;
+        if ($usuario && $usuario->getCuentaCorrienteUsuario()) {
+            $pendiente = $usuario->getCuentaCorrienteUsuario()->getPendiente();
+        }
+
+        return new JsonResponse([
+            'pendiente' => (float) $pendiente,
+        ]);
+    }
+
+    /**
      * @Route("/lista/productos", name="entrega_lista_productos")
      */
     public function listaProductosAction(Request $request): JsonResponse
