@@ -35,7 +35,10 @@ class ConceptoLiquidacionType extends AbstractType
                 'label' => 'Concepto',
                 'attr' => ['class' => 'form-control choice concepto-tipo'],
                 'choice_attr' => function (TipoConceptoLiquidacion $tipo) {
-                    return ['data-tipo' => $tipo->getTipo()];
+                    return [
+                        'data-tipo' => $tipo->getTipo(),
+                        'data-codigo-interno' => $tipo->getCodigoInterno(),
+                    ];
                 },
             ])
             ->add('cantidad', NumberType::class, [

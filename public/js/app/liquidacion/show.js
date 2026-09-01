@@ -67,6 +67,7 @@ jQuery(document).ready(function () {
         var tipoConceptoId = tipoConceptoSelect.val();
         var tipoConceptoText = tipoConceptoSelect.find('option:selected').text();
         var tipo = tipoConceptoSelect.find('option:selected').data('tipo');
+        var codigoInterno = tipoConceptoSelect.find('option:selected').data('codigo-interno');
         var descripcion = $form.find('#liquidacion_concepto_descripcion').val();
         var cantidadRaw = $form.find('#liquidacion_concepto_cantidad').val();
         var valorRaw = $form.find('#liquidacion_concepto_valorUnitario').val();
@@ -86,8 +87,9 @@ jQuery(document).ready(function () {
         var index = parseInt($tbody.data('index')) || 0;
 
         var removeLink = '<a href="#" class="btn btn-sm delete-link-inline link-delete-liquidacion-concepto tooltips" data-placement="top" data-original-title="Eliminar"><i class="fa fa-trash text-danger"></i></a>';
+        var clasePrestamo = (codigoInterno == 7) ? 'table-danger' : '';
 
-        var item = '<tr class="tr-liquidacion-concepto" data-total="' + importe.toFixed(2) + '" data-tipo="' + tipo + '">' +
+        var item = '<tr class="tr-liquidacion-concepto ' + clasePrestamo + '" data-total="' + importe.toFixed(2) + '" data-tipo="' + tipo + '">' +
             '<td class="hidden"><input type="hidden" name="liquidacion[conceptos][' + index + '][id]" value=""></td>' +
             '<td class="hidden"><input type="hidden" name="liquidacion[conceptos][' + index + '][tipoConceptoLiquidacion]" value="' + tipoConceptoId + '"></td>' +
             '<td class="hidden"><input type="hidden" name="liquidacion[conceptos][' + index + '][descripcion]" value="' + descripcion.replace(/"/g, '&quot;') + '"></td>' +
