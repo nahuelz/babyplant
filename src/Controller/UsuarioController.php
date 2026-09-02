@@ -161,6 +161,11 @@ class UsuarioController extends BaseController {
         return parent::baseUpdateAction($request, $id);
     }
 
+    protected function getEditRedirectResponse(Request $request, $entity): RedirectResponse
+    {
+        return $this->redirectToRoute('cliente_index');
+    }
+
     /**
      * @Route("/{id}/borrar", name="usuario_delete", methods={"GET"})
      */
