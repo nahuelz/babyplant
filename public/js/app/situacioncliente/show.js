@@ -27,7 +27,8 @@ function initMovimientos(){
         triggerSelector: '.add-ajuste-pedido',
         urlNew: 'situacion_cliente/ajuste_pedido/new',
         urlCreate: 'situacion_cliente/ajuste_pedido/create',
-        tituloModal: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar Ajuste Pedido'
+        tituloModal: '<i class="fa fa-list-ul margin-right-10"></i> Ingresar Ajuste Pedido',
+        pedidoReadonly: true
     });
 
     initMovimiento({
@@ -472,7 +473,8 @@ function initMovimiento(options) {
         triggerSelector,
         urlNew,
         urlCreate,
-        tituloModal
+        tituloModal,
+        pedidoReadonly = false
     } = options;
 
     $(document).on('click', triggerSelector, function (e) {
@@ -507,7 +509,18 @@ function initMovimiento(options) {
                         }
 
                         const formEl = document.querySelector('form[name="movimiento"]');
+                        const pedidoDisabled = $('#movimiento_pedido').prop('disabled');
+
+                        if (pedidoDisabled) {
+                            $('#movimiento_pedido').prop('disabled', false);
+                        }
+
                         const formData = new FormData(formEl);
+
+                        if (pedidoDisabled) {
+                            $('#movimiento_pedido').prop('disabled', true);
+                        }
+
                         formData.append('idReserva', $('#idReserva').val());
                         formData.append('idCuentaCorrienteUsuario', $('#idCuentaCorrienteUsuario').val());
 
@@ -536,12 +549,12 @@ function initMovimiento(options) {
                 }
             });
 
-            prepararModalMovimiento();
+            prepararModalMovimiento(pedidoReadonly);
         });
     });
 }
 
-function prepararModalMovimiento() {
+function prepararModalMovimiento(pedidoReadonly) {
     $("#movimiento_modoPago option[value='4']").prop('disabled', true);
     $("#movimiento_modoPago option[value='5']").prop('disabled', true);
     $("#movimiento_modoPago option[value='6']").prop('disabled', true);
@@ -556,6 +569,10 @@ function prepararModalMovimiento() {
 
     $('#movimiento_modoPago').select2();
     $('#movimiento_pedido').select2();
+
+    if (pedidoReadonly) {
+        $('#movimiento_pedido').prop('disabled', true).trigger('change.select2');
+    }
 
     initFormValidation();
     initMontoFormat();
@@ -846,5 +863,3 @@ function initAdjudicarCC() {
         }
     });
 }
-
-
