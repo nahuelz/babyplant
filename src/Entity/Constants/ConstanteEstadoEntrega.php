@@ -33,4 +33,9 @@ class ConstanteEstadoEntrega {
      */
     const ENTREGADO_CON_REMITO = 5;
 
+    /**
+     * ENTREGADO CON DEVOLUCION
+     */
+    const ENTREGADO_CON_DEVOLUCION = 6;
+
 }

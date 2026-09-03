@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Constants\ConstanteEstadoDevolucion;
+use App\Entity\Constants\ConstanteEstadoEntrega;
 use App\Entity\Constants\ConstanteEstadoPedidoProducto;
 use App\Entity\Devolucion;
 use App\Entity\EntregaProducto;
 use App\Entity\EstadoDevolucion;
+use App\Entity\EstadoEntrega;
 use App\Entity\EstadoPedidoProducto;
 use App\Entity\EstadoPedidoProductoHistorico;
 use App\Form\DevolucionType;
@@ -62,6 +64,17 @@ class DevolucionController extends BaseController {
             $estadoPendiente = $em->getRepository(EstadoDevolucion::class)->find(ConstanteEstadoDevolucion::PENDIENTE);
             if ($estadoPendiente) {
                 $this->estadoService->cambiarEstadoDevolucion($entity, $estadoPendiente, 'Creación de devolución');
+            }
+
+            $entrega = $entity->getEntregaProducto()->getEntrega();
+            $estadoEntregaConDevolucion = $em->getRepository(EstadoEntrega::class)
+                ->findOneByCodigoInterno(ConstanteEstadoEntrega::ENTREGADO_CON_DEVOLUCION);
+            if ($entrega && $estadoEntregaConDevolucion) {
+                $this->estadoService->cambiarEstadoEntrega(
+                    $entrega,
+                    $estadoEntregaConDevolucion,
+                    'Creación de devolución'
+                );
             }
 
             $em->persist($entity);
