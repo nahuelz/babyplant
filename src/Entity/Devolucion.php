@@ -61,11 +61,6 @@ class Devolucion {
     private mixed $motivoCancelacion = null;
 
     /**
-     * @ORM\Column(name="pagas", type="boolean", nullable=true)
-     */
-    private mixed $pagas = null;
-
-    /**
      * @ORM\OneToMany(targetEntity=EstadoDevolucionHistorico::class, mappedBy="devolucion", cascade={"all"})
      * @ORM\OrderBy({"fecha" = "DESC", "id" = "DESC"})
      */
@@ -162,16 +157,6 @@ class Devolucion {
     public function setMotivoCancelacion(mixed $motivoCancelacion): void
     {
         $this->motivoCancelacion = $motivoCancelacion;
-    }
-
-    public function getPagas(): mixed
-    {
-        return $this->pagas;
-    }
-
-    public function setPagas(mixed $pagas): void
-    {
-        $this->pagas = $pagas;
     }
 
     public function getCliente()

@@ -43,8 +43,16 @@
                 {% for devolucion in devoluciones %}
                     <tr>
                         <td class="text-center">{{ devolucion.id }}</td>
-                        <td class="text-center">{{ devolucion.cliente|default('-') }}</td>
-                        <td class="text-center">N° {{ devolucion.pedido.id|default('-') }}</td>
+                        <td class="text-center">
+                            <a href="{{ path('situacioncliente_show', {'id': devolucion.cliente.id}) }}">
+                                {{ devolucion.cliente|default('-') }}
+                            </a>
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ path('pedido_show', {'id': devolucion.pedido.id}) }}">
+                                N° {{ devolucion.pedido.id }}
+                            </a>
+                        </td>
                         <td class="nowrap text-center margin-0 padding-0 p-0">
                             <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
                                 <span class="label label-inline margin-0 font-weight-bold p-6" style="font-size: 11px; font-weight: bold !important; width: 220px; color: black !important; background-color: {{ devolucion.entregaProducto.pedidoProducto.tipoVariedad.tipoSubProducto.tipoProducto.color|default('#fd3f3f') }}">
@@ -52,7 +60,7 @@
                                 </span>
                             </div>
                         </td>
-                        <td class="text-center">{{ devolucion.cantidadBandejas }}</td>
+                        <td class="text-center">{{ devolucion.cantidadBandejas is not null ? devolucion.cantidadBandejas + 0 : '-' }}</td>
                         <td class="text-center">{{ devolucion.cantidadRevendida }}</td>
                         <td class="text-center">{{ devolucion.cantidadDescartada }}</td>
                         <td class="text-center">{{ devolucion.cantidadDisponible }}</td>
@@ -74,9 +82,6 @@
                                 <div class="dropdown-menu">
                                     <a href="{{ path('devolucion_show', {'id': devolucion.id}) }}" class="dropdown-item">
                                         <i class="la la-search" style="margin-right: 5px;"></i> Ver
-                                    </a>
-                                    <a href="{{ path('devolucion_edit', {'id': devolucion.id}) }}" class="dropdown-item">
-                                        <i class="la la-edit" style="margin-right: 5px;"></i> Editar
                                     </a>
                                     <a href="{{ path('devolucion_imprimir', {'id': devolucion.id}) }}" class="dropdown-item" target="_blank">
                                         <i class="la la-print" style="margin-right: 5px;"></i> Imprimir Devolucion

@@ -100,15 +100,6 @@ class DevolucionType extends AbstractType {
                     'tabindex' => '5'
                 )
             ))
-            ->add('pagas', CheckboxType::class, array(
-                'required' => false,
-                'label' => 'Pagas',
-                'attr' => array(
-                    'class' => 'form-check-input',
-                    'tabindex' => '5'
-                ),
-                'label_attr' => array('class' => 'form-check-label')
-            ))
         ;
 
         // El select de productos se llena dinámicamente por AJAX según el cliente.

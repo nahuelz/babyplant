@@ -17,6 +17,8 @@
 
 {% block body %}
     {% set producto = entity.entregaProducto.pedidoProducto %}
+    {% set entrega = entity.entregaProducto.entrega %}
+    {% set remito = entrega ? entrega.remito : null %}
     <div class="card card-custom">
         <div class="card-header">
             <div class="card-title">
@@ -27,23 +29,62 @@
         <div class="card-body">
 
             <div class="card card-detail">
-                <div class="card-header"><h4>Devolución</h4></div>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Devolución</h4>
+                    <span class="label label-inline {{ entity.estado.color}} font-weight-bold p-4">
+                        {{ entity.estado.nombre|default('-') }}
+                    </span>
+                </div>
                 <div class="card-body">
-                    <div class="row">
-                        {{ macro_show._show_detail('Cliente', entity.cliente|default('-'), 'col-md-4') }}
-                        {{ macro_show._show_detail('Estado', entity.estado.nombre|default('-'), 'col-md-4') }}
-                        {{ macro_show._show_detail('Fecha Devolución', entity.fechaDevolucion is not null ? entity.fechaDevolucion|date('d/m/Y') : '-', 'col-md-4') }}
+                    <div class="row text-center">
+                        <div class="col-md-3 mb-3">
+                            <div class="card shadow-sm border-primary">
+                                <div class="card-body py-4">
+                                    <small class="font-size-16 text-uppercase">Devueltas</small>
+                                    <div class="display-4 font-weight-bold text-primary">
+                                        {{ entity.cantidadBandejas is not null ? entity.cantidadBandejas + 0 : '-' }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card shadow-sm border-info">
+                                <div class="card-body py-4">
+                                    <small class="font-size-16 text-uppercase">Revendidas</small>
+                                    <div class="display-4 font-weight-bold text-info">
+                                        {{ entity.cantidadRevendida|default('-') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card shadow-sm border-danger">
+                                <div class="card-body py-4">
+                                    <small class="font-size-16 text-uppercase">Descartadas</small>
+                                    <div class="display-4 font-weight-bold text-danger">
+                                        {{ entity.cantidadDescartada|default('-') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card shadow-sm border-success">
+                                <div class="card-body py-4">
+                                    <small class="font-size-16 text-uppercase">Disponibles</small>
+                                    <div class="display-4 font-weight-bold text-success">
+                                        {{ entity.cantidadDisponible|default('-') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
-                        {{ macro_show._show_detail('Cantidad de Bandejas', entity.cantidadBandejas|default('-'), 'col-md-3') }}
-                        {{ macro_show._show_detail('Revendidas', entity.cantidadRevendida|default('-'), 'col-md-3') }}
-                        {{ macro_show._show_detail('Descartadas', entity.cantidadDescartada|default('-'), 'col-md-3') }}
-                        {{ macro_show._show_detail('Disponibles', entity.cantidadDisponible|default('-'), 'col-md-3') }}
+                        {{ macro_show._show_detail('Cliente', entity.cliente|default('-'), 'col-md-6') }}
+                        {{ macro_show._show_detail('Fecha Devolución', entity.fechaDevolucion is not null ? entity.fechaDevolucion|date('d/m/Y') : '-', 'col-md-4') }}
                     </div>
                     <div class="row">
                         {{ macro_show._show_detail('Precio Unitario', '$ ' ~ entity.precioUnitario|number_format(2, ',', '.')|default('-'), 'col-md-3') }}
                         {{ macro_show._show_detail('Valor Total', '$ ' ~ entity.valorTotal|number_format(2, ',', '.')|default('-'), 'col-md-3') }}
-                        {{ macro_show._show_detail('Pagas', entity.pagas ? 'SI' : 'NO', 'col-md-3') }}
                     </div>
                     <div class="row">
                         {{ macro_show._show_detail('Observación / Motivo', entity.observacion|default('-'), 'col-md-12') }}
@@ -59,7 +100,7 @@
             <div class="card card-detail">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col-md-6"><h4>Producto devuelto</h4></div>
+                        <div class="col-md-6"><h4>Detalle</h4></div>
                         <div class="col-md-6 text-right">
                             <a href="{{ path('pedido_show', {'id': producto.pedido.id}) }}" class="btn btn-primary btn-sm">
                                 <i class="fas fa-search"></i> VER PEDIDO
@@ -69,10 +110,30 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        {{ macro_show._show_detail('Pedido', 'N° ' ~ producto.pedido.id, 'col-md-3') }}
-                        {{ macro_show._show_detail('Producto', producto.getNombreCompleto|default('-'), 'col-md-3') }}
-                        {{ macro_show._show_detail('Número Orden', producto.getNumeroOrdenCompleto|default('-'), 'col-md-3') }}
-                        {{ macro_show._show_detail('Bandeja', producto.tipoBandeja|default('-'), 'col-md-3') }}
+                        {% set pedidoContent %}
+                            <a href="{{ path('pedido_show', {'id': producto.pedido.id}) }}">{{ producto.pedido.id }}</a>
+                        {% endset %}
+                        {{ macro_show._show_detail('N° Pedido', pedidoContent, 'col-md-2') }}
+                        <div class="d-flex flex-column font-weight-bold justify-content-center mr-5">
+                            <span class="label label-inline font-weight-bold" style="min-width: 300px; padding: 20px; color: #fff; background-color: {{ producto.tipoProducto.color }}">{{ producto.productoBandeja }}</span>
+                        </div>
+                        {{ macro_show._show_detail('N° Orden', producto.getNumeroOrdenCompleto|default('-'), 'col-md-2') }}
+                    </div>
+                    <div class="row">
+                        {% set entregaContent %}
+                            <a href="{{ path('entrega_show', {'id': entrega.id}) }}">{{ entrega.id }}</a>
+                        {% endset %}
+                        {{ macro_show._show_detail('N° Entrega', entregaContent, 'col-md-2') }}
+                        {{ macro_show._show_detail('Cantidad Bandejas Entregadas', entity.entregaProducto.cantidadBandejas|default('-'), 'col-md-2') }}
+                        {{ macro_show._show_detail('Tiene Remito?', remito ? 'SI' : 'NO', 'col-md-2') }}
+                        {% if remito %}
+                            {% set remitoContent %}
+                                <a href="{{ path('remito_show', {'id': remito.id}) }}">{{ remito.id }}</a>
+                            {% endset %}
+                            {{ macro_show._show_detail('N° Remito', remitoContent, 'col-md-2') }}
+                            {{ macro_show._show_detail('Monto Total del Remito', remito.totalConDescuento|money_format, 'col-md-2') }}
+                            {{ macro_show._show_detail('Estado del Remito', remito.estado.nombre|default('-'), 'col-md-2') }}
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -89,7 +150,6 @@
                                 <i class="la la-trash-alt"></i> Descartar
                             </a>
                         {% endif %}
-                        <a href="{{ path('devolucion_edit', {'id': entity.id}) }}" class="btn btn-primary font-weight-bold">Editar</a>
                     {% endif %}
                 </div>
             </div>
