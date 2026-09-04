@@ -100,15 +100,6 @@ class DevolucionType extends AbstractType {
                     'tabindex' => '5'
                 )
             ))
-            ->add('vendias', CheckboxType::class, array(
-                'required' => false,
-                'label' => 'Vendidas',
-                'attr' => array(
-                    'class' => 'form-check-input',
-                    'tabindex' => '5'
-                ),
-                'label_attr' => array('class' => 'form-check-label')
-            ))
             ->add('pagas', CheckboxType::class, array(
                 'required' => false,
                 'label' => 'Pagas',

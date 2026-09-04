@@ -61,11 +61,6 @@ class Devolucion {
     private mixed $motivoCancelacion = null;
 
     /**
-     * @ORM\Column(name="vendias", type="boolean", nullable=true)
-     */
-    private mixed $vendias = null;
-
-    /**
      * @ORM\Column(name="pagas", type="boolean", nullable=true)
      */
     private mixed $pagas = null;
@@ -167,16 +162,6 @@ class Devolucion {
     public function setMotivoCancelacion(mixed $motivoCancelacion): void
     {
         $this->motivoCancelacion = $motivoCancelacion;
-    }
-
-    public function getVendias(): mixed
-    {
-        return $this->vendias;
-    }
-
-    public function setVendias(mixed $vendias): void
-    {
-        $this->vendias = $vendias;
     }
 
     public function getPagas(): mixed
