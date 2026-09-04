@@ -526,6 +526,29 @@ class EmpleadoController extends BaseController
         ]);
     }
 
+    #[Route('/{id}/reporte-mensual/{periodo}/total-a-pagar/', name: 'app_empleado_reporte_mensual_total_a_pagar', requirements: ['periodo' => '\d{4}-\d{2}'], methods: ['GET'])]
+    public function reporteMensualTotalAPagar(Empleado $empleado, string $periodo, EntityManagerInterface $entityManager): Response
+    {
+        if (!preg_match('/^\d{4}-\d{2}$/', $periodo)) {
+            throw $this->createNotFoundException('Período inválido.');
+        }
+
+        $semanas = $this->buildSemanasDelMes($periodo);
+        $datos = $this->buildFilaMensual($empleado, $periodo, $semanas, $entityManager);
+
+        return $this->json([
+            'empleadoId' => $empleado->getId(),
+            'periodo' => $periodo,
+            'neto' => $datos['fila']['mensual']['neto'],
+            'totalAPagar' => $datos['fila']['total'],
+            'totalConceptos' => $datos['fila']['resumen']
+                ? (string) $datos['fila']['resumen']->getTotalConceptos()
+                : '0',
+            'contribuciones' => $datos['fila']['mensual']['contribuciones'],
+            'montoPagarEmpleado' => $datos['fila']['montoPagarEmpleado'],
+        ]);
+    }
+
     #[Route('/{id}/reporte-mensual/{periodo}/excel', name: 'app_empleado_reporte_mensual_excel', requirements: ['periodo' => '\d{4}-\d{2}'], methods: ['GET'])]
     public function reporteMensualExcel(Empleado $empleado, string $periodo, EntityManagerInterface $entityManager): Response
     {
@@ -897,27 +920,30 @@ class EmpleadoController extends BaseController
                     }
 
                     $importe = (string) $concepto->getImporte();
+                    $signo = $tipo->esDescuento() ? '-1' : '1';
+                    $importeSignado = Decimal::mul($importe, $signo, 2);
+
                     $nombreTipo = $tipo->getNombre();
 
                     if ($tipo->esDescuento()) {
                         if ($nombreTipo === 'Adelanto') {
-                            $adelantos = Decimal::add($adelantos, $importe, 2);
+                            $adelantos = Decimal::add($adelantos, $importeSignado, 2);
                         }
                         continue;
                     }
 
                     switch ($nombreTipo) {
                         case 'Hora extra':
-                            $horasExtras = Decimal::add($horasExtras, $importe, 2);
+                            $horasExtras = Decimal::add($horasExtras, $importeSignado, 2);
                             break;
                         case 'Feriado':
-                            $feriados = Decimal::add($feriados, $importe, 2);
+                            $feriados = Decimal::add($feriados, $importeSignado, 2);
                             break;
                         case 'Guardia':
-                            $guardias = Decimal::add($guardias, $importe, 2);
+                            $guardias = Decimal::add($guardias, $importeSignado, 2);
                             break;
                         case 'Otro':
-                            $otros = Decimal::add($otros, $importe, 2);
+                            $otros = Decimal::add($otros, $importeSignado, 2);
                             break;
                     }
                 }
@@ -1058,12 +1084,16 @@ class EmpleadoController extends BaseController
         $bruto = '0';
         $deducciones = '0';
         $neto = '0';
+        $contribuciones = '0';
+        $montoPagarEmpleado = '0';
 
         if ($resumen !== null) {
             $totalAPagar = (string) $resumen->getTotalAPagar();
             $bruto = (string) $resumen->getSueldoBruto();
             $deducciones = (string) $resumen->getDeducciones();
             $neto = (string) $resumen->getSueldoNeto();
+            $contribuciones = (string) $resumen->getContribuciones();
+            $montoPagarEmpleado = (string) $resumen->getMontoPagarEmpleado();
         }
 
         $esMensual = $empleado->getModalidadPago() && $empleado->getModalidadPago()->getCodigoInterno() == ConstanteTipoModalidadPago::MENSUAL;
@@ -1119,9 +1149,11 @@ class EmpleadoController extends BaseController
                 'bruto' => $bruto,
                 'deducciones' => $deducciones,
                 'neto' => $neto,
+                'contribuciones' => $contribuciones,
             ],
             'conceptos' => $conceptosColumnas,
             'total' => $totalAPagar,
+            'montoPagarEmpleado' => $montoPagarEmpleado,
         ];
 
         $totales = [
@@ -1130,9 +1162,11 @@ class EmpleadoController extends BaseController
                 'bruto' => $bruto,
                 'deducciones' => $deducciones,
                 'neto' => $neto,
+                'contribuciones' => $contribuciones,
             ],
             'conceptos' => $conceptosColumnas,
             'total' => $totalAPagar,
+            'montoPagarEmpleado' => $montoPagarEmpleado,
         ];
 
         return [
@@ -1150,7 +1184,7 @@ class EmpleadoController extends BaseController
 
         $cantidadColumnas = count($conceptosColumnas) + 1;
         if ($esMensual) {
-            $cantidadColumnas += 3;
+            $cantidadColumnas += 5;
         } else {
             $cantidadColumnas += count($semanas);
         }
@@ -1179,7 +1213,15 @@ class EmpleadoController extends BaseController
             $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . '2', $concepto['nombre']);
             $col++;
         }
-        $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . '2', 'Total');
+        if ($esMensual) {
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . '2', 'Total a pagar');
+            $col++;
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . '2', 'Contribuciones');
+            $col++;
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . '2', 'Monto a pagar empleados');
+        } else {
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . '2', 'Total');
+        }
 
         $headerRange = 'A2:' . \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . '2';
         $sheet->getStyle($headerRange)->getFont()->setBold(true);
@@ -1232,7 +1274,13 @@ class EmpleadoController extends BaseController
             $col++;
         }
 
-        if ($fila['resumen']) {
+        if ($esMensual) {
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaNum, $this->formatMoney($fila['total']));
+            $col++;
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaNum, $this->formatMoney($fila['mensual']['contribuciones']));
+            $col++;
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaNum, $this->formatMoney($fila['montoPagarEmpleado']));
+        } elseif ($fila['resumen']) {
             $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaNum, $this->formatMoney($fila['total']));
         } else {
             $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaNum, '');
@@ -1262,7 +1310,15 @@ class EmpleadoController extends BaseController
             );
             $col++;
         }
-        $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal, $this->formatMoney($totalGeneral));
+        if ($esMensual) {
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal, $this->formatMoney($totalGeneral));
+            $col++;
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal, $this->formatMoney($totales['mensual']['contribuciones']));
+            $col++;
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal, $this->formatMoney($totales['montoPagarEmpleado']));
+        } else {
+            $sheet->setCellValue(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal, $this->formatMoney($totalGeneral));
+        }
 
         $totalRange = 'A' . $filaTotal . ':' . \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col) . $filaTotal;
         $sheet->getStyle($totalRange)->getFont()->setBold(true);

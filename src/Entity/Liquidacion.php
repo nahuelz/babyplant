@@ -460,7 +460,14 @@ class Liquidacion {
             return $total;
         }
 
-        return Decimal::add($this->getSueldoNeto(), (string) $this->getContribuciones(), 2);
+        return $this->getSueldoNeto();
+    }
+
+    public function getMontoPagarEmpleado(): string
+    {
+        $totalAPagar = Decimal::add($this->getBaseCalculoTotal(), $this->getTotalConceptos(), 2);
+
+        return Decimal::add($totalAPagar, (string) $this->getContribuciones(), 2);
     }
 
     /**

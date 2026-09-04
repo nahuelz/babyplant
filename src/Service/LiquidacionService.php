@@ -115,6 +115,13 @@ class LiquidacionService
      */
     public function aprobar(Liquidacion $liquidacion): void
     {
+        $liquidacion->recalcularTotal();
+
+        $padre = $liquidacion->getPadre();
+        if ($padre !== null) {
+            $padre->recalcularTotal();
+        }
+
         $estadoAprobada = $this->em->getRepository(EstadoLiquidacion::class)
             ->findOneByCodigoInterno(ConstanteEstadoLiquidacion::APROBADA);
 

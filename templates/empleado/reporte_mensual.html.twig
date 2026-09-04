@@ -46,7 +46,13 @@
                             {% for concepto in fila.conceptos %}
                                 <th class="text-right">{{ concepto.nombre }}</th>
                             {% endfor %}
-                            <th class="text-right">Total</th>
+                            {% if fila.esMensual %}
+                                <th class="text-right">Total a pagar</th>
+                                <th class="text-right">Contribuciones</th>
+                                <th class="text-right">Monto a pagar empleados</th>
+                            {% else %}
+                                <th class="text-right">Total</th>
+                            {% endif %}
                         </tr>
                     </thead>
                     <tbody>
@@ -75,7 +81,13 @@
                                     {{ concepto.importe|money_format }}
                                 </td>
                             {% endfor %}
-                            <td class="text-right">{{ fila.total|money_format }}</td>
+                            {% if fila.esMensual %}
+                                <td class="text-right">{{ fila.total|money_format }}</td>
+                                <td class="text-right">{{ fila.mensual.contribuciones|money_format }}</td>
+                                <td class="text-right">{{ fila.montoPagarEmpleado|money_format }}</td>
+                            {% else %}
+                                <td class="text-right">{{ fila.total|money_format }}</td>
+                            {% endif %}
                         </tr>
                     </tbody>
                     <tfoot>
@@ -93,7 +105,13 @@
                             {% for concepto in totales.conceptos %}
                                 <td class="text-right">{{ concepto.importe|money_format }}</td>
                             {% endfor %}
-                            <td class="text-right">{{ totales.total|money_format }}</td>
+                            {% if fila.esMensual %}
+                                <td class="text-right">{{ totales.total|money_format }}</td>
+                                <td class="text-right">{{ totales.mensual.contribuciones|money_format }}</td>
+                                <td class="text-right">{{ totales.montoPagarEmpleado|money_format }}</td>
+                            {% else %}
+                                <td class="text-right">{{ totales.total|money_format }}</td>
+                            {% endif %}
                         </tr>
                     </tfoot>
                 </table>
