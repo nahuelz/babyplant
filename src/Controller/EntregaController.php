@@ -301,11 +301,12 @@ class EntregaController extends BaseController {
         $repository = $this->doctrine->getRepository(PedidoProducto::class);
 
         $query = $repository->createQueryBuilder('pp')
-            ->select("pp.id, pp.tieneReservaPorFalla, concat ('ORDEN N° ',pp.numeroOrden,' ', tp.nombre, ' ', v.nombre, ' DISPONIBLES: ',pp.cantidadBandejasDisponibles,  ' MESADA N° ', GROUP_CONCAT(DISTINCT tm.nombre)) as denominacion")
+            ->select("pp.id, pp.tieneReservaPorFalla, concat ('ORDEN N° ',pp.numeroOrden,' ', tp.nombre, ' ', v.nombre, ' DISPONIBLES: ',pp.cantidadBandejasDisponibles,  ' MESADA N° ', GROUP_CONCAT(DISTINCT tm.nombre), ' SEMILLA: ', COALESCE(tos.nombre, '-')) as denominacion")
             ->leftJoin('pp.pedido', 'p' )
             ->leftJoin('App:TipoVariedad', 'v', Join::WITH, 'pp.tipoVariedad = v')
             ->leftJoin('App:TipoSubProducto', 'sb', Join::WITH, 'v.tipoSubProducto = sb')
             ->leftJoin('App:TipoProducto', 'tp', Join::WITH, 'sb.tipoProducto = tp')
+            ->leftJoin('App:TipoOrigenSemilla', 'tos', Join::WITH, 'pp.tipoOrigenSemilla = tos')
             ->leftJoin('App:TipoBandeja', 'tb', Join::WITH, 'pp.tipoBandeja = tb')
             ->leftJoin('App:Mesada', 'm', Join::WITH, 'm.pedidoProducto = pp')
             ->leftJoin('App:TipoMesada', 'tm', Join::WITH, 'm.tipoMesada = tm')
