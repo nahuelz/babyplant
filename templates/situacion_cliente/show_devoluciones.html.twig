@@ -22,10 +22,9 @@
                                         <thead>
                                         <tr>
                                             <th class="text-center nowrap">Devolución</th>
-                                            <th class="text-center nowrap">Entrega</th>
                                             <th class="text-center nowrap">Bandejas</th>
-                                            <th class="text-center nowrap">Valor Total</th>
                                             <th class="text-center nowrap">Fecha</th>
+                                            <th class="text-center nowrap">Estado</th>
                                             <th class="text-center nowrap">Observación</th>
                                             <th class="text-center nowrap"></th>
                                         </tr>
@@ -35,26 +34,19 @@
                                             <tr>
                                                 <td class="v-middle nowrap text-center">
                                                     <a href="{{ path('devolucion_show', {'id': devolucion.id}) }}" class="font-weight-bold text-primary">
-                                                        Devolución N° {{ devolucion.id }}
+                                                        N° {{ devolucion.id }}
                                                     </a>
-                                                </td>
-                                                <td class="v-middle nowrap text-center">
-                                                    {% if devolucion.entregaProducto and devolucion.entregaProducto.entrega %}
-                                                        <a href="{{ path('entrega_show', {'id': devolucion.entregaProducto.entrega.id}) }}" class="font-weight-bold text-primary">
-                                                            Entrega N° {{ devolucion.entregaProducto.entrega.id }}
-                                                        </a>
-                                                    {% else %}
-                                                        -
-                                                    {% endif %}
                                                 </td>
                                                 <td class="v-middle nowrap text-center">
                                                     {{ devolucion.cantidadBandejas|default('-') }}
                                                 </td>
                                                 <td class="v-middle nowrap text-center">
-                                                    $ {{ devolucion.valorTotal|number_format(2, ',', '.')|default('-') }}
+                                                    {{ devolucion.fechaDevolucion is not null ? devolucion.fechaDevolucion|date('d/m/Y') : '-' }}
                                                 </td>
                                                 <td class="v-middle nowrap text-center">
-                                                    {{ devolucion.fechaDevolucion is not null ? devolucion.fechaDevolucion|date('d/m/Y') : '-' }}
+                                                    <div class="label label-inline font-size-10 font-dark font-weight-bold padding-15 {{ devolucion.estado.color|default('-') }}">
+                                                        {{ devolucion.estado|default('-') }}
+                                                    </div>
                                                 </td>
                                                 <td class="v-middle nowrap text-center">
                                                     {{ devolucion.observacion|default('-') }}
