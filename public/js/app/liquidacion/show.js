@@ -18,6 +18,11 @@ jQuery(document).ready(function () {
         return $input.length ? parseMonto($input.val()) : 0;
     }
 
+    function getContribuciones() {
+        var $input = $('#liquidacion_contribuciones');
+        return $input.length ? parseMonto($input.val()) : 0;
+    }
+
     function getTotalConceptosSemanas() {
         var $input = $('#liquidacion_totalConceptosSemanas');
         return $input.length ? parseMonto($input.val()) : 0;
@@ -35,6 +40,7 @@ jQuery(document).ready(function () {
         var sueldoBruto = getSueldoBruto();
         var deducciones = getDeducciones();
         var neto = sueldoBruto - deducciones;
+        var contribuciones = getContribuciones();
 
         var totalConceptos = 0;
         $('.tr-liquidacion-concepto').each(function () {
@@ -44,7 +50,7 @@ jQuery(document).ready(function () {
             totalConceptos += importe * signo;
         });
 
-        var total = neto + getTotalConceptosSemanas() + totalConceptos;
+        var total = neto + contribuciones + getTotalConceptosSemanas() + totalConceptos;
 
         $('#resumen-neto').text('$' + formatearMonto(neto));
         $('#resumen-total').text('$' + formatearMonto(total));
@@ -139,7 +145,7 @@ jQuery(document).ready(function () {
     $('.row-liquidacion-concepto-form').on('input', '#liquidacion_concepto_cantidad, #liquidacion_concepto_valorUnitario', calcularImporteConcepto);
     $(document).on('click', '.link-add-liquidacion-concepto', agregarConcepto);
     $(document).on('click', '.link-delete-liquidacion-concepto', eliminarConcepto);
-    $('#liquidacion_sueldoBruto, #liquidacion_deducciones').on('input', recalcularTotales);
+    $('#liquidacion_sueldoBruto, #liquidacion_deducciones, #liquidacion_contribuciones').on('input', recalcularTotales);
 
     // Modal de edición de semana
     var $modal = $('#modalSemana');
@@ -156,6 +162,16 @@ jQuery(document).ready(function () {
         $modal.find('#formGuardarSemana').attr('action', $link.data('action'));
         $modal.find('#semana_sueldoBruto').val($link.data('sueldo-bruto'));
         $modal.find('#semana_deducciones').val($link.data('deducciones'));
+
+        var contribuciones = $link.data('contribuciones');
+        if (typeof contribuciones !== 'undefined') {
+            $modal.find('#campo-contribuciones-semana').show();
+            $modal.find('#semana_contribuciones').val(contribuciones).prop('required', true);
+        } else {
+            $modal.find('#campo-contribuciones-semana').hide();
+            $modal.find('#semana_contribuciones').val('').prop('required', false);
+        }
+
         $modal.find('#semana_token').val($link.data('token'));
         $modal.find('#semana_return').val($link.data('return'));
 

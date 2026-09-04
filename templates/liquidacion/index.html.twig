@@ -83,6 +83,7 @@
                                 <th class="text-center">Modalidad</th>
                                 <th class="text-right">Bruto</th>
                                 <th class="text-right">Deducciones</th>
+                                <th class="text-right">Contribuciones</th>
                                 <th class="text-right">Neto</th>
                                 <th class="text-right">Conceptos</th>
                                 <th class="text-right">Total</th>
@@ -104,6 +105,7 @@
                                     <td class="text-center">{{ fila.modalidad }}</td>
                                     <td class="text-right">{{ fila.bruto }}</td>
                                     <td class="text-right">{{ fila.deducciones }}</td>
+                                    <td class="text-right">{{ fila.contribuciones }}</td>
                                     <td class="text-right">{{ fila.neto }}</td>
                                     <td class="text-right">{{ fila.conceptos }}</td>
                                     <td class="text-right font-weight-bold">
@@ -118,7 +120,7 @@
                                 </tr>
                             {% else %}
                                 <tr>
-                                    <td colspan="7" class="text-center text-muted">No hay empleados activos con liquidaciones para este período.</td>
+                                    <td colspan="8" class="text-center text-muted">No hay empleados activos con liquidaciones para este período.</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -128,6 +130,7 @@
                                 <td></td>
                                 <td class="text-right">$ {{ totales_mensuales.bruto|number_format(2, ',', '.') }}</td>
                                 <td class="text-right">$ {{ totales_mensuales.deducciones|number_format(2, ',', '.') }}</td>
+                                <td class="text-right">$ {{ totales_mensuales.contribuciones|number_format(2, ',', '.') }}</td>
                                 <td class="text-right">$ {{ totales_mensuales.neto|number_format(2, ',', '.') }}</td>
                                 <td class="text-right">$ {{ totales_mensuales.conceptos|number_format(2, ',', '.') }}</td>
                                 <td class="text-right">$ {{ totales_mensuales.total|number_format(2, ',', '.') }}</td>
@@ -232,6 +235,9 @@
                                                        data-nombre="{{ fila.empleado.nombre }}"
                                                        data-sueldo-bruto="{{ semana.liquidacion.sueldoBruto|replace({'.': ','}) }}"
                                                        data-deducciones="{{ semana.liquidacion.deducciones|replace({'.': ','}) }}"
+                                                       {% if semana.liquidacion.tipoModalidadPago and semana.liquidacion.tipoModalidadPago.codigoInterno == constant('App\\Entity\\Constants\\ConstanteTipoModalidadPago::MENSUAL') %}
+                                                           data-contribuciones="{{ semana.liquidacion.contribuciones|replace({'.': ','}) }}"
+                                                       {% endif %}
                                                        data-token="{{ csrf_token('guardar_semana_' ~ semana.liquidacion.id) }}"
                                                        data-return="index">
                                                         {{ semana.valor }}

@@ -68,6 +68,13 @@ class Liquidacion {
     private $deducciones = 0;
 
     /**
+     * Contribuciones (aportes patronales / obligaciones sociales) del período.
+     *
+     * @ORM\Column(name="contribuciones", type="decimal", precision=12, scale=2, nullable=false, options={"default": 0})
+     */
+    private $contribuciones = 0;
+
+    /**
      * @ORM\Column(name="total_a_pagar", type="decimal", precision=12, scale=2, nullable=false, options={"default": 0})
      */
     private $totalAPagar = 0;
@@ -235,6 +242,30 @@ class Liquidacion {
     public function setDeducciones($deducciones): void
     {
         $this->deducciones = $deducciones;
+    }
+
+    public function getContribuciones(): string
+    {
+        if (!$this->detallesSemanales->isEmpty()) {
+            $total = '0';
+
+            foreach ($this->detallesSemanales as $detalle) {
+                $total = Decimal::add(
+                    $total,
+                    (string) $detalle->getContribuciones(),
+                    2
+                );
+            }
+
+            return $total;
+        }
+
+        return (string) $this->contribuciones;
+    }
+
+    public function setContribuciones($contribuciones): void
+    {
+        $this->contribuciones = $contribuciones;
     }
 
     public function getSueldoNeto(): string
@@ -429,7 +460,7 @@ class Liquidacion {
             return $total;
         }
 
-        return $this->getSueldoNeto();
+        return Decimal::add($this->getSueldoNeto(), (string) $this->getContribuciones(), 2);
     }
 
     /**

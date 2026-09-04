@@ -75,6 +75,16 @@ jQuery(document).ready(function () {
         $modal.find('#formGuardarSemana').attr('action', $link.data('action'));
         $modal.find('#semana_sueldoBruto').val($link.data('sueldo-bruto'));
         $modal.find('#semana_deducciones').val($link.data('deducciones'));
+
+        var contribuciones = $link.data('contribuciones');
+        if (typeof contribuciones !== 'undefined') {
+            $modal.find('#campo-contribuciones-semana').show();
+            $modal.find('#semana_contribuciones').val(contribuciones).prop('required', true);
+        } else {
+            $modal.find('#campo-contribuciones-semana').hide();
+            $modal.find('#semana_contribuciones').val('').prop('required', false);
+        }
+
         $modal.find('#semana_token').val($link.data('token'));
 
         $modal.modal('show');

@@ -40,6 +40,18 @@ class LiquidacionType extends AbstractType
                 ]);
         }
 
+        if ($options['incluir_contribuciones']) {
+            $builder->add('contribuciones', NumberType::class, [
+                'required' => true,
+                'label' => 'Contribuciones',
+                'scale' => 2,
+                'attr' => array_merge([
+                    'class' => 'form-control',
+                    'pattern' => '[0-9]+([,][0-9]+)?',
+                ], $readonlyAttr),
+            ]);
+        }
+
         $builder->add('observaciones', TextareaType::class, [
             'required' => false,
             'label' => 'Observaciones',
@@ -78,11 +90,13 @@ class LiquidacionType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Liquidacion::class,
             'incluir_sueldo' => true,
+            'incluir_contribuciones' => false,
             'incluir_conceptos' => true,
             'editable' => true,
         ]);
 
         $resolver->setAllowedTypes('incluir_sueldo', 'bool');
+        $resolver->setAllowedTypes('incluir_contribuciones', 'bool');
         $resolver->setAllowedTypes('incluir_conceptos', 'bool');
         $resolver->setAllowedTypes('editable', 'bool');
     }

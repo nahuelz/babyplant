@@ -102,6 +102,7 @@ class LiquidacionController extends BaseController
             $totalesMensuales = [
                 'bruto' => '0',
                 'deducciones' => '0',
+                'contribuciones' => '0',
                 'neto' => '0',
                 'conceptos' => '0',
                 'total' => '0',
@@ -118,6 +119,7 @@ class LiquidacionController extends BaseController
                     $totalGeneral = Decimal::add($totalGeneral, (string) $fila['resumen']->getTotalAPagar(), 2);
                     $totalesMensuales['bruto'] = Decimal::add($totalesMensuales['bruto'], (string) $fila['resumen']->getSueldoBruto(), 2);
                     $totalesMensuales['deducciones'] = Decimal::add($totalesMensuales['deducciones'], (string) $fila['resumen']->getDeducciones(), 2);
+                    $totalesMensuales['contribuciones'] = Decimal::add($totalesMensuales['contribuciones'], (string) $fila['resumen']->getContribuciones(), 2);
                     $totalesMensuales['neto'] = Decimal::add($totalesMensuales['neto'], (string) $fila['resumen']->getSueldoNeto(), 2);
                     $conceptosFila = Decimal::add((string) $fila['resumen']->getTotalConceptosSemanas(), (string) $fila['resumen']->getTotalConceptos(), 2);
                     $totalesMensuales['conceptos'] = Decimal::add($totalesMensuales['conceptos'], $conceptosFila, 2);
@@ -359,6 +361,7 @@ class LiquidacionController extends BaseController
         $totalesMensuales = [
             'bruto' => '0',
             'deducciones' => '0',
+            'contribuciones' => '0',
             'neto' => '0',
             'conceptos' => '0',
             'total' => '0',
@@ -368,6 +371,7 @@ class LiquidacionController extends BaseController
             if ($fila['resumen']) {
                 $totalesMensuales['bruto'] = Decimal::add($totalesMensuales['bruto'], (string) $fila['resumen']->getSueldoBruto(), 2);
                 $totalesMensuales['deducciones'] = Decimal::add($totalesMensuales['deducciones'], (string) $fila['resumen']->getDeducciones(), 2);
+                $totalesMensuales['contribuciones'] = Decimal::add($totalesMensuales['contribuciones'], (string) $fila['resumen']->getContribuciones(), 2);
                 $totalesMensuales['neto'] = Decimal::add($totalesMensuales['neto'], (string) $fila['resumen']->getSueldoNeto(), 2);
                 $conceptosFila = Decimal::add((string) $fila['resumen']->getTotalConceptosSemanas(), (string) $fila['resumen']->getTotalConceptos(), 2);
                 $totalesMensuales['conceptos'] = Decimal::add($totalesMensuales['conceptos'], $conceptosFila, 2);
@@ -376,16 +380,16 @@ class LiquidacionController extends BaseController
         }
 
         $sheet->setCellValue('A1', 'Resumen de liquidaciones — ' . $periodo);
-        $sheet->mergeCells('A1:G1');
+        $sheet->mergeCells('A1:H1');
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
 
-        $headers = ['Empleado', 'Modalidad', 'Bruto', 'Deducciones', 'Neto', 'Conceptos', 'Total'];
+        $headers = ['Empleado', 'Modalidad', 'Bruto', 'Deducciones', 'Contribuciones', 'Neto', 'Conceptos', 'Total'];
         foreach ($headers as $index => $header) {
             $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($index + 1);
             $sheet->setCellValue($colLetter . '2', $header);
         }
 
-        $headerRange = 'A2:G2';
+        $headerRange = 'A2:H2';
         $sheet->getStyle($headerRange)->getFont()->setBold(true);
         $sheet->getStyle($headerRange)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('FFC000');
         $sheet->getStyle($headerRange)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
@@ -399,15 +403,17 @@ class LiquidacionController extends BaseController
 
             $bruto = $row['resumen'] ? (float) $row['resumen']->getSueldoBruto() : 0;
             $deducciones = $row['resumen'] ? (float) $row['resumen']->getDeducciones() : 0;
+            $contribuciones = $row['resumen'] ? (float) $row['resumen']->getContribuciones() : 0;
             $neto = $row['resumen'] ? (float) $row['resumen']->getSueldoNeto() : 0;
             $conceptos = $row['resumen'] ? (float) Decimal::add((string) $row['resumen']->getTotalConceptosSemanas(), (string) $row['resumen']->getTotalConceptos(), 2) : 0;
             $total = $row['resumen'] ? (float) $row['resumen']->getTotalAPagar() : 0;
 
             $sheet->setCellValue('C' . $fila, $bruto);
             $sheet->setCellValue('D' . $fila, $deducciones);
-            $sheet->setCellValue('E' . $fila, $neto);
-            $sheet->setCellValue('F' . $fila, $conceptos);
-            $sheet->setCellValue('G' . $fila, $total);
+            $sheet->setCellValue('E' . $fila, $contribuciones);
+            $sheet->setCellValue('F' . $fila, $neto);
+            $sheet->setCellValue('G' . $fila, $conceptos);
+            $sheet->setCellValue('H' . $fila, $total);
 
             $fila++;
         }
@@ -417,25 +423,26 @@ class LiquidacionController extends BaseController
         $sheet->setCellValue('B' . $filaTotal, '');
         $sheet->setCellValue('C' . $filaTotal, (float) $totalesMensuales['bruto']);
         $sheet->setCellValue('D' . $filaTotal, (float) $totalesMensuales['deducciones']);
-        $sheet->setCellValue('E' . $filaTotal, (float) $totalesMensuales['neto']);
-        $sheet->setCellValue('F' . $filaTotal, (float) $totalesMensuales['conceptos']);
-        $sheet->setCellValue('G' . $filaTotal, (float) $totalesMensuales['total']);
+        $sheet->setCellValue('E' . $filaTotal, (float) $totalesMensuales['contribuciones']);
+        $sheet->setCellValue('F' . $filaTotal, (float) $totalesMensuales['neto']);
+        $sheet->setCellValue('G' . $filaTotal, (float) $totalesMensuales['conceptos']);
+        $sheet->setCellValue('H' . $filaTotal, (float) $totalesMensuales['total']);
 
-        $totalRange = 'A' . $filaTotal . ':G' . $filaTotal;
+        $totalRange = 'A' . $filaTotal . ':H' . $filaTotal;
         $sheet->getStyle($totalRange)->getFont()->setBold(true);
         $sheet->getStyle($totalRange)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('E2E2E2');
         $sheet->getStyle($totalRange)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
-        $sheet->getStyle('A2:G' . ($filaTotal - 1))
+        $sheet->getStyle('A2:H' . ($filaTotal - 1))
             ->getBorders()
             ->getAllBorders()
             ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
-        $sheet->getStyle('C3:G' . $filaTotal)
+        $sheet->getStyle('C3:H' . $filaTotal)
             ->getNumberFormat()
             ->setFormatCode('#,##0.00');
 
-        foreach (range(1, 7) as $columnIndex) {
+        foreach (range(1, 8) as $columnIndex) {
             $column = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($columnIndex);
             $sheet->getColumnDimension($column)->setAutoSize(true);
         }
@@ -477,6 +484,7 @@ class LiquidacionController extends BaseController
                 $monto = '0';
                 if ($resumen !== null) {
                     $monto = Decimal::add((string) $resumen->getSueldoNeto(), (string) $resumen->getDeducciones(), 2);
+                    $monto = Decimal::add($monto, (string) $resumen->getContribuciones(), 2);
                 }
 
                 $totalEmpleado = Decimal::add($totalEmpleado, $monto, 2);
@@ -701,6 +709,8 @@ class LiquidacionController extends BaseController
         ]);
 
         $incluirSueldo = !($liquidacion->getDetallesSemanales()->count() > 0);
+        $incluirContribuciones = $liquidacion->getTipoModalidadPago()
+            && $liquidacion->getTipoModalidadPago()->getCodigoInterno() === ConstanteTipoModalidadPago::MENSUAL;
         $incluirConceptos = $liquidacion->getPadre() === null;
 
         $editable = $this->puedeEditarContenido($liquidacion);
@@ -708,6 +718,7 @@ class LiquidacionController extends BaseController
             'action' => $this->generateUrl('liquidacion_guardar', ['id' => $liquidacion->getId()]),
             'method' => 'POST',
             'incluir_sueldo' => $incluirSueldo,
+            'incluir_contribuciones' => $incluirContribuciones,
             'incluir_conceptos' => $incluirConceptos,
             'editable' => $editable,
         ]);
@@ -811,10 +822,13 @@ class LiquidacionController extends BaseController
         }
 
         $incluirSueldo = !($liquidacion->getDetallesSemanales()->count() > 0);
+        $incluirContribuciones = $liquidacion->getTipoModalidadPago()
+            && $liquidacion->getTipoModalidadPago()->getCodigoInterno() === ConstanteTipoModalidadPago::MENSUAL;
         $incluirConceptos = $liquidacion->getPadre() === null;
 
         $form = $this->createForm(LiquidacionType::class, $liquidacion, [
             'incluir_sueldo' => $incluirSueldo,
+            'incluir_contribuciones' => $incluirContribuciones,
             'incluir_conceptos' => $incluirConceptos,
         ]);
         $form->handleRequest($request);
@@ -1140,9 +1154,11 @@ class LiquidacionController extends BaseController
 
         $sueldoBruto = str_replace(',', '.', $request->request->get('sueldoBruto', '0'));
         $deducciones = str_replace(',', '.', $request->request->get('deducciones', '0'));
+        $contribuciones = str_replace(',', '.', $request->request->get('contribuciones', '0'));
 
         $liquidacion->setSueldoBruto($sueldoBruto);
         $liquidacion->setDeducciones($deducciones);
+        $liquidacion->setContribuciones($contribuciones);
         $liquidacion->recalcularTotal();
 
         $padre = $liquidacion->getPadre();
@@ -1275,6 +1291,7 @@ class LiquidacionController extends BaseController
             'total' => $resumen !== null ? $this->formatMoney($resumen->getTotalAPagar()) : $this->formatMoney('0'),
             'bruto' => $resumen !== null ? $this->formatMoney($resumen->getSueldoBruto()) : $this->formatMoney('0'),
             'deducciones' => $resumen !== null ? $this->formatMoney($resumen->getDeducciones()) : $this->formatMoney('0'),
+            'contribuciones' => $resumen !== null ? $this->formatMoney($resumen->getContribuciones()) : $this->formatMoney('0'),
             'neto' => $resumen !== null ? $this->formatMoney($resumen->getSueldoNeto()) : $this->formatMoney('0'),
             'conceptos' => $this->formatMoney($conceptosMensuales),
         ];
@@ -1335,6 +1352,7 @@ class LiquidacionController extends BaseController
         $liquidacion->setEstado($estadoBorrador);
         $liquidacion->setSueldoBruto(0);
         $liquidacion->setDeducciones(0);
+        $liquidacion->setContribuciones(0);
         $liquidacion->setTotalAPagar(0);
 
         if ($padre !== null) {

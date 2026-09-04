@@ -114,15 +114,12 @@
                                                data-nombre="{{ detalle.empleado.nombre }}"
                                                data-sueldo-bruto="{{ detalle.sueldoBruto|replace({'.': ','}) }}"
                                                data-deducciones="{{ detalle.deducciones|replace({'.': ','}) }}"
+                                               data-contribuciones="{{ detalle.contribuciones|replace({'.': ','}) }}"
                                                data-token="{{ csrf_token('guardar_semana_' ~ detalle.id) }}"
                                                data-return="show"
                                                title="EDITAR">
                                                 <i class="la la-edit"></i>
                                             </a>
-                                            <form method="post" action="{{ path('liquidacion_aprobar', {'id': detalle.id}) }}" class="d-inline ml-2">
-                                                <input type="hidden" name="_token" value="{{ csrf_token('aprobar_' ~ detalle.id) }}">
-                                                <button type="submit" class="btn btn-sm btn-light-success font-weight-bold btn-aprobar-confirm" data-tipo="hija" data-sueldo-bruto="{{ detalle.sueldoBruto|replace({'.': ','}) }}" title="APROBAR"><i class="la la-check"></i></button>
-                                            </form>
                                             <a href="#"
                                                class="btn btn-sm btn-light-dark font-weight-bold abrir-modal-concepto-semana ml-2"
                                                data-action="{{ path('liquidacion_agregar_concepto_semana', {'id': detalle.id}) }}"
@@ -133,6 +130,10 @@
                                                title="AGREGAR CONPCEPTO">
                                                 <i class="la la-plus"></i>
                                             </a>
+                                            <form method="post" action="{{ path('liquidacion_aprobar', {'id': detalle.id}) }}" class="d-inline ml-2">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('aprobar_' ~ detalle.id) }}">
+                                                <button type="submit" class="btn btn-sm btn-light-success font-weight-bold btn-aprobar-confirm" data-tipo="hija" data-sueldo-bruto="{{ detalle.sueldoBruto|replace({'.': ','}) }}" title="APROBAR"><i class="la la-check"></i></button>
+                                            </form>
                                         {% elseif detalle.estado and detalle.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::APROBADA') %}
                                             {% if liquidacion.estado and liquidacion.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoLiquidacion::BORRADOR') %}
                                                 <form method="post" action="{{ path('liquidacion_revertir_aprobacion', {'id': detalle.id}) }}" class="d-inline ml-2">
@@ -151,10 +152,10 @@
                                 </tr>
                             {% endfor %}
                             <tr class="font-weight-bold">
-                                <td colspan="3" class="text-right">Total semanas</td>
+                                <td colspan="4" class="text-right">Total semanas</td>
                                 <td class="text-right">{{ liquidacion.sueldoNeto|money_format }}</td>
                                 <td class="text-right">{{ liquidacion.totalConceptosSemanas|money_format }}</td>
-                                <td colspan="2"></td>
+                                <td colspan="1"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -164,14 +165,18 @@
             {{ form_start(form, {'attr': {'class' : 'horizontal-form','novalidate': 'novalidate'} }) }}
 
                 <div class="row mt-8">
-                    {% if form.sueldoBruto is defined %}{{ macro_form._new_field(form.sueldoBruto, 'col-md-6') }}{% endif %}
-                    {% if form.deducciones is defined %}{{ macro_form._new_field(form.deducciones, 'col-md-6') }}{% endif %}
+                    {% if form.sueldoBruto is defined %}{{ macro_form._new_field(form.sueldoBruto, 'col-md-4') }}{% endif %}
+                    {% if form.deducciones is defined %}{{ macro_form._new_field(form.deducciones, 'col-md-4') }}{% endif %}
+                    {% if form.contribuciones is defined %}{{ macro_form._new_field(form.contribuciones, 'col-md-4') }}{% endif %}
                     {% if form.observaciones is defined %}{{ macro_form._new_field(form.observaciones, 'col-md-12') }}{% endif %}
                 </div>
 
                 {% if liquidacion.detallesSemanales is not empty %}
                     <input type="hidden" id="liquidacion_sueldoBruto" value="{{ liquidacion.sueldoNeto|number_format(2, ',', '.') }}">
                     <input type="hidden" id="liquidacion_deducciones" value="0">
+                    {% if liquidacion.tipoModalidadPago and liquidacion.tipoModalidadPago.codigoInterno == constant('App\\Entity\\Constants\\ConstanteTipoModalidadPago::MENSUAL') %}
+                        <input type="hidden" id="liquidacion_contribuciones" value="{{ liquidacion.contribuciones|number_format(2, ',', '.') }}">
+                    {% endif %}
                     <input type="hidden" id="liquidacion_totalConceptosSemanas" value="{{ liquidacion.totalConceptosSemanas|number_format(2, ',', '.') }}">
                 {% endif %}
 
