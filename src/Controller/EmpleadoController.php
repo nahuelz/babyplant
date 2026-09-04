@@ -1039,6 +1039,9 @@ class EmpleadoController extends BaseController
             }
         }
 
+        $esMensual = $empleado->getModalidadPago() && $empleado->getModalidadPago()->getCodigoInterno() == ConstanteTipoModalidadPago::MENSUAL;
+        $esSemanal = $empleado->getModalidadPago() && $empleado->getModalidadPago()->getCodigoInterno() == ConstanteTipoModalidadPago::SEMANAL;
+
         $conceptosColumnas = [];
         $nombresVistos = [];
         $agregarConcepto = function ($concepto) use (&$conceptosColumnas, &$nombresVistos) {
@@ -1069,7 +1072,7 @@ class EmpleadoController extends BaseController
             ];
         };
 
-        if ($resumen !== null) {
+        if ($resumen !== null && $esMensual) {
             foreach ($resumen->getConceptos() as $concepto) {
                 $agregarConcepto($concepto);
             }
@@ -1095,9 +1098,6 @@ class EmpleadoController extends BaseController
             $contribuciones = (string) $resumen->getContribuciones();
             $montoPagarEmpleado = (string) $resumen->getMontoPagarEmpleado();
         }
-
-        $esMensual = $empleado->getModalidadPago() && $empleado->getModalidadPago()->getCodigoInterno() == ConstanteTipoModalidadPago::MENSUAL;
-        $esSemanal = $empleado->getModalidadPago() && $empleado->getModalidadPago()->getCodigoInterno() == ConstanteTipoModalidadPago::SEMANAL;
 
         $filaSemanas = [];
         $totalesPorSemana = [];
@@ -1137,6 +1137,13 @@ class EmpleadoController extends BaseController
             ];
 
             $totalesPorSemana[] = $totalSemana;
+        }
+
+        if ($esSemanal) {
+            $totalAPagar = '0';
+            foreach ($totalesPorSemana as $totalSemana) {
+                $totalAPagar = Decimal::add($totalAPagar, $totalSemana, 2);
+            }
         }
 
         $fila = [
