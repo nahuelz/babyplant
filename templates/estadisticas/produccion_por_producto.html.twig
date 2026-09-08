@@ -67,12 +67,56 @@
                             {% set porcentaje = total_general > 0 ? (row.totalPlantas / total_general) * 100 : 0 %}
                             <tr>
                                 <td>
-                                    <strong>{{ row.producto }}</strong>
+                                    <a href="#detalle-{{ loop.index }}"
+                                       class="text-decoration-none text-dark d-flex align-items-center"
+                                       data-toggle="collapse"
+                                       aria-expanded="false"
+                                       aria-controls="detalle-{{ loop.index }}">
+                                        <span class="me-2 toggle-icon" style="display:inline-block;width:1em;">▶</span>
+                                        <strong>{{ row.producto }}</strong>
+                                    </a>
                                 </td>
                                 <td class="text-end">
                                 <span class="badge bg-success fs-6">
                                     {{ row.totalPlantas|round|number_format(0, ",", ".") }} ({{ porcentaje|number_format(2, ",", ".") }}%)
                                 </span>
+                                </td>
+                            </tr>
+                            <tr class="collapse" id="detalle-{{ loop.index }}">
+                                <td colspan="2" class="p-0 bg-light">
+                                    <div class="p-3">
+                                        <table class="table table-sm table-hover table-bordered mb-0">
+                                            <thead class="table-secondary">
+                                                <tr>
+                                                    <th class="ps-4">Variedad / Subproducto</th>
+                                                    <th class="text-end pe-3">Plantas</th>
+                                                    <th class="text-end pe-3" style="width: 110px;">%</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for detalle in detalles_agrupados[row.producto]|default([]) %}
+                                                {% set porcentajeDetalle = row.totalPlantas > 0 ? (detalle.totalPlantas / row.totalPlantas) * 100 : 0 %}
+                                                <tr>
+                                                    <td class="ps-4">{{ detalle.subProducto }}</td>
+                                                    <td class="text-end pe-3">
+                                                        {{ detalle.totalPlantas|round|number_format(0, ",", ".") }}
+                                                    </td>
+                                                    <td class="text-end pe-3">
+                                                        <span class="badge bg-info text-dark">
+                                                            {{ porcentajeDetalle|number_format(2, ",", ".") }}%
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            {% else %}
+                                                <tr>
+                                                    <td colspan="3" class="text-center text-muted py-2">
+                                                        Sin detalles
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -94,4 +138,16 @@
         </div>
 
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).on('shown.bs.collapse', function (e) {
+            $('[href="#' + e.target.id + '"]').find('.toggle-icon').text('▼');
+        });
+        $(document).on('hidden.bs.collapse', function (e) {
+            $('[href="#' + e.target.id + '"]').find('.toggle-icon').text('▶');
+        });
+    </script>
 {% endblock %}

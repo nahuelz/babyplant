@@ -442,11 +442,22 @@ class EstadisticasController extends AbstractController
             : new \DateTime();
 
         $resultados = $pedidoProductoRepository->getProduccionPorProducto($desde, $hasta);
+        $detalles = $pedidoProductoRepository->getProduccionPorSubProducto($desde, $hasta);
 
         $totalGeneral = array_sum(array_column($resultados, 'totalPlantas'));
 
+        $detallesAgrupados = [];
+        foreach ($detalles as $detalle) {
+            $producto = $detalle['producto'];
+            if (!isset($detallesAgrupados[$producto])) {
+                $detallesAgrupados[$producto] = [];
+            }
+            $detallesAgrupados[$producto][] = $detalle;
+        }
+
         return $this->render('estadisticas/produccion_por_producto.html.twig', [
             'resultados' => $resultados,
+            'detalles_agrupados' => $detallesAgrupados,
             'desde' => $desde,
             'hasta' => $hasta,
             'total_general' => $totalGeneral,
