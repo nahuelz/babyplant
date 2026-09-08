@@ -23,7 +23,13 @@
                                 <td>{{ item.cliente_apellido }} {{ item.cliente_nombre }}</td>
                                 <td>{{ item.producto }}</td>
                                 <td>{{ item.origen_semilla }}</td>
-                                <td class="text-end">{{ item.cantidad_bandejas }}</td>
+                                <td class="text-end">
+                                    {% if item.cantidad_bandejas == item.cantidad_bandejas|round %}
+                                        {{ item.cantidad_bandejas|round }}
+                                    {% else %}
+                                        {{ item.cantidad_bandejas }}
+                                    {% endif %}
+                                </td>
                                 <td class="text-center">
                                     <a href="{{ path('remito_show', {'id': item.remito_id}) }}" class="btn btn-sm btn-primary">
                                         Ver remito
