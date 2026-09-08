@@ -1,0 +1,43 @@
+<div class="card mb-4 mt-4">
+    <div class="card-header">
+        <h5 class="mb-0">Productos entregados a valor 0</h5>
+    </div>
+    <div class="card-body">
+        {% if remitos_valor_cero is not empty %}
+            <div class="table-responsive">
+                <table class="table stats-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Cliente</th>
+                            <th>Producto</th>
+                            <th>Origen de semilla</th>
+                            <th class="text-end">Bandejas</th>
+                            <th class="text-center">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in remitos_valor_cero %}
+                            <tr>
+                                <td>{{ item.fecha_creacion|date('d/m/Y') }}</td>
+                                <td>{{ item.cliente_apellido }} {{ item.cliente_nombre }}</td>
+                                <td>{{ item.producto }}</td>
+                                <td>{{ item.origen_semilla }}</td>
+                                <td class="text-end">{{ item.cantidad_bandejas }}</td>
+                                <td class="text-center">
+                                    <a href="{{ path('remito_show', {'id': item.remito_id}) }}" class="btn btn-sm btn-primary">
+                                        Ver remito
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-custom alert-light-primary fade show" role="alert">
+                <div class="alert-text">No se encontraron productos entregados a valor 0 en el período seleccionado.</div>
+            </div>
+        {% endif %}
+    </div>
+</div>

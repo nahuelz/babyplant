@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Constants\ConstanteTipoConsulta;
+use App\Entity\Constants\ConstanteTipoUsuario;
 use App\Entity\Usuario;
 use App\Form\UsuarioType;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -206,6 +207,11 @@ class UsuarioController extends BaseController {
         $message = ($usuario->getHabilitado()) ? 'habilitó' : 'deshabilitó';
         $em->flush();
         $this->get('session')->getFlashBag()->add('success', "Se " . $message . " correctamente al usuario");
+
+        $tipoUsuario = $usuario->getTipoUsuario();
+        if ($tipoUsuario && $tipoUsuario->getId() == ConstanteTipoUsuario::CLIENTE) {
+            return $this->redirectToRoute('cliente_index');
+        }
 
         return $this->redirectToRoute('usuario_index');
     }

@@ -350,13 +350,52 @@ class EstadisticasController extends AbstractController
             $estadistica['fecha'] = $fecha;
         }
 
+        // Obtener productos entregados a valor 0 dentro de remitos
+        $sqlValorCero = '
+            SELECT
+                r.id AS remito_id,
+                r.fecha_creacion,
+                c.nombre AS cliente_nombre,
+                c.apellido AS cliente_apellido,
+                tp.nombre AS producto,
+                COALESCE(tos.nombre, \'-\') AS origen_semilla,
+                ep.cantidad_bandejas
+            FROM remito r
+            INNER JOIN entrega e ON e.id_remito = r.id
+            INNER JOIN entrega_producto ep ON ep.id_entrega = e.id
+            INNER JOIN pedido_producto pp ON pp.id = ep.id_pedido_producto
+            INNER JOIN tipo_variedad tv ON tv.id = pp.id_tipo_variedad
+            INNER JOIN tipo_sub_producto tsp ON tsp.id = tv.id_tipo_sub_producto
+            INNER JOIN tipo_producto tp ON tp.id = tsp.id_tipo_producto
+            LEFT JOIN tipo_origen_semilla tos ON tos.id = pp.id_tipo_origen_semilla
+            INNER JOIN usuario c ON c.id = r.id_cliente
+            WHERE ep.precio_unitario = 0
+              AND r.fecha_creacion BETWEEN :fechaInicio AND :fechaFin
+              AND r.fecha_baja IS NULL
+              AND e.fecha_baja IS NULL
+              AND ep.fecha_baja IS NULL
+            ORDER BY r.fecha_creacion DESC
+        ';
+
+        $stmtValorCero = $conn->prepare($sqlValorCero);
+        $resultValorCero = $stmtValorCero->executeQuery([
+            'fechaInicio' => $fechaInicio->format('Y-m-d 00:00:00'),
+            'fechaFin' => $fechaFin->format('Y-m-d 23:59:59')
+        ]);
+        $remitosValorCero = $resultValorCero->fetchAllAssociative();
+
+        foreach ($remitosValorCero as &$remitoValorCero) {
+            $remitoValorCero['fecha_creacion'] = new \DateTime($remitoValorCero['fecha_creacion']);
+        }
+
         return $this->render('estadisticas/remitos.html.twig', [
             'estadisticas' => $estadisticas,
             'fecha_inicio' => $fechaInicio,
             'fecha_fin' => $fechaFin,
             'datos_grafico' => $datosGrafico,
             'total_remitos' => array_sum($datosGrafico['cantidades']),
-            'monto_total' => array_sum($datosGrafico['montos'])
+            'monto_total' => array_sum($datosGrafico['montos']),
+            'remitos_valor_cero' => $remitosValorCero,
         ]);
     }
 
