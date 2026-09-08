@@ -30,7 +30,7 @@ class SituacionClienteController extends BaseController {
      */
     public function index(): array
     {
-        $clienteSelect = $this->getSelectService()->getClienteFilter();
+        $clienteSelect = $this->getSelectService()->getClienteFilter(true);
 
         return array(
             'clienteSelect' => $clienteSelect,

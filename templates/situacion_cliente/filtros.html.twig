@@ -11,7 +11,7 @@
                     name="reporte_filtro[cliente]">
                 <option value="">TODOS</option>
                 {% for cliente in clienteSelect %}
-                    <option value="{{ cliente.id }}">
+                    <option value="{{ cliente.id }}" data-habilitado="{{ cliente.habilitado ? '1' : '0' }}">
                         {{ cliente.nombre }} {{ cliente.razon_social }}
                     </option>
                 {% endfor %}

@@ -21,13 +21,18 @@ class SelectService {
      *
      * @return type
      */
-    public function getClienteFilter() {
+    public function getClienteFilter($incluirDeshabilitados = false) {
 
-        $sql = "SELECT x.id, CONCAT(x.apellido, ', ', x.nombre) AS nombre, IF(x.tieneRazonSocial = 1, CONCAT('(',r.razonSocial,')'),'') AS razon_social
-                FROM App\Entity\Usuario x 
+        $sql = "SELECT x.id, CONCAT(x.apellido, ', ', x.nombre) AS nombre, IF(x.tieneRazonSocial = 1, CONCAT('(',r.razonSocial,')'),'') AS razon_social, x.habilitado as habilitado
+                FROM App\Entity\Usuario x
                 LEFT JOIN x.razonSocial r
-                WHERE x.fechaBaja IS NULL AND x.tipoUsuario = 1 AND x.habilitado = 1
-                ORDER BY x.apellido ASC";
+                WHERE x.fechaBaja IS NULL AND x.tipoUsuario = 1";
+
+        if (!$incluirDeshabilitados) {
+            $sql .= " AND x.habilitado = 1";
+        }
+
+        $sql .= " ORDER BY x.apellido ASC";
 
         $query = $this->em->createQuery($sql);
         return $query->getResult();

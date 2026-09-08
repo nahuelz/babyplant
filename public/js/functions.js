@@ -388,6 +388,20 @@ function checkTabError() {
 
 function initClienteSelect2(){
     $("select[id$='_cliente'].select2-hidden-accessible").select2({
+        templateResult: function(data) {
+            if (!data.id) return data.text;
+            if ($(data.element).data('habilitado') == '0') {
+                return $('<span class="select2-option-deshabilitado">' + data.text + '</span>');
+            }
+            return data.text;
+        },
+        templateSelection: function(data) {
+            if (!data.id) return data.text;
+            if ($(data.element).data('habilitado') == '0') {
+                return $('<span class="select2-option-deshabilitado">' + data.text + '</span>');
+            }
+            return data.text;
+        },
         matcher: function (params, data) {
             // Si no hay término de búsqueda, mostrar toodo
             if ($.trim(params.term) === '') {
