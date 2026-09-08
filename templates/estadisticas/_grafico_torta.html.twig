@@ -7,91 +7,178 @@
     </div>
     <div class="card-body">
         <div id="graficoTorta" style="height: 400px;"></div>
+        <div id="graficoTortaSubProducto" style="height: 400px; display: none;"></div>
     </div>
 </div>
 
-{% block javascripts %}
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var chartDom = document.getElementById('graficoTorta');
-            var myChart = echarts.init(chartDom);
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var chartDom = document.getElementById('graficoTorta');
+        var myChart = echarts.init(chartDom);
 
-            // Preparar datos para el gráfico
-            var data = [
-                {% for producto in productos %}
-                {
-                    value: {{ producto.cantidad }},
-                    name: '{{ producto.producto }}',
-                    itemStyle: {
-                        color: '{{ producto.color }}',
-                    }
-                }{% if not loop.last %},{% endif %}
-                {% endfor %}
-            ];
-
-            // Opciones del gráfico
-            var option = {
-                tooltip: {
-                    trigger: 'item',
-                    formatter: '{a} <br/>{b}: {c} ({d}%)'
-                },
-                legend: {
-                    type: 'scroll',
-                    orient: 'vertical',
-                    right: 10,
-                    top: 'center',
-                    data: data.map(function (item) {
-                        return item.name;
-                    })
-                },
-                series: [
-                    {
-                        name: '',
-                        type: 'pie',
-                        radius: ['40%', '70%'],
-                        avoidLabelOverlap: false,
-                        itemStyle: {
-                            borderRadius: 10,
-                            borderColor: '#fff',
-                            borderWidth: 2
-                        },
-                        label: {
-                            show: false,
-                            position: 'center'
-                        },
-                        emphasis: {
-                            label: {
-                                show: true,
-                                fontSize: '18',
-                                fontWeight: 'bold'
-                            }
-                        },
-                        labelLine: {
-                            show: false
-                        },
-                        data: data
-                    }
-                ]
-            };
-
-            // Función para generar colores aleatorios
-            function getRandomColor() {
-                var letters = '0123456789ABCDEF';
-                var color = '#';
-                for (var i = 0; i < 6; i++) {
-                    color += letters[Math.floor(Math.random() * 16)];
+        // Preparar datos para el gráfico
+        var data = [
+            {% for producto in productos %}
+            {
+                value: {{ producto.cantidad }},
+                name: '{{ producto.producto }}',
+                id: {{ producto.tipo_producto_id }},
+                itemStyle: {
+                    color: '{{ producto.color }}',
                 }
-                return color;
-            }
+            }{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ];
 
-            // Aplicar opciones
-            option && myChart.setOption(option);
+        // Opciones del gráfico
+        var option = {
+            tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b}: {c} ({d}%)'
+            },
+            legend: {
+                type: 'scroll',
+                orient: 'vertical',
+                right: 10,
+                top: 'center',
+                data: data.map(function (item) {
+                    return item.name;
+                })
+            },
+            series: [
+                {
+                    name: '',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                        borderRadius: 10,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: '18',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
+                        show: false
+                    },
+                    data: data
+                }
+            ]
+        };
 
-            // Redimensionar el gráfico cuando cambie el tamaño de la ventana
-            window.addEventListener('resize', function() {
-                myChart.resize();
-            });
+        // Aplicar opciones
+        option && myChart.setOption(option);
+
+        // Redimensionar el gráfico cuando cambie el tamaño de la ventana
+        window.addEventListener('resize', function() {
+            myChart.resize();
         });
-    </script>
-{% endblock %}
+
+        // Clic en una porción para ver el detalle por subproducto
+        myChart.on('click', function(params) {
+            cargarGraficoSubProductos(params.data.id, params.data.name);
+        });
+    });
+
+    function cargarGraficoSubProductos(tipoProductoId, nombreProducto) {
+        var fechaInicio = document.getElementById('fecha_inicio').value;
+        var fechaFin = document.getElementById('fecha_fin').value;
+
+        function toIso(fecha) {
+            var partes = fecha.split('/');
+            return partes[2] + '-' + partes[1] + '-' + partes[0];
+        }
+
+        var url = '{{ path('estadisticas_entregas_subproductos', {id: '__ID__'}) }}'.replace('__ID__', tipoProductoId)
+            + '?fecha_inicio=' + encodeURIComponent(toIso(fechaInicio))
+            + '&fecha_fin=' + encodeURIComponent(toIso(fechaFin));
+
+        fetch(url)
+            .then(function(response) { return response.json(); })
+            .then(function(resultados) {
+                mostrarGraficoSubProductos(resultados, nombreProducto);
+            });
+    }
+
+    function mostrarGraficoSubProductos(resultados, nombreProducto) {
+        var chartDom = document.getElementById('graficoTortaSubProducto');
+        chartDom.style.display = 'block';
+
+        var myChartSub = echarts.init(chartDom);
+
+        var chartData = resultados.map(function(item) {
+            var d = {
+                value: item.cantidad,
+                name: item.producto
+            };
+            if (item.color) {
+                d.itemStyle = { color: item.color };
+            }
+            return d;
+        });
+
+        var option = {
+            title: {
+                text: nombreProducto + ' - Distribución por subproducto',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b}: {c} ({d}%)'
+            },
+            legend: {
+                type: 'scroll',
+                orient: 'vertical',
+                right: 10,
+                top: 'center',
+                data: chartData.map(function (item) {
+                    return item.name;
+                })
+            },
+            series: [
+                {
+                    name: '',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                        borderRadius: 10,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: '18',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
+                        show: false
+                    },
+                    data: chartData
+                }
+            ]
+        };
+
+        myChartSub.setOption(option);
+
+        window.addEventListener('resize', function() {
+            myChartSub.resize();
+        });
+    }
+</script>

@@ -464,4 +464,30 @@ class EstadisticasController extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("/entregas-subproductos/{id}", name="estadisticas_entregas_subproductos")
+     */
+    public function entregasPorSubProducto(
+        int $id,
+        Request $request,
+        PedidoProductoRepository $pedidoProductoRepository
+    ): JsonResponse {
+        $fechaInicioStr = $request->query->get('fecha_inicio');
+        $fechaFinStr = $request->query->get('fecha_fin');
+
+        $fechaInicio = $fechaInicioStr ? \DateTime::createFromFormat('Y-m-d', $fechaInicioStr) : (new \DateTime())->modify('-30 days');
+        $fechaFin = $fechaFinStr ? \DateTime::createFromFormat('Y-m-d', $fechaFinStr) : new \DateTime();
+
+        if (!$fechaInicio || !$fechaFin) {
+            return new JsonResponse(['error' => 'Formato de fecha inválido'], 400);
+        }
+
+        $fechaInicio->setTime(0, 0, 0);
+        $fechaFin->setTime(23, 59, 59);
+
+        $productos = $pedidoProductoRepository->getSubProductosMasVendidos($fechaInicio, $fechaFin, $id, 50);
+
+        return new JsonResponse($productos);
+    }
+
 }

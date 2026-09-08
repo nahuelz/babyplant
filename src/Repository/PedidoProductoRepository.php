@@ -249,4 +249,37 @@ class PedidoProductoRepository extends ServiceEntityRepository {
             ->getArrayResult();
     }
 
+    public function getSubProductosMasVendidos(\DateTimeInterface $fechaInicio, \DateTimeInterface $fechaFin, int $tipoProductoId, int $limite = 10): array
+    {
+        $queryBuilder = $this->createQueryBuilder('pp')
+            ->select([
+                'tsp.nombre as producto',
+                'SUM(ep.cantidadBandejas) as cantidad',
+                'COUNT(DISTINCT ep.id) as total_ventas',
+                'tp.color as color',
+                'tsp.id as tipo_sub_producto_id'
+            ])
+            ->join('pp.pedido', 'p')
+            ->join('pp.tipoVariedad', 'tv')
+            ->join('tv.tipoSubProducto', 'tsp')
+            ->join('tsp.tipoProducto', 'tp')
+            ->join('pp.estado', 'e')
+            ->leftJoin('pp.entregasProductos', 'ep')
+            ->where('ep.fechaCreacion BETWEEN :fechaInicio AND :fechaFin')
+            ->andWhere('e.id IN (:estados)')
+            ->andWhere('p.fechaBaja IS NULL AND pp.fechaBaja IS NULL')
+            ->andWhere('tp.id = :tipoProductoId')
+            ->setParameter('fechaInicio', $fechaInicio->format('Y-m-d 00:00:00'))
+            ->setParameter('fechaFin', $fechaFin->format('Y-m-d 23:59:59'))
+            ->setParameter('estados', [ConstanteEstadoPedidoProducto::ENTREGADO, ConstanteEstadoPedidoProducto::ENTREGADO_PARCIAL])
+            ->setParameter('tipoProductoId', $tipoProductoId)
+            ->groupBy('tsp.id, tsp.nombre')
+            ->orderBy('cantidad', 'DESC')
+            ->setMaxResults($limite);
+
+        $query = $queryBuilder->getQuery();
+
+        return $query->getResult();
+    }
+
 }
