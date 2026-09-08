@@ -4,8 +4,11 @@
     </div>
     <div class="card-body">
         {% if remitos_valor_cero is not empty %}
+            <div class="form-group mb-3">
+                <input type="text" class="form-control" id="filtroProductosValorCero" placeholder="Filtrar...">
+            </div>
             <div class="table-responsive">
-                <table class="table stats-table">
+                <table class="table stats-table" id="tablaProductosValorCero">
                     <thead>
                         <tr>
                             <th>Fecha</th>
@@ -24,14 +27,14 @@
                                 <td>{{ item.cliente_apellido }} {{ item.cliente_nombre }}</td>
                                 <td>{{ item.producto }}</td>
                                 <td>{{ item.origen_semilla }}</td>
-                                <td class="text-end">
+                                <td class="text-end td-bandeja">
                                     {% if item.cantidad_bandejas == item.cantidad_bandejas|round %}
                                         {{ item.cantidad_bandejas|round }}
                                     {% else %}
                                         {{ item.cantidad_bandejas }}
                                     {% endif %}
                                 </td>
-                                <td class="text-end">
+                                <td class="text-end td-planta">
                                     {% if item.total_plantas == item.total_plantas|round %}
                                         {{ item.total_plantas|round }}
                                     {% else %}
@@ -46,36 +49,59 @@
                             </tr>
                         {% endfor %}
                     </tbody>
-                    {% if remitos_valor_cero is not empty %}
-                        {% set totalBandejas = 0 %}
-                        {% set totalPlantas = 0 %}
-                        {% for item in remitos_valor_cero %}
-                            {% set totalBandejas = totalBandejas + item.cantidad_bandejas %}
-                            {% set totalPlantas = totalPlantas + item.total_plantas %}
-                        {% endfor %}
-                        <tfoot class="table-light">
-                            <tr>
-                                <th colspan="4" class="text-end">Totales</th>
-                                <th class="text-end">
-                                    {% if totalBandejas == totalBandejas|round %}
-                                        {{ totalBandejas|round }}
-                                    {% else %}
-                                        {{ totalBandejas }}
-                                    {% endif %}
-                                </th>
-                                <th class="text-end">
-                                    {% if totalPlantas == totalPlantas|round %}
-                                        {{ totalPlantas|round }}
-                                    {% else %}
-                                        {{ totalPlantas }}
-                                    {% endif %}
-                                </th>
-                                <th></th>
-                            </tr>
-                        </tfoot>
-                    {% endif %}
+                    <tfoot class="table-light">
+                        <tr>
+                            <th colspan="4" class="text-end">Totales</th>
+                            <th class="text-end"><span id="totalBandejasFiltradas">0</span></th>
+                            <th class="text-end"><span id="totalPlantasFiltradas">0</span></th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    var input = document.getElementById('filtroProductosValorCero');
+                    var tabla = document.getElementById('tablaProductosValorCero');
+                    if (input && tabla) {
+                        input.addEventListener('keyup', function() {
+                            var value = this.value.toLowerCase();
+                            var rows = tabla.querySelectorAll('tbody tr');
+                            rows.forEach(function(row) {
+                                row.style.display = row.textContent.toLowerCase().indexOf(value) > -1 ? '' : 'none';
+                            });
+                            calcularTotales();
+                        });
+                        calcularTotales();
+                    }
+
+                    function calcularTotales() {
+                        var totalBandejas = 0;
+                        var totalPlantas = 0;
+                        var rowsVisibles = tabla.querySelectorAll('tbody tr:not([style*="display: none"])');
+                        rowsVisibles.forEach(function(row) {
+                            var bandeja = row.querySelector('.td-bandeja');
+                            var planta = row.querySelector('.td-planta');
+                            if (bandeja) {
+                                totalBandejas += parseFloat(bandeja.textContent.replace(',', '.')) || 0;
+                            }
+                            if (planta) {
+                                totalPlantas += parseFloat(planta.textContent.replace(',', '.')) || 0;
+                            }
+                        });
+                        document.getElementById('totalBandejasFiltradas').textContent = formatearNumero(totalBandejas);
+                        document.getElementById('totalPlantasFiltradas').textContent = formatearNumero(totalPlantas);
+                    }
+
+                    function formatearNumero(num) {
+                        if (num === Math.round(num)) {
+                            return num.toString();
+                        }
+                        return num.toString().replace('.', ',');
+                    }
+                });
+            </script>
         {% else %}
             <div class="alert alert-custom alert-light-primary fade show" role="alert">
                 <div class="alert-text">No se encontraron productos entregados a valor 0 en el período seleccionado.</div>
