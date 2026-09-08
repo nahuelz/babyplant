@@ -38,6 +38,25 @@
                             </tr>
                         {% endfor %}
                     </tbody>
+                    {% if remitos_valor_cero is not empty %}
+                        {% set totalBandejas = 0 %}
+                        {% for item in remitos_valor_cero %}
+                            {% set totalBandejas = totalBandejas + item.cantidad_bandejas %}
+                        {% endfor %}
+                        <tfoot class="table-light">
+                            <tr>
+                                <th colspan="4" class="text-end">Total bandejas</th>
+                                <th class="text-end">
+                                    {% if totalBandejas == totalBandejas|round %}
+                                        {{ totalBandejas|round }}
+                                    {% else %}
+                                        {{ totalBandejas }}
+                                    {% endif %}
+                                </th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    {% endif %}
                 </table>
             </div>
         {% else %}
