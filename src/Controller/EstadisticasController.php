@@ -443,10 +443,13 @@ class EstadisticasController extends AbstractController
 
         $resultados = $pedidoProductoRepository->getProduccionPorProducto($desde, $hasta);
 
+        $totalGeneral = array_sum(array_column($resultados, 'totalPlantas'));
+
         return $this->render('estadisticas/produccion_por_producto.html.twig', [
             'resultados' => $resultados,
             'desde' => $desde,
             'hasta' => $hasta,
+            'total_general' => $totalGeneral,
         ]);
     }
 

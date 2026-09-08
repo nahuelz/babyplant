@@ -63,16 +63,15 @@
                             </td>
                         </tr>
                     {% else %}
-                        {% set total = 0 %}
                         {% for row in resultados %}
-                            {% set total = total + row.totalPlantas %}
+                            {% set porcentaje = total_general > 0 ? (row.totalPlantas / total_general) * 100 : 0 %}
                             <tr>
                                 <td>
                                     <strong>{{ row.producto }}</strong>
                                 </td>
                                 <td class="text-end">
                                 <span class="badge bg-success fs-6">
-                                    {{ row.totalPlantas|round|number_format(0, ",", ".") }}
+                                    {{ row.totalPlantas|round|number_format(0, ",", ".") }} ({{ porcentaje|number_format(2, ",", ".") }}%)
                                 </span>
                                 </td>
                             </tr>
@@ -85,7 +84,7 @@
                         <tr>
                             <th>Total general</th>
                             <th class="text-end">
-                                {{ total|round|number_format(0, ",", ".") }}
+                                {{ total_general|round|number_format(0, ",", ".") }}
                             </th>
                         </tr>
                         </tfoot>
