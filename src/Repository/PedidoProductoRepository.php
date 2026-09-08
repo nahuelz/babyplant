@@ -65,11 +65,11 @@ class PedidoProductoRepository extends ServiceEntityRepository {
     {
         $queryBuilder = $this->createQueryBuilder('pp')
             ->select([
-                "CONCAT(tp.nombre,' ',tsp.nombre,' ',tv.nombre) as producto",
+                'tp.nombre as producto',
                 'SUM(ep.cantidadBandejas) as cantidad',
                 'COUNT(DISTINCT ep.id) as total_ventas',
                 'tp.color as color',
-                'tv.id as tipo_variedad_id'
+                'tp.id as tipo_producto_id'
             ])
             ->join('pp.pedido', 'p')
             ->join('pp.tipoVariedad', 'tv')
@@ -79,20 +79,17 @@ class PedidoProductoRepository extends ServiceEntityRepository {
             ->leftJoin('pp.entregasProductos', 'ep')
             ->where('ep.fechaCreacion BETWEEN :fechaInicio AND :fechaFin')
             ->andWhere('e.id IN (:estados)')
-            ->andWhere('p.fechaBaja IS NULL AND pp.fechaBaja IS NULL') // Cambiado a IS NULL para registros activos
+            ->andWhere('p.fechaBaja IS NULL AND pp.fechaBaja IS NULL')
             ->setParameter('fechaInicio', $fechaInicio->format('Y-m-d 00:00:00'))
             ->setParameter('fechaFin', $fechaFin->format('Y-m-d 23:59:59'))
             ->setParameter('estados', [ConstanteEstadoPedidoProducto::ENTREGADO, ConstanteEstadoPedidoProducto::ENTREGADO_PARCIAL])
-            ->groupBy('tv.id, tv.nombre')
+            ->groupBy('tp.id, tp.nombre')
             ->orderBy('cantidad', 'DESC')
             ->setMaxResults($limite);
 
-        // Obtener la consulta SQL para depuración
         $query = $queryBuilder->getQuery();
 
-        // Ejecutar y obtener resultados
         return $query->getResult();
-
     }
 
     public function getPedidosAtrasados($idEstado) {
