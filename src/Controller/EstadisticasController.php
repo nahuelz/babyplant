@@ -359,11 +359,13 @@ class EstadisticasController extends AbstractController
                 c.apellido AS cliente_apellido,
                 tp.nombre AS producto,
                 COALESCE(tos.nombre, \'-\') AS origen_semilla,
-                ep.cantidad_bandejas
+                ep.cantidad_bandejas,
+                (ep.cantidad_bandejas * tb.nombre) AS total_plantas
             FROM remito r
             INNER JOIN entrega e ON e.id_remito = r.id
             INNER JOIN entrega_producto ep ON ep.id_entrega = e.id
             INNER JOIN pedido_producto pp ON pp.id = ep.id_pedido_producto
+            INNER JOIN tipo_bandeja tb ON tb.id = pp.id_tipo_bandeja
             INNER JOIN tipo_variedad tv ON tv.id = pp.id_tipo_variedad
             INNER JOIN tipo_sub_producto tsp ON tsp.id = tv.id_tipo_sub_producto
             INNER JOIN tipo_producto tp ON tp.id = tsp.id_tipo_producto

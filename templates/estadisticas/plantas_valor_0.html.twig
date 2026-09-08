@@ -13,6 +13,7 @@
                             <th>Producto</th>
                             <th>Origen de semilla</th>
                             <th class="text-end">Bandejas</th>
+                            <th class="text-end">Total plantas</th>
                             <th class="text-center">Acción</th>
                         </tr>
                     </thead>
@@ -30,6 +31,13 @@
                                         {{ item.cantidad_bandejas }}
                                     {% endif %}
                                 </td>
+                                <td class="text-end">
+                                    {% if item.total_plantas == item.total_plantas|round %}
+                                        {{ item.total_plantas|round }}
+                                    {% else %}
+                                        {{ item.total_plantas }}
+                                    {% endif %}
+                                </td>
                                 <td class="text-center">
                                     <a href="{{ path('remito_show', {'id': item.remito_id}) }}" class="btn btn-sm btn-primary">
                                         Ver remito
@@ -40,17 +48,26 @@
                     </tbody>
                     {% if remitos_valor_cero is not empty %}
                         {% set totalBandejas = 0 %}
+                        {% set totalPlantas = 0 %}
                         {% for item in remitos_valor_cero %}
                             {% set totalBandejas = totalBandejas + item.cantidad_bandejas %}
+                            {% set totalPlantas = totalPlantas + item.total_plantas %}
                         {% endfor %}
                         <tfoot class="table-light">
                             <tr>
-                                <th colspan="4" class="text-end">Total bandejas</th>
+                                <th colspan="4" class="text-end">Totales</th>
                                 <th class="text-end">
                                     {% if totalBandejas == totalBandejas|round %}
                                         {{ totalBandejas|round }}
                                     {% else %}
                                         {{ totalBandejas }}
+                                    {% endif %}
+                                </th>
+                                <th class="text-end">
+                                    {% if totalPlantas == totalPlantas|round %}
+                                        {{ totalPlantas|round }}
+                                    {% else %}
+                                        {{ totalPlantas }}
                                     {% endif %}
                                 </th>
                                 <th></th>
