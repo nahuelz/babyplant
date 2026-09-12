@@ -53,4 +53,9 @@ class ConstanteTipoMovimiento
      * PAGO_FACTURA
      */
     const PAGO_FACTURA = 9;
+
+    /**
+     * CREDITO REVENTA
+     */
+    const CREDITO_REVENTA = 10;
 }

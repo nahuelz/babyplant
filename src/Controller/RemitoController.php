@@ -6,15 +6,20 @@ use App\Entity\Constants\ConstanteAPI;
 use App\Entity\Constants\ConstanteEstadoEntrega;
 use App\Entity\Constants\ConstanteEstadoEntregaProducto;
 use App\Entity\Constants\ConstanteEstadoRemito;
+use App\Entity\Constants\ConstanteEstadoReventa;
 use App\Entity\Constants\ConstanteTipoDescuento;
 use App\Entity\EntregaProducto;
 use App\Entity\EstadoEntrega;
 use App\Entity\EstadoEntregaProducto;
 use App\Entity\EstadoRemito;
+use App\Entity\EstadoReventa;
 use App\Entity\Remito;
+use App\Entity\Reventa;
+use App\Entity\TipoDescuento;
 use App\Entity\Usuario;
 use App\Form\RemitoType;
 use App\Repository\EntregaRepository;
+use App\Service\SituacionClienteService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Exception;
@@ -136,37 +141,69 @@ class RemitoController extends BaseController {
      * @Template("remito/new.html.twig")
      * @IsGranted("ROLE_REMITO")
      */
-    public function createAction(Request $request) {
+    public function createAction(Request $request, SituacionClienteService $situacionClienteService) {
         $em = $this->doctrine->getManager();
-        $remito = new Remito();
-        $form = $this->createForm(RemitoType::class, $remito);
-        $form->handleRequest($request);
-        $remito = $this->remitoSetData($request, $remito, $em);
-        $estadoRemito = $em->getRepository(EstadoRemito::class)->findOneByCodigoInterno(ConstanteEstadoRemito::PENDIENTE);
-        $this->estadoService->cambiarEstadoRemito($remito, $estadoRemito, 'REMITO CREADO.');
-        $estadoEntrega = $em->getRepository(EstadoEntrega::class)->findOneByCodigoInterno(ConstanteEstadoEntrega::CON_REMITO);
-        foreach ($remito->getEntregas() as $entrega) {
-            if ($entrega->isEntregado()){
-                $estadoEntrega = $em->getRepository(EstadoEntrega::class)->findOneByCodigoInterno(ConstanteEstadoEntrega::ENTREGADO_CON_REMITO);
+        $em->beginTransaction();
+
+        try {
+            $remito = new Remito();
+            $form = $this->createForm(RemitoType::class, $remito);
+            $form->handleRequest($request);
+            $remito = $this->remitoSetData($request, $remito, $em);
+            $situacionClienteService->crearCuentasCorrientesFaltantes($remito->getCliente(), false);
+            $cuentaCorriente = $remito->getCliente()->getCuentaCorrienteUsuario();
+
+            $estadoRemito = $em->getRepository(EstadoRemito::class)->findOneByCodigoInterno(ConstanteEstadoRemito::PENDIENTE);
+            if ($estadoRemito === null) {
+                throw new \DomainException('No se encontró el estado de remito PENDIENTE por código interno.');
             }
-            $this->estadoService->cambiarEstadoEntrega($entrega, $estadoEntrega, 'REMITO CREADO.');
-            foreach ($entrega->getEntregasProductos() as $entregaProducto) {
-                $entregaProducto->setMontoPendiente($entregaProducto->getMontoTotalConDescuento());
-                if ($entregaProducto->getMontoPendiente() == 0){
-                    $estadoEntregaProducto = $em->getRepository(EstadoEntregaProducto::class)->findOneByCodigoInterno(ConstanteEstadoEntregaProducto::PAGO);
-                    $this->estadoService->cambiarEstadoEntregaProducto($entregaProducto, $estadoEntregaProducto, 'PAGO.');
+            $this->estadoService->cambiarEstadoRemito($remito, $estadoRemito, 'REMITO CREADO.');
+            $estadoEntrega = $em->getRepository(EstadoEntrega::class)->findOneByCodigoInterno(ConstanteEstadoEntrega::CON_REMITO);
+            foreach ($remito->getEntregas() as $entrega) {
+                if ($entrega->isEntregado()){
+                    $estadoEntrega = $em->getRepository(EstadoEntrega::class)->findOneByCodigoInterno(ConstanteEstadoEntrega::ENTREGADO_CON_REMITO);
+                }
+                $this->estadoService->cambiarEstadoEntrega($entrega, $estadoEntrega, 'REMITO CREADO.');
+                foreach ($entrega->getEntregasProductos() as $entregaProducto) {
+                    $entregaProducto->setMontoPendiente($entregaProducto->getMontoTotalConDescuento());
+                    if ($entregaProducto->isEsReventa()) {
+                        $reventa = $em->getRepository(Reventa::class)->findOneBy(['entregaProducto' => $entregaProducto]);
+                        if ($reventa) {
+                            $estadoReventa = $em->getRepository(EstadoReventa::class)->findOneByCodigoInterno(ConstanteEstadoReventa::ENTREGADA_CON_REMITO);
+                            $this->estadoService->cambiarEstadoReventa($reventa, $estadoReventa, 'Remito creado.');
+                        }
+                    }
+                    if ($entregaProducto->getMontoPendiente() == 0){
+                        $estadoEntregaProducto = $em->getRepository(EstadoEntregaProducto::class)->findOneByCodigoInterno(ConstanteEstadoEntregaProducto::PAGO);
+                        $this->estadoService->cambiarEstadoEntregaProducto($entregaProducto, $estadoEntregaProducto, 'PAGO.');
+                    }
                 }
             }
+
+            if ($remito->getEstado() === null || $remito->getEstado()->getId() === null) {
+                throw new \DomainException('El estado del remito no tiene un ID persistido.');
+            }
+            foreach ($remito->getHistoricoEstados() as $historicoEstado) {
+                if ($historicoEstado->getEstado() === null || $historicoEstado->getEstado()->getId() === null) {
+                    throw new \DomainException('Un histórico del remito tiene un estado sin ID persistido.');
+                }
+            }
+
+            $totalDeuda = $cuentaCorriente->getPendiente() + $remito->getTotalConDescuento();
+            $remito->setTotalDeuda($totalDeuda);
+            $remito->setSaldoCuentaCorriente($cuentaCorriente->getSaldo());
+            if ($remito->getTotalConDescuento() == 0){
+                $estadoRemito = $em->getRepository(EstadoRemito::class)->findOneByCodigoInterno(ConstanteEstadoRemito::PAGO);
+                $this->estadoService->cambiarEstadoRemito($remito, $estadoRemito, 'REMITO MONTO 0.');
+            }
+
+            $em->persist($remito);
+            $em->flush();
+            $em->commit();
+        } catch (\Throwable $e) {
+            $em->rollback();
+            throw $e;
         }
-        $totalDeuda = $remito->getCliente()->getCuentaCorrienteUsuario()->getPendiente() + $remito->getTotalConDescuento();
-        $remito->setTotalDeuda($totalDeuda);
-        $remito->setSaldoCuentaCorriente($remito->getCliente()->getCuentaCorrienteUsuario()->getSaldo());
-        if ($remito->getTotalConDescuento() == 0){
-            $estadoRemito = $em->getRepository(EstadoRemito::class)->findOneByCodigoInterno(ConstanteEstadoRemito::PAGO);
-            $this->estadoService->cambiarEstadoRemito($remito, $estadoRemito, 'REMITO MONTO 0.');
-        }
-        $em->persist($remito);
-        $em->flush();
 
         $response = new Response();
         $response->setContent(json_encode(array(
@@ -178,7 +215,6 @@ class RemitoController extends BaseController {
         )));
 
         return $response;
-
     }
 
     /**
@@ -411,13 +447,34 @@ class RemitoController extends BaseController {
 
         $estadoCancelado = $em->getRepository(EstadoRemito::class)->find(ConstanteEstadoRemito::CANCELADO);
 
+        foreach ($remito->getEntregas() as $entrega) {
+            foreach ($entrega->getEntregasProductos() as $entregaProducto) {
+                if (!$entregaProducto->isEsReventa()) {
+                    continue;
+                }
+                $reventa = $em->getRepository(Reventa::class)->findOneBy(['entregaProducto' => $entregaProducto]);
+                if ($reventa && $reventa->tieneDistribucionSaldo()) {
+                    $this->addFlash('error', 'No se puede cancelar el remito porque la Reventa N° ' . $reventa->getId() . ' ya fue distribuida.');
+                    return $this->redirectToRoute('remito_index');
+                }
+            }
+        }
+
         $this->estadoService->cambiarEstadoRemito($remito, $estadoCancelado, 'CANCELADO.');
 
         foreach ($remito->getEntregas() as $entrega) {
             $estadoSinRemito = $em->getRepository(EstadoEntrega::class)->find(ConstanteEstadoEntrega::SIN_REMITO);
             $this->estadoService->cambiarEstadoEntrega($entrega, $estadoSinRemito, 'Remito cancelado, vuelve a estado "SIN REMITO"');
+            foreach ($entrega->getEntregasProductos() as $entregaProducto) {
+                if ($entregaProducto->isEsReventa()) {
+                    $reventa = $em->getRepository(Reventa::class)->findOneBy(['entregaProducto' => $entregaProducto]);
+                    if ($reventa) {
+                        $estadoReventa = $em->getRepository(EstadoReventa::class)->findOneByCodigoInterno(ConstanteEstadoReventa::ENTREGADA_SIN_REMITO);
+                        $this->estadoService->cambiarEstadoReventa($reventa, $estadoReventa, 'Remito N° ' . $remito->getId() . ' cancelado.');
+                    }
+                }
+            }
         }
-
         $em->flush();
 
         $this->addFlash('success', 'El remito fue cancelado correctamente.');
@@ -431,8 +488,11 @@ class RemitoController extends BaseController {
 
     private function remitoSetData(Request $request, $entity, $em): Remito
     {
-        $entregas = $request->request->get('remito')['entregas'];
-        $tipoDescuento = $request->request->get('remito')['tipoDescuento'];
+        $datosRemito = $request->request->get('remito');
+        $entregas = $datosRemito['entregas'];
+        $tipoDescuentoId = $datosRemito['tipoDescuento'] ?? null;
+        $tipoDescuento = $tipoDescuentoId ? $em->getRepository(TipoDescuento::class)->find($tipoDescuentoId) : null;
+        $entity->setTipoDescuento($tipoDescuento);
         $cantidadDescuento = 0;
         for($i = 0; $i < count($entregas); ++$i) {
             $entrega = $entregas[$i]['entrega'];
@@ -441,15 +501,26 @@ class RemitoController extends BaseController {
                 /* @var EntregaProducto $entregaProductoEntity */
                 $entregaProductoEntity = $em->getRepository('App\Entity\EntregaProducto')->find($entregasProductos[$x]['entregaProducto']);
                 $entregaProductoEntity->setPrecioUnitario($entregasProductos[$x]['precioUnitario']);
-                $entregaProductoEntity->setCantidadDescuento($entregasProductos[$x]['montoDescuento']);
+                if ($entregaProductoEntity->isEsReventa()) {
+                    $reventa = $em->getRepository(Reventa::class)->findOneBy(['entregaProducto' => $entregaProductoEntity]);
+                    if ($reventa) {
+                        $reventa->setPrecioUnitario($entregasProductos[$x]['precioUnitario']);
+                    }
+                }
+                $montoDescuento = max(0, (float) ($entregasProductos[$x]['montoDescuento'] ?? 0));
+                $montoDescuento = min($montoDescuento, (float) $entregaProductoEntity->getPrecioSubTotal());
+                $entregaProductoEntity->setCantidadDescuento($montoDescuento);
                 $entity->addEntrega($entregaProductoEntity->getEntrega());
                 $cantidadDescuento+=$entregaProductoEntity->getCantidadDescuento();
             }
         }
-        if ($tipoDescuento == ConstanteTipoDescuento::DESCUENTO_FIJO){
+        if ($tipoDescuento && $tipoDescuento->getCodigoInterno() == ConstanteTipoDescuento::DESCUENTO_FIJO){
             $entity->setCantidadDescuento($cantidadDescuento);
+        } elseif ($tipoDescuento) {
+            $entity->setCantidadDescuento(max(0, min(100, (float) ($datosRemito['cantidadDescuento'] ?? 0))));
+        } else {
+            $entity->setCantidadDescuento(0);
         }
-
         return $entity;
     }
 

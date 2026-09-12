@@ -88,20 +88,6 @@ class ReventaType extends AbstractType {
                     'pattern' => '[0-9]+([,][0-9]+)?'
                 )
             ))
-            ->add('precioUnitario', NumberType::class, array(
-                'required' => false,
-                'label' => 'Precio Unitario',
-                'scale' => 2,
-                'html5' => true,
-                'attr' => array(
-                    'placeholder' => 'Escriba el precio por bandeja (ej: 150,00)',
-                    'min' => 0,
-                    'step' => 0.01,
-                    'class' => 'form-control',
-                    'inputmode' => 'decimal',
-                    'pattern' => '[0-9]+([,][0-9]+)?'
-                )
-            ))
             ->add('fechaReventa', DateType::class, array(
                 'widget' => 'single_text',
                 'html5' => false,

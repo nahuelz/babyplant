@@ -57,7 +57,7 @@ class Remito {
      * @ORM\ManyToOne(targetEntity=EstadoRemito::class)
      * @ORM\JoinColumn(name="id_estado_remito", referencedColumnName="id", nullable=false)
      */
-    private mixed $estado;
+    private mixed $estado = null;
 
 
     /**

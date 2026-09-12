@@ -176,7 +176,7 @@ class SituacionClienteService
     /**
      * Crea cuentas corrientes faltantes para el usuario, sus pedidos y reservas
      */
-    public function crearCuentasCorrientesFaltantes(Usuario $entity): void
+    public function crearCuentasCorrientesFaltantes(Usuario $entity, bool $flush = true): void
     {
         if ($entity->getCuentaCorrienteUsuario() === null) {
             $cuentaCorrienteUsuario = new CuentaCorrienteUsuario();
@@ -203,7 +203,9 @@ class SituacionClienteService
             }
         }
 
-        $this->em->flush();
+        if ($flush) {
+            $this->em->flush();
+        }
     }
 
     /**

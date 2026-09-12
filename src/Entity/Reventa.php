@@ -89,6 +89,27 @@ class Reventa {
      */
     private mixed $estado;
 
+    /**
+     * @ORM\Column(name="monto_cliente_original", type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $montoClienteOriginal;
+
+    /**
+     * @ORM\Column(name="monto_plantinera", type="decimal", precision=10, scale=2, nullable=true)
+     */
+    private $montoPlantinera;
+
+    /**
+     * @ORM\Column(name="fecha_distribucion", type="datetime", nullable=true)
+     */
+    private $fechaDistribucion;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Movimiento::class)
+     * @ORM\JoinColumn(name="id_movimiento_distribucion", referencedColumnName="id", nullable=true)
+     */
+    private $movimientoDistribucion;
+
     public function __construct()
     {
         $this->historicoEstados = new ArrayCollection();
@@ -265,5 +286,55 @@ class Reventa {
             return $this->precioUnitario * $this->cantidadBandejas;
         }
         return null;
+    }
+
+    public function getMontoClienteOriginal(): mixed
+    {
+        return $this->montoClienteOriginal;
+    }
+
+    public function setMontoClienteOriginal(mixed $montoClienteOriginal): void
+    {
+        $this->montoClienteOriginal = $montoClienteOriginal;
+    }
+
+    public function getMontoPlantinera(): mixed
+    {
+        return $this->montoPlantinera;
+    }
+
+    public function setMontoPlantinera(mixed $montoPlantinera): void
+    {
+        $this->montoPlantinera = $montoPlantinera;
+    }
+
+    public function getFechaDistribucion(): mixed
+    {
+        return $this->fechaDistribucion;
+    }
+
+    public function setFechaDistribucion(mixed $fechaDistribucion): void
+    {
+        $this->fechaDistribucion = $fechaDistribucion;
+    }
+
+    public function getMovimientoDistribucion(): mixed
+    {
+        return $this->movimientoDistribucion;
+    }
+
+    public function setMovimientoDistribucion(mixed $movimientoDistribucion): void
+    {
+        $this->movimientoDistribucion = $movimientoDistribucion;
+    }
+
+    public function tieneDistribucionSaldo(): bool
+    {
+        return $this->movimientoDistribucion !== null;
+    }
+
+    public function getMontoDistribuible(): float
+    {
+        return (float) ($this->entregaProducto?->getMontoTotalConDescuento() ?? 0);
     }
 }

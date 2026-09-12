@@ -9,8 +9,10 @@ use App\Service\ReventaService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -49,7 +51,6 @@ class ReventaController extends BaseController {
             $devolucion = $em->getRepository(Devolucion::class)->find($request->query->get('devolucion'));
             if ($devolucion) {
                 $entity->setDevolucion($devolucion);
-                $entity->setPrecioUnitario($devolucion->getPrecioUnitario());
             }
         }
 
@@ -133,5 +134,45 @@ class ReventaController extends BaseController {
             'historicoEstados' => $reventa->getHistoricoEstados(),
             'page_title' => 'Histórico de estados'
         );
+    }
+
+    /**
+     * @Route("/{id}/distribuir-saldo", name="reventa_distribuir_saldo", methods={"GET","POST"}, requirements={"id"="\d+"})
+     */
+    public function distribuirSaldo(Request $request, Reventa $reventa, ReventaService $reventaService): Response
+    {
+        if ($request->isMethod('GET')) {
+            $total = round($reventa->getMontoDistribuible(), 2);
+
+            return $this->render('reventa/distribuir_saldo.html.twig', [
+                'reventa' => $reventa,
+                'total' => $total,
+                'montoClienteOriginal' => round($total * 0.9, 2),
+                'montoPlantinera' => round($total - round($total * 0.9, 2), 2),
+                'token' => bin2hex(random_bytes(16)),
+            ]);
+        }
+
+        if (!$this->isCsrfTokenValid('distribuir_saldo_' . $reventa->getId(), (string) $request->request->get('_token'))) {
+            return new JsonResponse(['message' => 'El formulario expiró. Vuelva a intentarlo.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $reventaService->distribuirSaldo(
+                $reventa,
+                $this->normalizarImporte((string) $request->request->get('montoClienteOriginal')),
+                $this->normalizarImporte((string) $request->request->get('montoPlantinera')),
+                (string) $request->request->get('token')
+            );
+
+            return new JsonResponse(['message' => 'El saldo fue distribuido correctamente.']);
+        } catch (\DomainException $e) {
+            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    private function normalizarImporte(string $importe): float
+    {
+        return (float) str_replace(['.', ','], ['', '.'], $importe);
     }
 }

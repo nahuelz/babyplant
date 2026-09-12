@@ -4,7 +4,6 @@ jQuery(document).ready(function () {
     initFormValidation();
     initDevolucionSelect();
     initSubmitButton();
-    initCalculoValorTotal();
     initValidacionCantidadBandejas();
 });
 
@@ -20,8 +19,6 @@ function initDevolucionSelect() {
             $('#info_disponibles').val(datos.disponible);
             $('#info_precio_original').val('$ ' + parseFloat(datos.precio).toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
 
-            // Proponer el precio original
-            $('#reventa_precioUnitario').val(datos.precio);
         } else {
             $('#datos-devolucion').hide();
         }
@@ -86,20 +83,6 @@ function initSubmitButton() {
 
         e.stopPropagation();
     });
-}
-
-function initCalculoValorTotal() {
-    function calcularValorTotal() {
-        var cantidad = parseFloat($('#reventa_cantidadBandejas').val()) || 0;
-        var precio = parseFloat($('#reventa_precioUnitario').val()) || 0;
-        var total = cantidad * precio;
-        $('#reventa_valor_total').val('$ ' + total.toFixed(2).replace('.', ','));
-    }
-
-    $('#reventa_cantidadBandejas').on('input', calcularValorTotal);
-    $('#reventa_precioUnitario').on('input', calcularValorTotal);
-
-    calcularValorTotal();
 }
 
 function initValidacionCantidadBandejas() {

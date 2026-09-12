@@ -1,0 +1,50 @@
+<form id="form-distribuir-saldo-reventa">
+    <input type="hidden" name="_token" value="{{ csrf_token('distribuir_saldo_' ~ reventa.id) }}">
+    <input type="hidden" name="token" value="{{ token }}">
+    <input type="hidden" id="distribucion_total" value="{{ total }}">
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Reventa</label>
+                <input type="text" class="form-control" value="N° {{ reventa.id }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Remito</label>
+                <input type="text" class="form-control" value="N° {{ reventa.entrega.remito.id }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <label>Cliente original</label>
+                <input type="text" class="form-control" value="{{ reventa.clienteOriginal }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Total original de la reventa</label>
+                <input type="text" class="form-control" value="$ {{ reventa.valorTotal|number_format(2, ',', '.') }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Total distribuible con descuento</label>
+                <input type="text" class="form-control font-weight-bold" value="$ {{ total|number_format(2, ',', '.') }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="monto_cliente_original">Cuenta corriente del cliente original</label>
+                <input type="text" id="monto_cliente_original" name="montoClienteOriginal" class="form-control" value="{{ montoClienteOriginal|number_format(2, ',', '') }}" required>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="monto_plantinera">Caja de la plantinera</label>
+                <input type="text" id="monto_plantinera" name="montoPlantinera" class="form-control" value="{{ montoPlantinera|number_format(2, ',', '') }}" required>
+            </div>
+        </div>
+    </div>
+</form>

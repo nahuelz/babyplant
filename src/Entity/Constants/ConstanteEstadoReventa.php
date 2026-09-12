@@ -14,13 +14,18 @@ class ConstanteEstadoReventa {
     const PENDIENTE_ENTREGA = 1;
 
     /**
-     * ENTREGADA
+     * ENTREGADA SIN REMITO
      */
-    const ENTREGADA = 2;
+    const ENTREGADA_SIN_REMITO = 2;
 
     /**
      * CANCELADA
      */
     const CANCELADA = 3;
+
+    /**
+     * ENTREGADA CON REMITO
+     */
+    const ENTREGADA_CON_REMITO = 4;
 
 }

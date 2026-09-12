@@ -57,10 +57,10 @@ function clearMontoDescuento(){
         $('.cantidadDescuento').show();
         $('.motivoDescuento').show();
         if ($tipoDescuento === DESCUENTO_FIJO) {
-            $montosDescuento.prop('disabled', false).val('0.00');
+            $montosDescuento.prop('readonly', false).prop('disabled', false).val('0.00');
             $('.cantidadDescuento').hide();
         } else {
-            $montosDescuento.prop('disabled', true).val('0.00');
+            $montosDescuento.prop('readonly', true).prop('disabled', false).val('0.00');
         }
     } else {
         $('.cantidadDescuento').hide();
@@ -200,7 +200,6 @@ function agregarEntregaProducto(producto, indexEntrega) {
                         <td class="hidden"><input type="hidden" class="pedidoProductoId" name="remito[entregas][' + indexEntrega + '][entrega][entregasProductos][' + index + '][entrega]" value="' + idEntrega + '"></td>\n\
                         <td class="hidden"><input type="hidden" class="pedidoProductoId" name="remito[entregas][' + indexEntrega + '][entrega][entregasProductos][' + index + '][pedidoProducto]" value="' + idPedidoProducto + '"></td>\n\
                         <td class="hidden"><input type="hidden" name="remito[entregas][' + indexEntrega + '][entrega][entregasProductos][' + index + '][cantidadBandejas]" value="' + cantidadBandejas + '"></td>\n\
-                        <td class="hidden"><input type="hidden" name="remito[entregas][' + indexEntrega + '][entrega][entregasProductos][' + index + '][montoDescuento]" value="' + montoDescuento + '"></td>\n\
                         \n\
                         <td class="text-center v-middle">Entrega N° ' + idEntrega  + '</td>\n\
                         <td class="text-center v-middle">' + textPedidoProducto  + '</td>\n\
@@ -313,6 +312,9 @@ function initBaseSubmitButton() {
             });
             return false;
         }
+
+        calcularSubTotal();
+        calcularDescuento();
 
         $.post({
             url: __HOMEPAGE_PATH__ + "remito/confirmar-remito",

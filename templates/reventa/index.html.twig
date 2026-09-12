@@ -106,6 +106,16 @@
                                             <i class="la la-truck" style="margin-right: 5px;"></i> Entregar
                                         </a>
                                     {% endif %}
+                                    {% if reventa.estado and reventa.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoReventa::ENTREGADA_CON_REMITO') and not reventa.tieneDistribucionSaldo %}
+                                        <a href="#" data-href="{{ path('reventa_distribuir_saldo', {'id': reventa.id}) }}" class="dropdown-item btn-distribuir-saldo-reventa">
+                                            <i class="la la-hand-holding-usd" style="margin-right: 5px;"></i> Distribuir saldo
+                                        </a>
+                                    {% endif %}
+                                    {% if reventa.tieneDistribucionSaldo %}
+                                        <span class="dropdown-item text-success">
+                                            <i class="la la-check-circle" style="margin-right: 5px;"></i> Saldo distribuido
+                                        </span>
+                                    {% endif %}
                                     {% if reventa.estado and reventa.estado.codigoInterno != constant('App\\Entity\\Constants\\ConstanteEstadoReventa::CANCELADA') %}
                                         <a href="{{ path('reventa_cancelar', {'id': reventa.id}) }}" class="dropdown-item btn-cancelar-reventa">
                                             <i class="la la-ban" style="margin-right: 5px;"></i> Cancelar

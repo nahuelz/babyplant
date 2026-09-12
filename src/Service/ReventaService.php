@@ -7,6 +7,8 @@ use App\Entity\Constants\ConstanteEstadoEntrega;
 use App\Entity\Constants\ConstanteEstadoEntregaProducto;
 use App\Entity\Constants\ConstanteEstadoReventa;
 use App\Entity\Constants\ConstanteEstadoRemito;
+use App\Entity\Constants\ConstanteModoPago;
+use App\Entity\Constants\ConstanteTipoMovimiento;
 use App\Entity\Devolucion;
 use App\Entity\Entrega;
 use App\Entity\EntregaProducto;
@@ -22,11 +24,13 @@ class ReventaService
 {
     private EntityManagerInterface $em;
     private EstadoService $estadoService;
+    private MovimientoService $movimientoService;
 
-    public function __construct(EntityManagerInterface $em, EstadoService $estadoService)
+    public function __construct(EntityManagerInterface $em, EstadoService $estadoService, MovimientoService $movimientoService)
     {
         $this->em = $em;
         $this->estadoService = $estadoService;
+        $this->movimientoService = $movimientoService;
     }
 
     /**
@@ -93,7 +97,6 @@ class ReventaService
         $entregaProducto = new EntregaProducto();
         $entregaProducto->setPedidoProducto($pedidoProducto);
         $entregaProducto->setCantidadBandejas($reventa->getCantidadBandejas());
-        $entregaProducto->setPrecioUnitario($reventa->getPrecioUnitario());
         $entregaProducto->setEsReventa(true);
         $entrega->addEntregaProducto($entregaProducto);
 
@@ -105,7 +108,7 @@ class ReventaService
 
         $reventa->setEntregaProducto($entregaProducto);
 
-        $estadoReventa = $this->em->getRepository(EstadoReventa::class)->findOneBy(['codigoInterno' => ConstanteEstadoReventa::ENTREGADA]);
+        $estadoReventa = $this->em->getRepository(EstadoReventa::class)->findOneBy(['codigoInterno' => ConstanteEstadoReventa::ENTREGADA_SIN_REMITO]);
         $this->estadoService->cambiarEstadoReventa($reventa, $estadoReventa, 'Entrega de reventa.');
 
         $this->em->persist($entrega);
@@ -124,7 +127,7 @@ class ReventaService
             throw new \DomainException('La reventa ya fue cancelada.');
         }
 
-        if ($reventa->getEstado() != null && $reventa->getEstado()->getCodigoInterno() == ConstanteEstadoReventa::ENTREGADA) {
+        if ($reventa->getEstado() != null && in_array($reventa->getEstado()->getCodigoInterno(), [ConstanteEstadoReventa::ENTREGADA_SIN_REMITO, ConstanteEstadoReventa::ENTREGADA_CON_REMITO])) {
             $entrega = $reventa->getEntrega();
             if ($entrega != null && $entrega->getRemito() != null) {
                 // Verificar si el remito está cancelado
@@ -191,5 +194,57 @@ class ReventaService
 
         $estadoDevolucion = $this->em->getRepository(EstadoDevolucion::class)->findOneBy(['codigoInterno' => $codigoInterno]);
         $this->estadoService->cambiarEstadoDevolucion($devolucion, $estadoDevolucion, $motivo);
+    }
+
+    /**
+     * Distribuye el saldo de una reventa.
+     */
+    public function distribuirSaldo(Reventa $reventa, float $montoClienteOriginal, float $montoPlantinera, string $token): void
+    {
+        if ($reventa->getEstado() == null || $reventa->getEstado()->getCodigoInterno() != ConstanteEstadoReventa::ENTREGADA_CON_REMITO) {
+            throw new \DomainException('Solo se puede distribuir una reventa entregada con remito.');
+        }
+
+        if ($reventa->tieneDistribucionSaldo()) {
+            throw new \DomainException('El saldo de esta reventa ya fue distribuido.');
+        }
+
+        $remito = $reventa->getEntrega()?->getRemito();
+        if ($remito == null || $remito->getEstado()?->getCodigoInterno() == ConstanteEstadoRemito::CANCELADO) {
+            throw new \DomainException('La reventa no tiene un remito activo.');
+        }
+
+        $total = round($reventa->getMontoDistribuible(), 2);
+        if ($montoClienteOriginal <= 0 || $montoPlantinera < 0 || abs(round($montoClienteOriginal + $montoPlantinera, 2) - $total) > 0.001) {
+            throw new \DomainException('El importe del cliente debe ser mayor a cero, el de la plantinera no puede ser negativo y ambos deben sumar exactamente el total distribuible.');
+        }
+
+        $clienteOriginal = $reventa->getClienteOriginal();
+        $cuentaCorriente = $clienteOriginal?->getCuentaCorrienteUsuario();
+        if ($cuentaCorriente == null) {
+            throw new \DomainException('El cliente original no tiene una cuenta corriente asociada.');
+        }
+
+        $this->em->beginTransaction();
+        try {
+            $movimiento = $this->movimientoService->crear([
+                'monto' => number_format($montoClienteOriginal, 2, ',', ''),
+                'modoPago' => ConstanteModoPago::AJUSTE,
+                'descripcion' => 'Crédito por Reventa N° ' . $reventa->getId() . ' - Devolución N° ' . $reventa->getDevolucion()->getId(),
+                'token' => $token,
+                'tipoMovimiento' => ConstanteTipoMovimiento::CREDITO_REVENTA,
+                'cuentaCorrienteUsuario' => $cuentaCorriente,
+            ]);
+
+            $reventa->setMontoClienteOriginal($montoClienteOriginal);
+            $reventa->setMontoPlantinera($montoPlantinera);
+            $reventa->setFechaDistribucion(new DateTime());
+            $reventa->setMovimientoDistribucion($movimiento);
+            $this->em->flush();
+            $this->em->commit();
+        } catch (\Throwable $e) {
+            $this->em->rollback();
+            throw $e;
+        }
     }
 }
