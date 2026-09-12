@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Constants\ConstanteModoPago;
 use App\Entity\ModoPago;
 use App\Entity\Movimiento;
 use App\Entity\Pedido;
@@ -39,6 +40,11 @@ class MovimientoType extends AbstractType
                     'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('x')
                             ->where('x.habilitado = 1')
+                            ->andWhere('x.codigoInterno NOT IN (:modosExclusivosReventa)')
+                            ->setParameter('modosExclusivosReventa', [
+                                ConstanteModoPago::CREDITO_EFECTIVO,
+                                ConstanteModoPago::CREDITO_TRANSFERENCIA,
+                            ])
                             ->orderBy('x.nombre', 'ASC');
                     },
                 )
