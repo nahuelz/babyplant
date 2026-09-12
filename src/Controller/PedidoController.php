@@ -46,7 +46,13 @@ class PedidoController extends BaseController {
     {
 
         $clienteSelect = $this->getSelectService()->getClienteFilter();
-        $estadoSelect = $this->getSelectService()->getEstadoSelect();
+        $estadoSelect = $this->getSelectService()->getEstadoSelect(false, [
+            ConstanteEstadoPedidoProducto::PENDIENTE,
+            ConstanteEstadoPedidoProducto::PLANIFICADO,
+            ConstanteEstadoPedidoProducto::SEMBRADO,
+            ConstanteEstadoPedidoProducto::EN_CAMARA,
+            ConstanteEstadoPedidoProducto::EN_INVERNACULO,
+        ]);
         $origenSemillaSelect = $this->getSelectService()->getOrigenSemillaSelect();
 
         $em = $this->doctrine->getManager();

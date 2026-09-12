@@ -92,13 +92,22 @@ class SelectService {
      *
      * @return type
      */
-    public function getEstadoSelect($useId = false) {
+    public function getEstadoSelect($useId = false, ?array $codigosInternos = null) {
 
-        $sql = "SELECT x.id, x.nombre AS nombre
-                FROM App\Entity\EstadoPedidoProducto x 
+        $dql = "SELECT x.id, x.nombre AS nombre
+                FROM App\Entity\EstadoPedidoProducto x
                 WHERE x.fechaBaja IS NULL";
 
-        $query = $this->em->createQuery($sql);
+        if ($codigosInternos !== null) {
+            $dql .= " AND x.codigoInterno IN (:codigosInternos)";
+        }
+
+        $dql .= " ORDER BY x.codigoInterno ASC";
+        $query = $this->em->createQuery($dql);
+
+        if ($codigosInternos !== null) {
+            $query->setParameter('codigosInternos', $codigosInternos);
+        }
 
         $entities = $query->getArrayResult();
 
