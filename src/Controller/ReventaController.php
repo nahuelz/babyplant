@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Constants\ConstanteModoPago;
 use App\Entity\Devolucion;
 use App\Entity\Reventa;
 use App\Form\ReventaType;
@@ -149,6 +150,10 @@ class ReventaController extends BaseController {
                 'total' => $total,
                 'montoClienteOriginal' => round($total * 0.9, 2),
                 'montoPlantinera' => round($total - round($total * 0.9, 2), 2),
+                'modosPago' => [
+                    ConstanteModoPago::CREDITO_EFECTIVO => 'Crédito efectivo',
+                    ConstanteModoPago::CREDITO_TRANSFERENCIA => 'Crédito transferencia',
+                ],
                 'token' => bin2hex(random_bytes(16)),
             ]);
         }
@@ -162,6 +167,7 @@ class ReventaController extends BaseController {
                 $reventa,
                 $this->normalizarImporte((string) $request->request->get('montoClienteOriginal')),
                 $this->normalizarImporte((string) $request->request->get('montoPlantinera')),
+                (int) $request->request->get('modoPago'),
                 (string) $request->request->get('token')
             );
 

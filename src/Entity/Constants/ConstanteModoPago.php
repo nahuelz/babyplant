@@ -53,4 +53,14 @@ class ConstanteModoPago {
      * AJUSTE
      */
     const AJUSTE_CHEQUE = 9;
+
+    /**
+     * CREDITO EFECTIVO
+     */
+    const CREDITO_EFECTIVO = 10;
+
+    /**
+     * CREDITO TRANSFERENCIA
+     */
+    const CREDITO_TRANSFERENCIA = 11;
 }

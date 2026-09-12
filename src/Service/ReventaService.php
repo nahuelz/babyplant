@@ -199,7 +199,7 @@ class ReventaService
     /**
      * Distribuye el saldo de una reventa.
      */
-    public function distribuirSaldo(Reventa $reventa, float $montoClienteOriginal, float $montoPlantinera, string $token): void
+    public function distribuirSaldo(Reventa $reventa, float $montoClienteOriginal, float $montoPlantinera, int $modoPago, string $token): void
     {
         if ($reventa->getEstado() == null || $reventa->getEstado()->getCodigoInterno() != ConstanteEstadoReventa::ENTREGADA_CON_REMITO) {
             throw new \DomainException('Solo se puede distribuir una reventa entregada con remito.');
@@ -207,6 +207,10 @@ class ReventaService
 
         if ($reventa->tieneDistribucionSaldo()) {
             throw new \DomainException('El saldo de esta reventa ya fue distribuido.');
+        }
+
+        if (!in_array($modoPago, [ConstanteModoPago::CREDITO_EFECTIVO, ConstanteModoPago::CREDITO_TRANSFERENCIA], true)) {
+            throw new \DomainException('Debe seleccionar un modo de pago válido.');
         }
 
         $remito = $reventa->getEntrega()?->getRemito();
@@ -229,7 +233,7 @@ class ReventaService
         try {
             $movimiento = $this->movimientoService->crear([
                 'monto' => number_format($montoClienteOriginal, 2, ',', ''),
-                'modoPago' => ConstanteModoPago::AJUSTE,
+                'modoPago' => $modoPago,
                 'descripcion' => 'Crédito por Reventa N° ' . $reventa->getId() . ' - Devolución N° ' . $reventa->getDevolucion()->getId(),
                 'token' => $token,
                 'tipoMovimiento' => ConstanteTipoMovimiento::CREDITO_REVENTA,

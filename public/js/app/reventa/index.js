@@ -87,6 +87,9 @@ function initDistribuirSaldoReventaHandler() {
                 labelCancel: 'Cancelar',
                 labelSuccess: 'Confirmar distribución',
                 closeButton: true,
+                callbackCancel: function () {
+                    return true;
+                },
                 callbackSuccess: function () {
                     var $form = $('#form-distribuir-saldo-reventa');
                     $.ajax({
@@ -105,6 +108,10 @@ function initDistribuirSaldoReventaHandler() {
                     return false;
                 }
             });
+
+            $('.modal-dialog').css('width', '80%');
+            $('.modal-dialog').addClass('modal-xl');
+            $('.modal-dialog').addClass('modal-fullscreen-xl-down');
 
             var total = parseFloat($('#distribucion_total').val());
             $('#monto_cliente_original').on('input', function () {

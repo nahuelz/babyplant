@@ -22,28 +22,33 @@
                 <input type="text" class="form-control" value="{{ reventa.clienteOriginal }}" readonly>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="form-group">
-                <label>Total original de la reventa</label>
-                <input type="text" class="form-control" value="$ {{ reventa.valorTotal|number_format(2, ',', '.') }}" readonly>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label>Total distribuible con descuento</label>
+                <label>Valor total reventa</label>
                 <input type="text" class="form-control font-weight-bold" value="$ {{ total|number_format(2, ',', '.') }}" readonly>
             </div>
         </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="modo_pago_reventa">Modo de pago</label>
+                <select name="modoPago" id="modo_pago_reventa" class="form-control" required>
+                    <option value="">-- Seleccione --</option>
+                    {% for codigo, nombre in modosPago %}
+                        <option value="{{ codigo }}">{{ nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label for="monto_cliente_original">Cuenta corriente del cliente original</label>
+                <label for="monto_cliente_original">Total a enviar a la cuenta corriente</label>
                 <input type="text" id="monto_cliente_original" name="montoClienteOriginal" class="form-control" value="{{ montoClienteOriginal|number_format(2, ',', '') }}" required>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label for="monto_plantinera">Caja de la plantinera</label>
-                <input type="text" id="monto_plantinera" name="montoPlantinera" class="form-control" value="{{ montoPlantinera|number_format(2, ',', '') }}" required>
+                <input type="text" id="monto_plantinera" name="montoPlantinera" class="form-control" value="{{ montoPlantinera|number_format(2, ',', '') }}" required readonly>
             </div>
         </div>
     </div>
