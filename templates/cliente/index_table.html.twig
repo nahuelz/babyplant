@@ -18,6 +18,13 @@
     {% elseif is_granted('ROLE_USUARIO_HABILITAR') and not entity.habilitado %}
         ,"habilitar": "{{ path('usuario_habilitar_deshabilitar', {"id": entity.id})}}"
     {% endif %}
+    {% if is_granted('ROLE_USUARIO_DESHABILITAR') and not entity.noVender %}
+        ,"no_vender": "{{ path('usuario_vender_no_vender', { "id": entity.id }) }}"
+    {% elseif is_granted('ROLE_USUARIO_HABILITAR') and entity.noVender %}
+        ,"vender": "{{ path('usuario_vender_no_vender', {"id": entity.id})}}"
+    {% endif %}
+    ,"noVender": {{ entity.noVender ? 'true' : 'false' }}
+    ,"habilitado": {{ entity.habilitado ? 'true' : 'false' }}
     {% if is_granted('ROLE_USUARIO_DELETE') %}
         ,"delete" : " {{ path( "usuario_delete", { "id": entity.id }) }}"
     {% endif %}

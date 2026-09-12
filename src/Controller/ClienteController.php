@@ -58,6 +58,7 @@ class ClienteController extends BaseController {
         $rsm->addScalarResult('celular', 'celular');
         $rsm->addScalarResult('grupos', 'grupos');
         $rsm->addScalarResult('habilitado', 'habilitado');
+        $rsm->addScalarResult('noVender', 'noVender');
         $rsm->addScalarResult('id_tipo_usuario', 'id_tipo_usuario');
 
         $columnDefinition = [

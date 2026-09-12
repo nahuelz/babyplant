@@ -53,6 +53,9 @@ class ReservaType extends AbstractType {
                         ->andWhere('x.habilitado = 1')
                         ->orderBy('x.apellido', 'ASC');
                 },
+                'choice_attr' => function (?Usuario $cliente) {
+                    return $cliente ? ['data-no-vender' => $cliente->getNoVender() ? '1' : '0'] : [];
+                },
             ))
             ->add('cliente', EntityType::class, array(
                 'class' => Usuario::class,
@@ -69,6 +72,9 @@ class ReservaType extends AbstractType {
                         ->where('x.tipoUsuario = 1')
                         ->andWhere('x.habilitado = 1')
                         ->orderBy('x.apellido', 'ASC');
+                },
+                'choice_attr' => function (?Usuario $cliente) {
+                    return $cliente ? ['data-no-vender' => $cliente->getNoVender() ? '1' : '0'] : [];
                 },
             ))
             ->add('cantidadBandejas', NumberType::class, array(

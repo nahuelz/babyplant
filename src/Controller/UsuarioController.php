@@ -217,6 +217,21 @@ class UsuarioController extends BaseController {
     }
 
     /**
+     * @Route("/{id}/vender_no_vender", name="usuario_vender_no_vender", methods={"GET"})
+     */
+    public function usuarioVenderNoVender($id): RedirectResponse
+    {
+        $em = $this->doctrine->getManager();
+        $usuario = $em->getRepository(Usuario::class)->findOneBy(array('id' => $id));
+        $usuario->setNoVender(!$usuario->getNoVender());
+        $message = ($usuario->getNoVender()) ? 'marcó como "No Vender"' : 'marcó como "Vender"';
+        $em->flush();
+        $this->get('session')->getFlashBag()->add('success', "Se " . $message . " correctamente al usuario");
+
+        return $this->redirectToRoute('cliente_index');
+    }
+
+    /**
      * @Route("/{usuario}/closeSessions", name="usuario_closesessions", methods={"GET"})
      */
     public function closeSessions(Usuario $usuario): RedirectResponse

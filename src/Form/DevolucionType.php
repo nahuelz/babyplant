@@ -47,6 +47,9 @@ class DevolucionType extends AbstractType {
                         ->andWhere('x.habilitado = 1')
                         ->orderBy('x.apellido', 'ASC');
                 },
+                'choice_attr' => function (?Usuario $cliente) {
+                    return $cliente ? ['data-no-vender' => $cliente->getNoVender() ? '1' : '0'] : [];
+                },
             ))
             ->add('cantidadBandejas', NumberType::class, array(
                 'required' => true,

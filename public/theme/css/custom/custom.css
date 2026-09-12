@@ -2499,3 +2499,11 @@ li.nav-item.is-invalid i {
 
 .margin-35 { margin: 35px !important; }
 
+.select2-option-no-vender {
+    background-color: #f8d7da !important;
+    display: inline-block;
+    width: 100%;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+

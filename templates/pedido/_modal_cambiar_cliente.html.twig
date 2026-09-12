@@ -27,7 +27,7 @@
                             <option value="">Seleccionar...</option>
                             {% for c in clientes %}
                                 {% if pedido.cliente is null or c.id != pedido.cliente.id %}
-                                    <option value="{{ c.id }}">{{ c.nombre }} {{ c.razon_social|default('') }}</option>
+                                    <option value="{{ c.id }}" data-no-vender="{{ c.no_vender ? '1' : '0' }}">{{ c.nombre }} {{ c.razon_social|default('') }}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>

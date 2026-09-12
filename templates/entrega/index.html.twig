@@ -79,7 +79,7 @@
                             <select class="choice form-control datatable-input" id="reporte_filtro_cliente" name="reporte_filtro[cliente]">
                                 <option value="">TODOS</option>
                                 {% for cliente in clienteSelect %}
-                                    <option value="{{ cliente.id }}"> {{ cliente.nombre }} {{ cliente.razon_social }}</option>
+                                    <option value="{{ cliente.id }}" data-no-vender="{{ cliente.no_vender ? '1' : '0' }}"> {{ cliente.nombre }} {{ cliente.razon_social }}</option>
                                 {% endfor %}
                             </select>
                         </div>

@@ -46,6 +46,9 @@ class PedidoType extends AbstractType {
                         ->andWhere('x.habilitado = 1')
                         ->orderBy('x.apellido', 'ASC');
                 },
+                'choice_attr' => function (?Usuario $cliente) {
+                    return $cliente ? ['data-no-vender' => $cliente->getNoVender() ? '1' : '0'] : [];
+                },
             ))
             ->add('pedidoProducto', PedidoProductoType::class, array(
                 'required' => false,

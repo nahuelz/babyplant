@@ -143,6 +143,13 @@ class Usuario implements UserInterface {
     private $tieneRazonSocial;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="no_vender", type="boolean", nullable=true, options={"default": 0})
+     */
+    private $noVender = false;
+
+    /**
      * @ORM\OneToOne(targetEntity=CuentaCorrienteUsuario::class, inversedBy="cliente")
      * @ORM\JoinColumn(name="id_cuenta_corriente_usuario", referencedColumnName="id", nullable=true)
      */
@@ -176,6 +183,7 @@ class Usuario implements UserInterface {
         $this->grupos = new \Doctrine\Common\Collections\ArrayCollection();
         $this->habilitado = true;
         $this->tieneRazonSocial = false;
+        $this->noVender = false;
         $this->tipoDocumento = TipoDocumento::CUIT;
         $this->pedidos = new \Doctrine\Common\Collections\ArrayCollection();
         $this->remitos = new \Doctrine\Common\Collections\ArrayCollection();
@@ -517,6 +525,22 @@ class Usuario implements UserInterface {
     public function setTieneRazonSocial($tieneRazonSocial = false)
     {
         $this->tieneRazonSocial = $tieneRazonSocial;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getNoVender(): bool
+    {
+        return $this->noVender;
+    }
+
+    /**
+     * @param bool $noVender
+     */
+    public function setNoVender(bool $noVender): void
+    {
+        $this->noVender = $noVender;
     }
 
     public function getCuentaCorrienteUsuario(): CuentaCorrienteUsuario|null

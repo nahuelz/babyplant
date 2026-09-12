@@ -23,7 +23,7 @@ class SelectService {
      */
     public function getClienteFilter($incluirDeshabilitados = false) {
 
-        $sql = "SELECT x.id, CONCAT(x.apellido, ', ', x.nombre) AS nombre, IF(x.tieneRazonSocial = 1, CONCAT('(',r.razonSocial,')'),'') AS razon_social, x.habilitado as habilitado
+        $sql = "SELECT x.id, CONCAT(x.apellido, ', ', x.nombre) AS nombre, IF(x.tieneRazonSocial = 1, CONCAT('(',r.razonSocial,')'),'') AS razon_social, x.habilitado as habilitado, x.noVender as no_vender
                 FROM App\Entity\Usuario x
                 LEFT JOIN x.razonSocial r
                 WHERE x.fechaBaja IS NULL AND x.tipoUsuario = 1";
@@ -77,7 +77,7 @@ class SelectService {
 
     public function getClienteFilterStock() {
 
-        $sql = "SELECT x.id, CONCAT(x.apellido, ', ', x.nombre) AS nombre, IF(x.tieneRazonSocial = 1, CONCAT('(',r.razonSocial,')'),'') AS razon_social
+        $sql = "SELECT x.id, CONCAT(x.apellido, ', ', x.nombre) AS nombre, IF(x.tieneRazonSocial = 1, CONCAT('(',r.razonSocial,')'),'') AS razon_social, x.noVender as no_vender
                 FROM App\Entity\Usuario x 
                 LEFT JOIN x.razonSocial r
                 WHERE x.fechaBaja IS NULL AND x.tipoUsuario = 1 AND x.apellido LIKE '%STOCK%'

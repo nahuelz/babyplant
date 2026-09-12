@@ -160,11 +160,38 @@ function initSelects() {
                         if (object.id === 'all' || object.id === 'clear') {
                             return '<span class="toggle-highlight" style="color:#31708F;font-size:13px;font-weight:bold;"> ' + object.text + '</span>';
                         }
+                        if ($(object.element).data('no-vender') == '1') {
+                            return '<span class="select2-option-no-vender">' + object.text + '</span>';
+                        }
                         return object.text;
                     }
                 });
+            } else {
+                $.extend(select2_options, {
+                    escapeMarkup: function (m) { return m; },
+                    templateResult: function (object) {
+                        if (!object.id) {
+                            return object.text;
+                        }
+                        if ($(object.element).data('no-vender') == '1') {
+                            return '<span class="select2-option-no-vender">' + object.text + '</span>';
+                        }
+                        return object.text;
+                    },
+                    templateSelection: function (object) {
+                        if (!object.id) {
+                            return object.text;
+                        }
+                        if ($(object.element).data('no-vender') == '1') {
+                            return '<span class="select2-option-no-vender">' + object.text + '</span>';
+                        }
+                        return object.text;
+                    }
+                });
+            }
 
-                // Lógica de selección especial
+            // Lógica de selección especial (solo múltiples)
+            if ($(this).prop('multiple')) {
                 $(this).on("change", function () {
                     var values = $(this).val() || [];
 

@@ -29,7 +29,15 @@ jQuery(document).ready(function () {
     autoWidth: false,
     fixedHeader: false,
     serverSide: true,
-    processing: true
+    processing: true,
+    createdRow: function (row, data, dataIndex) {
+      if (data[4] && data[4].noVender) {
+        $(row).addClass('table-danger');
+      }
+      if (data[4] && data[4].habilitado === false) {
+        $(row).addClass('table-warning');
+      }
+    }
   });
 
   $(document).on('click', '.accion-habilitar', function (e) {
@@ -40,6 +48,22 @@ jQuery(document).ready(function () {
       title: 'Confirmación',
       type: 'warning',
       msg: '¿Desea ' + msg + ' este usuario?',
+      callbackOK: function () {
+        location.href = a_href;
+      }
+    });
+    e.stopPropagation();
+  });
+
+  $(document).on('click', '.accion-vender', function (e) {
+    e.preventDefault();
+    var noVender = parseInt($(this).attr('no-vender'));
+    var msg = noVender ? 'marcar como "No Vender"' : 'marcar como "Vender"';
+    var a_href = $(this).attr('href');
+    show_confirm({
+      title: 'Confirmación',
+      type: 'warning',
+      msg: '¿Desea ' + msg + ' este cliente?',
       callbackOK: function () {
         location.href = a_href;
       }
@@ -95,12 +119,21 @@ function datatablesGetColDef() {
  * @returns {String}
  */
 function dataTablesCustomActionFormatter(data, type, full, meta) {
+  let actions = '';
+
   if (data.habilitar != undefined) {
-    return '<a class="dropdown-item accion-habilitar" titulo="' + full[4] + '" habilitar="1" href="' + data.habilitar + '"><i class="la la-clipboard" style="margin-right: 5px;"></i> Habilitar</a>'
+    actions += '<a class="dropdown-item accion-habilitar" titulo="' + full[4] + '" habilitar="1" href="' + data.habilitar + '"><i class="la la-clipboard" style="margin-right: 5px;"></i> Habilitar</a>'
   } else if (data.deshabilitar != undefined) {
-    return '<a class="dropdown-item accion-habilitar" titulo="' + full[4] + '" habilitar="0" href="' + data.deshabilitar + '"><i class="la la-edit" style="margin-right: 5px;"></i> Deshabilitar</a>'
+    actions += '<a class="dropdown-item accion-habilitar" titulo="' + full[4] + '" habilitar="0" href="' + data.deshabilitar + '"><i class="la la-edit" style="margin-right: 5px;"></i> Deshabilitar</a>'
   }
-  return ''
+
+  if (data.vender != undefined) {
+    actions += '<a class="dropdown-item accion-vender" no-vender="0" href="' + data.vender + '"><i class="la la-check-circle" style="margin-right: 5px;"></i> Vender</a>'
+  } else if (data.no_vender != undefined) {
+    actions += '<a class="dropdown-item accion-vender" no-vender="1" href="' + data.no_vender + '"><i class="la la-ban" style="margin-right: 5px;"></i> No Vender</a>'
+  }
+
+  return actions;
 }
 
 function show_confirm(options_in) {

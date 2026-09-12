@@ -393,12 +393,18 @@ function initClienteSelect2(){
             if ($(data.element).data('habilitado') == '0') {
                 return $('<span class="select2-option-deshabilitado">' + data.text + '</span>');
             }
+            if ($(data.element).data('no-vender') == '1') {
+                return $('<span class="select2-option-no-vender">' + data.text + '</span>');
+            }
             return data.text;
         },
         templateSelection: function(data) {
             if (!data.id) return data.text;
             if ($(data.element).data('habilitado') == '0') {
                 return $('<span class="select2-option-deshabilitado">' + data.text + '</span>');
+            }
+            if ($(data.element).data('no-vender') == '1') {
+                return $('<span class="select2-option-no-vender">' + data.text + '</span>');
             }
             return data.text;
         },
