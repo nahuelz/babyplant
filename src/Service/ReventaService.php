@@ -244,6 +244,10 @@ class ReventaService
             $reventa->setMontoPlantinera($montoPlantinera);
             $reventa->setFechaDistribucion(new DateTime());
             $reventa->setMovimientoDistribucion($movimiento);
+
+            $estadoReventa = $this->em->getRepository(EstadoReventa::class)->findOneBy(['codigoInterno' => ConstanteEstadoReventa::PAGA]);
+            $this->estadoService->cambiarEstadoReventa($reventa, $estadoReventa, 'Distribución de saldo.');
+
             $this->em->flush();
             $this->em->commit();
         } catch (\Throwable $e) {

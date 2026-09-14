@@ -33,8 +33,8 @@
                     <th class="text-center">PRECIO UNIT.</th>
                     <th class="text-center">VALOR TOTAL</th>
                     <th class="text-center">ENTREGA</th>
+                    <th class="text-center">REMITO</th>
                     <th class="text-center">ESTADO</th>
-                    <th class="text-center">FECHA</th>
                     <th class="text-center"></th>
                 </tr>
                 </thead>
@@ -85,13 +85,21 @@
                             {% endif %}
                         </td>
                         <td class="text-center">
+                            {% if reventa.entrega and reventa.entrega.remito %}
+                                <a href="{{ path('remito_show', {'id': reventa.entrega.remito.id}) }}">
+                                    N° {{ reventa.entrega.remito.id }}
+                                </a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
                             {% if reventa.estado %}
                                 <span class="label label-inline {{ reventa.estado.className|default('badge-secondary') }} font-weight-bold p-4" style="width: 140px">{{ reventa.estado.nombre }}</span>
                             {% else %}
                                 <span class="badge badge-secondary">-</span>
                             {% endif %}
                         </td>
-                        <td class="text-center">{{ reventa.fechaReventa is not null ? reventa.fechaReventa|date('d/m/Y') : '-' }}</td>
                         <td class="text-center">
                             <div class="dropdown dropdown-inline">
                                 <button type="button" class="btn btn-light-primary btn-icon btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

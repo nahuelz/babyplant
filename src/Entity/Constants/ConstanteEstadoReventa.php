@@ -28,4 +28,9 @@ class ConstanteEstadoReventa {
      */
     const ENTREGADA_CON_REMITO = 4;
 
+    /**
+     * PAGA
+     */
+    const PAGA = 5;
+
 }
