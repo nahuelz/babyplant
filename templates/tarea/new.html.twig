@@ -22,9 +22,9 @@
             <div class="row">
                 {{ macro_form._new_field(form.fechaProgramada, 'col-md-3') }}
             </div>
-            {% if form.empleado is defined %}
+            {% if form.empleados is defined %}
                 <div class="row">
-                    {{ macro_form._new_field(form.empleado, 'col-md-6') }}
+                    {{ macro_form._new_field(form.empleados, 'col-md-6') }}
                 </div>
             {% endif %}
             <div class="row">

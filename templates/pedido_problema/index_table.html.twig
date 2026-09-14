@@ -55,6 +55,9 @@
         "{{ entity.tieneSolucion == 1 ? '1' : '0' }}", {# 18 #}
         {
         "show_pedido" : " {{ path( "pedido_show", { "id": entity.id }) }}",
+        {% if is_granted('ROLE_TAREA_ENCARGADO') %}
+            "tarea_generar_desde_pedido_problema": "{{ path('tarea_generar_desde_pedido_problema', {"id": entity.idProducto}) }}",
+        {% endif %}
         {% if entity.tieneProblema == 1 %}
             "pedido_producto_quitar_problema": "{{ path( "pedido_producto_quitar_problema", { "id": entity.idProducto })}}",
             "pedido_producto_editar_problema": "{{ path( "pedido_producto_editar_problema", { "id": entity.idProducto })}}",

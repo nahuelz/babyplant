@@ -135,19 +135,46 @@ function dataTablesCustomActionFormatter(data, type, full, meta) {
     return html
 }
 
-$(document).on('click', '.accion-tomar, .accion-finalizar', function (e) {
+$(document).on('click', '.accion-tomar', function (e) {
     e.preventDefault()
     var $this = $(this)
-    var msg = $this.hasClass('accion-tomar') ? 'tomar' : 'finalizar'
     show_confirm({
         title: 'Confirmación',
         type: 'warning',
-        msg: '¿Desea ' + msg + ' esta tarea?',
+        msg: '¿Desea tomar esta tarea?',
         callbackOK: function () {
             var $form = $('<form>', {action: $this.attr('href'), method: 'post', style: 'display:none;'})
             $form.append($('<input>', {type: 'hidden', name: '_token', value: $this.data('token')}))
             $('body').append($form)
             $form.submit()
+        }
+    })
+})
+
+$(document).on('click', '.accion-finalizar', function (e) {
+    e.preventDefault()
+    $('#modalAvanceTareaBody').html('Cargando...').load($(this).attr('href'), function () {
+        $('#tarea_avance_porcentajeAvance').select2()
+        $('#modalAvanceTarea').modal('show')
+    })
+})
+
+$(document).on('submit', '#form-avance-tarea', function (e) {
+    e.preventDefault()
+    var $form = $(this)
+    $.ajax({
+        url: $form.attr('action'),
+        method: 'POST',
+        data: $form.serialize(),
+        success: function (response) {
+            if (typeof response === 'string' && response.indexOf('form-avance-tarea') !== -1) {
+                $('#modalAvanceTareaBody').html(response)
+                return
+            }
+            window.location.reload()
+        },
+        error: function (xhr) {
+            $('#modalAvanceTareaBody').html(xhr.responseText)
         }
     })
 })

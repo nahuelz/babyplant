@@ -6,7 +6,7 @@
     {"estado": "{{ entity.estado|default('-') }}", "colorEstado": "{{ entity.estado ? entity.estado.color|default('label-light-primary') : 'label-light-secondary' }}"},
     {
     "show" : " {{ path('tarea_show', { 'id': entity.id }) }}"
-    {% if entity.estado.codigoInterno is defined and entity.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoTarea::NUEVA') and entity.empleado is null %}
+    {% if entity.estado.codigoInterno is defined and entity.estado.codigoInterno in [constant('App\\Entity\\Constants\\ConstanteEstadoTarea::NUEVA'), constant('App\\Entity\\Constants\\ConstanteEstadoTarea::ASIGNADA')] %}
         ,"tomar": "{{ path('tarea_tomar', { 'id': entity.id }) }}"
         ,"token": "{{ csrf_token('tarea_tomar_' ~ entity.id) }}"
     {% endif %}

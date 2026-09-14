@@ -49,13 +49,13 @@ class TareaType extends AbstractType
                     'placeholder' => 'Ingrese la descripción de la tarea',
                 ],
             ])
-            ->add('empleado', EntityType::class, [
+            ->add('empleados', EntityType::class, [
                 'class' => Usuario::class,
                 'choice_label' => function (Usuario $u) {
                     return $u->getNombreCompleto() ?: $u->getUsername();
                 },
-                'label' => 'Asignar a empleado',
-                'placeholder' => 'Sin asignar',
+                'label' => 'Asignar a empleados',
+                'multiple' => true,
                 'required' => false,
                 'query_builder' => function (UsuarioRepository $er) {
                     return $er->createQueryBuilder('u')

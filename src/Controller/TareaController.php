@@ -6,9 +6,12 @@ use App\Entity\Constants\ConstanteEstadoTarea;
 use App\Entity\EstadoTarea;
 use App\Entity\EstadoTareaHistorico;
 use App\Entity\Notificacion;
+use App\Entity\PedidoProducto;
 use App\Entity\Tarea;
+use App\Entity\TareaAsignacion;
 use App\Entity\Usuario;
 use App\Form\TareaAsignarType;
+use App\Form\TareaAvanceType;
 use App\Form\TareaType;
 use DateTime;
 use Doctrine\DBAL\LockMode;
@@ -95,16 +98,26 @@ class TareaController extends BaseController
             $em->refresh($tarea);
 
             $codigo = (int) $tarea->getEstado()->getCodigoInterno();
-            if ($codigo !== ConstanteEstadoTarea::NUEVA || $tarea->getEmpleado() !== null) {
+            $estadosDisponibles = [
+                ConstanteEstadoTarea::NUEVA,
+                ConstanteEstadoTarea::ASIGNADA,
+            ];
+            if (
+                !in_array($codigo, $estadosDisponibles, true)
+                || $tarea->getEmpleados()->contains($this->getUser())
+            ) {
                 throw new \RuntimeException('La tarea ya no está disponible.');
             }
 
             $estadoAsignada = $em->getRepository(EstadoTarea::class)
                 ->findOneByCodigoInterno(ConstanteEstadoTarea::ASIGNADA);
 
-            $tarea->setEmpleado($this->getUser());
-            $tarea->setAsignadoPor($this->getUser());
-            $tarea->setAsignadoEn(new DateTime());
+            $tarea->addEmpleado($this->getUser());
+            $this->iniciarAsignacion($tarea, $this->getUser(), $em);
+            if ($codigo === ConstanteEstadoTarea::NUEVA) {
+                $tarea->setAsignadoPor($this->getUser());
+                $tarea->setAsignadoEn(new DateTime());
+            }
 
             $this->estadoService->cambiarEstadoTarea($tarea, $estadoAsignada, 'Tomada por empleado');
 
@@ -120,36 +133,60 @@ class TareaController extends BaseController
         return $this->redirectToRoute($this->getTareaRedirectRoute());
     }
 
-    #[Route('/{id}/finalizar', name: 'tarea_finalizar', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/{id}/finalizar', name: 'tarea_finalizar', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function finalizar(Request $request, Tarea $tarea, EntityManagerInterface $em): Response
     {
-        if (!$this->isCsrfTokenValid('tarea_finalizar_' . $tarea->getId(), $request->request->get('_token'))) {
-            $this->addFlash('error', 'Token de seguridad inválido.');
+        if (!$tarea->getEmpleados()->contains($this->getUser())) {
+            throw new AccessDeniedException('No podés finalizar una asignación que no te pertenece.');
+        }
+
+        $form = $this->createForm(TareaAvanceType::class, [
+            'porcentajeAvance' => $tarea->getPorcentajeAvance(),
+            'observacionAvance' => $tarea->getObservacionAvance(),
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $porcentaje = (int) $form->get('porcentajeAvance')->getData();
+            $observacion = $form->get('observacionAvance')->getData();
+            $ahora = new DateTime();
+
+            $this->cerrarAsignacion($tarea, $this->getUser(), $ahora, $porcentaje, $observacion);
+            $tarea->removeEmpleado($this->getUser());
+            $tarea->setPorcentajeAvance($porcentaje);
+            $tarea->setObservacionAvance($observacion);
+
+            if ($porcentaje === 100) {
+                foreach ($tarea->getEmpleados()->toArray() as $empleado) {
+                    $this->cerrarAsignacion($tarea, $empleado, $ahora, 100, $observacion);
+                    $tarea->removeEmpleado($empleado);
+                }
+                $tarea->setTerminadoEn($ahora);
+                $estado = $em->getRepository(EstadoTarea::class)
+                    ->findOneByCodigoInterno(ConstanteEstadoTarea::TERMINADA);
+                $motivo = 'Finalizada por empleado';
+            } elseif ($tarea->getEmpleados()->isEmpty()) {
+                $estado = $em->getRepository(EstadoTarea::class)
+                    ->findOneByCodigoInterno(ConstanteEstadoTarea::NUEVA);
+                $motivo = 'Avance informado; sin empleados asignados';
+            } else {
+                $estado = $em->getRepository(EstadoTarea::class)
+                    ->findOneByCodigoInterno(ConstanteEstadoTarea::ASIGNADA);
+                $motivo = 'Avance informado por empleado';
+            }
+
+            $this->estadoService->cambiarEstadoTarea($tarea, $estado, $motivo);
+            $em->flush();
+
+            $this->addFlash('success', 'Avance registrado correctamente.');
             return $this->redirectToRoute($this->getTareaRedirectRoute());
         }
 
-        if ($tarea->getEmpleado() === null || $tarea->getEmpleado()->getId() !== $this->getUser()->getId()) {
-            throw new AccessDeniedException('No podés finalizar una tarea que no te fue asignada.');
-        }
-
-        $codigo = (int) $tarea->getEstado()->getCodigoInterno();
-        if ($codigo !== ConstanteEstadoTarea::ASIGNADA) {
-            $this->addFlash('error', 'Solo se pueden finalizar tareas asignadas.');
-            return $this->redirectToRoute($this->getTareaRedirectRoute());
-        }
-
-        $estadoTerminada = $em->getRepository(EstadoTarea::class)
-            ->findOneByCodigoInterno(ConstanteEstadoTarea::TERMINADA);
-
-        $tarea->setTerminadoEn(new DateTime());
-
-        $this->estadoService->cambiarEstadoTarea($tarea, $estadoTerminada, 'Finalizada por empleado');
-
-        $em->flush();
-
-        $this->addFlash('success', 'Tarea finalizada correctamente.');
-        return $this->redirectToRoute($this->getTareaRedirectRoute());
+        return $this->renderForm('tarea/_avance_form.html.twig', [
+            'form' => $form,
+            'tarea' => $tarea,
+        ]);
     }
 
     #[Route('/', name: 'tarea_index', methods: ['GET'])]
@@ -184,7 +221,8 @@ class TareaController extends BaseController
             ->setParameter('fechaHasta', $fechaHasta);
 
         if ($idEmpleado) {
-            $qb->andWhere('t.empleado = :idEmpleado')
+            $qb->innerJoin('t.empleados', 'empleado')
+                ->andWhere('empleado.id = :idEmpleado')
                 ->setParameter('idEmpleado', $idEmpleado);
         }
 
@@ -220,8 +258,8 @@ class TareaController extends BaseController
                 $tarea->setFechaProgramada(null);
             }
 
-            $empleado = $tarea->getEmpleado();
-            $asignada = $empleado !== null;
+            $empleados = $tarea->getEmpleados();
+            $asignada = !$empleados->isEmpty();
 
             if ($asignada) {
                 $tarea->setAsignadoPor($this->getUser());
@@ -236,10 +274,15 @@ class TareaController extends BaseController
             }
 
             $em->persist($tarea);
+            foreach ($empleados as $empleado) {
+                $this->iniciarAsignacion($tarea, $empleado, $em);
+            }
             $em->flush();
 
             if ($asignada) {
-                $this->notificarAsignacion($tarea, $empleado, $em);
+                foreach ($empleados as $empleado) {
+                    $this->notificarAsignacion($tarea, $empleado, $em);
+                }
                 $em->flush();
             }
 
@@ -284,7 +327,7 @@ class TareaController extends BaseController
         }
         if ($request->isXmlHttpRequest()) {
             $form->remove('fechaProgramada');
-            $form->remove('empleado');
+            $form->remove('empleados');
         }
 
         $template = $request->isXmlHttpRequest() ? 'tarea/_editar_form.html.twig' : 'tarea/new.html.twig';
@@ -308,7 +351,7 @@ class TareaController extends BaseController
         $form = $this->createForm(TareaType::class, $tarea);
         if ($request->isXmlHttpRequest()) {
             $form->remove('fechaProgramada');
-            $form->remove('empleado');
+            $form->remove('empleados');
         }
         $form->handleRequest($request);
 
@@ -354,17 +397,30 @@ class TareaController extends BaseController
         }
 
         $form = $this->createForm(TareaAsignarType::class, [
-            'empleado' => $tarea->getEmpleado(),
+            'empleados' => $tarea->getEmpleados()->toArray(),
         ]);
         $form->handleRequest($request);
         $isAjax = $request->isXmlHttpRequest();
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Usuario|null $empleado */
-            $empleado = $form->get('empleado')->getData();
+            /** @var Usuario[] $empleados */
+            $empleados = $form->get('empleados')->getData();
+            $empleadosAnteriores = $tarea->getEmpleados()->toArray();
 
-            if ($empleado === null) {
-                $tarea->setEmpleado(null);
+            foreach ($empleadosAnteriores as $empleadoAnterior) {
+                if (!in_array($empleadoAnterior, $empleados, true)) {
+                    $this->cerrarAsignacion($tarea, $empleadoAnterior, new DateTime());
+                }
+                $tarea->removeEmpleado($empleadoAnterior);
+            }
+            foreach ($empleados as $empleado) {
+                $tarea->addEmpleado($empleado);
+                if (!in_array($empleado, $empleadosAnteriores, true)) {
+                    $this->iniciarAsignacion($tarea, $empleado, $em);
+                }
+            }
+
+            if (count($empleados) === 0) {
                 $tarea->setAsignadoPor(null);
                 $tarea->setAsignadoEn(null);
 
@@ -375,7 +431,6 @@ class TareaController extends BaseController
                 $estadoAsignada = $em->getRepository(EstadoTarea::class)
                     ->findOneByCodigoInterno(ConstanteEstadoTarea::ASIGNADA);
 
-                $tarea->setEmpleado($empleado);
                 $tarea->setAsignadoPor($this->getUser());
                 $tarea->setAsignadoEn(new DateTime());
 
@@ -384,7 +439,11 @@ class TareaController extends BaseController
                     : 'Asignada por encargado';
 
                 $this->estadoService->cambiarEstadoTarea($tarea, $estadoAsignada, $motivo);
-                $this->notificarAsignacion($tarea, $empleado, $em);
+                foreach ($empleados as $empleado) {
+                    if (!in_array($empleado, $empleadosAnteriores, true)) {
+                        $this->notificarAsignacion($tarea, $empleado, $em);
+                    }
+                }
             }
 
             $em->flush();
@@ -430,6 +489,10 @@ class TareaController extends BaseController
             ->findOneByCodigoInterno(ConstanteEstadoTarea::CANCELADA);
 
         $tarea->setCanceladoEn(new DateTime());
+        foreach ($tarea->getEmpleados()->toArray() as $empleado) {
+            $this->cerrarAsignacion($tarea, $empleado, $tarea->getCanceladoEn());
+            $tarea->removeEmpleado($empleado);
+        }
 
         $this->estadoService->cambiarEstadoTarea($tarea, $estadoCancelada, 'Cancelada por encargado');
 
@@ -458,7 +521,8 @@ class TareaController extends BaseController
             ->setParameter('fechaHasta', $fechaHasta);
 
         if ($idEmpleado) {
-            $qb->andWhere('t.empleado = :idEmpleado')
+            $qb->innerJoin('t.empleados', 'empleado')
+                ->andWhere('empleado.id = :idEmpleado')
                 ->setParameter('idEmpleado', $idEmpleado);
         }
 
@@ -476,7 +540,8 @@ class TareaController extends BaseController
             ->setParameter('codigoAsignada', ConstanteEstadoTarea::ASIGNADA);
 
         if ($idEmpleado) {
-            $qbAsignadas->andWhere('t.empleado = :idEmpleado')
+            $qbAsignadas->innerJoin('t.empleados', 'empleadoAsignado')
+                ->andWhere('empleadoAsignado.id = :idEmpleado')
                 ->setParameter('idEmpleado', $idEmpleado);
         }
 
@@ -486,6 +551,70 @@ class TareaController extends BaseController
             'total' => $total,
             'asignadas' => $asignadas,
         ]);
+    }
+
+    #[Route('/generar-desde-pedido-problema/{id}', name: 'tarea_generar_desde_pedido_problema', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_TAREA_ENCARGADO')]
+    public function generarDesdePedidoProblema(
+        Request $request,
+        PedidoProducto $pedidoProducto,
+        EntityManagerInterface $em
+    ): Response {
+        $tarea = new Tarea();
+        $tarea->setTitulo(sprintf(
+            'Pedido #%d - %s',
+            $pedidoProducto->getPedido()->getId(),
+            $pedidoProducto->getProductoBandeja()
+        ));
+        $tarea->setDescripcion($pedidoProducto->getObservacionProblema());
+
+        $form = $this->createForm(TareaType::class, $tarea);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $fechaProgramada = $form->get('fechaProgramada')->getData();
+            $tarea->setFechaProgramada(
+                $fechaProgramada ? DateTime::createFromFormat('d/m/Y', $fechaProgramada) : null
+            );
+
+            $empleados = $tarea->getEmpleados();
+            if (!$empleados->isEmpty()) {
+                $tarea->setAsignadoPor($this->getUser());
+                $tarea->setAsignadoEn(new DateTime());
+                $estado = $em->getRepository(EstadoTarea::class)
+                    ->findOneByCodigoInterno(ConstanteEstadoTarea::ASIGNADA);
+                $this->estadoService->cambiarEstadoTarea($tarea, $estado, 'Tarea creada y asignada');
+            } else {
+                $estado = $em->getRepository(EstadoTarea::class)
+                    ->findOneByCodigoInterno(ConstanteEstadoTarea::NUEVA);
+                $this->estadoService->cambiarEstadoTarea($tarea, $estado, 'Tarea creada');
+            }
+
+            $em->persist($tarea);
+            foreach ($empleados as $empleado) {
+                $this->iniciarAsignacion($tarea, $empleado, $em);
+            }
+            $em->flush();
+
+            if (!$empleados->isEmpty()) {
+                foreach ($empleados as $empleado) {
+                    $this->notificarAsignacion($tarea, $empleado, $em);
+                }
+                $em->flush();
+            }
+
+            return new JsonResponse([
+                'result' => 'OK',
+                'message' => 'Tarea creada correctamente.',
+            ]);
+        }
+
+        $status = $form->isSubmitted() ? 422 : 200;
+
+        return $this->render('tarea/_modal_new.html.twig', [
+            'form' => $form->createView(),
+            'pedidoProducto' => $pedidoProducto,
+        ], new Response('', $status));
     }
 
     private function getIndicadorTareaData()
@@ -561,15 +690,44 @@ class TareaController extends BaseController
         $em->persist($notificacion);
     }
 
+    private function iniciarAsignacion(Tarea $tarea, Usuario $empleado, EntityManagerInterface $em): void
+    {
+        if ($tarea->getAsignacionActiva($empleado)) {
+            return;
+        }
+
+        $asignacion = new TareaAsignacion();
+        $asignacion->setEmpleado($empleado);
+        $asignacion->setFechaInicio(new DateTime());
+        $tarea->addAsignacion($asignacion);
+        $em->persist($asignacion);
+    }
+
+    private function cerrarAsignacion(
+        Tarea $tarea,
+        Usuario $empleado,
+        \DateTimeInterface $fechaFin,
+        ?int $porcentaje = null,
+        ?string $observacion = null
+    ): void {
+        $asignacion = $tarea->getAsignacionActiva($empleado);
+        if (!$asignacion) {
+            return;
+        }
+
+        $asignacion->setFechaFin($fechaFin);
+        $asignacion->setPorcentajeAvance($porcentaje);
+        $asignacion->setObservacionAvance($observacion);
+    }
+
     protected function getAditionalCustomWhereSQL($aliasTable, $request): string
     {
         $route = $request->get('_route');
         if ($route === 'tarea_empleado_mis_tareas_table') {
             return sprintf(
-                "%s.empleado IS NOT NULL AND IDENTITY(%s.empleado) = %d AND %s.estado IN (SELECT et FROM App\Entity\EstadoTarea et WHERE et.codigoInterno IN (%d, %d))",
-                $aliasTable,
-                $aliasTable,
+                "EXISTS (SELECT usuarioAsignado FROM App\\Entity\\Usuario usuarioAsignado WHERE usuarioAsignado.id = %d AND usuarioAsignado MEMBER OF %s.empleados) AND %s.estado IN (SELECT et FROM App\\Entity\\EstadoTarea et WHERE et.codigoInterno IN (%d, %d))",
                 $this->getUser()->getId(),
+                $aliasTable,
                 $aliasTable,
                 ConstanteEstadoTarea::ASIGNADA,
                 ConstanteEstadoTarea::TERMINADA
@@ -577,10 +735,12 @@ class TareaController extends BaseController
         }
         if ($route === 'tarea_empleado_disponibles_table') {
             return sprintf(
-                "%s.empleado IS NULL AND %s.estado IN (SELECT et FROM App\Entity\EstadoTarea et WHERE et.codigoInterno = %d)",
+                "NOT EXISTS (SELECT usuarioAsignado FROM App\\Entity\\Usuario usuarioAsignado WHERE usuarioAsignado.id = %d AND usuarioAsignado MEMBER OF %s.empleados) AND %s.estado IN (SELECT et FROM App\\Entity\\EstadoTarea et WHERE et.codigoInterno IN (%d, %d))",
+                $this->getUser()->getId(),
                 $aliasTable,
                 $aliasTable,
-                ConstanteEstadoTarea::NUEVA
+                ConstanteEstadoTarea::NUEVA,
+                ConstanteEstadoTarea::ASIGNADA
             );
         }
         return '';
@@ -593,12 +753,14 @@ class TareaController extends BaseController
         }
 
         $codigo = (int) $tarea->getEstado()->getCodigoInterno();
-        $esNuevaDisponible = $codigo === ConstanteEstadoTarea::NUEVA && $tarea->getEmpleado() === null;
+        $esDisponible = in_array($codigo, [
+            ConstanteEstadoTarea::NUEVA,
+            ConstanteEstadoTarea::ASIGNADA,
+        ], true) && !$tarea->getEmpleados()->contains($this->getUser());
         $esAsignadaAMi = $codigo === ConstanteEstadoTarea::ASIGNADA
-            && $tarea->getEmpleado() !== null
-            && $tarea->getEmpleado()->getId() === $this->getUser()->getId();
+            && $tarea->getEmpleados()->contains($this->getUser());
 
-        if (!$esNuevaDisponible && !$esAsignadaAMi) {
+        if (!$esDisponible && !$esAsignadaAMi) {
             throw new AccessDeniedException('No tenés permiso para acceder a esta tarea.');
         }
     }

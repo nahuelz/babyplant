@@ -17,7 +17,11 @@
             </div>
             <div class="row">
                 {{ macro_show._show_detail('Estado', tarea.estado|default('-'), 'col-md-4') }}
-                {{ macro_show._show_detail('Empleado', tarea.empleado|default('-'), 'col-md-4') }}
+                {% set nombresEmpleados = [] %}
+                {% for empleado in tarea.empleados %}
+                    {% set nombresEmpleados = nombresEmpleados|merge([empleado]) %}
+                {% endfor %}
+                {{ macro_show._show_detail('Empleados', nombresEmpleados|join(', ')|default('-'), 'col-md-4') }}
                 {{ macro_show._show_detail('Creado por', tarea.usuarioCreacion|default('-'), 'col-md-4') }}
             </div>
             <div class="row">
@@ -30,10 +34,55 @@
                 {{ macro_show._show_detail('Fecha cancelación', tarea.canceladoEn ? tarea.canceladoEn|date('d/m/Y H:i') : '-', 'col-md-4') }}
             </div>
 
-            <hr>
+            <div class="row">
+                {{ macro_show._show_detail('Avance', tarea.porcentajeAvance ~ '%', 'col-md-4') }}
+                {{ macro_show._show_detail('Observación de avance', tarea.observacionAvance|default('-'), 'col-md-8') }}
+            </div>
 
-            <h5>Histórico de estados</h5>
-            {% include 'tarea/historico_estados.html.twig' with {'entity': tarea, 'historicoEstados': historicoEstados} %}
+            {% if is_granted('ROLE_TAREA_ENCARGADO') %}
+                <hr>
+
+                <h5>Períodos de asignación</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm">
+                        <thead>
+                            <tr>
+                                <th>Empleado</th>
+                                <th>Inicio</th>
+                                <th>Fin</th>
+                                <th>Avance</th>
+                                <th>Observación</th>
+                                <th>Tiempo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for asignacion in tarea.asignaciones %}
+                            {% set segundos = asignacion.duracionSegundos %}
+                            <tr>
+                                <td>{{ asignacion.empleado }}</td>
+                                <td>{{ asignacion.fechaInicio|date('d/m/Y H:i') }}</td>
+                                <td>{{ asignacion.fechaFin ? asignacion.fechaFin|date('d/m/Y H:i') : 'Activo' }}</td>
+                                <td>{{ asignacion.porcentajeAvance is not null ? asignacion.porcentajeAvance ~ '%' : '-' }}</td>
+                                <td>{{ asignacion.observacionAvance|default('-') }}</td>
+                                <td>{{ (segundos / 3600)|round(0, 'floor') }} h {{ ((segundos % 3600) / 60)|round(0, 'floor') }} min</td>
+                            </tr>
+                        {% else %}
+                            <tr><td colspan="6" class="text-center">Sin períodos registrados</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <h6>Tiempo total por empleado</h6>
+                <ul>
+                    {% for total in tarea.duracionesTotalesPorEmpleado %}
+                        <li>{{ total.empleado }}: {{ (total.segundos / 3600)|round(0, 'floor') }} h {{ ((total.segundos % 3600) / 60)|round(0, 'floor') }} min</li>
+                    {% else %}
+                        <li>Sin tiempos registrados</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
         </div>
 
         <div class="card-footer d-flex justify-content-between">

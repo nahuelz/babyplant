@@ -118,6 +118,7 @@
                             <span class="label label-inline font-weight-bold" style="min-width: 300px; padding: 20px; color: #fff; background-color: {{ producto.tipoProducto.color }}">{{ producto.productoBandeja }}</span>
                         </div>
                         {{ macro_show._show_detail('N° Orden', producto.getNumeroOrdenCompleto|default('-'), 'col-md-2') }}
+                        {{ macro_show._show_detail('Origen Semilla', producto.tipoOrigenSemilla.nombre|default('-'), 'col-md-2') }}
                     </div>
                     <div class="row">
                         {% set entregaContent %}

@@ -13,13 +13,13 @@ class TareaAsignarType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('empleado', EntityType::class, [
+        $builder->add('empleados', EntityType::class, [
             'class' => Usuario::class,
             'choice_label' => function (Usuario $u) {
                 return $u->getNombreCompleto() ?: $u->getUsername();
             },
-            'label' => 'Empleado',
-            'placeholder' => 'Sin asignar',
+            'label' => 'Empleados',
+            'multiple' => true,
             'required' => false,
             'query_builder' => function (UsuarioRepository $er) {
                 return $er->createQueryBuilder('u')

@@ -1,4 +1,3 @@
-
 var init = false;
 
 var $table = $('#table-pedido');
@@ -40,6 +39,7 @@ $(document).ready(function () {
     initOkCheckeoHandler();
     initEliminarBandejasHandler();
     initRevertirBandejasHandler();
+    initGenerarTareaHandler();
 
     var table = $table.DataTable();
 
@@ -684,6 +684,7 @@ function dataTablesActionFormatter(data, type, full, meta) {
     if (actionData && !jQuery.isEmptyObject(actionData)) {
         actions +=
             (actionData.show_pedido !== undefined ? '<a class="dropdown-item" href="' + actionData.show_pedido + '"><i class="la la-search" style="margin-right: 5px;"></i> Ver Pedido</a>' : '') +
+            (actionData.tarea_generar_desde_pedido_problema !== undefined ? '<a class="dropdown-item generar-tarea-btn" href="' + actionData.tarea_generar_desde_pedido_problema + '"><i class="la la-tasks" style="margin-right: 5px;"></i> Generar Tarea</a>' : '') +
             (actionData.pedido_producto_quitar_revision !== undefined ? '<a class="dropdown-item quitar-revision-btn" href="#" data-id="' + full[2].idProducto + '" data-tiene-problema="true" data-observacion=""><i class="la la-times" style="margin-right: 5px;"></i> Quitar Revisión</a>' : '') +
             (actionData.pedido_producto_marcar_revision !== undefined ? '<a class="dropdown-item marcar-revision-btn" href="#" data-id="' + full[2].idProducto + '" data-tiene-problema="true" data-observacion=""><i class="la la-clipboard-check" style="margin-right: 5px;"></i> Marcar Revisión</a>' : '') +
             (actionData.pedido_producto_marcar_problema !== undefined ? '<a class="dropdown-item marcar-problema-btn" href="#" data-id="' + full[2].idProducto + '" data-tiene-problema="false" data-observacion=""><i class="la la-exclamation-triangle" style="margin-right: 5px;"></i> Marcar Problema</a>' : '') +
@@ -1863,5 +1864,69 @@ function initRevertirBandejasHandler() {
                 }
             });
         });
+    });
+}
+
+function initGenerarTareaHandler() {
+    $(document).off('click', '.generar-tarea-btn').on('click', '.generar-tarea-btn', function (e) {
+        e.preventDefault();
+        cargarModalGenerarTarea($(this).attr('href'));
+    });
+
+    $(document).off('submit', '#formGenerarTarea').on('submit', '#formGenerarTarea', function (e) {
+        e.preventDefault();
+
+        const $form = $(this);
+        const $submit = $form.find('.submit-button');
+        $submit.prop('disabled', true);
+
+        $.ajax({
+            url: $form.attr('action'),
+            type: 'POST',
+            data: $form.serialize(),
+            success: function (response) {
+                $('#modalGenerarTarea').modal('hide');
+                toastr.success(response.message);
+            },
+            error: function (xhr) {
+                if (xhr.status === 422) {
+                    mostrarModalGenerarTarea(xhr.responseText);
+                    return;
+                }
+
+                $submit.prop('disabled', false);
+                toastr.error('No se pudo crear la tarea.');
+            }
+        });
+    });
+}
+
+function cargarModalGenerarTarea(url) {
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: mostrarModalGenerarTarea,
+        error: function () {
+            toastr.error('No se pudo cargar el formulario de tarea.');
+        }
+    });
+}
+
+function mostrarModalGenerarTarea(html) {
+    $('#modalGenerarTarea').remove();
+    $('body').append(html);
+    $('#modalGenerarTarea').modal('show');
+    initDatepickers($('#modalGenerarTarea'));
+    $('#tarea_empleado').select2({
+        placeholder: 'Sin asignar',
+        allowClear: true,
+        width: '100%',
+        dropdownParent: $('#modalGenerarTarea')
+    });
+    $('#tarea_empleados').select2({
+        placeholder: 'Sin asignar',
+        allowClear: true,
+        width: '100%',
+        dropdownParent: $('#modalGenerarTarea')
     });
 }

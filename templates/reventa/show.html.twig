@@ -43,8 +43,23 @@
                 <div class="card-header"><h4>Clientes</h4></div>
                 <div class="card-body">
                     <div class="row">
-                        {{ macro_show._show_detail('Cliente Original (devolvió)', entity.clienteOriginal|default('-'), 'col-md-6') }}
-                        {{ macro_show._show_detail('Cliente Comprador', entity.cliente|default('-'), 'col-md-6') }}
+                        {% set clienteOriginalContent %}
+                            {% if entity.clienteOriginal %}
+                                <a href="{{ path('situacioncliente_show', {'id': entity.clienteOriginal.id}) }}">{{ entity.clienteOriginal }}</a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        {% endset %}
+                        {{ macro_show._show_detail('Cliente Original (devolvió)', clienteOriginalContent, 'col-md-6') }}
+
+                        {% set clienteCompradorContent %}
+                            {% if entity.cliente %}
+                                <a href="{{ path('situacioncliente_show', {'id': entity.cliente.id}) }}">{{ entity.cliente }}</a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        {% endset %}
+                        {{ macro_show._show_detail('Cliente Comprador', clienteCompradorContent, 'col-md-6') }}
                     </div>
                 </div>
             </div>
@@ -52,11 +67,21 @@
             <div class="card card-detail">
                 <div class="card-header"><h4>Devolución origen</h4></div>
                 <div class="card-body">
-                    <div class="row">
-                        {{ macro_show._show_detail('Devolución', entity.devolucion|default('-'), 'col-md-3') }}
-                        {{ macro_show._show_detail('Producto', entity.pedidoProducto.getNombreCompleto|default('-'), 'col-md-3') }}
-                        {{ macro_show._show_detail('Bandejas devueltas', entity.devolucion.cantidadBandejas|default('-'), 'col-md-3') }}
-                        {{ macro_show._show_detail('Disponibles en devolución', entity.devolucion.cantidadDisponible|default('-'), 'col-md-3') }}
+                    <div class="row align-items-center">
+                        {% set devolucionContent %}
+                            {% if entity.devolucion %}
+                                <a href="{{ path('devolucion_show', {'id': entity.devolucion.id}) }}">{{ entity.devolucion }}</a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        {% endset %}
+                        {{ macro_show._show_detail('Devolución', devolucionContent, 'col-md-2') }}
+                        <div class="d-flex flex-column font-weight-bold justify-content-center mr-5">
+                            <span class="label label-inline font-weight-bold" style="min-width: 300px; padding: 20px; color: #fff; background-color: {{ entity.pedidoProducto.tipoProducto.color }}">{{ entity.pedidoProducto.productoBandeja }}</span>
+                        </div>
+                        {{ macro_show._show_detail('Origen Semilla', entity.pedidoProducto.tipoOrigenSemilla.nombre|default('-'), 'col-md-2') }}
+                        {{ macro_show._show_detail('Bandejas devueltas', entity.devolucion.cantidadBandejas|default('-'), 'col-md-2') }}
+                        {{ macro_show._show_detail('Disponibles en devolución', entity.devolucion.cantidadDisponible|default('-'), 'col-md-2') }}
                     </div>
                 </div>
             </div>
@@ -66,7 +91,10 @@
                 <div class="card-body">
                     <div class="row">
                         {% if entity.entrega %}
-                            {{ macro_show._show_detail('Entrega', entity.entrega|default('-'), 'col-md-4') }}
+                            {% set entregaContent %}
+                                <a href="{{ path('entrega_show', {'id': entity.entrega.id}) }}">{{ entity.entrega }}</a>
+                            {% endset %}
+                            {{ macro_show._show_detail('Entrega', entregaContent, 'col-md-4') }}
                             {{ macro_show._show_detail('Estado Entrega', entity.entrega.estado.nombre|default('-'), 'col-md-4') }}
                             {{ macro_show._show_detail('Fecha Entrega', entity.entrega.fechaEntrega is not null ? entity.entrega.fechaEntrega|date('d/m/Y') : '-', 'col-md-4') }}
                         {% else %}

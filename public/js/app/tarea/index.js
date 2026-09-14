@@ -179,10 +179,11 @@ $(document).on('click', '.btn-asignar-tarea', function (e) {
     $('#modalAsignarTareaBody').html('Cargando...')
     $('#modalAsignarTareaBody').load(url, function () {
         $('#modalAsignarTarea').modal('show')
-        $('#tarea_asignar_empleado').select2({
-            placeholder: 'Seleccione un empleado',
+        $('#tarea_asignar_empleados').select2({
+            placeholder: 'Seleccione empleados',
             allowClear: true,
-            width: '100%'
+            width: '100%',
+            dropdownParent: $('#modalAsignarTarea')
         })
     })
 })

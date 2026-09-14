@@ -38,16 +38,30 @@ class Tarea
     private $titulo;
 
     /**
+     * @ORM\Column(name="porcentaje_avance", type="integer", options={"default": 0})
+     */
+    private $porcentajeAvance = 0;
+
+    /**
+     * @ORM\Column(name="observacion_avance", type="text", nullable=true)
+     */
+    private $observacionAvance;
+
+    /**
      * @ORM\ManyToOne(targetEntity="EstadoTarea")
      * @ORM\JoinColumn(name="id_estado_tarea", referencedColumnName="id")
      */
     private $estado;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Usuario")
-     * @ORM\JoinColumn(name="id_empleado", referencedColumnName="id", nullable=true)
+     * @ORM\ManyToMany(targetEntity="Usuario")
+     * @ORM\JoinTable(
+     *     name="tarea_empleado",
+     *     joinColumns={@ORM\JoinColumn(name="id_tarea", referencedColumnName="id", onDelete="CASCADE")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="id_usuario", referencedColumnName="id")}
+     * )
      */
-    private $empleado;
+    private $empleados;
 
     /**
      * @ORM\ManyToOne(targetEntity="Usuario")
@@ -81,9 +95,17 @@ class Tarea
      */
     private $historicoEstados;
 
+    /**
+     * @ORM\OneToMany(targetEntity="TareaAsignacion", mappedBy="tarea", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"fechaInicio" = "DESC"})
+     */
+    private $asignaciones;
+
     public function __construct()
     {
         $this->historicoEstados = new ArrayCollection();
+        $this->empleados = new ArrayCollection();
+        $this->asignaciones = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -115,6 +137,32 @@ class Tarea
         return $this;
     }
 
+    public function getPorcentajeAvance(): int
+    {
+        return $this->porcentajeAvance;
+    }
+
+    public function setPorcentajeAvance(int $porcentajeAvance): self
+    {
+        if (!in_array($porcentajeAvance, range(0, 100, 10), true)) {
+            throw new \InvalidArgumentException('El porcentaje de avance debe estar entre 0 y 100, en intervalos de 10.');
+        }
+
+        $this->porcentajeAvance = $porcentajeAvance;
+        return $this;
+    }
+
+    public function getObservacionAvance(): ?string
+    {
+        return $this->observacionAvance;
+    }
+
+    public function setObservacionAvance(?string $observacionAvance): self
+    {
+        $this->observacionAvance = $observacionAvance;
+        return $this;
+    }
+
     public function getEstado(): ?EstadoTarea
     {
         return $this->estado;
@@ -127,14 +175,26 @@ class Tarea
         return $this;
     }
 
-    public function getEmpleado(): ?Usuario
+    /**
+     * @return Collection<int, Usuario>
+     */
+    public function getEmpleados(): Collection
     {
-        return $this->empleado;
+        return $this->empleados;
     }
 
-    public function setEmpleado(?Usuario $empleado): self
+    public function addEmpleado(Usuario $empleado): self
     {
-        $this->empleado = $empleado;
+        if (!$this->empleados->contains($empleado)) {
+            $this->empleados[] = $empleado;
+        }
+
+        return $this;
+    }
+
+    public function removeEmpleado(Usuario $empleado): self
+    {
+        $this->empleados->removeElement($empleado);
 
         return $this;
     }
@@ -227,5 +287,60 @@ class Tarea
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, TareaAsignacion>
+     */
+    public function getAsignaciones(): Collection
+    {
+        return $this->asignaciones;
+    }
+
+    public function addAsignacion(TareaAsignacion $asignacion): self
+    {
+        if (!$this->asignaciones->contains($asignacion)) {
+            $this->asignaciones[] = $asignacion;
+            $asignacion->setTarea($this);
+        }
+        return $this;
+    }
+
+    public function getAsignacionActiva(Usuario $empleado): ?TareaAsignacion
+    {
+        foreach ($this->asignaciones as $asignacion) {
+            if ($asignacion->getEmpleado() === $empleado && $asignacion->estaActiva()) {
+                return $asignacion;
+            }
+        }
+        return null;
+    }
+
+    public function getDuracionTotalSegundosPorEmpleado(Usuario $empleado): int
+    {
+        $total = 0;
+        foreach ($this->asignaciones as $asignacion) {
+            if ($asignacion->getEmpleado() === $empleado) {
+                $total += $asignacion->getDuracionSegundos();
+            }
+        }
+        return $total;
+    }
+
+    public function getDuracionesTotalesPorEmpleado(): array
+    {
+        $totales = [];
+        foreach ($this->asignaciones as $asignacion) {
+            $empleado = $asignacion->getEmpleado();
+            if (!$empleado) {
+                continue;
+            }
+            $id = $empleado->getId();
+            if (!isset($totales[$id])) {
+                $totales[$id] = ['empleado' => $empleado, 'segundos' => 0];
+            }
+            $totales[$id]['segundos'] += $asignacion->getDuracionSegundos();
+        }
+        return array_values($totales);
     }
 }

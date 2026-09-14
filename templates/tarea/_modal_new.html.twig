@@ -1,0 +1,44 @@
+{% import 'app/_macro_form.html.twig' as macro_form %}
+
+<div class="modal fade" id="modalGenerarTarea" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            {{ form_start(form, {
+                'action': path('tarea_generar_desde_pedido_problema', {'id': pedidoProducto.id}),
+                'method': 'POST',
+                'attr': {
+                    'id': 'formGenerarTarea',
+                    'class': 'horizontal-form',
+                    'novalidate': 'novalidate'
+                }
+            }) }}
+            <div class="modal-header">
+                <h5 class="modal-title">Generar tarea</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% include 'app/_fields_errors.html.twig' %}
+                <div class="row">
+                    {{ macro_form._new_field(form.fechaProgramada, 'col-md-6') }}
+                </div>
+                <div class="row">
+                    {{ macro_form._new_field(form.empleados, 'col-md-6') }}
+                </div>
+                <div class="row">
+                    {{ macro_form._new_field(form.titulo, 'col-md-12') }}
+                </div>
+                <div class="row">
+                    {{ macro_form._new_field(form.descripcion, 'col-md-12 observacion') }}
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <button type="button" class="btn btn-light-dark font-weight-bold" data-dismiss="modal">Cancelar</button>
+                {{ form_widget(form.submit) }}
+            </div>
+            {{ form_widget(form._token) }}
+            {{ form_end(form, {'render_rest': false}) }}
+        </div>
+    </div>
+</div>
