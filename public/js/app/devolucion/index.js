@@ -5,7 +5,18 @@ $(document).ready(function () {
         pageLength: 25,
         lengthMenu: [5, 10, 25, 50, 100],
         responsive: true,
-        autoWidth: false
+        autoWidth: false,
+        scrollX: false,
+        fixedHeader: false,
+        destroy: true,
+        columnDefs: [
+            {targets: 0, width: '1%'},
+            {targets: 3, width: '10%'},
+            {targets: 9, width: '10%'},
+            {targets: 10, width: '7%'},
+            {targets: 11, width: '8%'},
+            {targets: 12, width: '2%', orderable: false}
+        ]
     });
 
     initVerHistoricoEstadoDevolucionHandler();
