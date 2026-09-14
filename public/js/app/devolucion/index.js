@@ -1,6 +1,16 @@
 $(document).ready(function () {
+    dataTablesInit($('#table-devolucion'), {
+        order: [[0, 'desc']],
+        serverSide: false,
+        pageLength: 25,
+        lengthMenu: [5, 10, 25, 50, 100],
+        responsive: true,
+        autoWidth: false
+    });
+
     initVerHistoricoEstadoDevolucionHandler();
     initDescartarDevolucionHandler();
+    initCancelarDevolucionHandler();
 });
 
 function initVerHistoricoEstadoDevolucionHandler() {
@@ -47,6 +57,42 @@ function initDescartarDevolucionHandler() {
         }).then(function (result) {
             if (result.isConfirmed) {
                 window.location.href = url;
+            }
+        });
+    });
+}
+
+function initCancelarDevolucionHandler() {
+    $(document).off('click', '.btn-cancelar-devolucion').on('click', '.btn-cancelar-devolucion', function (e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+
+        Swal.fire({
+            title: '¿Cancelar devolución?',
+            text: 'Esta acción no se puede deshacer.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, cancelar',
+            cancelButtonText: 'Cancelar',
+            html: '<input id="swal-input-motivo" class="swal2-input" placeholder="Motivo de cancelación (opcional)">',
+            preConfirm: function () {
+                return document.getElementById('swal-input-motivo').value;
+            }
+        }).then(function (result) {
+            if (result.isConfirmed) {
+                var motivo = result.value || '';
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = url;
+
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'motivo';
+                input.value = motivo;
+                form.appendChild(input);
+
+                document.body.appendChild(form);
+                form.submit();
             }
         });
     });

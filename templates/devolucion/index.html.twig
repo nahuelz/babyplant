@@ -21,22 +21,30 @@
         </div>
 
         <div class="card-body">
+            {% set estadosFiltro = [':Todos'] %}
+            {% set estadosAgregados = [] %}
+            {% for devolucion in devoluciones %}
+                {% if devolucion.estado and devolucion.estado.nombre not in estadosAgregados %}
+                    {% set estadosAgregados = estadosAgregados|merge([devolucion.estado.nombre]) %}
+                    {% set estadosFiltro = estadosFiltro|merge([devolucion.estado.nombre ~ ':' ~ devolucion.estado.nombre]) %}
+                {% endif %}
+            {% endfor %}
             <table class="table table-bordered table-hover" id="table-devolucion">
                 <thead>
                 <tr>
-                    <th class="text-center">N°</th>
-                    <th class="text-center">CLIENTE</th>
-                    <th class="text-center">PEDIDO</th>
-                    <th class="text-center">PRODUCTO</th>
-                    <th class="text-center">BANDEJAS</th>
-                    <th class="text-center">REVENDIDAS</th>
-                    <th class="text-center">DESCARTADAS</th>
-                    <th class="text-center">DISPONIBLES</th>
-                    <th class="text-center">VALOR TOTAL</th>
-                    <th class="text-center">ESTADO</th>
-                    <th class="text-center">FECHA DEVOLUCIÓN</th>
-                    <th class="text-center">OBSERVACIÓN</th>
-                    <th class="text-center"></th>
+                    <th data-type="string" class="text-center">N°</th>
+                    <th data-type="string" class="text-center">CLIENTE</th>
+                    <th data-type="string" class="text-center">PEDIDO</th>
+                    <th data-type="string" class="text-center">PRODUCTO</th>
+                    <th data-type="string" class="text-center">BANDEJAS</th>
+                    <th data-type="string" class="text-center">REVENDIDAS</th>
+                    <th data-type="string" class="text-center">DESCARTADAS</th>
+                    <th data-type="string" class="text-center">DISPONIBLES</th>
+                    <th data-type="string" class="text-center">VALOR TOTAL</th>
+                    <th data-type="select" data-select="{{ estadosFiltro|join(';') }}" class="text-center">ESTADO</th>
+                    <th data-type="string" class="text-center">FECHA DEVOLUCIÓN</th>
+                    <th data-type="string" class="text-center">OBSERVACIÓN</th>
+                    <th data-type="search" class="text-center"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -117,68 +125,6 @@
     {{ parent() }}
 
     <script type="text/javascript" src="{{ asset(plugins_path ~ 'custom/datatables/datatables.bundle.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('js/app/devolucion/index.js') }}"></script>
-
-    <script>
-        jQuery(document).ready(function () {
-            $('#table-devolucion').DataTable({
-                order: [[0, 'desc']],
-                language: {
-                    emptyTable: 'No hay datos disponibles en la tabla',
-                    info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
-                    infoEmpty: 'Mostrando 0 a 0 de 0 registros',
-                    infoFiltered: '(filtrado de _MAX_ registros totales)',
-                    lengthMenu: 'Mostrar _MENU_ registros',
-                    loadingRecords: 'Cargando...',
-                    processing: 'Procesando...',
-                    search: 'Buscar:',
-                    zeroRecords: 'No se encontraron resultados',
-                    paginate: {
-                        first: 'Primero',
-                        last: 'Último',
-                        next: 'Siguiente',
-                        previous: 'Anterior'
-                    },
-                    aria: {
-                        sortAscending: ': Activar para ordenar la columna de manera ascendente',
-                        sortDescending: ': Activar para ordenar la columna de manera descendente'
-                    }
-                }
-            });
-
-            $('.btn-cancelar-devolucion').on('click', function (e) {
-                e.preventDefault();
-                var url = $(this).attr('href');
-
-                Swal.fire({
-                    title: '¿Cancelar devolución?',
-                    text: 'Esta acción no se puede deshacer.',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Sí, cancelar',
-                    cancelButtonText: 'Cancelar',
-                    html: '<input id="swal-input-motivo" class="swal2-input" placeholder="Motivo de cancelación (opcional)">',
-                    preConfirm: function () {
-                        return document.getElementById('swal-input-motivo').value;
-                    }
-                }).then(function (result) {
-                    if (result.isConfirmed) {
-                        var motivo = result.value || '';
-                        var form = document.createElement('form');
-                        form.method = 'POST';
-                        form.action = url;
-                        
-                        var input = document.createElement('input');
-                        input.type = 'hidden';
-                        input.name = 'motivo';
-                        input.value = motivo;
-                        form.appendChild(input);
-                        
-                        document.body.appendChild(form);
-                        form.submit();
-                    }
-                });
-            });
-        });
-    </script>
+    <script src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'config/config-datatables.js') }}"></script>
+    <script type="text/javascript" src="{{ asset(__PREFIX_JAVASCRIPT__ ~ 'app/devolucion/index.js') }}"></script>
 {% endblock %}

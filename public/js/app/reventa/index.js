@@ -1,4 +1,13 @@
 $(document).ready(function () {
+    dataTablesInit($('#table-reventa'), {
+        order: [[0, 'desc']],
+        serverSide: false,
+        pageLength: 25,
+        lengthMenu: [5, 10, 25, 50, 100],
+        responsive: true,
+        autoWidth: false
+    });
+
     initVerHistoricoEstadoReventaHandler();
     initEntregarReventaHandler();
     initCancelarReventaHandler();
