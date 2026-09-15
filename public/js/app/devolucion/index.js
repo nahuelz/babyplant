@@ -10,7 +10,7 @@ $(document).ready(function () {
         fixedHeader: false,
         destroy: true,
         columnDefs: [
-            {targets: 0, width: '1%'},
+            {targets: 0, width: '1%', type: 'num'},
             {targets: 3, width: '10%'},
             {targets: 9, width: '10%'},
             {targets: 10, width: '7%'},
