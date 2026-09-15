@@ -281,7 +281,7 @@ function dataTablesActionFormatter(data, type, full, meta) {
             +
             (data.print_pdf_interno !== undefined ? '<a class="dropdown-item" href="' + data.print_pdf_interno + '"><i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Entrega Interno</a>' : '')
             +
-            (data.delete !== undcanceefined ? '<a class="dropdown-item accion-borrar" href="' + data.delete + '"><i class="la la-remove" style="margin-right: 5px;"></i> Borrar</a>' : '')
+            (data.delete !== undefined ? '<a class="dropdown-item accion-borrar" href="' + data.delete + '"><i class="la la-remove" style="margin-right: 5px;"></i> Borrar</a>' : '')
             +
             (data.cancelar !== undefined ? '<a class="dropdown-item accion-cancelar" href="' + data.cancelar + '" data-es-reventa="' + (data.es_reventa || false) + '"><i class="la la-remove" style="margin-right: 5px;"></i> Cancelar </a>' : '')
         ;
