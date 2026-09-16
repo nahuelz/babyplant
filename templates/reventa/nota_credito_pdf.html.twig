@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <style type="text/css">
+        .table-border {
+            border: 2px solid black;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .datos-productos-table{
+            line-height: 7.5mm;
+        }
+        td{
+            font-size: 15px;
+        }
+    </style>
+    <title>{{ tipo_pdf }}</title>
+</head>
+
+<body>
+{% include 'PDF/header.html.twig' %}
+
+    <div class="table-border header">
+        <table width="100%" border="0">
+            <tr>
+                <td>
+                    <table cellpadding="5" cellspacing="5" style="padding: 0;">
+                        <tr>
+                            <td align="right"><strong>NOMBRE </strong></td>
+                            <td>{{ reventa.clienteOriginal.nombreCompleto|default('-') }}</td>
+                            <td align="right"><strong>CUIT</strong></td>
+                            <td>{{ reventa.clienteOriginal.cuit|default('-') }}</td>
+                        </tr>
+                        <tr>
+                            <td align="right"><strong>CELULAR</strong></td>
+                            <td>{{ reventa.clienteOriginal.celular|default('-') }}</td>
+                            <td align="right"><strong>DOMICILIO</strong></td>
+                            <td>{{ reventa.clienteOriginal.domicilio|default('-') }}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+<div class="datos-productos">
+    <table class="datos-productos-table" border="1" cellpadding="0" cellspacing="0" align="center">
+        <thead>
+        <tr>
+            <th class="text-center">TIPO</th>
+            <th class="text-center">MONTO</th>
+            <th class="text-center">PRODUCTO</th>
+            <th class="text-center">BANDEJAS</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td width="250" align="center">{{ movimiento.tipoMovimiento|default('NOTA DE CRÉDITO') }}</td>
+            <td width="250" align="center">{{ monto|money_format }}</td>
+            <td width="250" align="center">{{ reventa.pedidoProducto.productoBandeja|default('-') }}</td>
+            <td width="150" align="center">{{ reventa.cantidadBandejas|round }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

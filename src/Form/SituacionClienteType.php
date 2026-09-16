@@ -40,7 +40,7 @@ class SituacionClienteType extends AbstractType
                             ->andWhere('x.codigoInterno NOT IN (:modosExclusivosReventa)')
                             ->setParameter('modosExclusivosReventa', [
                                 ConstanteModoPago::CREDITO_EFECTIVO,
-                                ConstanteModoPago::CREDITO_TRANSFERENCIA,
+                                ConstanteModoPago::CREDITO_CC,
                             ])
                             ->orderBy('x.nombre', 'ASC');
                     },

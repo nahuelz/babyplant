@@ -209,7 +209,7 @@ class ReventaService
             throw new \DomainException('El saldo de esta reventa ya fue distribuido.');
         }
 
-        if (!in_array($modoPago, [ConstanteModoPago::CREDITO_EFECTIVO, ConstanteModoPago::CREDITO_TRANSFERENCIA], true)) {
+        if (!in_array($modoPago, [ConstanteModoPago::CREDITO_EFECTIVO, ConstanteModoPago::CREDITO_CC], true)) {
             throw new \DomainException('Debe seleccionar un modo de pago válido.');
         }
 

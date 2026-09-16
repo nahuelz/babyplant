@@ -22,21 +22,36 @@
                 <input type="text" class="form-control" value="{{ reventa.clienteOriginal }}" readonly>
             </div>
         </div>
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="form-group">
-                <label>Valor total reventa</label>
-                <input type="text" class="form-control font-weight-bold" value="$ {{ total|number_format(2, ',', '.') }}" readonly>
+                <label>Producto</label>
+                <div class="d-flex flex-column font-weight-bold justify-content-center">
+                    <span class="label label-inline font-weight-bold" style="min-width: 300px; padding: 20px; color: #fff; background-color: {{ reventa.pedidoProducto.tipoProducto.color }}">{{ reventa.pedidoProducto.productoBandeja }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Pedido</label>
+                <input type="text" class="form-control" value="N° {{ reventa.pedidoProducto.pedido.id }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Orden de siembra</label>
+                <input type="text" class="form-control" value="{{ reventa.pedidoProducto.numeroOrdenCompleto }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Origen semilla</label>
+                <input type="text" class="form-control" value="{{ reventa.pedidoProducto.tipoOrigenSemilla.nombre }}" readonly>
             </div>
         </div>
         <div class="col-md-12">
             <div class="form-group">
-                <label for="modo_pago_reventa">Modo de pago</label>
-                <select name="modoPago" id="modo_pago_reventa" class="form-control" required>
-                    <option value="">-- Seleccione --</option>
-                    {% for codigo, nombre in modosPago %}
-                        <option value="{{ codigo }}">{{ nombre }}</option>
-                    {% endfor %}
-                </select>
+                <label>Valor total reventa</label>
+                <input type="text" class="form-control font-weight-bold" value="$ {{ total|number_format(2, ',', '.') }}" readonly>
             </div>
         </div>
         <div class="col-md-6">

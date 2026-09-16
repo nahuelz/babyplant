@@ -150,10 +150,6 @@ class ReventaController extends BaseController {
                 'total' => $total,
                 'montoClienteOriginal' => round($total * 0.9, 2),
                 'montoPlantinera' => round($total - round($total * 0.9, 2), 2),
-                'modosPago' => [
-                    ConstanteModoPago::CREDITO_EFECTIVO => 'Crédito efectivo',
-                    ConstanteModoPago::CREDITO_TRANSFERENCIA => 'Crédito transferencia',
-                ],
                 'token' => bin2hex(random_bytes(16)),
             ]);
         }
@@ -167,7 +163,7 @@ class ReventaController extends BaseController {
                 $reventa,
                 $this->normalizarImporte((string) $request->request->get('montoClienteOriginal')),
                 $this->normalizarImporte((string) $request->request->get('montoPlantinera')),
-                (int) $request->request->get('modoPago'),
+                ConstanteModoPago::CREDITO_CC,
                 (string) $request->request->get('token')
             );
 
@@ -175,6 +171,28 @@ class ReventaController extends BaseController {
         } catch (\DomainException $e) {
             return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
+    }
+
+    /**
+     * @Route("/{id}/imprimir-nota-credito", name="reventa_imprimir_nota_credito", methods={"GET"}, requirements={"id"="\d+"})
+     */
+    public function imprimirNotaCreditoAction(Reventa $reventa): Response
+    {
+        $movimiento = $reventa->getMovimientoDistribucion();
+
+        $html = $this->renderView('reventa/nota_credito_pdf.html.twig', [
+            'entity' => $reventa,
+            'reventa' => $reventa,
+            'movimiento' => $movimiento,
+            'monto' => $movimiento ? $movimiento->getMonto() : $reventa->getMontoDistribuible(),
+            'tipo_pdf' => 'NOTA DE CRÉDITO',
+        ]);
+        $filename = "NotaCredito.pdf";
+        $basePath = $this->getParameter('MPDF_BASE_PATH');
+
+        $mpdfOutput = $this->printService->printA4($basePath, $filename, $html);
+
+        return new Response($mpdfOutput);
     }
 
     private function normalizarImporte(string $importe): float

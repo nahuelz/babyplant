@@ -60,7 +60,7 @@ class ConstanteModoPago {
     const CREDITO_EFECTIVO = 10;
 
     /**
-     * CREDITO TRANSFERENCIA
+     * CREDITO CC
      */
-    const CREDITO_TRANSFERENCIA = 11;
+    const CREDITO_CC = 11;
 }

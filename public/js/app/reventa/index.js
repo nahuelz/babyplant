@@ -99,11 +99,11 @@ function initDistribuirSaldoReventaHandler() {
 
         $.get(actionUrl).done(function (form) {
             showDialog({
-                titulo: '<i class="la la-hand-holding-usd margin-right-10"></i> Distribuir saldo de reventa',
+                titulo: '<i class="la la-hand-holding-usd margin-right-10"></i> Credito a cuenta corriente',
                 contenido: form,
                 color: 'blue',
                 labelCancel: 'Cancelar',
-                labelSuccess: 'Confirmar distribución',
+                labelSuccess: 'Confirmar',
                 closeButton: true,
                 callbackCancel: function () {
                     return true;
