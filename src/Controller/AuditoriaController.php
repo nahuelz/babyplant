@@ -79,7 +79,11 @@ class AuditoriaController extends BaseController {
                     $jsonString = file_get_contents($filename403);
                     $daysErrors = [];
                     $daysErrors['timeStamp'] = $filterDate->getTimestamp();
-                    $daysErrors['data'] = json_decode($jsonString, true)['error_403'];
+                    $error403 = json_decode($jsonString, true)['error_403'] ?? [];
+                    if (!is_array($error403)) {
+                        $error403 = [];
+                    }
+                    $daysErrors['data'] = $error403;
                     $entities[] = $daysErrors;
                 }
 
@@ -88,7 +92,11 @@ class AuditoriaController extends BaseController {
                     $jsonString = file_get_contents($filename405);
                     $daysErrors = [];
                     $daysErrors['timeStamp'] = $filterDate->getTimestamp();
-                    $daysErrors['data'] = json_decode($jsonString, true)['error_405'];
+                    $error405 = json_decode($jsonString, true)['error_405'] ?? [];
+                    if (!is_array($error405)) {
+                        $error405 = [];
+                    }
+                    $daysErrors['data'] = $error405;
                     $entities[] = $daysErrors;
                 }
 
@@ -97,7 +105,11 @@ class AuditoriaController extends BaseController {
                     $jsonString = file_get_contents($filename500);
                     $daysErrors = [];
                     $daysErrors['timeStamp'] = $filterDate->getTimestamp();
-                    $daysErrors['data'] = empty(json_decode($jsonString, true)['error_500']) ? '' : json_decode($jsonString, true)['error_500'];
+                    $error500 = json_decode($jsonString, true)['error_500'] ?? [];
+                    if (!is_array($error500)) {
+                        $error500 = [];
+                    }
+                    $daysErrors['data'] = $error500;
                     $entities[] = $daysErrors;
                 }
             }
@@ -108,6 +120,11 @@ class AuditoriaController extends BaseController {
         // Filtrar las entidades según los parámetros de búsqueda
         if (!empty($searchParams)) {
             foreach ($entities as $dayKey => $daysErrors) {
+                if (!is_array($daysErrors['data'])) {
+                    unset($entities[$dayKey]);
+                    continue;
+                }
+
                 foreach ($daysErrors['data'] as $entityKey => $entity) {
                     $keepEntity = true;
 
