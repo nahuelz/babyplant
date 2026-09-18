@@ -64,6 +64,10 @@ class ExceptionListener {
         $renderer = new HtmlErrorRenderer(true, null, null, null, $currentContent, $this->logger);
         $errorHtml = $renderer->render($exception)->getAsString();
 
+        if (strlen($errorHtml) > 50000) {
+            $errorHtml = substr($errorHtml, 0, 50000) . "\n\n[HTML truncado por tamaño excesivo]";
+        }
+
         $errorCountFile = $path . 'error_' . $statusCode . '_count.txt';
         if (file_exists($errorCountFile)) {
             $errorCount = intval(file_get_contents($errorCountFile)) + 1;
@@ -81,8 +85,13 @@ class ExceptionListener {
         ];
 
         if (file_exists($filename)) {
-            $jsonString = file_get_contents($filename);
-            $newData = json_decode($jsonString, true);
+            if (filesize($filename) > 5 * 1024 * 1024) {
+                rename($filename, $filename . '.' . date('YmdHis') . '.bak');
+                $newData = ["error_$statusCode" => []];
+            } else {
+                $jsonString = file_get_contents($filename);
+                $newData = json_decode($jsonString, true);
+            }
         } else {
             if (!file_exists($path . date('Y'))) {
                 mkdir($path . date('Y'));
