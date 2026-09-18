@@ -102,28 +102,45 @@ var KTCalendarListView = function() {
                                         });
                                         return false;
                                     }
-                                    $.ajax({
-                                        type: 'post',
-                                        dataType: 'json',
-                                        data: {
-                                            observacion: $('#observacion').val(),
-                                            bandejas: $('#bandejas').val(),
-                                            horaSiembra: $('#hora-siembra').val(),
-                                            fechaSiembra: $('#fecha-siembra').val(),
-                                            idPedidoProducto: info.event.id
-                                        },
-                                        url: __HOMEPAGE_PATH__ + "siembra/guardar_y_sembrar/",
-                                        success: function (data) {
-                                            if (!jQuery.isEmptyObject(data)) {
-                                                $('.alert-success').hide();
-                                                showFlashMessage("success", data.message);
-                                                calendar.refetchEvents()
-                                            }
-                                        },
-                                        error: function () {
-                                            alert('ah ocurrido un error.');
+
+                                    var cantidadBandejas = $('#bandejas').val();
+
+                                    Swal.fire({
+                                        title: '¿Confirmar siembra?',
+                                        html: 'Se van a sembrar <strong>' + cantidadBandejas + ' bandejas</strong>.',
+                                        icon: 'question',
+                                        showCancelButton: true,
+                                        confirmButtonText: 'Sí, sembrar',
+                                        cancelButtonText: 'Cancelar'
+                                    }).then(function (result) {
+                                        if (result.isConfirmed || result.value) {
+                                            $.ajax({
+                                                type: 'post',
+                                                dataType: 'json',
+                                                data: {
+                                                    observacion: $('#observacion').val(),
+                                                    bandejas: cantidadBandejas,
+                                                    horaSiembra: $('#hora-siembra').val(),
+                                                    fechaSiembra: $('#fecha-siembra').val(),
+                                                    idPedidoProducto: info.event.id
+                                                },
+                                                url: __HOMEPAGE_PATH__ + "siembra/guardar_y_sembrar/",
+                                                success: function (data) {
+                                                    if (!jQuery.isEmptyObject(data)) {
+                                                        $('.alert-success').hide();
+                                                        showFlashMessage("success", data.message);
+                                                        calendar.refetchEvents()
+                                                        bootbox.hideAll();
+                                                    }
+                                                },
+                                                error: function () {
+                                                    alert('ah ocurrido un error.');
+                                                }
+                                            });
                                         }
                                     });
+
+                                    return false;
                                 }
                             });
                             $('.modal-dialog').css('width', '80%');
@@ -219,9 +236,6 @@ function initDateInput(){
 function initToggleOptions(){
     initObservacionInput()
     initObservacionCamaraInput()
-    $('.bandejas').click(function () {
-        $('.bandejas-edit').toggle();
-    });
     $('.hora').click(function () {
         $('.hora-edit').toggle();
     });

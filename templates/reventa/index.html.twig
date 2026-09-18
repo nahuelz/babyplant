@@ -122,7 +122,7 @@
                                             <i class="la la-truck" style="margin-right: 5px;"></i> Entregar
                                         </a>
                                     {% endif %}
-                                    {% if reventa.estado and reventa.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoReventa::ENTREGADA_CON_REMITO') and not reventa.tieneDistribucionSaldo %}
+                                    {% if reventa.estado and reventa.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoReventa::ENTREGADA_CON_REMITO') and not reventa.tieneDistribucionSaldo and reventa.entrega.remito.estado and reventa.entrega.remito.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoRemito::PAGO') %}
                                         <a href="#" data-href="{{ path('reventa_distribuir_saldo', {'id': reventa.id}) }}" class="dropdown-item btn-distribuir-saldo-reventa">
                                             <i class="la la-hand-holding-usd" style="margin-right: 5px;"></i> Enviar saldo a CC
                                         </a>
@@ -132,7 +132,7 @@
                                             <i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir nota de crédito
                                         </a>
                                     {% endif %}
-                                    {% if reventa.estado and reventa.estado.codigoInterno != constant('App\\Entity\\Constants\\ConstanteEstadoReventa::CANCELADA') %}
+                                    {% if reventa.estado and reventa.estado.codigoInterno == constant('App\\Entity\\Constants\\ConstanteEstadoReventa::PENDIENTE_ENTREGA') %}
                                         <a href="{{ path('reventa_cancelar', {'id': reventa.id}) }}" class="dropdown-item btn-cancelar-reventa">
                                             <i class="la la-ban" style="margin-right: 5px;"></i> Cancelar
                                         </a>
