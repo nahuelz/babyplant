@@ -59,6 +59,15 @@
                                                                 <a href="{{ path('imprimir_reporte_cc_from',{id: entity.id, fecha: movimiento.fechaCreacion|date('Y-m-d H:i')}) }}" target="_blank" class="dropdown-item">
                                                                     <i class="la la-file-pdf" style="margin-right: 5px;"></i> Imprimir Resumen pagos
                                                                 </a>
+                                                                {% if movimiento.modoPago is not null
+                                                                    and movimiento.modoPago.codigoInterno == constant('App\\Entity\\Constants\\ConstanteModoPago::CREDITO_CC')
+                                                                    and saldosCreditoEfectivo[movimiento.id]|default(0) > 0 %}
+                                                                    <a href="#"
+                                                                       class="dropdown-item nota-credito-efectivo"
+                                                                       data-url="{{ path('situacion_cliente_nota_credito_efectivo_new', {id: movimiento.id}) }}">
+                                                                        <i class="la la-money-bill" style="margin-right: 5px;"></i> Nota de crédito efectivo
+                                                                    </a>
+                                                                {% endif %}
                                                             </div>
                                                         </div>
                                                     </td>

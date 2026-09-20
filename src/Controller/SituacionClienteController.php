@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Constants\ConstanteModoPago;
 use App\Entity\Constants\ConstanteTipoMovimiento;
 use App\Entity\CuentaCorrienteUsuario;
 use App\Entity\Movimiento;
@@ -74,7 +75,7 @@ class SituacionClienteController extends BaseController {
      * @Route("/{id}", name="situacioncliente_show", methods={"GET"})
      * @Template("situacion_cliente/show.html.twig")
      */
-    public function show(int $id, SituacionClienteService $situacionClienteService): array
+    public function show(int $id, SituacionClienteService $situacionClienteService, MovimientoService $movimientoService): array
     {
         $entity = $situacionClienteService->cargarUsuarioCompleto($id);
 
@@ -92,6 +93,14 @@ class SituacionClienteController extends BaseController {
 
         $movimientosUsuario = $situacionClienteService->obtenerMovimientosUsuario($id);
 
+        $saldosCreditoEfectivo = [];
+        foreach ($movimientosUsuario as $movimiento) {
+            if ($movimiento->getModoPago()?->getCodigoInterno() === ConstanteModoPago::CREDITO_CC) {
+                $saldosCreditoEfectivo[$movimiento->getId()] = $movimientoService
+                    ->obtenerSaldoCreditoDisponible($movimiento);
+            }
+        }
+
         $devoluciones = $situacionClienteService->obtenerDevoluciones($id);
 
         $breadcrumbs = $this->getShowBaseBreadcrumbs($entity);
@@ -102,6 +111,7 @@ class SituacionClienteController extends BaseController {
             'movimientosPedido' => $movimientosPedido,
             'movimientosReserva' => $movimientosReserva,
             'movimientosUsuario' => $movimientosUsuario,
+            'saldosCreditoEfectivo' => $saldosCreditoEfectivo,
             'devoluciones' => $devoluciones,
             'breadcrumbs' => $breadcrumbs,
             'page_title' => 'Detalle ' . $this->getEntityRenderName()
@@ -499,6 +509,52 @@ class SituacionClienteController extends BaseController {
             return $this->json([
                 'message' => $e->getMessage()
             ], 400);
+        }
+    }
+
+    /**
+     * @Route("/movimiento/{id}/nota-credito-efectivo", name="situacion_cliente_nota_credito_efectivo_new", methods={"GET"}, requirements={"id"="\d+"})
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
+     */
+    public function notaCreditoEfectivoNewAction(Movimiento $movimiento, MovimientoService $movimientoService): Response
+    {
+        $saldoDisponible = $movimientoService->obtenerSaldoCreditoDisponible($movimiento);
+
+        if ($saldoDisponible <= 0) {
+            throw new \DomainException('El crédito no tiene saldo disponible.');
+        }
+
+        return $this->render('situacion_cliente/nota_credito_efectivo_form.html.twig', [
+            'movimiento' => $movimiento,
+            'saldoDisponible' => $saldoDisponible,
+            'token' => bin2hex(random_bytes(16)),
+        ]);
+    }
+
+    /**
+     * @Route("/movimiento/{id}/nota-credito-efectivo", name="situacion_cliente_nota_credito_efectivo_create", methods={"POST"}, requirements={"id"="\d+"})
+     * @IsGranted("ROLE_SITUACION_CLIENTE")
+     */
+    public function notaCreditoEfectivoCreateAction(Request $request, Movimiento $movimiento, MovimientoService $movimientoService): Response
+    {
+        if (!$this->isCsrfTokenValid('nota_credito_efectivo_' . $movimiento->getId(), (string) $request->request->get('_token'))) {
+            return $this->json(['message' => 'El formulario expiró. Vuelva a intentarlo.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $monto = round((float) $request->request->get('monto'), 2);
+            $notaCredito = $movimientoService->crearNotaCreditoEfectivo(
+                $movimiento,
+                $monto,
+                (string) $request->request->get('token')
+            );
+
+            return $this->json([
+                'message' => 'La nota de crédito en efectivo fue registrada correctamente.',
+                'id' => $notaCredito->getId(),
+            ]);
+        } catch (\DomainException $e) {
+            return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 }

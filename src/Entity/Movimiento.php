@@ -114,6 +114,12 @@ class Movimiento {
     private $pedidoProducto;
 
     /**
+     * @ORM\ManyToOne(targetEntity=Movimiento::class)
+     * @ORM\JoinColumn(name="id_movimiento_origen", referencedColumnName="id", nullable=true)
+     */
+    private $movimientoOrigen;
+
+    /**
      * @ORM\Column(type="string", length=64, unique=true, nullable=true)
      */
     private string $token;
@@ -362,6 +368,18 @@ class Movimiento {
     public function setReserva($reserva): void
     {
         $this->reserva = $reserva;
+    }
+
+    public function getMovimientoOrigen(): ?Movimiento
+    {
+        return $this->movimientoOrigen;
+    }
+
+    public function setMovimientoOrigen(?Movimiento $movimientoOrigen): self
+    {
+        $this->movimientoOrigen = $movimientoOrigen;
+
+        return $this;
     }
 
     public function getToken(): string

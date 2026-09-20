@@ -1,0 +1,41 @@
+<form id="form-nota-credito-efectivo"
+      action="{{ path('situacion_cliente_nota_credito_efectivo_create', {id: movimiento.id}) }}"
+      method="post">
+    <input type="hidden" name="_token" value="{{ csrf_token('nota_credito_efectivo_' ~ movimiento.id) }}">
+    <input type="hidden" name="token" value="{{ token }}">
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Crédito original</label>
+                <input type="text" class="form-control" value="{{ movimiento.monto|money_format }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Crédito en efectivo ya realizado</label>
+                <input type="text" class="form-control" value="{{ (movimiento.monto - saldoDisponible)|money_format }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Saldo disponible</label>
+                <input type="text" class="form-control" value="{{ saldoDisponible|money_format }}" readonly>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="nota_credito_efectivo_monto">Monto de la nota de crédito en efectivo</label>
+                <input type="number"
+                       id="nota_credito_efectivo_monto"
+                       name="monto"
+                       class="form-control"
+                       min="0.01"
+                       max="{{ saldoDisponible }}"
+                       step="0.01"
+                       required>
+                <div class="invalid-feedback"></div>
+            </div>
+        </div>
+    </div>
+</form>

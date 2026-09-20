@@ -7,6 +7,7 @@ use App\Entity\Constants\ConstanteTipoMovimiento;
 use App\Entity\Movimiento;
 use App\Entity\ModoPago;
 use App\Entity\TipoMovimiento;
+use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityManagerInterface;
 
 class MovimientoService
@@ -34,6 +35,10 @@ class MovimientoService
             $data['tipoMovimiento']
         );
 
+        if (!empty($data['montoNegativo'])) {
+            $monto = -abs($monto);
+        }
+
         $modoPago = $this->em->getRepository(ModoPago::class)->findOneByCodigoInterno($data['modoPago']);
 
         $tipoMovimiento = $this->em->getRepository(TipoMovimiento::class)->findOneByCodigoInterno($data['tipoMovimiento']);
@@ -44,6 +49,7 @@ class MovimientoService
         $movimiento->setDescripcion($data['descripcion'] ?? null);
         $movimiento->setTipoMovimiento($tipoMovimiento);
         $movimiento->setToken($data['token']);
+        $movimiento->setMovimientoOrigen($data['movimientoOrigen'] ?? null);
 
         $this->vincularContexto($movimiento, $data);
 
@@ -56,6 +62,63 @@ class MovimientoService
         $this->em->flush();
 
         return $movimiento;
+    }
+
+    public function crearNotaCreditoEfectivo(Movimiento $movimientoOrigen, float $monto, string $token): Movimiento
+    {
+        $this->em->beginTransaction();
+
+        try {
+            $this->em->lock($movimientoOrigen, LockMode::PESSIMISTIC_WRITE);
+            $saldoDisponible = $this->obtenerSaldoCreditoDisponible($movimientoOrigen);
+
+            if ($monto <= 0) {
+                throw new \DomainException('El monto debe ser mayor a cero.');
+            }
+
+            if (round($monto, 2) > $saldoDisponible) {
+                throw new \DomainException('El monto supera el saldo disponible del crédito.');
+            }
+
+            $movimiento = $this->crear([
+                'monto' => number_format($monto, 2, ',', ''),
+                'modoPago' => ConstanteModoPago::CREDITO_EFECTIVO,
+                'descripcion' => 'Nota de crédito en efectivo sobre movimiento N° ' . $movimientoOrigen->getId(),
+                'token' => $token,
+                'tipoMovimiento' => ConstanteTipoMovimiento::CREDITO_REVENTA,
+                'cuentaCorrienteUsuario' => $movimientoOrigen->getCuentaCorrienteUsuario(),
+                'movimientoOrigen' => $movimientoOrigen,
+                'montoNegativo' => true,
+            ]);
+
+            $this->em->commit();
+
+            return $movimiento;
+        } catch (\Throwable $e) {
+            $this->em->rollback();
+            throw $e;
+        }
+    }
+
+    public function obtenerSaldoCreditoDisponible(Movimiento $movimiento): float
+    {
+        if (
+            !$movimiento->getModoPago()
+            || $movimiento->getModoPago()->getCodigoInterno() !== ConstanteModoPago::CREDITO_CC
+            || !$movimiento->getCuentaCorrienteUsuario()
+        ) {
+            throw new \DomainException('El movimiento no corresponde a un crédito en cuenta corriente.');
+        }
+
+        $totalUtilizado = (float) $this->em->createQueryBuilder()
+            ->select('COALESCE(SUM(ABS(nota.monto)), 0)')
+            ->from(Movimiento::class, 'nota')
+            ->where('nota.movimientoOrigen = :movimiento')
+            ->setParameter('movimiento', $movimiento)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return max(0, round(abs((float) $movimiento->getMonto()) - $totalUtilizado, 2));
     }
 
     private function validarToken(string $token): void
@@ -137,6 +200,4 @@ class MovimientoService
             throw new \DomainException('Saldo insuficiente en la cuenta corriente del pedido');
         }
     }
-
-
 }

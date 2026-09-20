@@ -11,6 +11,7 @@ $(document).ready(function () {
     initVerHistoricoEstadoEntregaHandler();
     initMovimientos();
     initAdjudicarCC();
+    initNotaCreditoEfectivo();
 });
 
 
@@ -861,5 +862,70 @@ function initAdjudicarCC() {
                 modal.addClass('modal-fullscreen-xl-down');
             });
         }
+    });
+}
+
+function initNotaCreditoEfectivo() {
+    $(document).on('click', '.nota-credito-efectivo', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const url = $(this).data('url');
+
+        $.ajax({
+            type: 'GET',
+            url: url
+        }).done(function (form) {
+            showDialog({
+                titulo: '<i class="fa fa-money-bill-wave margin-right-10"></i> Nota de crédito efectivo',
+                contenido: form,
+                labelCancel: 'Cancelar',
+                labelSuccess: 'Confirmar',
+                closeButton: true,
+                callbackCancel: function () {
+                    return true;
+                },
+                callbackSuccess: function () {
+                    const formElement = document.getElementById('form-nota-credito-efectivo');
+                    const montoInput = document.getElementById('nota_credito_efectivo_monto');
+
+                    if (!formElement.checkValidity()) {
+                        formElement.reportValidity();
+                        return false;
+                    }
+
+                    const monto = parseFloat(montoInput.value);
+                    const maximo = parseFloat(montoInput.max);
+
+                    if (monto <= 0 || monto > maximo) {
+                        toastr.error('El monto debe ser mayor a cero y no puede superar el saldo disponible.');
+                        return false;
+                    }
+
+                    $.ajax({
+                        type: 'POST',
+                        url: formElement.action,
+                        data: $(formElement).serialize(),
+                        dataType: 'json'
+                    }).done(function (data) {
+                        toastr.success(data.message);
+                        $('.modal').modal('hide');
+                        window.location.reload();
+                    }).fail(function (xhr) {
+                        const message = xhr.responseJSON && xhr.responseJSON.message
+                            ? xhr.responseJSON.message
+                            : 'No se pudo registrar la nota de crédito en efectivo.';
+                        toastr.error(message);
+                    });
+
+                    return false;
+                }
+            });
+        }).fail(function (xhr) {
+            const message = xhr.responseJSON && xhr.responseJSON.message
+                ? xhr.responseJSON.message
+                : 'No se pudo abrir la nota de crédito en efectivo.';
+            toastr.error(message);
+        });
     });
 }
