@@ -57,13 +57,14 @@ class OrdenCargaController extends BaseController
         $rsm->addScalarResult('colorEstado', 'colorEstado');
         $rsm->addScalarResult('idEstado', 'idEstado');
         $rsm->addScalarResult('cliente', 'cliente');
+        $rsm->addScalarResult('preparada', 'preparada');
 
         $renderPage = "orden_carga/index_table.html.twig";
         return parent::baseIndexTableAction($request, [], $entityTable, ConstanteTipoConsulta::VIEW, $rsm, $renderPage);
     }
 
     /**
-     * @Route("/{id}", name="orden_carga_show", methods={"GET","POST"})
+     * @Route("/{id}", name="orden_carga_show", methods={"GET","POST"}, requirements={"id"="\d+"})
      * @Template("orden_carga/show.html.twig")
      */
     public function showPedidoProductoAction($id) {
@@ -88,27 +89,92 @@ class OrdenCargaController extends BaseController
      * @Route("/cambiar_fecha_orden_carga/", name="cambiar_fecha_orden_carga", methods={"POST"})
      * @IsGranted("ROLE_ORDEN_CARGA")
      */
-    public function cambiarFechaOrdenCarga(Request $request){
+    public function cambiarFechaOrdenCarga(Request $request): JsonResponse
+    {
+        $fechaNuevaParam = (string) $request->request->get('fechaNueva');
+        $idEntrega = $request->request->getInt('idEntrega');
+        $nuevaFecha = DateTime::createFromFormat('!Y-m-d', $fechaNuevaParam);
 
-        $fechaNuevaParam = $request->get('fechaNueva');
-        $idEntrega = $request->get('idEntrega');
-        $datetime = new DateTime();
-        $nuevaFecha = $datetime->createFromFormat('Y-m-d', $fechaNuevaParam);
+        if (!$nuevaFecha || $nuevaFecha->format('Y-m-d') !== $fechaNuevaParam) {
+            return new JsonResponse(['message' => 'La fecha indicada no es válida.'], Response::HTTP_BAD_REQUEST);
+        }
 
         $em = $this->doctrine->getManager();
-        /* @var $entrega Entrega */
-        $entrega = $em->getRepository('App\Entity\Entrega')->find($idEntrega);
+        $entrega = $em->getRepository(Entrega::class)->find($idEntrega);
+
+        if (!$entrega) {
+            return new JsonResponse(['message' => 'No se encontró la entrega.'], Response::HTTP_NOT_FOUND);
+        }
+
         $entrega->setFechaEntrega($nuevaFecha);
         $em->flush();
 
-        $message = 'Se modifico correctamente la fecha de la Entrega N°'.$entrega->getId();
-        $result = array(
+        return new JsonResponse([
             'status' => 'OK',
-            'message' => $message
-        );
+            'message' => 'Se modificó correctamente la fecha de la Entrega N°' . $entrega->getId(),
+        ]);
+    }
 
-        return new JsonResponse($result);
+    /**
+     * @Route("/{id}/cambiar-preparada", name="orden_carga_cambiar_preparada", methods={"POST"}, requirements={"id"="\d+"})
+     * @IsGranted("ROLE_ORDEN_CARGA")
+     */
+    public function cambiarPreparada(Request $request, Entrega $entrega): JsonResponse
+    {
+        if (!$this->isCsrfTokenValid('cambiar_preparada_' . $entrega->getId(), (string) $request->request->get('_token'))) {
+            return new JsonResponse(['message' => 'El formulario expiró. Vuelva a intentarlo.'], Response::HTTP_BAD_REQUEST);
+        }
 
+        $entrega->setPreparada(!$entrega->isPreparada());
+        $this->doctrine->getManager()->flush();
+
+        return new JsonResponse([
+            'message' => $entrega->isPreparada()
+                ? 'La orden de carga fue marcada como preparada.'
+                : 'La orden de carga fue marcada como no preparada.',
+            'preparada' => $entrega->isPreparada(),
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/cancelar-entrega", name="orden_carga_cancelar_entrega", methods={"POST"}, requirements={"id"="\d+"})
+     * @IsGranted("ROLE_ORDEN_CARGA")
+     */
+    public function cancelarEntrega(Request $request, Entrega $entrega): JsonResponse
+    {
+        if (!$this->isCsrfTokenValid('cancelar_entrega_' . $entrega->getId(), (string) $request->request->get('_token'))) {
+            return new JsonResponse(['message' => 'El formulario expiró. Vuelva a intentarlo.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            if (
+                !$entrega->getEstado()
+                || $entrega->getEstado()->getCodigoInterno() !== ConstanteEstadoEntrega::ENTREGADO_SIN_REMITO
+            ) {
+                throw new \DomainException('Solo se pueden cancelar órdenes entregadas sin remito.');
+            }
+
+            $em = $this->doctrine->getManager();
+            $estadoSinRemito = $em->getRepository(EstadoEntrega::class)
+                ->findOneByCodigoInterno(ConstanteEstadoEntrega::SIN_REMITO);
+
+            if (!$estadoSinRemito) {
+                throw new \DomainException('No se encontró el estado SIN REMITO.');
+            }
+
+            $entrega->setEntregado(false);
+            $entrega->setUsuarioEntrega(null);
+            $this->estadoService->cambiarEstadoEntrega(
+                $entrega,
+                $estadoSinRemito,
+                'Se cancela la entrega desde la orden de carga.'
+            );
+            $em->flush();
+
+            return new JsonResponse(['message' => 'La entrega fue cancelada correctamente.']);
+        } catch (\DomainException $e) {
+            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
@@ -134,9 +200,6 @@ class OrdenCargaController extends BaseController
         $this->estadoService->cambiarEstadoEntrega($entrega, $estado, 'ENTREGADO.');
         $entrega->setEntregado(true);
         $entrega->setUsuarioEntrega($this->getUser());
-        $entrega->setFechaEntrega(
-            (new \DateTime())->setTime(23, 59, 0)
-        );
 
         $em->flush();
 

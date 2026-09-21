@@ -7,6 +7,7 @@
         "colorEstado": "{{ entity.colorEstado }}",
         "idEstado": "{{ entity.idEstado }}",
         "cliente": "{{ entity.cliente }}",
+        "preparada": {{ entity.preparada ? 'true' : 'false' }},
         "title": "{{ entity.title|default('-') }}",
         "start": "{{ entity.fecha is not null ? entity.fecha|date('Y-m-d\\TH:i') : '' }}",
         "end": "{{ entity.fecha is not null

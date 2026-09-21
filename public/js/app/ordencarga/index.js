@@ -95,6 +95,82 @@ var KTCalendarListView = function() {
                         if ($('.estado').html().includes('ENTREGADO')) {
                             $('.success').hide();
                         }
+
+                        $(document).off('click.ordenCargaPreparada', '#cambiar-preparada')
+                            .on('click.ordenCargaPreparada', '#cambiar-preparada', function () {
+                                var button = $(this);
+
+                                $.ajax({
+                                    type: 'POST',
+                                    dataType: 'json',
+                                    url: button.data('url'),
+                                    data: {
+                                        _token: button.data('token')
+                                    }
+                                }).done(function (data) {
+                                    var estado = $('#estado-preparada');
+                                    var icono = button.find('i');
+                                    var texto = button.find('span');
+
+                                    estado
+                                        .toggleClass('label-light-success', data.preparada)
+                                        .toggleClass('label-light-warning', !data.preparada)
+                                        .text(data.preparada ? 'PREPARADA' : 'NO PREPARADA');
+
+                                    button
+                                        .toggleClass('btn-light-warning', data.preparada)
+                                        .toggleClass('btn-light-success', !data.preparada);
+
+                                    icono
+                                        .toggleClass('fa-undo', data.preparada)
+                                        .toggleClass('fa-check', !data.preparada);
+
+                                    texto.text(data.preparada ? 'Marcar como no preparada' : 'Marcar como preparada');
+                                    showFlashMessage('success', data.message);
+                                    calendar.refetchEvents();
+                                }).fail(function (xhr) {
+                                    var message = xhr.responseJSON && xhr.responseJSON.message
+                                        ? xhr.responseJSON.message
+                                        : 'No se pudo modificar el estado de preparación.';
+                                    showFlashMessage('error', message);
+                                });
+                            });
+
+                        $(document).off('click.cancelarEntregaOrdenCarga', '#cancelar-entrega-orden-carga')
+                            .on('click.cancelarEntregaOrdenCarga', '#cancelar-entrega-orden-carga', function () {
+                                var button = $(this);
+
+                                Swal.fire({
+                                    title: '¿Cancelar la entrega?',
+                                    text: 'La orden de carga volverá al estado SIN REMITO.',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Sí, cancelar',
+                                    cancelButtonText: 'No'
+                                }).then(function (result) {
+                                    if (!result.isConfirmed) {
+                                        return;
+                                    }
+
+                                    $.ajax({
+                                        type: 'POST',
+                                        dataType: 'json',
+                                        url: button.data('url'),
+                                        data: {
+                                            _token: button.data('token')
+                                        }
+                                    }).done(function (data) {
+                                        $('.modal').modal('hide');
+                                        showFlashMessage('success', data.message);
+                                        calendar.refetchEvents();
+                                    }).fail(function (xhr) {
+                                        var message = xhr.responseJSON && xhr.responseJSON.message
+                                            ? xhr.responseJSON.message
+                                            : 'No se pudo cancelar la entrega.';
+                                        showFlashMessage('error', message);
+                                    });
+                                });
+                            });
                     });
                 },
                 eventRender: function(info) {
@@ -104,6 +180,9 @@ var KTCalendarListView = function() {
                     element.attr('data-toggle', 'modal');
                     element.attr('data-target', '#productoModal');
                     element.attr('data-href', info.event.extendedProps.href);
+                    element.addClass(info.event.extendedProps.preparada
+                        ? 'orden-carga-preparada'
+                        : 'orden-carga-no-preparada');
                     element.css('min-height', '75px');
                     element.find('.fc-title').css('font-size', '1.1rem');
                     element.find('.fc-content').css('margin-top', '1%');
@@ -159,4 +238,3 @@ jQuery(document).ready(function() {
         }
     });
 });
-

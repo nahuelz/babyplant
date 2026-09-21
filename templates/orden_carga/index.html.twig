@@ -8,6 +8,13 @@
     <link href="{{ asset(plugins_path ~ 'custom/fullcalendar/fullcalendar.bundle.css') }}" rel="stylesheet" type="text/css"/>
 
     <style>
+        .fc-unthemed .orden-carga-preparada.fc-start .fc-content:before {
+            background: #1BC5BD !important;
+        }
+
+        .fc-unthemed .orden-carga-no-preparada.fc-start .fc-content:before {
+            background: #F64E60 !important;
+        }
     </style>
 
 {% endblock %}

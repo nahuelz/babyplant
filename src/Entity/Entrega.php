@@ -89,6 +89,13 @@ class Entrega {
     private $entregado = false;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="preparada", type="boolean", nullable=false, options={"default": false})
+     */
+    private $preparada = false;
+
+    /**
      * @ORM\Column(name="fecha_entrega", type="datetime", nullable=true)
      */
     protected $fechaEntrega;
@@ -336,7 +343,19 @@ class Entrega {
     public function setEntregado(bool $entregado): self
     {
         $this->entregado = $entregado;
-        $this->setFechaEntrega(new \DateTime());
+
+        return $this;
+    }
+
+    public function isPreparada(): bool
+    {
+        return $this->preparada;
+    }
+
+    public function setPreparada(bool $preparada): self
+    {
+        $this->preparada = $preparada;
+
         return $this;
     }
 
