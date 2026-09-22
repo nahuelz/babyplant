@@ -8,6 +8,7 @@ use App\Entity\Constants\ConstanteTipoConceptoLiquidacion;
 use App\Entity\Constants\ConstanteTipoConsulta;
 use App\Entity\Constants\ConstanteTipoModalidadPago;
 use App\Entity\Empleado;
+use App\Entity\HorasEmpleado;
 use App\Entity\Liquidacion;
 use App\Entity\Prestamo;
 use App\Entity\SolicitudVacaciones;
@@ -167,6 +168,44 @@ class EmpleadoController extends BaseController
             return $p->getFechaBaja() === null;
         });
 
+        $anioHorasSeleccionado = (int) $request->query->get('anio_horas', $anioActual);
+        $mesHorasSeleccionado = (int) $request->query->get('mes_horas', 0);
+
+        $qbHoras = $entityManager->getRepository(HorasEmpleado::class)
+            ->createQueryBuilder('h')
+            ->where('h.empleado = :empleado')
+            ->setParameter('empleado', $empleado);
+
+        if ($anioHorasSeleccionado > 0) {
+            $qbHoras->andWhere('YEAR(h.fecha) = :anioHoras')
+                ->setParameter('anioHoras', $anioHorasSeleccionado);
+        }
+
+        if ($mesHorasSeleccionado > 0) {
+            $qbHoras->andWhere('MONTH(h.fecha) = :mesHoras')
+                ->setParameter('mesHoras', $mesHorasSeleccionado);
+        }
+
+        $horas = $qbHoras->orderBy('h.fecha', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        $aniosHorasResult = $entityManager->getRepository(HorasEmpleado::class)
+            ->createQueryBuilder('h')
+            ->select('DISTINCT YEAR(h.fecha) as anio')
+            ->where('h.empleado = :empleado')
+            ->setParameter('empleado', $empleado)
+            ->orderBy('anio', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        $aniosHoras = array_map(fn ($row) => (int) $row['anio'], $aniosHorasResult);
+
+        $totalHoras = '0';
+        foreach ($horas as $hora) {
+            $totalHoras = Decimal::add($totalHoras, $hora->getCantidadHoras(), 2);
+        }
+
         $formPrestamo = $this->createForm(PrestamoType::class, new Prestamo());
 
         $resumenLiquidaciones = $this->calcularResumenLiquidaciones($liquidaciones);
@@ -190,6 +229,11 @@ class EmpleadoController extends BaseController
             'diasDisponiblesVacaciones' => $diasDisponiblesVacaciones,
             'adelantos' => $adelantos,
             'prestamos' => $prestamos,
+            'horas' => $horas,
+            'anioHorasSeleccionado' => $anioHorasSeleccionado,
+            'mesHorasSeleccionado' => $mesHorasSeleccionado,
+            'aniosHoras' => $aniosHoras,
+            'totalHoras' => $totalHoras,
             'formPrestamo' => $formPrestamo->createView(),
         ]);
 
@@ -199,6 +243,152 @@ class EmpleadoController extends BaseController
         $response->headers->addCacheControlDirective('must-revalidate');
 
         return $response;
+    }
+
+    #[Route('/{id}/horas', name: 'app_empleado_horas', methods: ['POST'])]
+    public function guardarHoras(Request $request, Empleado $empleado, EntityManagerInterface $entityManager): Response
+    {
+        $fechaStr = $request->request->get('fecha');
+        $motivo = $request->request->get('motivo');
+        $cantidadHoras = (string) $request->request->get('cantidadHoras');
+
+        $fecha = DateTime::createFromFormat('Y-m-d', $fechaStr);
+
+        if (!$fecha || trim($motivo) === '' || !is_numeric($cantidadHoras)) {
+            $this->addFlash('error', 'Complete todos los campos correctamente.');
+
+            return $this->redirectToRoute('app_empleado_show', ['id' => $empleado->getId()]);
+        }
+
+        $hora = new HorasEmpleado();
+        $hora->setEmpleado($empleado);
+        $hora->setFecha($fecha);
+        $hora->setMotivo($motivo);
+        $hora->setCantidadHoras($cantidadHoras);
+
+        $entityManager->persist($hora);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Registro de horas guardado correctamente.');
+
+        return $this->redirectToRoute('app_empleado_show', ['id' => $empleado->getId()]);
+    }
+
+    #[Route('/{id}/horas/excel', name: 'app_empleado_horas_excel', methods: ['GET'])]
+    public function exportarHorasExcel(Request $request, Empleado $empleado, EntityManagerInterface $entityManager): Response
+    {
+        $anioHoras = (int) $request->query->get('anio_horas', (int) (new DateTime())->format('Y'));
+        $mesHoras = (int) $request->query->get('mes_horas', 0);
+
+        $qbHoras = $entityManager->getRepository(HorasEmpleado::class)
+            ->createQueryBuilder('h')
+            ->where('h.empleado = :empleado')
+            ->setParameter('empleado', $empleado);
+
+        if ($anioHoras > 0) {
+            $qbHoras->andWhere('YEAR(h.fecha) = :anioHoras')
+                ->setParameter('anioHoras', $anioHoras);
+        }
+
+        if ($mesHoras > 0) {
+            $qbHoras->andWhere('MONTH(h.fecha) = :mesHoras')
+                ->setParameter('mesHoras', $mesHoras);
+        }
+
+        $horas = $qbHoras->orderBy('h.fecha', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        $totalHoras = '0';
+        foreach ($horas as $hora) {
+            $totalHoras = Decimal::add($totalHoras, $hora->getCantidadHoras(), 2);
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setTitle('Horas');
+        $sheet->mergeCells('A1:C1');
+        $sheet->setCellValue('A1', 'REGISTRO DE HORAS - ' . mb_strtoupper($empleado->getNombreCompleto()));
+
+        $sheet->setCellValue('A2', 'FECHA');
+        $sheet->setCellValue('B2', 'MOTIVO');
+        $sheet->setCellValue('C2', 'HORAS');
+
+        $sheet->getStyle('A1:C1')->applyFromArray([
+            'font' => ['bold' => true, 'size' => 14],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
+        ]);
+
+        $sheet->getStyle('A2:C2')->applyFromArray([
+            'font' => ['bold' => true],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => ['rgb' => 'FFC000'],
+            ],
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
+            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]],
+        ]);
+
+        $fila = 3;
+        foreach ($horas as $hora) {
+            $sheet->setCellValue('A' . $fila, $hora->getFecha() ? $hora->getFecha()->format('d/m/Y') : '-');
+            $sheet->setCellValue('B' . $fila, $hora->getMotivo() ?? '-');
+            $sheet->setCellValue('C' . $fila, (float) $hora->getCantidadHoras());
+            $fila++;
+        }
+
+        $filaTotal = $fila;
+        $sheet->setCellValue('A' . $filaTotal, 'TOTAL');
+        $sheet->setCellValue('C' . $filaTotal, (float) $totalHoras);
+
+        $sheet->getStyle('A' . $filaTotal . ':C' . $filaTotal)->applyFromArray([
+            'font' => ['bold' => true],
+            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]],
+        ]);
+
+        $sheet->getStyle('A3:C' . $filaTotal)
+            ->getBorders()
+            ->getAllBorders()
+            ->setBorderStyle(Border::BORDER_THIN);
+
+        $sheet->getStyle('C3:C' . $filaTotal)
+            ->getAlignment()
+            ->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+
+        $sheet->getColumnDimension('A')->setWidth(15);
+        $sheet->getColumnDimension('B')->setWidth(40);
+        $sheet->getColumnDimension('C')->setWidth(12);
+
+        $periodo = '';
+        if ($anioHoras > 0) {
+            $periodo .= $anioHoras;
+        }
+        if ($mesHoras > 0) {
+            $mesNombre = self::MESES[str_pad((string) $mesHoras, 2, '0', STR_PAD_LEFT)] ?? '';
+            $periodo .= ($periodo ? '-' : '') . $mesNombre;
+        }
+
+        $filename = sprintf(
+            'horas-%s-%s.xlsx',
+            strtolower(str_replace(' ', '-', $empleado->getApellido() . '-' . $empleado->getNombre())),
+            $periodo ?: 'todos'
+        );
+
+        $writer = new Xlsx($spreadsheet);
+
+        ob_start();
+        $writer->save('php://output');
+        $content = ob_get_clean();
+
+        return new Response(
+            $content,
+            Response::HTTP_OK,
+            [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            ]
+        );
     }
 
     #[Route('/{id}/reporte-anual/{anio}', name: 'app_empleado_reporte_anual', requirements: ['anio' => '\d{4}'], methods: ['GET'])]

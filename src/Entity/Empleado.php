@@ -121,6 +121,12 @@ class Empleado {
      */
     private $liquidaciones;
 
+    /**
+     * @ORM\OneToMany(targetEntity=HorasEmpleado::class, mappedBy="empleado", cascade={"all"})
+     * @ORM\OrderBy({"fecha" = "DESC", "id" = "DESC"})
+     */
+    private $horas;
+
     public function __construct()
     {
         $this->vacaciones = new ArrayCollection();
@@ -128,6 +134,7 @@ class Empleado {
         $this->prestamos = new ArrayCollection();
         $this->solicitudesVacaciones = new ArrayCollection();
         $this->liquidaciones = new ArrayCollection();
+        $this->horas = new ArrayCollection();
         $this->activo = true;
     }
 
@@ -379,6 +386,32 @@ class Empleado {
         if (!$this->liquidaciones->contains($liquidacion)) {
             $this->liquidaciones[] = $liquidacion;
             $liquidacion->setEmpleado($this);
+        }
+
+        return $this;
+    }
+
+    public function getHoras()
+    {
+        return $this->horas;
+    }
+
+    public function addHoras(HorasEmpleado $horas): self
+    {
+        if (!$this->horas->contains($horas)) {
+            $this->horas[] = $horas;
+            $horas->setEmpleado($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHoras(HorasEmpleado $horas): self
+    {
+        if ($this->horas->removeElement($horas)) {
+            if ($horas->getEmpleado() === $this) {
+                $horas->setEmpleado(null);
+            }
         }
 
         return $this;

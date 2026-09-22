@@ -1,0 +1,119 @@
+{% set mes_horas_nombre = mesHorasSeleccionado > 0 ? mesesDisponibles[("%02d"|format(mesHorasSeleccionado))] : null %}
+
+<!-- TAB HORAS -->
+<div class="tab-pane fade" id="tab-horas">
+    <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap">
+        <form method="get" class="form-inline mb-2 mb-md-0 ajax-filter-form no-spinner" data-ajax-target="#tab-horas">
+            <div class="form-group mr-3">
+                <label for="anio-horas" class="mr-2 font-weight-bold">Año</label>
+                <select name="anio_horas" id="anio-horas" class="form-control choice">
+                    <option value="0" {{ anioHorasSeleccionado == 0 ? 'selected' : '' }}>Todos</option>
+                    {% for anio in aniosHoras %}
+                        <option value="{{ anio }}" {{ anio == anioHorasSeleccionado ? 'selected' : '' }}>{{ anio }}</option>
+                    {% else %}
+                        <option value="{{ anioActual }}" selected>{{ anioActual }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group mr-3">
+                <label for="mes-horas" class="mr-2 font-weight-bold">Mes</label>
+                <select name="mes_horas" id="mes-horas" class="form-control choice">
+                    <option value="0" {{ mesHorasSeleccionado == 0 ? 'selected' : '' }}>Todos</option>
+                    {% for numero, nombre in mesesDisponibles %}
+                        <option value="{{ numero }}" {{ numero|number_format(0) == mesHorasSeleccionado ? 'selected' : '' }}>{{ nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </form>
+
+        <button class="btn btn-primary" data-toggle="collapse" data-target="#form-horas">
+            <i class="la la-plus"></i> Cargar hora
+        </button>
+    </div>
+
+    <div class="collapse mb-5" id="form-horas">
+        <div class="card card-custom">
+            <div class="card-body">
+                <form method="post" action="{{ path('app_empleado_horas', {'id': empleado.id}) }}" class="form-row align-items-end ajax-filter-form no-spinner" data-ajax-target="#tab-horas">
+                    <div class="form-group col-md-3">
+                        <label for="hora-fecha">Fecha</label>
+                        <input type="date" name="fecha" id="hora-fecha" class="form-control" required>
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label for="hora-motivo">Motivo</label>
+                        <input type="text" name="motivo" id="hora-motivo" class="form-control" maxlength="255" required>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="hora-cantidad">Horas</label>
+                        <input type="number" name="cantidadHoras" id="hora-cantidad" class="form-control" step="0.01" required>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <button type="submit" class="btn btn-primary font-weight-bold w-100">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="card card-custom">
+        <div class="card-header d-flex justify-content-between align-items-center py-3">
+            <h5 class="card-title m-0">Registro de horas</h5>
+            <a href="{{ path('app_empleado_horas_excel', {
+                'id': empleado.id,
+                'anio_horas': anioHorasSeleccionado,
+                'mes_horas': mesHorasSeleccionado
+            }) }}" class="btn btn-success font-weight-bold">
+                <i class="la la-file-excel"></i> Exportar Excel
+            </a>
+        </div>
+        <div class="card-body">
+            {% if horas|length > 0 %}
+                <div class="row mb-5">
+                    <div class="col-md-3 mb-4">
+                        <div class="card card-custom bg-light-primary">
+                            <div class="card-body tarjeta-resumen">
+                                <div class="numero {{ totalHoras < 0 ? 'text-danger' : 'text-success' }}">
+                                    {{ totalHoras > 0 ? '+' : '' }}{{ totalHoras }}
+                                </div>
+                                <div class="etiqueta">Total horas</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>FECHA</th>
+                                <th>MOTIVO</th>
+                                <th class="text-right">HORAS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for hora in horas %}
+                                <tr>
+                                    <td>{{ hora.fecha ? hora.fecha|date('d/m/Y') : '-' }}</td>
+                                    <td>{{ hora.motivo|default('-') }}</td>
+                                    <td class="text-right {{ hora.cantidadHoras < 0 ? 'text-danger' : 'text-success' }}">
+                                        {{ hora.cantidadHoras > 0 ? '+' : '' }}{{ hora.cantidadHoras }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">
+                    No hay registros de horas
+                    {% if anioHorasSeleccionado > 0 %}
+                        para {{ mes_horas_nombre ? mes_horas_nombre ~ ' de ' : '' }}{{ anioHorasSeleccionado }}
+                    {% elseif mes_horas_nombre %}
+                        para {{ mes_horas_nombre }}
+                    {% endif %}.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
