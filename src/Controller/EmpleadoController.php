@@ -993,32 +993,20 @@ class EmpleadoController extends BaseController
         $resumen = [
             'cantidad' => 0,
             'neto' => '0',
-            'adicionales' => '0',
-            'aPagar' => '0',
-            'pagado' => '0',
+            'conceptos' => '0',
+            'totalAPagar' => '0',
+            'totalGeneral' => '0',
+            'contribuciones' => '0',
         ];
 
         foreach ($liquidaciones as $liquidacion) {
             $resumen['cantidad']++;
             $resumen['neto'] = Decimal::add($resumen['neto'], $liquidacion->getSueldoNeto(), 2);
-
-            $estadoCodigo = $liquidacion->getEstado() ? $liquidacion->getEstado()->getCodigoInterno() : null;
-            if ($estadoCodigo !== ConstanteEstadoLiquidacion::PAGADA) {
-                $resumen['aPagar'] = Decimal::add($resumen['aPagar'], (string) $liquidacion->getTotalAPagar(), 2);
-            }
-
-            foreach ($liquidacion->getPagos() as $pago) {
-                $resumen['pagado'] = Decimal::add($resumen['pagado'], (string) $pago->getImporte(), 2);
-            }
-
-            $adicionalesLiquidacion = '0';
-            foreach ($liquidacion->getConceptos() as $concepto) {
-                $tipo = $concepto->getTipoConceptoLiquidacion();
-                if ($tipo && !$tipo->esDescuento()) {
-                    $adicionalesLiquidacion = Decimal::add($adicionalesLiquidacion, (string) $concepto->getImporte(), 2);
-                }
-            }
-            $resumen['adicionales'] = Decimal::add($resumen['adicionales'], $adicionalesLiquidacion, 2);
+            $conceptos = Decimal::add($liquidacion->getTotalConceptosSemanas(), $liquidacion->getTotalConceptos(), 2);
+            $resumen['conceptos'] = Decimal::add($resumen['conceptos'], $conceptos, 2);
+            $resumen['totalAPagar'] = Decimal::add($resumen['totalAPagar'], (string) $liquidacion->getTotalAPagar(), 2);
+            $resumen['totalGeneral'] = Decimal::add($resumen['totalGeneral'], $liquidacion->getMontoPagarEmpleado(), 2);
+            $resumen['contribuciones'] = Decimal::add($resumen['contribuciones'], $liquidacion->getContribuciones(), 2);
         }
 
         return $resumen;
@@ -1109,33 +1097,26 @@ class EmpleadoController extends BaseController
                         continue;
                     }
 
+                    $descripcion = (string) ($concepto->getDescripcion() ?? '');
+                    $nombre = $tipo->getNombre();
+
+                    $original = $nombre;
+                    $indice = 1;
+                    while (isset($nombresVistos[$nombre])) {
+                        $nombre = $original . ' (' . $indice . ')';
+                        $indice++;
+                    }
+                    $nombresVistos[$nombre] = true;
+
                     $importe = (string) $concepto->getImporte();
                     $signo = $tipo->esDescuento() ? '-1' : '1';
                     $importeSignado = Decimal::mul($importe, $signo, 2);
 
-                    $nombreTipo = $tipo->getNombre();
-
-                    if ($tipo->esDescuento()) {
-                        if ($nombreTipo === 'Adelanto') {
-                            $adelantos = Decimal::add($adelantos, $importeSignado, 2);
-                        }
-                        continue;
-                    }
-
-                    switch ($nombreTipo) {
-                        case 'Hora extra':
-                            $horasExtras = Decimal::add($horasExtras, $importeSignado, 2);
-                            break;
-                        case 'Feriado':
-                            $feriados = Decimal::add($feriados, $importeSignado, 2);
-                            break;
-                        case 'Guardia':
-                            $guardias = Decimal::add($guardias, $importeSignado, 2);
-                            break;
-                        case 'Otro':
-                            $otros = Decimal::add($otros, $importeSignado, 2);
-                            break;
-                    }
+                    $conceptosColumnas[] = [
+                        'nombre' => $nombre,
+                        'descripcion' => $descripcion,
+                        'importe' => $importeSignado,
+                    ];
                 }
             }
 

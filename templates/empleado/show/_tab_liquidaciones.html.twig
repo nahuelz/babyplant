@@ -2,35 +2,27 @@
 <div class="tab-pane fade" id="tab-liquidaciones">
 
     <div class="row mb-5">
-        <div class="col-md-3 mb-4">
-            <div class="card card-custom bg-light-info">
-                <div class="card-body tarjeta-resumen">
-                    <div class="numero">{{ resumenLiquidaciones.neto|money_format }}</div>
-                    <div class="etiqueta">Neto</div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
+        <div class="col-md-4 mb-4">
             <div class="card card-custom bg-light-warning">
                 <div class="card-body tarjeta-resumen">
-                    <div class="numero">{{ resumenLiquidaciones.adicionales|money_format }}</div>
-                    <div class="etiqueta">Adicionales</div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="card card-custom bg-light-success">
-                <div class="card-body tarjeta-resumen">
-                    <div class="numero">{{ resumenLiquidaciones.aPagar|money_format }}</div>
+                    <div class="numero">{{ resumenLiquidaciones.totalAPagar|money_format }}</div>
                     <div class="etiqueta">Total a pagar</div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3 mb-4">
+        <div class="col-md-4 mb-4">
+            <div class="card card-custom bg-light-success">
+                <div class="card-body tarjeta-resumen">
+                    <div class="numero">{{ resumenLiquidaciones.contribuciones|money_format }}</div>
+                    <div class="etiqueta">Contribuciones</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
             <div class="card card-custom bg-light-dark">
                 <div class="card-body tarjeta-resumen">
-                    <div class="numero">{{ resumenLiquidaciones.pagado|money_format }}</div>
-                    <div class="etiqueta">Total pagado</div>
+                    <div class="numero">{{ resumenLiquidaciones.totalGeneral|money_format }}</div>
+                    <div class="etiqueta">Total general</div>
                 </div>
             </div>
         </div>
@@ -99,40 +91,21 @@
                                 <th class="text-right">Bruto</th>
                                 <th class="text-right">Deducciones</th>
                                 <th class="text-right">Neto</th>
-                                <th class="text-right">Adelantos</th>
-                                <th class="text-right">Adicionales</th>
-                                <th class="text-right">A pagar</th>
+                                <th class="text-right">Conceptos</th>
+                                <th class="text-right">Total a pagar</th>
+                                <th class="text-right">Contribuciones</th>
+                                <th class="text-right">Total general</th>
                                 <th class="text-center">Estado</th>
                                 <th class="text-center">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for liquidacion in liquidaciones %}
-                                {% set bruto = liquidacion.sueldoBruto %}
-                                {% set deducciones = liquidacion.deducciones %}
-                                {% set neto = liquidacion.sueldoNeto %}
-                                {% set aPagar = liquidacion.totalAPagar %}
+                                {% set conceptos = liquidacion.totalConceptosSemanas + liquidacion.totalConceptos %}
+                                {% set totalAPagar = liquidacion.totalAPagar %}
+                                {% set contribuciones = liquidacion.contribuciones %}
+                                {% set totalGeneral = liquidacion.montoPagarEmpleado %}
                                 {% set fechaPago = liquidacion.pagos|length > 0 ? liquidacion.pagos|first.fecha : null %}
-
-                                {% set adelantos = 0 %}
-                                {% set adicionales = 0 %}
-                                {% set detalleAdicionales = [] %}
-                                {% for concepto in liquidacion.conceptos %}
-                                    {% set tipo = concepto.tipoConceptoLiquidacion %}
-                                    {% if tipo %}
-                                        {% if tipo.esDescuento %}
-                                            {% if tipo.codigoInterno == constant('App\\Entity\\Constants\\ConstanteTipoConceptoLiquidacion::ADELANTO') %}
-                                                {% set adelantos = adelantos + concepto.importe %}
-                                            {% endif %}
-                                        {% else %}
-                                            {% set adicionales = adicionales + concepto.importe %}
-                                            {% set detalleAdicionales = detalleAdicionales|merge([{
-                                                'nombre': tipo.nombre,
-                                                'importe': concepto.importe
-                                            }]) %}
-                                        {% endif %}
-                                    {% endif %}
-                                {% endfor %}
 
                                 {% set estadoCodigo = liquidacion.estado ? liquidacion.estado.codigoInterno : null %}
                                 {% set estadoNombre = liquidacion.estado ? liquidacion.estado.nombre : 'Borrador' %}
@@ -156,33 +129,13 @@
                                         {% endif %}
                                     </td>
                                     <td>{{ liquidacion.tipoModalidadPago|default('-') }}</td>
-                                    <td class="text-right">{{ bruto|money_format }}</td>
-                                    <td class="text-right">{{ deducciones|money_format }}</td>
-                                    <td class="text-right">{{ neto|money_format }}</td>
-                                    <td class="text-right">{{ adelantos|money_format }}</td>
-                                    <td class="text-right">
-                                        {% if adicionales > 0 %}
-                                            <span class="cursor-pointer" data-toggle="tooltip" data-html="true" title="
-                                                <div class='text-left'>
-                                                {% for detalle in detalleAdicionales %}
-                                                    <div class='d-flex justify-content-between'>
-                                                        <span>{{ detalle.nombre }}:</span>
-                                                        <span class='ml-3'>{{ detalle.importe|money_format }}</span>
-                                                    </div>
-                                                {% endfor %}
-                                                    <div class='d-flex justify-content-between border-top pt-1 mt-1'>
-                                                        <span><strong>Total:</strong></span>
-                                                        <span class='ml-3'><strong>{{ adicionales|money_format }}</strong></span>
-                                                    </div>
-                                                </div>
-                                            ">
-                                                {{ adicionales|money_format }}
-                                            </span>
-                                        {% else %}
-                                            {{ adicionales|money_format }}
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-right font-weight-bold">{{ aPagar|money_format }}</td>
+                                    <td class="text-right">{{ liquidacion.sueldoBruto|money_format }}</td>
+                                    <td class="text-right">{{ liquidacion.deducciones|money_format }}</td>
+                                    <td class="text-right">{{ liquidacion.sueldoNeto|money_format }}</td>
+                                    <td class="text-right">{{ conceptos|money_format }}</td>
+                                    <td class="text-right font-weight-bold">{{ totalAPagar|money_format }}</td>
+                                    <td class="text-right">{{ contribuciones|money_format }}</td>
+                                    <td class="text-right font-weight-bold">{{ totalGeneral|money_format }}</td>
                                     <td class="text-center">
                                         <span class="badge badge-{{ badgeClass }}">{{ estadoNombre }}</span>
                                     </td>
@@ -211,9 +164,10 @@
                                             <td class="text-right"><small>{{ semana.sueldoBruto|money_format }}</small></td>
                                             <td class="text-right"><small>{{ semana.deducciones|money_format }}</small></td>
                                             <td class="text-right"><small>{{ semana.sueldoNeto|money_format }}</small></td>
-                                            <td class="text-right"><small>-</small></td>
-                                            <td class="text-right"><small>-</small></td>
+                                            <td class="text-right"><small>{{ semana.totalConceptos|money_format }}</small></td>
                                             <td class="text-right"><small>{{ semana.totalAPagar|money_format }}</small></td>
+                                            <td class="text-right"><small>{{ semana.contribuciones|money_format }}</small></td>
+                                            <td class="text-right"><small>{{ semana.montoPagarEmpleado|money_format }}</small></td>
                                             <td class="text-center"><span class="badge badge-{{ badgeSemanaClass }}"><small>{{ estadoSemanaNombre }}</small></span></td>
                                             <td class="text-center">
                                                 <a href="{{ path('liquidacion_show', {'id': semana.id}) }}" class="btn btn-sm btn-light" title="Ver">

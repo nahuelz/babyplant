@@ -50,10 +50,11 @@ jQuery(document).ready(function () {
             totalConceptos += importe * signo;
         });
 
-        var total = neto + contribuciones + getTotalConceptosSemanas() + totalConceptos;
+        var totalAPagar = neto + getTotalConceptosSemanas() + totalConceptos;
+        var totalGeneral = totalAPagar + contribuciones;
 
-        $('#resumen-neto').text('$' + formatearMonto(neto));
-        $('#resumen-total').text('$' + formatearMonto(total));
+        $('#resumen-total-pagar').text('$' + formatearMonto(totalAPagar));
+        $('#resumen-total-general').text('$' + formatearMonto(totalGeneral));
     }
 
     function clearConceptoForm() {
