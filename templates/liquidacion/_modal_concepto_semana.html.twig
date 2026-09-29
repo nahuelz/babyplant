@@ -14,7 +14,16 @@
                         <select id="concepto_semana_tipoConceptoLiquidacion" name="tipoConceptoLiquidacion" class="form-control choice concepto-tipo" required>
                             <option value="">-- Elija el tipo de concepto --</option>
                             {% for tipo in tiposConcepto %}
-                                <option value="{{ tipo.id }}" data-tipo="{{ tipo.tipo }}">{{ tipo.nombre }}</option>
+                                <option value="{{ tipo.id }}" data-tipo="{{ tipo.tipo }}" data-codigo-interno="{{ tipo.codigoInterno }}">{{ tipo.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group campo-prestamo-semana" style="display: none;">
+                        <label for="concepto_semana_prestamo">Préstamo</label>
+                        <select id="concepto_semana_prestamo" name="prestamo" class="form-control">
+                            <option value="">-- Elija el préstamo --</option>
+                            {% for prestamo in prestamosPendientes %}
+                                <option value="{{ prestamo.id }}" data-saldo="{{ prestamo.saldoPendiente }}">#{{ prestamo.id }} · {{ prestamo.fecha|date('d/m/Y') }} · Saldo {{ prestamo.saldoPendiente|money_format }}</option>
                             {% endfor %}
                         </select>
                     </div>

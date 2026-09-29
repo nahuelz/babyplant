@@ -11,13 +11,16 @@
         <div class="card-body">
             {% if prestamos|length > 0 %}
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover" style="table-layout: fixed; width: 100%;">
+                    <table class="table table-striped table-hover">
                         <thead>
                             <tr>
-                                <th class="text-center align-middle" style="width: 25%;">Fecha Solicitud</th>
-                                <th class="text-center align-middle" style="width: 25%;">Monto</th>
-                                <th class="text-center align-middle" style="width: 25%;">Observaciones</th>
-                                <th class="text-center align-middle" style="width: 25%;">Acciones</th>
+                                <th class="text-center align-middle">Fecha Solicitud</th>
+                                <th class="text-center align-middle">Monto total</th>
+                                <th class="text-center align-middle">Monto pagado</th>
+                                <th class="text-center align-middle">Saldo</th>
+                                <th class="text-center align-middle">Estado</th>
+                                <th class="text-center align-middle">Observaciones</th>
+                                <th class="text-center align-middle">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -25,6 +28,11 @@
                                 <tr>
                                     <td class="text-center align-middle">{{ prestamo.fecha|date('d/m/Y') }}</td>
                                     <td class="text-center align-middle font-weight-bold">{{ prestamo.monto|money_format }}</td>
+                                    <td class="text-center align-middle text-success font-weight-bold">{{ prestamo.montoPagado|money_format }}</td>
+                                    <td class="text-center align-middle font-weight-bold">{{ prestamo.saldoPendiente|money_format }}</td>
+                                    <td class="text-center align-middle">
+                                        <span class="badge {{ prestamo.pagado ? 'badge-success' : 'badge-warning' }}">{{ prestamo.pagado ? 'Pagado' : 'Pendiente' }}</span>
+                                    </td>
                                     <td class="text-center align-middle text-break">{{ prestamo.observaciones|default('—') }}</td>
                                     <td class="text-center align-middle">
                                         <a href="{{ path('app_prestamo_imprimir', {'id': prestamo.id}) }}" target="_blank" class="btn btn-sm btn-light-primary mr-1" title="Imprimir">
@@ -38,6 +46,39 @@
                                         </form>
                                     </td>
                                 </tr>
+                                {% if prestamo.cuotas|length > 0 %}
+                                    <tr>
+                                        <td colspan="7" class="p-3">
+                                            <div class="font-weight-bold mb-2">Cuotas abonadas</div>
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-bordered mb-0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-center">Liquidación</th>
+                                                            <th class="text-center">Período</th>
+                                                            <th class="text-center">Fecha</th>
+                                                            <th class="text-center">Importe</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for cuota in prestamo.cuotas %}
+                                                            {% set liquidacionCuota = cuota.liquidacion %}
+                                                            {% set liquidacionDestino = liquidacionCuota.padre ?: liquidacionCuota %}
+                                                            <tr>
+                                                                <td class="text-center">
+                                                                    <a href="{{ path('liquidacion_show', {'id': liquidacionDestino.id}) }}">#{{ liquidacionCuota.id }}</a>
+                                                                </td>
+                                                                <td class="text-center">{{ liquidacionCuota.periodo }}</td>
+                                                                <td class="text-center">{{ liquidacionCuota.fechaDesde|date('d/m/Y') }} - {{ liquidacionCuota.fechaHasta|date('d/m/Y') }}</td>
+                                                                <td class="text-center font-weight-bold">{{ cuota.importe|money_format }}</td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif %}
                             {% endfor %}
                         </tbody>
                     </table>

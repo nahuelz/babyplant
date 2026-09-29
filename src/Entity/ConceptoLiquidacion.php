@@ -35,6 +35,12 @@ class ConceptoLiquidacion {
     private $tipoConceptoLiquidacion;
 
     /**
+     * @ORM\ManyToOne(targetEntity=Prestamo::class, inversedBy="cuotas")
+     * @ORM\JoinColumn(name="id_prestamo", referencedColumnName="id", nullable=true)
+     */
+    private $prestamo;
+
+    /**
      * @ORM\Column(name="cantidad", type="decimal", precision=10, scale=2, nullable=false, options={"default": 1})
      */
     private $cantidad = 1;
@@ -77,6 +83,16 @@ class ConceptoLiquidacion {
     public function setTipoConceptoLiquidacion(?TipoConceptoLiquidacion $tipoConceptoLiquidacion): void
     {
         $this->tipoConceptoLiquidacion = $tipoConceptoLiquidacion;
+    }
+
+    public function getPrestamo(): ?Prestamo
+    {
+        return $this->prestamo;
+    }
+
+    public function setPrestamo(?Prestamo $prestamo): void
+    {
+        $this->prestamo = $prestamo;
     }
 
     public function getCantidad()

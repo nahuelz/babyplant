@@ -60,6 +60,7 @@ jQuery(document).ready(function () {
     function clearConceptoForm() {
         var $form = $('.row-liquidacion-concepto-form');
         $form.find('#liquidacion_concepto_tipoConceptoLiquidacion').val('').trigger('change');
+        $form.find('#liquidacion_concepto_prestamo').val('').trigger('change');
         $form.find('#liquidacion_concepto_descripcion').val('');
         $form.find('#liquidacion_concepto_cantidad').val('');
         $form.find('#liquidacion_concepto_valorUnitario').val('');
@@ -75,6 +76,10 @@ jQuery(document).ready(function () {
         var tipoConceptoText = tipoConceptoSelect.find('option:selected').text();
         var tipo = tipoConceptoSelect.find('option:selected').data('tipo');
         var codigoInterno = tipoConceptoSelect.find('option:selected').data('codigo-interno');
+        var prestamoSelect = $form.find('#liquidacion_concepto_prestamo');
+        var prestamoId = prestamoSelect.val();
+        var prestamoText = prestamoSelect.find('option:selected').text();
+        var saldoPrestamo = parseFloat(prestamoSelect.find('option:selected').data('saldo')) || 0;
         var descripcion = $form.find('#liquidacion_concepto_descripcion').val();
         var cantidadRaw = $form.find('#liquidacion_concepto_cantidad').val();
         var valorRaw = $form.find('#liquidacion_concepto_valorUnitario').val();
@@ -87,11 +92,21 @@ jQuery(document).ready(function () {
             return;
         }
 
+        if (codigoInterno == 7 && (!prestamoId || parseMonto(cantidadRaw) * parseMonto(valorRaw) > saldoPrestamo)) {
+            Swal.fire({
+                title: !prestamoId ? 'Debe seleccionar el préstamo que se está abonando.' : 'El monto pagado no puede superar el saldo pendiente del préstamo.',
+                icon: 'warning'
+            });
+            return;
+        }
+
         var cantidad = parseMonto(cantidadRaw);
         var valor = parseMonto(valorRaw);
         var importe = cantidad * valor;
         var $tbody = $('.tbody-liquidacion-concepto');
         var index = parseInt($tbody.data('index')) || 0;
+
+        $tbody.find('tr > td[colspan="8"].text-muted').closest('tr').remove();
 
         var removeLink = '<a href="#" class="btn btn-sm delete-link-inline link-delete-liquidacion-concepto tooltips" data-placement="top" data-original-title="Eliminar"><i class="fa fa-trash text-danger"></i></a>';
         var clasePrestamo = (codigoInterno == 7) ? 'table-danger' : '';
@@ -99,11 +114,13 @@ jQuery(document).ready(function () {
         var item = '<tr class="tr-liquidacion-concepto ' + clasePrestamo + '" data-total="' + importe.toFixed(2) + '" data-tipo="' + tipo + '">' +
             '<td class="hidden"><input type="hidden" name="liquidacion[conceptos][' + index + '][id]" value=""></td>' +
             '<td class="hidden"><input type="hidden" name="liquidacion[conceptos][' + index + '][tipoConceptoLiquidacion]" value="' + tipoConceptoId + '"></td>' +
+            '<td class="hidden"><input type="hidden" name="liquidacion[conceptos][' + index + '][prestamo]" value="' + (codigoInterno == 7 ? prestamoId : '') + '"></td>' +
             '<td class="hidden"><input type="hidden" name="liquidacion[conceptos][' + index + '][descripcion]" value="' + descripcion.replace(/"/g, '&quot;') + '"></td>' +
             '<td class="hidden"><input type="hidden" name="liquidacion[conceptos][' + index + '][cantidad]" value="' + cantidadRaw + '"></td>' +
             '<td class="hidden"><input type="hidden" name="liquidacion[conceptos][' + index + '][valorUnitario]" value="' + valorRaw + '"></td>' +
             '<td class="hidden"><input type="hidden" name="liquidacion[conceptos][' + index + '][importe]" value="' + importe.toFixed(2).replace('.', ',') + '"></td>' +
             '<td class="v-middle text-center">' + tipoConceptoText + '</td>' +
+            '<td class="v-middle text-center">' + (codigoInterno == 7 ? prestamoText : '-') + '</td>' +
             '<td class="v-middle text-center">' + (descripcion || '-') + '</td>' +
             '<td class="v-middle text-center">' + formatearMonto(cantidad) + '</td>' +
             '<td class="v-middle text-center">$ ' + formatearMonto(valor) + '</td>' +
@@ -138,9 +155,34 @@ jQuery(document).ready(function () {
 
     // Inicializar Select2 del concepto
     var $tipoConceptoSelect = $('#liquidacion_concepto_tipoConceptoLiquidacion');
+    var $prestamoSelect = $('#liquidacion_concepto_prestamo');
     if ($tipoConceptoSelect.length && !$tipoConceptoSelect.data('select2')) {
         $tipoConceptoSelect.select2();
     }
+    if ($prestamoSelect.length && !$prestamoSelect.data('select2')) {
+        $prestamoSelect.select2({
+            width: '100%'
+        });
+    }
+
+    $tipoConceptoSelect.on('change', function () {
+        var esPrestamo = $(this).find('option:selected').data('codigo-interno') == 7;
+        $('.campo-prestamo').toggle(esPrestamo);
+        $prestamoSelect.prop('required', esPrestamo);
+        if (!esPrestamo) {
+            $prestamoSelect.val('').trigger('change');
+        } else {
+            var tienePrestamos = $prestamoSelect.find('option[value!=""]').length > 0;
+            if (!tienePrestamos) {
+                Swal.fire({
+                    title: 'Sin préstamos',
+                    text: 'El empleado no posee prestamos, ve al perfil del empleado pestaña de Préstamos para asignar uno',
+                    icon: 'warning',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+        }
+    });
 
     // Eventos
     $('.row-liquidacion-concepto-form').on('input', '#liquidacion_concepto_cantidad, #liquidacion_concepto_valorUnitario', calcularImporteConcepto);
@@ -182,6 +224,7 @@ jQuery(document).ready(function () {
     // Modal de agregar concepto a una semana
     var $modalConcepto = $('#modalConceptoSemana');
     var $conceptoTipoSelect = $('#concepto_semana_tipoConceptoLiquidacion');
+    var $prestamoSemanaSelect = $('#concepto_semana_prestamo');
 
     function calcularImporteConceptoSemana() {
         var cantidad = parseMonto($('#concepto_semana_cantidad').val());
@@ -190,6 +233,15 @@ jQuery(document).ready(function () {
     }
 
     $(document).on('input', '#concepto_semana_cantidad, #concepto_semana_valorUnitario', calcularImporteConceptoSemana);
+
+    $conceptoTipoSelect.on('change', function () {
+        var esPrestamo = $(this).find('option:selected').data('codigo-interno') == 7;
+        $modalConcepto.find('.campo-prestamo-semana').toggle(esPrestamo);
+        $prestamoSemanaSelect.prop('required', esPrestamo);
+        if (!esPrestamo) {
+            $prestamoSemanaSelect.val('').trigger('change');
+        }
+    });
 
     $(document).on('click', '.abrir-modal-concepto-semana', function (e) {
         e.preventDefault();
@@ -207,17 +259,42 @@ jQuery(document).ready(function () {
                 width: '100%'
             });
         }
+        if (!$prestamoSemanaSelect.data('select2')) {
+            $prestamoSemanaSelect.select2({
+                dropdownParent: $modalConcepto,
+                allowClear: true,
+                theme: 'default',
+                width: '100%'
+            });
+        }
 
         $modalConcepto.find('#modalConceptoSemanaLabel').text('Agregar concepto - Semana ' + semana + ' de ' + apellido + ', ' + nombre);
         $modalConcepto.find('#formAgregarConceptoSemana').attr('action', $link.data('action'));
         $modalConcepto.find('#concepto_semana_token').val($link.data('token'));
         $conceptoTipoSelect.val('').trigger('change');
+        $prestamoSemanaSelect.val('').trigger('change');
         $('#concepto_semana_descripcion').val('');
         $('#concepto_semana_cantidad').val('');
         $('#concepto_semana_valorUnitario').val('');
         $('#concepto_semana_importe').val('');
 
         $modalConcepto.modal('show');
+    });
+
+    $('#formAgregarConceptoSemana').on('submit', function (e) {
+        if ($conceptoTipoSelect.find('option:selected').data('codigo-interno') != 7) {
+            return;
+        }
+
+        var importe = parseMonto($('#concepto_semana_importe').val());
+        var saldo = parseFloat($prestamoSemanaSelect.find('option:selected').data('saldo')) || 0;
+        if (!$prestamoSemanaSelect.val() || importe > saldo) {
+            e.preventDefault();
+            Swal.fire({
+                title: !$prestamoSemanaSelect.val() ? 'Debe seleccionar el préstamo que se está abonando.' : 'El monto pagado no puede superar el saldo pendiente del préstamo.',
+                icon: 'warning'
+            });
+        }
     });
 
     // Confirmación de anulación

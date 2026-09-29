@@ -4,11 +4,13 @@ namespace App\Controller;
 
 use App\Entity\ConceptoLiquidacion;
 use App\Entity\Constants\ConstanteEstadoLiquidacion;
+use App\Entity\Constants\ConstanteTipoConceptoLiquidacion;
 use App\Entity\Constants\ConstanteTipoModalidadPago;
 use App\Entity\Empleado;
 use App\Entity\EstadoLiquidacion;
 use App\Entity\Liquidacion;
 use App\Entity\PagoEmpleado;
+use App\Entity\Prestamo;
 use App\Entity\TipoConceptoLiquidacion;
 use App\Entity\TipoModalidadPago;
 use App\Form\LiquidacionType;
@@ -703,6 +705,13 @@ class LiquidacionController extends BaseController
         $pago->setFecha(new DateTime());
         $pago->setImporte($restante);
 
+        $prestamosEmpleado = $liquidacion->getEmpleado()->getPrestamos()->filter(function (Prestamo $prestamo) {
+            return $prestamo->getFechaBaja() === null;
+        })->toArray();
+        $prestamosPendientes = array_values(array_filter($prestamosEmpleado, function (Prestamo $prestamo) {
+            return Decimal::comp($prestamo->getSaldoPendiente(), '0', 2) > 0;
+        }));
+
         $pagoForm = $this->createForm(PagoEmpleadoType::class, $pago, [
             'action' => $this->generateUrl('liquidacion_pagar', ['id' => $liquidacion->getId()]),
             'method' => 'POST',
@@ -721,6 +730,8 @@ class LiquidacionController extends BaseController
             'incluir_contribuciones' => $incluirContribuciones,
             'incluir_conceptos' => $incluirConceptos,
             'editable' => $editable,
+            'prestamos' => $prestamosPendientes,
+            'prestamos_conceptos' => $prestamosEmpleado,
         ]);
 
         $tiposConcepto = $entityManager->getRepository(TipoConceptoLiquidacion::class)
@@ -739,9 +750,9 @@ class LiquidacionController extends BaseController
             'totalPagado' => $totalPagado,
             'restante' => $restante,
             'tiposConcepto' => $tiposConcepto,
+            'prestamosPendientes' => $prestamosPendientes,
         ]);
     }
-
 
     /**
      * @Route("/{id}/semana", name="liquidacion_show_semana", methods={"GET"})
@@ -826,10 +837,21 @@ class LiquidacionController extends BaseController
             && $liquidacion->getTipoModalidadPago()->getCodigoInterno() === ConstanteTipoModalidadPago::MENSUAL;
         $incluirConceptos = $liquidacion->getPadre() === null;
 
+        $prestamosEmpleado = $liquidacion->getEmpleado()->getPrestamos()->filter(function (Prestamo $prestamo) {
+            return $prestamo->getFechaBaja() === null;
+        })->toArray();
+        $prestamosPendientes = array_values(array_filter($prestamosEmpleado, function (Prestamo $prestamo) {
+            return Decimal::comp($prestamo->getSaldoPendiente(), '0', 2) > 0;
+        }));
+
         $form = $this->createForm(LiquidacionType::class, $liquidacion, [
+            'action' => $this->generateUrl('liquidacion_guardar', ['id' => $liquidacion->getId()]),
+            'method' => 'POST',
             'incluir_sueldo' => $incluirSueldo,
             'incluir_contribuciones' => $incluirContribuciones,
             'incluir_conceptos' => $incluirConceptos,
+            'prestamos' => $prestamosPendientes,
+            'prestamos_conceptos' => $prestamosEmpleado,
         ]);
         $form->handleRequest($request);
 
@@ -846,9 +868,9 @@ class LiquidacionController extends BaseController
                     $existingById[$concepto->getId()] = $concepto;
                 }
 
-                $submittedIds = [];
                 $newCollection = new \Doctrine\Common\Collections\ArrayCollection();
 
+                $cuotasPorPrestamo = [];
                 foreach ($submittedConceptos as $data) {
                     $id = !empty($data['id']) ? (int) $data['id'] : null;
 
@@ -870,7 +892,59 @@ class LiquidacionController extends BaseController
                     $concepto->setImporte(Decimal::mul($cantidad, $valorUnitario, 2));
                     $concepto->setLiquidacion($liquidacion);
 
+                    $prestamo = null;
+                    if ($tipoConcepto && $tipoConcepto->getCodigoInterno() === ConstanteTipoConceptoLiquidacion::PRESTAMO) {
+                        $prestamoId = !empty($data['prestamo']) ? (int) $data['prestamo'] : null;
+                        $prestamo = $prestamoId ? $entityManager->getRepository(Prestamo::class)->find($prestamoId) : null;
+
+                        if (!$prestamo || $prestamo->getEmpleado() !== $liquidacion->getEmpleado()) {
+                            $this->addFlash('error', 'Debe seleccionar un préstamo válido del empleado para el concepto Préstamo.');
+                            return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
+                        }
+
+                        if (Decimal::comp((string) $concepto->getImporte(), $prestamo->getSaldoPendiente($concepto), 2) > 0) {
+                            $this->addFlash('error', 'El monto pagado del préstamo no puede superar su saldo pendiente.');
+                            return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
+                        }
+                    }
+                    $concepto->setPrestamo($prestamo);
+
                     $newCollection->add($concepto);
+
+                    if ($prestamo) {
+                        $prestamoId = $prestamo->getId();
+                        if (!isset($cuotasPorPrestamo[$prestamoId])) {
+                            $cuotasPorPrestamo[$prestamoId] = [
+                                'prestamo' => $prestamo,
+                                'importe' => '0',
+                            ];
+                        }
+                        $cuotasPorPrestamo[$prestamoId]['importe'] = Decimal::add(
+                            $cuotasPorPrestamo[$prestamoId]['importe'],
+                            (string) $concepto->getImporte(),
+                            2
+                        );
+                    }
+                }
+
+                foreach ($cuotasPorPrestamo as $datosPrestamo) {
+                    $prestamo = $datosPrestamo['prestamo'];
+                    $pagadoEnOtrasLiquidaciones = '0';
+                    foreach ($prestamo->getCuotas() as $cuotaExistente) {
+                        if ($cuotaExistente->getLiquidacion() !== $liquidacion && $cuotaExistente->getFechaBaja() === null) {
+                            $pagadoEnOtrasLiquidaciones = Decimal::add(
+                                $pagadoEnOtrasLiquidaciones,
+                                (string) $cuotaExistente->getImporte(),
+                                2
+                            );
+                        }
+                    }
+
+                    $disponible = Decimal::sub((string) $prestamo->getMonto(), $pagadoEnOtrasLiquidaciones, 2);
+                    if (Decimal::comp($datosPrestamo['importe'], $disponible, 2) > 0) {
+                        $this->addFlash('error', 'El monto total pagado del préstamo no puede superar el monto original.');
+                        return $this->redirectToRoute('liquidacion_show', ['id' => $liquidacion->getId()]);
+                    }
                 }
 
                 foreach ($existingById as $id => $concepto) {
@@ -1217,6 +1291,23 @@ class LiquidacionController extends BaseController
         $concepto->setValorUnitario($valorUnitario);
         $concepto->setImporte(Decimal::mul($cantidad, $valorUnitario, 2));
         $liquidacion->addConcepto($concepto);
+
+        $prestamo = null;
+        if ($tipoConcepto->getCodigoInterno() === ConstanteTipoConceptoLiquidacion::PRESTAMO) {
+            $prestamoId = $request->request->get('prestamo');
+            $prestamo = $prestamoId ? $entityManager->getRepository(Prestamo::class)->find($prestamoId) : null;
+
+            if (!$prestamo || $prestamo->getEmpleado() !== $liquidacion->getEmpleado()) {
+                $this->addFlash('error', 'Debe seleccionar un préstamo válido del empleado para el concepto Préstamo.');
+                return $this->redirectToRoute('liquidacion_show', ['id' => $redirectId]);
+            }
+
+            if (Decimal::comp((string) $concepto->getImporte(), $prestamo->getSaldoPendiente($concepto), 2) > 0) {
+                $this->addFlash('error', 'El monto pagado del préstamo no puede superar su saldo pendiente.');
+                return $this->redirectToRoute('liquidacion_show', ['id' => $redirectId]);
+            }
+        }
+        $concepto->setPrestamo($prestamo);
 
         $entityManager->persist($concepto);
 

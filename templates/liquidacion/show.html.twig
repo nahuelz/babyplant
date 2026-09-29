@@ -41,7 +41,22 @@
                         <h3 class="mb-1">{{ liquidacion.empleado.nombreCompleto }}</h3>
                         <span class="text-muted">Período: {{ liquidacion.periodo }}</span><br>
                         <span class="text-muted">Desde: {{ liquidacion.fechaDesde ? liquidacion.fechaDesde|date('d/m/Y') : '-' }} · Hasta: {{ liquidacion.fechaHasta ? liquidacion.fechaHasta|date('d/m/Y') : '-' }}</span><br>
-                        <span class="text-muted">Modalidad: {{ liquidacion.tipoModalidadPago ? liquidacion.tipoModalidadPago.nombre : '-' }}</span>
+                        <span class="text-muted">Modalidad: {{ liquidacion.tipoModalidadPago ? liquidacion.tipoModalidadPago.nombre : '-' }}</span><br>
+                        {% set prestamosActivos = [] %}
+                        {% set saldoTotal = 0 %}
+                        {% for prestamo in liquidacion.empleado.prestamos %}
+                            {% if prestamo.fechaBaja is null %}
+                                {% set prestamosActivos = prestamosActivos|merge([prestamo]) %}
+                                {% set saldoTotal = saldoTotal + prestamo.saldoPendiente %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if saldoTotal == 0 %}
+                            <span class="text-success font-weight-bold">No tiene préstamos asignados</span>
+                        {% else %}
+                            <span class="text-danger font-weight-bold">
+                                Tiene préstamos asignados — Saldo de la deuda: ${{ saldoTotal|number_format(2, ',', '.') }}
+                            </span>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="d-flex align-items-center mt-3 mt-md-0">
@@ -188,16 +203,19 @@
                             <div class="col-md-2">
                                 {{ macro_form._new_field(form.concepto.tipoConceptoLiquidacion, '') }}
                             </div>
+                            <div class="col-md-2 campo-prestamo" style="display: none;">
+                                {{ macro_form._new_field(form.concepto.prestamo, '') }}
+                            </div>
                             <div class="col-md-3">
                                 {{ macro_form._new_field(form.concepto.descripcion, '') }}
                             </div>
                             <div class="col-md-1">
                                 {{ macro_form._new_field(form.concepto.cantidad, '') }}
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-1">
                                 {{ macro_form._new_field(form.concepto.valorUnitario, '') }}
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-1">
                                 {{ macro_form._new_field(form.concepto.importe, '') }}
                             </div>
                             <div class="col-md-2">
@@ -226,6 +244,7 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">Concepto</th>
+                                            <th class="text-center">Préstamo</th>
                                             <th class="text-center">Descripción</th>
                                             <th class="text-center">Cantidad</th>
                                             <th class="text-center">Valor unitario</th>
@@ -244,6 +263,9 @@
                                                     <input type="hidden" name="liquidacion[conceptos][{{ loop.index0 }}][tipoConceptoLiquidacion]" value="{{ concepto.tipoConceptoLiquidacion.id }}">
                                                 </td>
                                                 <td class="hidden">
+                                                    <input type="hidden" name="liquidacion[conceptos][{{ loop.index0 }}][prestamo]" value="{{ concepto.prestamo ? concepto.prestamo.id : '' }}">
+                                                </td>
+                                                <td class="hidden">
                                                     <input type="hidden" name="liquidacion[conceptos][{{ loop.index0 }}][descripcion]" value="{{ concepto.descripcion }}">
                                                 </td>
                                                 <td class="hidden">
@@ -256,6 +278,7 @@
                                                     <input type="hidden" name="liquidacion[conceptos][{{ loop.index0 }}][importe]" value="{{ concepto.importe|number_format(2, ',', '.') }}">
                                                 </td>
                                                 <td class="v-middle text-center">{{ concepto.tipoConceptoLiquidacion }}</td>
+                                                <td class="v-middle text-center">{{ concepto.prestamo ? '#' ~ concepto.prestamo.id : '-' }}</td>
                                                 <td class="v-middle text-center">{{ concepto.descripcion|default('-') }}</td>
                                                 <td class="v-middle text-center">{{ concepto.cantidad|number_format(2, ',', '.') }}</td>
                                                 <td class="v-middle text-center">{{ concepto.valorUnitario|money_format }}</td>
@@ -271,7 +294,7 @@
                                             </tr>
                                         {% else %}
                                             <tr>
-                                                <td colspan="7" class="text-center text-muted">No se registró ningún concepto</td>
+                                                <td colspan="8" class="text-center text-muted">No se registró ningún concepto</td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>
@@ -292,6 +315,7 @@
                                         <tr>
                                             <th class="text-center">Semana</th>
                                             <th class="text-center">Concepto</th>
+                                            <th class="text-center">Préstamo</th>
                                             <th class="text-center">Descripción</th>
                                             <th class="text-center">Cantidad</th>
                                             <th class="text-center">Valor unitario</th>
@@ -307,6 +331,7 @@
                                                         {{ detalle.fechaDesde|date('d/m/Y') }} - {{ detalle.fechaHasta|date('d/m/Y') }}
                                                     </td>
                                                     <td class="v-middle text-center">{{ concepto.tipoConceptoLiquidacion }}</td>
+                                                    <td class="v-middle text-center">{{ concepto.prestamo ? '#' ~ concepto.prestamo.id : '-' }}</td>
                                                     <td class="v-middle text-center">{{ concepto.descripcion|default('-') }}</td>
                                                     <td class="v-middle text-center">{{ concepto.cantidad|number_format(2, ',', '.') }}</td>
                                                     <td class="v-middle text-center">{{ concepto.valorUnitario|money_format }}</td>
@@ -315,12 +340,12 @@
                                                 </tr>
                                             {% else %}
                                                 <tr>
-                                                    <td colspan="7" class="text-center text-muted">Sin conceptos para la semana del {{ detalle.fechaDesde|date('d/m/Y') }} al {{ detalle.fechaHasta|date('d/m/Y') }}</td>
+                                                    <td colspan="8" class="text-center text-muted">Sin conceptos para la semana del {{ detalle.fechaDesde|date('d/m/Y') }} al {{ detalle.fechaHasta|date('d/m/Y') }}</td>
                                                 </tr>
                                             {% endfor %}
                                         {% else %}
                                             <tr>
-                                                <td colspan="7" class="text-center text-muted">No se registraron semanas</td>
+                                                <td colspan="8" class="text-center text-muted">No se registraron semanas</td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>

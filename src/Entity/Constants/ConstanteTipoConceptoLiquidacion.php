@@ -14,9 +14,12 @@ class ConstanteTipoConceptoLiquidacion
 
     const PRESENTISMO = 5;
 
-    const BONIFICACION = 6;
+    const SAC = 6;
 
-    const VIATICO = 7;
+    const PRESTAMO = 7;
 
-    const OTRO = 8;
+    const VACACIONES = 8;
+
+    const AUMENTO = 9;
+
 }

@@ -66,6 +66,7 @@ class LiquidacionType extends AbstractType
                     'data_class' => ConceptoLiquidacion::class,
                     'label' => false,
                     'validation_groups' => false,
+                    'prestamos' => $options['prestamos'],
                 ])
                 ->add('conceptos', CollectionType::class, [
                     'entry_type' => ConceptoLiquidacionType::class,
@@ -73,6 +74,7 @@ class LiquidacionType extends AbstractType
                         'label' => false,
                         'attr' => ['class' => 'concepto-item'],
                         'validation_groups' => false,
+                        'prestamos' => $options['prestamos_conceptos'],
                     ],
                     'allow_add' => true,
                     'allow_delete' => true,
@@ -93,11 +95,15 @@ class LiquidacionType extends AbstractType
             'incluir_contribuciones' => false,
             'incluir_conceptos' => true,
             'editable' => true,
+            'prestamos' => [],
+            'prestamos_conceptos' => [],
         ]);
 
         $resolver->setAllowedTypes('incluir_sueldo', 'bool');
         $resolver->setAllowedTypes('incluir_contribuciones', 'bool');
         $resolver->setAllowedTypes('incluir_conceptos', 'bool');
         $resolver->setAllowedTypes('editable', 'bool');
+        $resolver->setAllowedTypes('prestamos', 'array');
+        $resolver->setAllowedTypes('prestamos_conceptos', 'array');
     }
 }

@@ -3,11 +3,12 @@
 namespace App\Form;
 
 use App\Entity\ConceptoLiquidacion;
+use App\Entity\Prestamo;
 use App\Entity\TipoConceptoLiquidacion;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -40,6 +41,24 @@ class ConceptoLiquidacionType extends AbstractType
                         'data-codigo-interno' => $tipo->getCodigoInterno(),
                     ];
                 },
+            ])
+            ->add('prestamo', EntityType::class, [
+                'class' => Prestamo::class,
+                'choices' => $options['prestamos'],
+                'choice_label' => function (Prestamo $prestamo) {
+                    return sprintf(
+                        '%s · Saldo $ %s',
+                        $prestamo->getFecha()->format('d/m/Y'),
+                        number_format((float) $prestamo->getSaldoPendiente(), 2, ',', '.')
+                    );
+                },
+                'choice_attr' => function (Prestamo $prestamo) {
+                    return ['data-saldo' => $prestamo->getSaldoPendiente()];
+                },
+                'placeholder' => '-- Elija el préstamo --',
+                'required' => false,
+                'label' => 'Préstamo',
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('cantidad', NumberType::class, [
                 'required' => true,
@@ -79,6 +98,9 @@ class ConceptoLiquidacionType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ConceptoLiquidacion::class,
+            'prestamos' => [],
         ]);
+
+        $resolver->setAllowedTypes('prestamos', 'array');
     }
 }
