@@ -83,9 +83,10 @@
                                 <th class="text-center">Modalidad</th>
                                 <th class="text-right">Bruto</th>
                                 <th class="text-right">Deducciones</th>
-                                <th class="text-right">Contribuciones</th>
                                 <th class="text-right">Neto</th>
                                 <th class="text-right">Conceptos</th>
+                                <th class="text-right">Total a pagar</th>
+                                <th class="text-right">Contribuciones</th>
                                 <th class="text-right">Total</th>
                             </tr>
                         </thead>
@@ -105,9 +106,10 @@
                                     <td class="text-center">{{ fila.modalidad }}</td>
                                     <td class="text-right">{{ fila.bruto }}</td>
                                     <td class="text-right">{{ fila.deducciones }}</td>
-                                    <td class="text-right">{{ fila.contribuciones }}</td>
                                     <td class="text-right">{{ fila.neto }}</td>
                                     <td class="text-right">{{ fila.conceptos }}</td>
+                                    <td class="text-right">{{ fila.totalAPagar }}</td>
+                                    <td class="text-right">{{ fila.contribuciones }}</td>
                                     <td class="text-right font-weight-bold">
                                         {% if fila.resumen %}
                                             <a href="{{ path('liquidacion_show', {'id': fila.resumen.id}) }}" class="font-weight-bold">
@@ -120,7 +122,7 @@
                                 </tr>
                             {% else %}
                                 <tr>
-                                    <td colspan="8" class="text-center text-muted">No hay empleados activos con liquidaciones para este período.</td>
+                                    <td colspan="9" class="text-center text-muted">No hay empleados activos con liquidaciones para este período.</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -130,9 +132,10 @@
                                 <td></td>
                                 <td class="text-right">$ {{ totales_mensuales.bruto|number_format(2, ',', '.') }}</td>
                                 <td class="text-right">$ {{ totales_mensuales.deducciones|number_format(2, ',', '.') }}</td>
-                                <td class="text-right">$ {{ totales_mensuales.contribuciones|number_format(2, ',', '.') }}</td>
                                 <td class="text-right">$ {{ totales_mensuales.neto|number_format(2, ',', '.') }}</td>
                                 <td class="text-right">$ {{ totales_mensuales.conceptos|number_format(2, ',', '.') }}</td>
+                                <td class="text-right">$ {{ totales_mensuales.totalAPagar|number_format(2, ',', '.') }}</td>
+                                <td class="text-right">$ {{ totales_mensuales.contribuciones|number_format(2, ',', '.') }}</td>
                                 <td class="text-right">$ {{ totales_mensuales.total|number_format(2, ',', '.') }}</td>
                             </tr>
                         </tfoot>
