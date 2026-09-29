@@ -1090,34 +1090,6 @@ class EmpleadoController extends BaseController
                 $deducciones = Decimal::add($deducciones, (string) $liquidacion->getDeducciones(), 2);
                 $neto = Decimal::add($neto, $liquidacion->getSueldoNeto(), 2);
                 $aPagar = Decimal::add($aPagar, (string) $liquidacion->getTotalAPagar(), 2);
-
-                foreach ($liquidacion->getConceptos() as $concepto) {
-                    $tipo = $concepto->getTipoConceptoLiquidacion();
-                    if (!$tipo) {
-                        continue;
-                    }
-
-                    $descripcion = (string) ($concepto->getDescripcion() ?? '');
-                    $nombre = $tipo->getNombre();
-
-                    $original = $nombre;
-                    $indice = 1;
-                    while (isset($nombresVistos[$nombre])) {
-                        $nombre = $original . ' (' . $indice . ')';
-                        $indice++;
-                    }
-                    $nombresVistos[$nombre] = true;
-
-                    $importe = (string) $concepto->getImporte();
-                    $signo = $tipo->esDescuento() ? '-1' : '1';
-                    $importeSignado = Decimal::mul($importe, $signo, 2);
-
-                    $conceptosColumnas[] = [
-                        'nombre' => $nombre,
-                        'descripcion' => $descripcion,
-                        'importe' => $importeSignado,
-                    ];
-                }
             }
 
             $sueldoMedio = '0';
