@@ -84,7 +84,7 @@
                                 <th class="text-right">Bruto</th>
                                 <th class="text-right">Deducciones</th>
                                 <th class="text-right">Neto</th>
-                                <th class="text-right">Conceptos</th>
+                                <th class="text-right">Conceptos (adelantos)</th>
                                 <th class="text-right">Total a pagar</th>
                                 <th class="text-right">Contribuciones</th>
                                 <th class="text-right">Total</th>
@@ -107,7 +107,7 @@
                                     <td class="text-right">{{ fila.bruto }}</td>
                                     <td class="text-right">{{ fila.deducciones }}</td>
                                     <td class="text-right">{{ fila.neto }}</td>
-                                    <td class="text-right">{{ fila.conceptos }}</td>
+                                    <td class="text-right">{{ fila.conceptos }} ({{ fila.adelantos }})</td>
                                     <td class="text-right">{{ fila.totalAPagar }}</td>
                                     <td class="text-right">{{ fila.contribuciones }}</td>
                                     <td class="text-right font-weight-bold">
@@ -133,7 +133,7 @@
                                 <td class="text-right">$ {{ totales_mensuales.bruto|number_format(2, ',', '.') }}</td>
                                 <td class="text-right">$ {{ totales_mensuales.deducciones|number_format(2, ',', '.') }}</td>
                                 <td class="text-right">$ {{ totales_mensuales.neto|number_format(2, ',', '.') }}</td>
-                                <td class="text-right">$ {{ totales_mensuales.conceptos|number_format(2, ',', '.') }}</td>
+                                <td class="text-right">$ {{ totales_mensuales.conceptos|number_format(2, ',', '.') }} ($ {{ totales_mensuales.adelantos|number_format(2, ',', '.') }})</td>
                                 <td class="text-right">$ {{ totales_mensuales.totalAPagar|number_format(2, ',', '.') }}</td>
                                 <td class="text-right">$ {{ totales_mensuales.contribuciones|number_format(2, ',', '.') }}</td>
                                 <td class="text-right">$ {{ totales_mensuales.total|number_format(2, ',', '.') }}</td>

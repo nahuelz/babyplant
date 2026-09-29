@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Constants\ConstanteTipoConceptoLiquidacion;
 use App\Entity\Traits\Auditoria;
 use App\Util\Decimal;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -439,6 +440,41 @@ class Liquidacion {
         foreach ($this->conceptos as $concepto) {
             $signo = $concepto->getTipoConceptoLiquidacion()->esDescuento() ? '-1' : '1';
             $total = Decimal::add($total, Decimal::mul((string) $concepto->getImporte(), $signo, 2), 2);
+        }
+
+        return $total;
+    }
+
+    /**
+     * Suma signada de los adelantos (tipo ADELANTO) cargados directamente en
+     * esta liquidación. No incluye los adelantos de las semanas hijas.
+     */
+    public function getTotalAdelantos(): string
+    {
+        $total = '0';
+
+        foreach ($this->conceptos as $concepto) {
+            $tipo = $concepto->getTipoConceptoLiquidacion();
+            if (!$tipo || $tipo->getId() !== ConstanteTipoConceptoLiquidacion::ADELANTO) {
+                continue;
+            }
+            $signo = $tipo->esDescuento() ? '-1' : '1';
+            $total = Decimal::add($total, Decimal::mul((string) $concepto->getImporte(), $signo, 2), 2);
+        }
+
+        return $total;
+    }
+
+    /**
+     * Suma de los totales de adelantos de las semanas hijas. Vacío (0) para
+     * empleados mensuales.
+     */
+    public function getTotalAdelantosSemanas(): string
+    {
+        $total = '0';
+
+        foreach ($this->detallesSemanales as $detalle) {
+            $total = Decimal::add($total, $detalle->getTotalAdelantos(), 2);
         }
 
         return $total;

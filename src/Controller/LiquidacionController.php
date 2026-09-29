@@ -107,6 +107,7 @@ class LiquidacionController extends BaseController
                 'contribuciones' => '0',
                 'neto' => '0',
                 'conceptos' => '0',
+                'adelantos' => '0',
                 'totalAPagar' => '0',
                 'total' => '0',
             ];
@@ -126,6 +127,8 @@ class LiquidacionController extends BaseController
                     $totalesMensuales['neto'] = Decimal::add($totalesMensuales['neto'], (string) $fila['resumen']->getSueldoNeto(), 2);
                     $conceptosFila = Decimal::add((string) $fila['resumen']->getTotalConceptosSemanas(), (string) $fila['resumen']->getTotalConceptos(), 2);
                     $totalesMensuales['conceptos'] = Decimal::add($totalesMensuales['conceptos'], $conceptosFila, 2);
+                    $adelantosFila = Decimal::add((string) $fila['resumen']->getTotalAdelantosSemanas(), (string) $fila['resumen']->getTotalAdelantos(), 2);
+                    $totalesMensuales['adelantos'] = Decimal::add($totalesMensuales['adelantos'], $adelantosFila, 2);
                     $totalAPagarFila = Decimal::add((string) $fila['resumen']->getSueldoNeto(), $conceptosFila, 2);
                     $totalesMensuales['totalAPagar'] = Decimal::add($totalesMensuales['totalAPagar'], $totalAPagarFila, 2);
                     $totalFila = Decimal::add($totalAPagarFila, (string) $fila['resumen']->getContribuciones(), 2);
@@ -370,6 +373,7 @@ class LiquidacionController extends BaseController
             'contribuciones' => '0',
             'neto' => '0',
             'conceptos' => '0',
+            'adelantos' => '0',
             'totalAPagar' => '0',
             'total' => '0',
         ];
@@ -382,6 +386,8 @@ class LiquidacionController extends BaseController
                 $totalesMensuales['neto'] = Decimal::add($totalesMensuales['neto'], (string) $fila['resumen']->getSueldoNeto(), 2);
                 $conceptosFila = Decimal::add((string) $fila['resumen']->getTotalConceptosSemanas(), (string) $fila['resumen']->getTotalConceptos(), 2);
                 $totalesMensuales['conceptos'] = Decimal::add($totalesMensuales['conceptos'], $conceptosFila, 2);
+                $adelantosFila = Decimal::add((string) $fila['resumen']->getTotalAdelantosSemanas(), (string) $fila['resumen']->getTotalAdelantos(), 2);
+                $totalesMensuales['adelantos'] = Decimal::add($totalesMensuales['adelantos'], $adelantosFila, 2);
                 $totalAPagarFila = Decimal::add((string) $fila['resumen']->getSueldoNeto(), $conceptosFila, 2);
                 $totalesMensuales['totalAPagar'] = Decimal::add($totalesMensuales['totalAPagar'], $totalAPagarFila, 2);
                 $totalFila = Decimal::add($totalAPagarFila, (string) $fila['resumen']->getContribuciones(), 2);
@@ -393,7 +399,7 @@ class LiquidacionController extends BaseController
         $sheet->mergeCells('A1:I1');
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
 
-        $headers = ['Empleado', 'Modalidad', 'Bruto', 'Deducciones', 'Neto', 'Conceptos', 'Total a pagar', 'Contribuciones', 'Total'];
+        $headers = ['Empleado', 'Modalidad', 'Bruto', 'Deducciones', 'Neto', 'Conceptos (adelantos)', 'Total a pagar', 'Contribuciones', 'Total'];
         foreach ($headers as $index => $header) {
             $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($index + 1);
             $sheet->setCellValue($colLetter . '2', $header);
@@ -416,13 +422,18 @@ class LiquidacionController extends BaseController
             $contribuciones = $row['resumen'] ? (float) $row['resumen']->getContribuciones() : 0;
             $neto = $row['resumen'] ? (float) $row['resumen']->getSueldoNeto() : 0;
             $conceptos = $row['resumen'] ? (float) Decimal::add((string) $row['resumen']->getTotalConceptosSemanas(), (string) $row['resumen']->getTotalConceptos(), 2) : 0;
+            $adelantos = $row['resumen'] ? (float) Decimal::add((string) $row['resumen']->getTotalAdelantosSemanas(), (string) $row['resumen']->getTotalAdelantos(), 2) : 0;
             $totalAPagar = $neto + $conceptos;
             $total = $totalAPagar + $contribuciones;
 
             $sheet->setCellValue('C' . $fila, $bruto);
             $sheet->setCellValue('D' . $fila, $deducciones);
             $sheet->setCellValue('E' . $fila, $neto);
-            $sheet->setCellValue('F' . $fila, $conceptos);
+            $sheet->setCellValueExplicit(
+                'F' . $fila,
+                $this->formatMoney($conceptos) . ' (' . $this->formatMoney($adelantos) . ')',
+                \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
+            );
             $sheet->setCellValue('G' . $fila, $totalAPagar);
             $sheet->setCellValue('H' . $fila, $contribuciones);
             $sheet->setCellValue('I' . $fila, $total);
@@ -436,7 +447,11 @@ class LiquidacionController extends BaseController
         $sheet->setCellValue('C' . $filaTotal, (float) $totalesMensuales['bruto']);
         $sheet->setCellValue('D' . $filaTotal, (float) $totalesMensuales['deducciones']);
         $sheet->setCellValue('E' . $filaTotal, (float) $totalesMensuales['neto']);
-        $sheet->setCellValue('F' . $filaTotal, (float) $totalesMensuales['conceptos']);
+        $sheet->setCellValueExplicit(
+            'F' . $filaTotal,
+            $this->formatMoney($totalesMensuales['conceptos']) . ' (' . $this->formatMoney($totalesMensuales['adelantos']) . ')',
+            \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
+        );
         $sheet->setCellValue('G' . $filaTotal, (float) $totalesMensuales['totalAPagar']);
         $sheet->setCellValue('H' . $filaTotal, (float) $totalesMensuales['contribuciones']);
         $sheet->setCellValue('I' . $filaTotal, (float) $totalesMensuales['total']);
@@ -1381,10 +1396,12 @@ class LiquidacionController extends BaseController
         }
 
         $conceptosMensuales = '0';
+        $adelantosMensuales = '0';
         $netoRaw = '0';
         $contribucionesRaw = '0';
         if ($resumen !== null) {
             $conceptosMensuales = Decimal::add((string) $resumen->getTotalConceptosSemanas(), (string) $resumen->getTotalConceptos(), 2);
+            $adelantosMensuales = Decimal::add((string) $resumen->getTotalAdelantosSemanas(), (string) $resumen->getTotalAdelantos(), 2);
             $netoRaw = (string) $resumen->getSueldoNeto();
             $contribucionesRaw = (string) $resumen->getContribuciones();
         }
@@ -1404,6 +1421,7 @@ class LiquidacionController extends BaseController
             'contribuciones' => $resumen !== null ? $this->formatMoney($resumen->getContribuciones()) : $this->formatMoney('0'),
             'neto' => $resumen !== null ? $this->formatMoney($resumen->getSueldoNeto()) : $this->formatMoney('0'),
             'conceptos' => $this->formatMoney($conceptosMensuales),
+            'adelantos' => $this->formatMoney($adelantosMensuales),
         ];
 
         foreach ($semanas as $semana) {
