@@ -190,6 +190,36 @@ jQuery(document).ready(function () {
     $(document).on('click', '.link-delete-liquidacion-concepto', eliminarConcepto);
     $('#liquidacion_sueldoBruto, #liquidacion_deducciones, #liquidacion_contribuciones').on('input', recalcularTotales);
 
+    // Formatear inputs de montos con separador de miles al cargar y al salir del campo
+    function formatearInputMonto($input) {
+        var valor = $input.val();
+        if (valor === '' || valor === null || typeof valor === 'undefined') {
+            return;
+        }
+        $input.val(formatearMonto(parseMonto(valor)));
+    }
+
+    var $inputsMonto = $('#liquidacion_sueldoBruto, #liquidacion_deducciones, #liquidacion_contribuciones');
+    $inputsMonto.each(function () {
+        formatearInputMonto($(this));
+    });
+    $inputsMonto.on('blur', function () {
+        formatearInputMonto($(this));
+    });
+
+    // Antes de enviar, quitar los separadores de miles para que Symfony parsee igual que antes.
+    // Se expone como global porque los submits programáticos (form.submit()) no disparan el evento.
+    window.limpiarSeparadoresMiles = function () {
+        $('#liquidacion_sueldoBruto, #liquidacion_deducciones, #liquidacion_contribuciones').each(function () {
+            var valor = $(this).val();
+            if (typeof valor === 'string') {
+                $(this).val(valor.replace(/\./g, ''));
+            }
+        });
+    };
+
+    $inputsMonto.closest('form').on('submit', window.limpiarSeparadoresMiles);
+
     // Modal de edición de semana
     var $modal = $('#modalSemana');
 

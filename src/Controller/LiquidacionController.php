@@ -879,6 +879,17 @@ class LiquidacionController extends BaseController
             'prestamos' => $prestamosPendientes,
             'prestamos_conceptos' => $prestamosEmpleado,
         ]);
+        // Normalizar separadores de miles antes de bindear el form
+        $datosLiq = $request->request->all()['liquidacion'] ?? [];
+        foreach (['sueldoBruto', 'deducciones', 'contribuciones'] as $campo) {
+            if (isset($datosLiq[$campo]) && is_string($datosLiq[$campo])) {
+                $datosLiq[$campo] = str_replace('.', '', $datosLiq[$campo]);
+            }
+        }
+        if ($datosLiq) {
+            $request->request->set('liquidacion', $datosLiq);
+        }
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

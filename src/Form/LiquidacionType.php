@@ -26,7 +26,7 @@ class LiquidacionType extends AbstractType
                     'scale' => 2,
                     'attr' => array_merge([
                         'class' => 'form-control',
-                        'pattern' => '[0-9]+([,][0-9]+)?',
+                        'pattern' => '[0-9.]+([,][0-9]+)?',
                     ], $readonlyAttr),
                 ])
                 ->add('deducciones', NumberType::class, [
@@ -35,7 +35,7 @@ class LiquidacionType extends AbstractType
                     'scale' => 2,
                     'attr' => array_merge([
                         'class' => 'form-control',
-                        'pattern' => '[0-9]+([,][0-9]+)?',
+                        'pattern' => '[0-9.]+([,][0-9]+)?',
                     ], $readonlyAttr),
                 ]);
         }
@@ -47,7 +47,7 @@ class LiquidacionType extends AbstractType
                 'scale' => 2,
                 'attr' => array_merge([
                     'class' => 'form-control',
-                    'pattern' => '[0-9]+([,][0-9]+)?',
+                    'pattern' => '[0-9.]+([,][0-9]+)?',
                 ], $readonlyAttr),
             ]);
         }

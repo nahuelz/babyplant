@@ -486,6 +486,9 @@
                     if (btn.getAttribute('data-tipo') === 'principal') {
                         document.getElementById('liquidacion-accion').value = 'aprobar';
                     }
+                    if (window.limpiarSeparadoresMiles) {
+                        window.limpiarSeparadoresMiles();
+                    }
                     if (form) {
                         form.submit();
                     } else {
