@@ -23,7 +23,7 @@
                         <select id="concepto_semana_prestamo" name="prestamo" class="form-control">
                             <option value="">-- Elija el préstamo --</option>
                             {% for prestamo in prestamosPendientes %}
-                                <option value="{{ prestamo.id }}" data-saldo="{{ prestamo.saldoPendiente }}">#{{ prestamo.id }} · {{ prestamo.fecha|date('d/m/Y') }} · Saldo {{ prestamo.saldoPendiente|money_format }}</option>
+                                <option value="{{ prestamo.id }}" data-saldo="{{ prestamo.saldoPendiente }}">{{ prestamo.fecha|date('d/m/Y') }} · Saldo {{ prestamo.saldoPendiente|money_format }}</option>
                             {% endfor %}
                         </select>
                     </div>
