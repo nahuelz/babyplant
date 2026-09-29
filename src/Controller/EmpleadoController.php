@@ -435,7 +435,7 @@ class EmpleadoController extends BaseController
          * ---------------------------------------------------------
          */
 
-        $sheet->mergeCells('A1:H1');
+        $sheet->mergeCells('A1:F1');
 
         $sheet->setCellValue(
             'A1',
@@ -467,8 +467,6 @@ class EmpleadoController extends BaseController
             'BRUTO',
             'DEDUCCIONES',
             'NETO',
-            '',
-            'SUELDO/2',
             'CONCEPTOS',
             'TOTAL',
         ];
@@ -485,7 +483,7 @@ class EmpleadoController extends BaseController
         // Año
         $sheet->setCellValue('A2', $anio);
 
-        $sheet->getStyle('A2:H2')->applyFromArray([
+        $sheet->getStyle('A2:F2')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'size' => 12,
@@ -528,20 +526,16 @@ class EmpleadoController extends BaseController
             $sheet->setCellValue('B' . $fila, (float) $mes['bruto']);
             $sheet->setCellValue('C' . $fila, (float) $mes['deducciones']);
             $sheet->setCellValue('D' . $fila, (float) $mes['neto']);
-
-            // Columna E queda vacía
-
-            $sheet->setCellValue('F' . $fila, (float) $mes['sueldoMedio']);
-            $sheet->setCellValue('G' . $fila, (float) $mes['conceptos']);
+            $sheet->setCellValue('E' . $fila, (float) $mes['conceptos']);
 
             /*
              * Total según el reporte de Claudia:
              *
-             * Neto + Sueldo/2 + Conceptos
+             * Neto + Conceptos
              */
             $sheet->setCellValue(
-                'H' . $fila,
-                '=D' . $fila . '+F' . $fila . '+G' . $fila
+                'F' . $fila,
+                '=D' . $fila . '+E' . $fila
             );
 
             $fila++;
@@ -555,7 +549,7 @@ class EmpleadoController extends BaseController
 
         $ultimaFilaMeses = $fila - 1;
 
-        $sheet->getStyle('A3:H' . $ultimaFilaMeses)
+        $sheet->getStyle('A3:F' . $ultimaFilaMeses)
             ->getBorders()
             ->getAllBorders()
             ->setBorderStyle(Border::BORDER_THIN);
@@ -573,14 +567,14 @@ class EmpleadoController extends BaseController
             ->getAlignment()
             ->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
-        $sheet->getStyle('B3:H' . $ultimaFilaMeses)
+        $sheet->getStyle('B3:F' . $ultimaFilaMeses)
             ->getAlignment()
             ->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 
         /*
          * Formato monetario
          */
-        $sheet->getStyle('B3:H' . $ultimaFilaMeses)
+        $sheet->getStyle('B3:F' . $ultimaFilaMeses)
             ->getNumberFormat()
             ->setFormatCode('#,##0.0');
 
@@ -595,17 +589,14 @@ class EmpleadoController extends BaseController
         $sheet->setCellValue('A' . $filaTotal, 'Total');
 
         $sheet->setCellValue('D' . $filaTotal, (float) $totales['neto']);
-        $sheet->setCellValue('F' . $filaTotal, (float) $totales['sueldoMedio']);
-        $sheet->setCellValue('G' . $filaTotal, (float) $totales['conceptos']);
+        $sheet->setCellValue('E' . $filaTotal, (float) $totales['conceptos']);
 
         $sheet->setCellValue(
-            'H' . $filaTotal,
-            '=D' . $filaTotal .
-            '+F' . $filaTotal .
-            '+G' . $filaTotal
+            'F' . $filaTotal,
+            '=D' . $filaTotal . '+E' . $filaTotal
         );
 
-        $sheet->getStyle('A' . $filaTotal . ':H' . $filaTotal)
+        $sheet->getStyle('A' . $filaTotal . ':F' . $filaTotal)
             ->applyFromArray([
                 'font' => [
                     'bold' => true,
@@ -1052,7 +1043,6 @@ class EmpleadoController extends BaseController
             'bruto' => '0',
             'deducciones' => '0',
             'neto' => '0',
-            'sueldoMedio' => '0',
             'conceptos' => '0',
             'aPagar' => '0',
         ];
@@ -1075,7 +1065,6 @@ class EmpleadoController extends BaseController
                 $aPagar = Decimal::add($aPagar, (string) $liquidacion->getTotalAPagar(), 2);
             }
 
-            $sueldoMedio = '0';
             $conceptos = Decimal::sub($aPagar, $neto, 2);
 
             $reporte[$numero] = [
@@ -1083,7 +1072,6 @@ class EmpleadoController extends BaseController
                 'bruto' => $bruto,
                 'deducciones' => $deducciones,
                 'neto' => $neto,
-                'sueldoMedio' => $sueldoMedio,
                 'conceptos' => $conceptos,
                 'aPagar' => $aPagar,
             ];
@@ -1091,7 +1079,6 @@ class EmpleadoController extends BaseController
             $totales['bruto'] = Decimal::add($totales['bruto'], $bruto, 2);
             $totales['deducciones'] = Decimal::add($totales['deducciones'], $deducciones, 2);
             $totales['neto'] = Decimal::add($totales['neto'], $neto, 2);
-            $totales['sueldoMedio'] = Decimal::add($totales['sueldoMedio'], $sueldoMedio, 2);
             $totales['conceptos'] = Decimal::add($totales['conceptos'], $conceptos, 2);
             $totales['aPagar'] = Decimal::add($totales['aPagar'], $aPagar, 2);
         }

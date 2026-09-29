@@ -37,7 +37,6 @@
                             <th class="text-right">Bruto</th>
                             <th class="text-right">Deducciones</th>
                             <th class="text-right">Neto</th>
-                            <th class="text-right">Sueldo / 2</th>
                             <th class="text-right">Conceptos</th>
                             <th class="text-right">Total a pagar</th>
                         </tr>
@@ -49,7 +48,6 @@
                                 <td class="text-right">{{ mes.bruto|money_format }}</td>
                                 <td class="text-right">{{ mes.deducciones|money_format }}</td>
                                 <td class="text-right">{{ mes.neto|money_format }}</td>
-                                <td class="text-right">{{ mes.sueldoMedio|money_format }}</td>
                                 <td class="text-right">{{ mes.conceptos|money_format }}</td>
                                 <td class="text-right">{{ mes.aPagar|money_format }}</td>
                             </tr>
@@ -61,7 +59,6 @@
                             <td class="text-right">{{ totales.bruto|money_format }}</td>
                             <td class="text-right">{{ totales.deducciones|money_format }}</td>
                             <td class="text-right">{{ totales.neto|money_format }}</td>
-                            <td class="text-right">{{ totales.sueldoMedio|money_format }}</td>
                             <td class="text-right">{{ totales.conceptos|money_format }}</td>
                             <td class="text-right">{{ totales.aPagar|money_format }}</td>
                         </tr>
