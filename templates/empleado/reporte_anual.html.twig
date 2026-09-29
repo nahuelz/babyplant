@@ -38,12 +38,7 @@
                             <th class="text-right">Deducciones</th>
                             <th class="text-right">Neto</th>
                             <th class="text-right">Sueldo / 2</th>
-                            <th class="text-right">Arreglos</th>
-                            <th class="text-right">Hs Extras</th>
-                            <th class="text-right">Feriados</th>
-                            <th class="text-right">Guardias</th>
-                            <th class="text-right">Otros</th>
-                            <th class="text-right">Adelantos</th>
+                            <th class="text-right">Conceptos</th>
                             <th class="text-right">Total a pagar</th>
                         </tr>
                     </thead>
@@ -55,12 +50,7 @@
                                 <td class="text-right">{{ mes.deducciones|money_format }}</td>
                                 <td class="text-right">{{ mes.neto|money_format }}</td>
                                 <td class="text-right">{{ mes.sueldoMedio|money_format }}</td>
-                                <td class="text-right">{{ mes.arreglos|money_format }}</td>
-                                <td class="text-right">{{ mes.horasExtras|money_format }}</td>
-                                <td class="text-right">{{ mes.feriados|money_format }}</td>
-                                <td class="text-right">{{ mes.guardias|money_format }}</td>
-                                <td class="text-right">{{ mes.otros|money_format }}</td>
-                                <td class="text-right">{{ mes.adelantos|money_format }}</td>
+                                <td class="text-right">{{ mes.conceptos|money_format }}</td>
                                 <td class="text-right">{{ mes.aPagar|money_format }}</td>
                             </tr>
                         {% endfor %}
@@ -72,12 +62,7 @@
                             <td class="text-right">{{ totales.deducciones|money_format }}</td>
                             <td class="text-right">{{ totales.neto|money_format }}</td>
                             <td class="text-right">{{ totales.sueldoMedio|money_format }}</td>
-                            <td class="text-right">{{ totales.arreglos|money_format }}</td>
-                            <td class="text-right">{{ totales.horasExtras|money_format }}</td>
-                            <td class="text-right">{{ totales.feriados|money_format }}</td>
-                            <td class="text-right">{{ totales.guardias|money_format }}</td>
-                            <td class="text-right">{{ totales.otros|money_format }}</td>
-                            <td class="text-right">{{ totales.adelantos|money_format }}</td>
+                            <td class="text-right">{{ totales.conceptos|money_format }}</td>
                             <td class="text-right">{{ totales.aPagar|money_format }}</td>
                         </tr>
                     </tfoot>

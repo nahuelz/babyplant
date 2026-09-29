@@ -435,7 +435,7 @@ class EmpleadoController extends BaseController
          * ---------------------------------------------------------
          */
 
-        $sheet->mergeCells('A1:I1');
+        $sheet->mergeCells('A1:H1');
 
         $sheet->setCellValue(
             'A1',
@@ -469,8 +469,7 @@ class EmpleadoController extends BaseController
             'NETO',
             '',
             'SUELDO/2',
-            'ARREGLOS',
-            'HORAS',
+            'CONCEPTOS',
             'TOTAL',
         ];
 
@@ -486,7 +485,7 @@ class EmpleadoController extends BaseController
         // Año
         $sheet->setCellValue('A2', $anio);
 
-        $sheet->getStyle('A2:I2')->applyFromArray([
+        $sheet->getStyle('A2:H2')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'size' => 12,
@@ -533,20 +532,16 @@ class EmpleadoController extends BaseController
             // Columna E queda vacía
 
             $sheet->setCellValue('F' . $fila, (float) $mes['sueldoMedio']);
-            $sheet->setCellValue('G' . $fila, (float) $mes['arreglos']);
-            $sheet->setCellValue('H' . $fila, (float) $mes['horasExtras']);
+            $sheet->setCellValue('G' . $fila, (float) $mes['conceptos']);
 
             /*
              * Total según el reporte de Claudia:
              *
-             * Neto + Sueldo/2 + Arreglos + Horas
-             *
-             * Si posteriormente incorporás feriados,
-             * guardias u otros, podemos agregarlos acá.
+             * Neto + Sueldo/2 + Conceptos
              */
             $sheet->setCellValue(
-                'I' . $fila,
-                '=D' . $fila . '+F' . $fila . '+G' . $fila . '+H' . $fila
+                'H' . $fila,
+                '=D' . $fila . '+F' . $fila . '+G' . $fila
             );
 
             $fila++;
@@ -560,7 +555,7 @@ class EmpleadoController extends BaseController
 
         $ultimaFilaMeses = $fila - 1;
 
-        $sheet->getStyle('A3:I' . $ultimaFilaMeses)
+        $sheet->getStyle('A3:H' . $ultimaFilaMeses)
             ->getBorders()
             ->getAllBorders()
             ->setBorderStyle(Border::BORDER_THIN);
@@ -578,14 +573,14 @@ class EmpleadoController extends BaseController
             ->getAlignment()
             ->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
-        $sheet->getStyle('B3:I' . $ultimaFilaMeses)
+        $sheet->getStyle('B3:H' . $ultimaFilaMeses)
             ->getAlignment()
             ->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 
         /*
          * Formato monetario
          */
-        $sheet->getStyle('B3:I' . $ultimaFilaMeses)
+        $sheet->getStyle('B3:H' . $ultimaFilaMeses)
             ->getNumberFormat()
             ->setFormatCode('#,##0.0');
 
@@ -601,18 +596,16 @@ class EmpleadoController extends BaseController
 
         $sheet->setCellValue('D' . $filaTotal, (float) $totales['neto']);
         $sheet->setCellValue('F' . $filaTotal, (float) $totales['sueldoMedio']);
-        $sheet->setCellValue('G' . $filaTotal, (float) $totales['arreglos']);
-        $sheet->setCellValue('H' . $filaTotal, (float) $totales['horasExtras']);
+        $sheet->setCellValue('G' . $filaTotal, (float) $totales['conceptos']);
 
         $sheet->setCellValue(
-            'I' . $filaTotal,
+            'H' . $filaTotal,
             '=D' . $filaTotal .
             '+F' . $filaTotal .
-            '+G' . $filaTotal .
-            '+H' . $filaTotal
+            '+G' . $filaTotal
         );
 
-        $sheet->getStyle('A' . $filaTotal . ':I' . $filaTotal)
+        $sheet->getStyle('A' . $filaTotal . ':H' . $filaTotal)
             ->applyFromArray([
                 'font' => [
                     'bold' => true,
@@ -1060,12 +1053,7 @@ class EmpleadoController extends BaseController
             'deducciones' => '0',
             'neto' => '0',
             'sueldoMedio' => '0',
-            'arreglos' => '0',
-            'horasExtras' => '0',
-            'feriados' => '0',
-            'guardias' => '0',
-            'otros' => '0',
-            'adelantos' => '0',
+            'conceptos' => '0',
             'aPagar' => '0',
         ];
 
@@ -1079,11 +1067,6 @@ class EmpleadoController extends BaseController
             $deducciones = '0';
             $neto = '0';
             $aPagar = '0';
-            $horasExtras = '0';
-            $feriados = '0';
-            $guardias = '0';
-            $otros = '0';
-            $adelantos = '0';
 
             foreach ($liquidacionesMes as $liquidacion) {
                 $bruto = Decimal::add($bruto, (string) $liquidacion->getSueldoBruto(), 2);
@@ -1093,12 +1076,7 @@ class EmpleadoController extends BaseController
             }
 
             $sueldoMedio = '0';
-            $arreglos = Decimal::sub($aPagar, $neto, 2);
-            $arreglos = Decimal::sub($arreglos, $horasExtras, 2);
-            $arreglos = Decimal::sub($arreglos, $feriados, 2);
-            $arreglos = Decimal::sub($arreglos, $guardias, 2);
-            $arreglos = Decimal::sub($arreglos, $otros, 2);
-            $arreglos = Decimal::add($arreglos, $adelantos, 2);
+            $conceptos = Decimal::sub($aPagar, $neto, 2);
 
             $reporte[$numero] = [
                 'nombre' => $nombre,
@@ -1106,12 +1084,7 @@ class EmpleadoController extends BaseController
                 'deducciones' => $deducciones,
                 'neto' => $neto,
                 'sueldoMedio' => $sueldoMedio,
-                'arreglos' => $arreglos,
-                'horasExtras' => $horasExtras,
-                'feriados' => $feriados,
-                'guardias' => $guardias,
-                'otros' => $otros,
-                'adelantos' => $adelantos,
+                'conceptos' => $conceptos,
                 'aPagar' => $aPagar,
             ];
 
@@ -1119,12 +1092,7 @@ class EmpleadoController extends BaseController
             $totales['deducciones'] = Decimal::add($totales['deducciones'], $deducciones, 2);
             $totales['neto'] = Decimal::add($totales['neto'], $neto, 2);
             $totales['sueldoMedio'] = Decimal::add($totales['sueldoMedio'], $sueldoMedio, 2);
-            $totales['arreglos'] = Decimal::add($totales['arreglos'], $arreglos, 2);
-            $totales['horasExtras'] = Decimal::add($totales['horasExtras'], $horasExtras, 2);
-            $totales['feriados'] = Decimal::add($totales['feriados'], $feriados, 2);
-            $totales['guardias'] = Decimal::add($totales['guardias'], $guardias, 2);
-            $totales['otros'] = Decimal::add($totales['otros'], $otros, 2);
-            $totales['adelantos'] = Decimal::add($totales['adelantos'], $adelantos, 2);
+            $totales['conceptos'] = Decimal::add($totales['conceptos'], $conceptos, 2);
             $totales['aPagar'] = Decimal::add($totales['aPagar'], $aPagar, 2);
         }
 
